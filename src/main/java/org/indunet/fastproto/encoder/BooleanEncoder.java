@@ -1,22 +1,27 @@
 package org.indunet.fastproto.encoder;
 
-import org.vnet.fastproto.ProtoPolicy;
-import org.vnet.fastproto.annotation.BooleanType;
-import org.vnet.fastproto.annotation.EncodeIgnore;
-import org.vnet.fastproto.exception.EncodeException;
 
-import java.lang.reflect.Field;
+import org.indunet.fastproto.annotation.BooleanType;
 
-public class BooleanEncoder implements BooleanEncoder<Boolean> {
+public class BooleanEncoder implements Encoder {
     public final static int BIT_OFFSET_MAX = 7;
     public final static int BIT_OFFSET_MIN = 0;
 
     @Override
-    public void set(byte[] datagram, int byteOffset, int bitOffset, Boolean value) throws EncodeException {
+    public void encode(EncodeContext context) {
+        byte[] datagram = context.getDatagram();
+        int byteOffset = context.getDataTypeAnnotation(BooleanType.class).byteOffset();
+        int bitOffset = context.getDataTypeAnnotation(BooleanType.class).bitOffset();
+        boolean value = context.getValue(Boolean.class);
+
+        this.encode(datagram, byteOffset, bitOffset, value);
+    }
+
+    public void encode(byte[] datagram, int byteOffset, int bitOffset, boolean value) {
         if (datagram.length <= byteOffset) {
-            throw new EncodeException("Insufficient datagram space.");
+            throw new ArrayIndexOutOfBoundsException();
         } else if (bitOffset < BIT_OFFSET_MIN || bitOffset > BIT_OFFSET_MAX) {
-            throw new EncodeException("Invalid bit offset.");
+            throw new ArrayIndexOutOfBoundsException();
         }
 
         if (value) {
@@ -24,22 +29,5 @@ public class BooleanEncoder implements BooleanEncoder<Boolean> {
         } else {
             datagram[byteOffset] &= ~(0x01 << bitOffset);
         }
-    }
-
-    @Override
-    public void set(byte[] datagram, Object object, Field field) throws IllegalAccessException {
-        if (field.isAnnotationPresent(BooleanType.class) == false) {
-            return;
-        } else if (field.isAnnotationPresent(EncodeIgnore.class)) {
-            return;
-        } else if (field.getAnnotation(BooleanType.class).policy() == ProtoPolicy.Decode_Only) {
-            return;
-        }
-
-        int byteOffset = field.getAnnotation(BooleanType.class).byteOffset();
-        int bitOffset = field.getAnnotation(BooleanType.class).bitOffset();
-        boolean value = field.getBoolean(object);
-
-        this.set(datagram, byteOffset, bitOffset, value);
     }
 }

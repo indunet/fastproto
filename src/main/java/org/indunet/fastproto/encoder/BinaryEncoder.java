@@ -1,39 +1,23 @@
 package org.indunet.fastproto.encoder;
 
-import org.vnet.fastproto.ProtoPolicy;
-import org.vnet.fastproto.annotation.ByteArrayType;
-import org.vnet.fastproto.annotation.EncodeIgnore;
-import org.vnet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.annotation.BinaryType;
 
-import java.lang.reflect.Field;
-
-public class BinaryEncoder implements ByteArrayEncoder {
-
+public class BinaryEncoder implements Encoder {
     @Override
-    public void set(byte[] datagram, int byteOffset, byte[] value) throws EncodeException {
-        if (datagram.length - value.length < byteOffset) {
-            throw new EncodeException("Insufficient datagram space.");
-        }
+    public void encode(EncodeContext context) {
+        byte[] datagram = context.getDatagram();
+        int byteOffset = context.getDataTypeAnnotation(BinaryType.class).byteOffset();
+        int length = context.getDataTypeAnnotation(BinaryType.class).length();
+        byte[] values = context.getValue(byte[].class);
 
-        for (int i = 0; i < value.length; i ++) {
-            datagram[byteOffset + i] = value[i];
-        }
+        this.encode(datagram, byteOffset, length, values);
     }
 
-    @Override
-    public void set(byte[] datagram, Object object, Field field) throws IllegalAccessException {
-        if (field.isAnnotationPresent(ByteArrayType.class) == false) {
-            return;
-        } else if (field.isAnnotationPresent(EncodeIgnore.class)) {
-            return;
-        } else if (field.getAnnotation(ByteArrayType.class).policy() == ProtoPolicy.Decode_Only) {
-            return;
+    public void encode(byte[] datagram, int byteOffset, int length, byte[] values) {
+        if (datagram.length - values.length < byteOffset) {
+            throw new ArrayIndexOutOfBoundsException();
         }
 
-        int byteOffset = field.getAnnotation(ByteArrayType.class).byteOffset();
-        // int length = field.getAnnotation(ByteArrayType.class).length();
-        byte[] value = ((byte[]) field.get(object));
-
-        this.set(datagram, byteOffset, value);
+        System.arraycopy(values, 0, datagram, byteOffset, length);
     }
 }

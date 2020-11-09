@@ -6,15 +6,19 @@ import org.indunet.fastproto.annotation.LongType;
 public class LongDecoder implements Decoder<Long> {
     @Override
     public Long decode(DecodeContext context) {
-        int byteOffset = context.getDataTypeAnnotation(LongType.class).byteOffset();
         byte[] datagram = context.getDatagram();
+        int byteOffset = context.getDataTypeAnnotation(LongType.class).byteOffset();
+        Endian endian = context.getEndian();
 
+        return this.decode(datagram, byteOffset, endian);
+    }
+
+    public long decode(final byte[] datagram, int byteOffset, Endian endian) {
         if (datagram.length - LongType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }
 
         long value = 0;
-        Endian endian = context.getEndian();
 
         if (endian == Endian.Little) {
             value |= (datagram[byteOffset] & 0xFF);

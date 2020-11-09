@@ -1,43 +1,23 @@
 package org.indunet.fastproto.encoder;
 
-import org.vnet.fastproto.Endian;
-import org.vnet.fastproto.ProtoPolicy;
-import org.vnet.fastproto.annotation.*;
-import org.vnet.fastproto.exception.EncodeException;
 
-import java.lang.reflect.Field;
+import org.indunet.fastproto.annotation.ByteType;
 
-public class ByteEncoder implements NumberEncoder<Integer> {
+public class ByteEncoder implements Encoder {
     @Override
-    public void set(byte[] datagram, int byteOffset, Endian endian, Integer value) throws EncodeException {
-        if (value > Integer8Type.MAX || value < Integer8Type.MIN) {
-            throw new EncodeException("The value is too large or too small.");
-        } else if (datagram.length - Integer8Type.SIZE < byteOffset) {
-            throw new EncodeException("Insufficient datagram space.");
-        }
+    public void encode(EncodeContext context) {
+        byte[] datagram = context.getDatagram();
+        int byteOffset = context.getDataTypeAnnotation(Byte.class);
+        byte value = context.getValue(Byte.class);
 
-        datagram[byteOffset] = value.byteValue();
+        this.encode(datagram, byteOffset, value);
     }
 
-    // It doesn't matter of little endian or big endian.
-    @Override
-    public void set(byte[] datagram, int byteOffset, Integer value) {
-        this.set(datagram, byteOffset, Endian.Little, value);
-    }
-
-    @Override
-    public void set(byte[] datagram, Object object, Field field) throws IllegalAccessException {
-        if (field.isAnnotationPresent(Integer8Type.class) == false) {
-            return;
-        } else if (field.isAnnotationPresent(EncodeIgnore.class)) {
-            return;
-        } else if (field.getAnnotation(Integer8Type.class).policy() == ProtoPolicy.Decode_Only) {
-            return;
+    public void encode(byte[] datagram, int byteOffset, byte value) {
+        if (byteOffset + ByteType.SIZE >= datagram.length) {
+            throw new ArrayIndexOutOfBoundsException();
         }
 
-        int byteOffset = field.getAnnotation(Integer8Type.class).value();
-        int value = field.getInt(object);
-
-        this.set(datagram, byteOffset, value);
+        datagram[byteOffset] = value;
     }
 }

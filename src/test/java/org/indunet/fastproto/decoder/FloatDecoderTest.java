@@ -1,16 +1,18 @@
 package org.indunet.fastproto.decoder;
 
+import org.indunet.fastproto.Endian;
+import org.indunet.fastproto.util.NumberUtils;
 import org.junit.Test;
-import org.vnet.fastproto.exception.DecodeException;
-import org.vnet.fastproto.utils.NumberUtils;
+
+import static org.junit.Assert.assertEquals;
 
 public class FloatDecoderTest {
-    NumberDecoder<?> decoder = new StandardFloatDecoder();
-    Float pi = 3.141f, e = 2.718f;
+    FloatDecoder decoder = new FloatDecoder();
+    float pi = 3.141f, e = 2.718f;
 
     @Test
-    public void testGet() throws DecodeException {
-        assertEquals(decoder.get(NumberUtils.floatToByteArray(pi), 0), pi);
-        assertEquals(decoder.get(NumberUtils.floatToByteArray(e), 0), e);
+    public void testGet() {
+        assertEquals(decoder.decode(NumberUtils.floatToBinary(pi), 0, Endian.Little), pi, 0.0001);
+        assertEquals(decoder.decode(NumberUtils.floatToBinary(e), 0, Endian.Little), e, 0.0001);
     }
 }

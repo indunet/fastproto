@@ -6,15 +6,19 @@ import org.indunet.fastproto.annotation.DoubleType;
 public class DoubleDecoder implements Decoder<Double> {
     @Override
     public Double decode(DecodeContext context) {
-        int byteOffset = ((DoubleType) context.getDataTypeAnnotation()).byteOffset();
         byte[] datagram = context.getDatagram();
+        int byteOffset = context.getDataTypeAnnotation(DoubleType.class).byteOffset();
+        Endian endian = context.getEndian();
 
+        return this.decode(datagram, byteOffset, endian);
+    }
+
+    public double decode(final byte[] datagram, int byteOffset, Endian endian) {
         if (datagram.length - DoubleType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }
 
         long value = 0;
-        Endian endian = context.getEndian();
 
         if (endian == Endian.Little) {
             value |= (datagram[byteOffset] & 0xFFL);

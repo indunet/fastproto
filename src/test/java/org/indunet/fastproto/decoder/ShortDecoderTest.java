@@ -1,23 +1,24 @@
 package org.indunet.fastproto.decoder;
 
+import org.indunet.fastproto.Endian;
 import org.junit.Test;
-import org.vnet.fastproto.Endian;
-import org.vnet.fastproto.exception.DecodeException;
+
+import static org.junit.Assert.assertEquals;
 
 public class ShortDecoderTest {
-    NumberDecoder<?> decoder = new StandardInteger16Decoder();
+    ShortDecoder decoder = new ShortDecoder();
     private byte[] datagram = {0, 1, 2, 3, -1, -1, -2, -1};
 
     @Test
-    public void testGet() throws DecodeException {
+    public void testDecode() {
         // For little endian.
-        assertEquals(decoder.get(datagram, 0), 256);
-        assertEquals(decoder.get(datagram, 2), 2 + 3 * 256);
-        assertEquals(decoder.get(datagram, 4), -1);
-        assertEquals(decoder.get(datagram, 6), -2);
+        assertEquals(decoder.decode(datagram, 0, Endian.Little), 256);
+        assertEquals(decoder.decode(datagram, 2, Endian.Little), 2 + 3 * 256);
+        assertEquals(decoder.decode(datagram, 4, Endian.Little), -1);
+        assertEquals(decoder.decode(datagram, 6, Endian.Little), -2);
 
         // For big endian.
-        assertEquals(decoder.get(datagram, 0, Endian.Big), 0x0001);
-        assertEquals(decoder.get(datagram, 2, Endian.Big), 0x0203);
+        assertEquals(decoder.decode(datagram, 0, Endian.Big), 0x0001);
+        assertEquals(decoder.decode(datagram, 2, Endian.Big), 0x0203);
     }
 }
