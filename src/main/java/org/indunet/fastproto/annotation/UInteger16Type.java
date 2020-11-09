@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 @DataType
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UShortType {
+public @interface UInteger16Type {
     int SIZE = Short.SIZE >> 3;
     int MAX = Short.MAX_VALUE - Short.MIN_VALUE;
     int MIN = 0;

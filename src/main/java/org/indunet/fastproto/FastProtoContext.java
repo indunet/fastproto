@@ -3,7 +3,7 @@ package org.indunet.fastproto;
 import org.indunet.fastproto.decoder.Decoder;
 import org.indunet.fastproto.encoder.Encoder;
 import org.indunet.fastproto.formula.Formula;
-import org.indunet.fastproto.util.ObjectInfo;
+import org.indunet.fastproto.assist.ObjectAssist;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;
@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class FastProtoContext {
     Map<String, Formula> formulaMap = new HashMap<>();
-    Map<Class<?>, ObjectInfo> objectInfoMap = new HashMap<>();
+    Map<Class<?>, ObjectAssist> objectInfoMap = new HashMap<>();
     Map<Class<? extends Annotation>, Codec> codecMap = CodecFactory.create();
 
     public boolean containsFormula(String formulaName) {
@@ -52,14 +52,14 @@ public class FastProtoContext {
         return this.objectInfoMap.containsKey(clazz);
     }
 
-    public ObjectInfo getObjectInfo(Class<?> clazz) {
+    public ObjectAssist getObjectInfo(Class<?> clazz) {
         if (this.objectInfoMap.containsKey(clazz)) {
             return this.objectInfoMap.get(clazz);
         } else {
-            ObjectInfo objectInfo = ObjectInfo.create(clazz);
-            this.objectInfoMap.put(clazz, objectInfo);
+            ObjectAssist objectAssist = ObjectAssist.create(clazz);
+            this.objectInfoMap.put(clazz, objectAssist);
 
-            return objectInfo;
+            return objectAssist;
         }
     }
 }

@@ -1,9 +1,10 @@
-package org.indunet.fastproto;
+package org.indunet.fastproto.object;
 
+import org.indunet.fastproto.Endian;
 import org.indunet.fastproto.annotation.*;
 
 @EndianMode(Endian.Little)
-@Datagram("motor")
+@Datagram("Motor")
 public class Motor {
     @EndianMode(Endian.Big)
     @IntegerType(byteOffset = 0)

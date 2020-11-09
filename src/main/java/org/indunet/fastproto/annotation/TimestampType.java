@@ -10,7 +10,8 @@ import java.util.concurrent.TimeUnit;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TimestampType {
+    int SIZE = Long.SIZE >> 3;
+
     int byteOffset();
-    int length() default Long.SIZE >> 3;
     TimeUnit unit() default TimeUnit.MILLISECONDS;
 }

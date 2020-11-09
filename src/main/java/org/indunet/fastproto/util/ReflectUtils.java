@@ -70,70 +70,20 @@ public class ReflectUtils {
         return datagramName != null ? datagramName : defaultValue;
     }
 
-    public static String getDecodeFormulaName(final Field field) {
-        if (field.isAnnotationPresent(DecodeFormula.class)) {
-            return field.getAnnotation(DecodeFormula.class).value();
-        } else {
-            return null;
-        }
-    }
-
-    public static Formula getDecodeFormula(final Field field) {
+    public static String getDecodeFormula(final Field field) {
         if (!field.isAnnotationPresent(DecodeFormula.class)) {
             return null;
         }
 
-        try {
-            String className = field.getAnnotation(DecodeFormula.class).value();
-            Class<Formula> clazz = (Class<Formula>) Class.forName(className);
-
-            if (clazz.isAssignableFrom(Formula.class)) {
-                return (Formula) clazz.newInstance();
-            } else {
-                return null;
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return field.getAnnotation(DecodeFormula.class).value();
     }
 
-    public static String getEncodeFormulaName(final Field field) {
-        if (field.isAnnotationPresent(EncodeFormula.class)) {
-            return field.getAnnotation(EncodeFormula.class).value();
-        } else {
-            return null;
-        }
-    }
-
-    public static Formula getEncodeFormula(final Field field) {
+    public static String getEncodeFormula(final Field field) {
         if (field.isAnnotationPresent(EncodeFormula.class) == false) {
             return null;
         }
 
-        try {
-            String className = field.getAnnotation(EncodeFormula.class).value();
-            Class clazz = Class.forName(className);
-
-            if (clazz.isAssignableFrom(Formula.class)) {
-                return (Formula) clazz.newInstance();
-            } else {
-                return null;
-            }
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+        return field.getAnnotation(EncodeFormula.class).value();
     }
 
     public static List<Method> getMethod(final Object object) {
@@ -164,17 +114,24 @@ public class ReflectUtils {
         return null;
     }
 
-    public static Class[] getFormulaGeneric(final Formula formula) {
-        Type type = formula.getClass().getGenericInterfaces()[0];
-
-        if (type instanceof ParameterizedType) {
-            ParameterizedType parameterizedType = (ParameterizedType) type;
-
-            Class[] classes = Arrays.stream(parameterizedType.getActualTypeArguments()).toArray(Class[]::new);
-            return classes;
-        } else {
+    public static Class[] getFormulaGeneric(final Object formula) {
+        if (formula instanceof Formula == false) {
             return null;
         }
+
+        Type[] types = formula.getClass().getGenericInterfaces();
+
+        for (Type type: types) {
+            if (type instanceof ParameterizedType  == false) {
+                continue;
+            } else {
+                ParameterizedType parameterizedType = (ParameterizedType) type;
+
+                return Arrays.stream(parameterizedType.getActualTypeArguments()).toArray(Class[]::new);
+            }
+        }
+
+        return null;
     }
 
     public static boolean getDecodeIgnore(final Field field) {
@@ -219,5 +176,12 @@ public class ReflectUtils {
         }
 
         return list;
+    }
+
+    public static Method getFormulaMethod(final Class<?> clazz) throws NoSuchMethodException {
+        Method method = clazz.getDeclaredMethod("transform");
+        method.setAccessible(true);
+
+        return method;
     }
 }

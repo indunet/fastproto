@@ -8,7 +8,7 @@ import java.lang.annotation.Target;
 @DataType
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UByteType {
+public @interface UInteger8Type {
     int SIZE = Byte.SIZE >> 3;
     int MAX = Byte.MAX_VALUE - Byte.MIN_VALUE;
     int MIN = 0;

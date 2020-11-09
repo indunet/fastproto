@@ -1,4 +1,4 @@
-package org.indunet.fastproto;
+package org.indunet.fastproto.exception;
 
 public class FastProtoException extends RuntimeException {
 }
