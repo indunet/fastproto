@@ -14,6 +14,7 @@ import java.util.Map;
 
 public class ObjectAssist {
     Class objectClass;
+
     Endian endian;
     String datagramName;
 
@@ -79,61 +80,53 @@ public class ObjectAssist {
         // Object.
         objectAssist.setObjectClass(objectClass);
 
-        String datagramName = ReflectUtils.getDatagramName(objectClass, "default");
+        String datagramName = ReflectUtils.getDatagramName(objectClass).orElse("Default");
         objectAssist.setDatagramName(datagramName);
 
-        Endian endian = ReflectUtils.getEndian(objectClass, Endian.Little);
+        Endian endian = ReflectUtils.getEndian(objectClass).orElse(Endian.Little);
         objectAssist.setEndian(endian);
 
         // Field.
-        for (Field field : ReflectUtils.getDataTypeField(objectClass)) {
-            FieldAssist fieldAssist = FieldAssist.create(field, datagramName, endian);
-            objectAssist.addFieldInfo(fieldAssist);
-        }
+        ReflectUtils.getDataTypeField(objectClass).stream()
+                .forEach(field -> {
+                    FieldAssist fieldAssist = FieldAssist.create(field, datagramName, endian);
+                    objectAssist.addFieldInfo(fieldAssist);
+                });
 
         // Method.
-        for (Method method : ReflectUtils.getMethod(objectClass)) {
-            MethodAssist methodAssist = MethodAssist.create(method);
-            objectAssist.addMethodInfo(methodAssist);
-        }
+        ReflectUtils.getMethod(objectClass).stream()
+                .forEach(method -> {
+                    MethodAssist methodAssist = MethodAssist.create(method);
+                    objectAssist.addMethodInfo(methodAssist);
+                });
 
-        // Object in object.
-        for (Field field : ReflectUtils.getObjectType(objectClass)) {
-            objectAssist.addObjectInfo(create(field.getType()));
-        }
+        // Object type.
+        ReflectUtils.getObjectType(objectClass).stream()
+                .forEach(field -> {
+                    objectAssist.addObjectInfo(create(field.getType()));
+                });
 
         return objectAssist;
     }
 
-    public static ObjectAssist create(Object object) {
-        return create(object.getClass());
-    }
-
-    public void decode(Map<String, byte[]> datagramMap, Object object) throws InvocationTargetException, IllegalAccessException {
+    public void decode(Map<String, byte[]> datagramMap, Object object) {
         // Before Decode.
-        for (MethodAssist methodAssist : this.methodAssistList) {
-            if (methodAssist.annotation instanceof BeforeDecode) {
-                methodAssist.invokeMethod(object);
-            }
-        }
+        this.methodAssistList.stream()
+                .filter(assist -> assist.annotation instanceof BeforeDecode)
+                .forEach(assist -> assist.invokeMethod(object));
 
         // Field.
-        for (FieldAssist fieldAssist : this.fieldAssistList) {
-            if (fieldAssist.decodeIgnore == false) {
-                fieldAssist.decode(datagramMap, object);
-            }
-        }
+        this.fieldAssistList.stream()
+                .filter(assist -> assist.decodeIgnore == false)
+                .forEach(assist -> assist.invokeDecode(datagramMap, object));
 
         // Object.
-        for (ObjectAssist objectAssist : this.objectAssistList) {
-            this.decode(datagramMap, object);
-        }
+        this.objectAssistList.stream()
+                .forEach(assist -> this.decode(datagramMap, object));
 
         // After Decode.
-        for (MethodAssist methodAssist : this.methodAssistList) {
-            if (methodAssist.annotation instanceof AfterDecode) {
-                methodAssist.invokeMethod(object);
-            }
-        }
+        this.methodAssistList.stream()
+                .filter(assist -> assist.annotation instanceof AfterDecode)
+                .forEach(assist -> assist.invokeMethod(object));
     }
 }

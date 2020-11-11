@@ -16,18 +16,9 @@ public class FormulaAssist {
 
     }
 
-    public static FormulaAssist create(final String className) {
-        if (className == null) {
-            return null;
-        }
-
+    public static FormulaAssist create(final Class<? extends Formula> formulaClass) {
         try {
-            Class<?> clazz = Class.forName(className);
-            Object formula = clazz.newInstance();
-
-            if (formula instanceof Object == false) {
-                return null;
-            }
+            Object formula = formulaClass.newInstance();
 
             FormulaAssist formulaAssist = new FormulaAssist();
             formulaAssist.formula = (Formula<?, ?>) formula;

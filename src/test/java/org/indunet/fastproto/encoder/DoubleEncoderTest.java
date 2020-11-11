@@ -1,19 +1,22 @@
 package org.indunet.fastproto.encoder;
 
+import org.indunet.fastproto.Endian;
+import org.indunet.fastproto.util.NumberUtils;
 import org.junit.Test;
-import org.vnet.fastproto.utils.NumberUtils;
+
+import static org.junit.Assert.assertArrayEquals;
 
 public class DoubleEncoderTest {
-    NumberEncoder<Double> encoder = new DoubleEncoder();
+    DoubleEncoder encoder = new DoubleEncoder();
     byte[] datagram = new byte[8];
     double pi = 3.141, e = 2.718;
 
     @Test
     public void testSet() {
-        encoder.set(datagram, 0, e);
-        assertArrayEquals(datagram, NumberUtils.doubleToByteArray(e));
+        encoder.encode(datagram, 0, e, Endian.Little);
+        assertArrayEquals(datagram, NumberUtils.doubleToBinary(e));
 
-        encoder.set(datagram, 0, pi);
-        assertArrayEquals(datagram, NumberUtils.doubleToByteArray(pi));
+        encoder.encode(datagram, 0, pi, Endian.Little);
+        assertArrayEquals(datagram, NumberUtils.doubleToBinary(pi));
     }
 }

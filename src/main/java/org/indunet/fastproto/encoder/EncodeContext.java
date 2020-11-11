@@ -9,6 +9,7 @@ public class EncodeContext {
     Endian endian;
     byte[] datagram;
     Object value;
+    Class<?> valueType;
 
     Class<?> fieldType;
     Class<?> formulaInputType;

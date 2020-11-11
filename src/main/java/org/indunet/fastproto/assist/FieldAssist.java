@@ -1,8 +1,11 @@
 package org.indunet.fastproto.assist;
 
 import org.indunet.fastproto.Endian;
+import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.Decoder;
+import org.indunet.fastproto.encoder.EncodeContext;
 import org.indunet.fastproto.encoder.Encoder;
+import org.indunet.fastproto.formula.Formula;
 import org.indunet.fastproto.util.ReflectUtils;
 
 import java.lang.annotation.Annotation;
@@ -12,15 +15,22 @@ import java.util.Map;
 
 public class FieldAssist {
     Field field;
+    Class<?> fieldType;
     Annotation dataTypeAnnotation;
     Decoder<?> decoder;
-    Encoder<?> encoder;
+    Class<?> decoderGeneric;
+    Encoder encoder;
     Endian endian;
     String datagramName;
     boolean decodeIgnore;
     boolean encodeIgnore;
+
     FormulaAssist decodeFormulaAssist;
     FormulaAssist encodeFormulaAssist;
+
+    // Context.
+    DecodeContext decodeContext;
+    EncodeContext encodeContext;
 
     protected FieldAssist() {
 
@@ -31,12 +41,33 @@ public class FieldAssist {
 
         field.setAccessible(true);
         fieldAssist.field = field;
-        fieldAssist.datagramName = ReflectUtils.getDatagramName(field, defaultDatagramName);
-        fieldAssist.endian = ReflectUtils.getEndian(field, defaultEndian);
+        fieldAssist.fieldType = field.getType();
+        fieldAssist.datagramName = ReflectUtils.getDatagramName(field).orElse(defaultDatagramName);
+        fieldAssist.dataTypeAnnotation = ReflectUtils.getDataTypeAnnotation(field);
+        fieldAssist.endian = ReflectUtils.getEndian(field).orElse(defaultEndian);
         fieldAssist.decodeIgnore = ReflectUtils.getDecodeIgnore(field);
         fieldAssist.encodeIgnore = ReflectUtils.getEncodeIgnore(field);
-        fieldAssist.decodeFormulaAssist = FormulaAssist.create(ReflectUtils.getDecodeFormula(field));
-        fieldAssist.encodeFormulaAssist = FormulaAssist.create(ReflectUtils.getEncodeFormula(field));
+
+        ReflectUtils.getDecodeFormula(field)
+                .ifPresent(formula -> fieldAssist.decodeFormulaAssist = FormulaAssist.create(formula));
+        ReflectUtils.getEncodeFormula(field)
+                .ifPresent(formula -> fieldAssist.encodeFormulaAssist = FormulaAssist.create(formula));
+
+        fieldAssist.decodeContext = new DecodeContext.Builder()
+                .setFieldType(fieldAssist.fieldType)
+                .setDataTypeAnnotation(fieldAssist.dataTypeAnnotation)
+                .setEndian(fieldAssist.endian)
+                .setFormulaInputType(fieldAssist.decodeFormulaAssist.inputType)
+                .setFormulaOutputType(fieldAssist.decodeFormulaAssist.outputType)
+                .build();
+
+        fieldAssist.encodeContext = new EncodeContext.Builder()
+                .setFieldType(fieldAssist.fieldType)
+                .setDataTypeAnnotation(fieldAssist.dataTypeAnnotation)
+                .setEndian(fieldAssist.endian)
+                .setFormulaInputType(fieldAssist.encodeFormulaAssist.inputType)
+                .setFormulaOutputType(fieldAssist.encodeFormulaAssist.outputType)
+                .build();
 
         return fieldAssist;
     }
@@ -75,7 +106,8 @@ public class FieldAssist {
 
     public void decode(Map<String, byte[]> datagramMap, Object object) throws IllegalAccessException, InvocationTargetException {
         byte[] datagram = datagramMap.get(this.datagramName);
-        Object value = this.decoder.decode(this.dataTypeAnnotation, datagram, this.endian);
+
+        Object value = this.decoder.decode(this.decodeContext);
 
         if (this.decodeFormulaAssist != null) {
             value = this.decodeFormulaAssist.invokeTransform(value);

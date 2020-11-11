@@ -12,4 +12,13 @@ public class Tesla {
 
     @ObjectType
     Motor motor = new Motor();
+
+    @ObjectType
+    Battery battery = new Battery();
+
+    @ObjectType
+    AirConditioner airConditioner = new AirConditioner();
+
+    @ObjectType
+    Seat seat = new Seat();
 }

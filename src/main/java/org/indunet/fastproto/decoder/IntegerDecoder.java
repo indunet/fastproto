@@ -14,7 +14,7 @@ public class IntegerDecoder implements Decoder<Integer> {
     }
 
     public int decode(final byte[] datagram, int byteOffset, Endian endian) {
-        if (datagram.length - Integer.SIZE < byteOffset) {
+        if (datagram.length - IntegerType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }
 

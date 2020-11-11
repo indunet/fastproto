@@ -12,78 +12,69 @@ import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 public class ReflectUtils {
-    public static Endian getEndian(final Object object) {
-        if (object.getClass().isAnnotationPresent(EndianMode.class)) {
-            return object.getClass().getAnnotation(EndianMode.class).value();
+    public static Optional<Endian> getEndian(final Class<?> objectClass) {
+        if (objectClass.isAnnotationPresent(EndianMode.class)) {
+            return Optional.of(objectClass.getAnnotation(EndianMode.class).value());
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 
-    public static Endian getEndian(final Object object, Endian defaultValue) {
-        Endian endian = getEndian(object);
-
-        return endian != null ? endian : defaultValue;
-    }
-
-    public static Endian getEndian(final Field field) {
+    public static Optional<Endian> getEndian(final Field field) {
         if (field.isAnnotationPresent(EndianMode.class)) {
-            return field.getAnnotation(EndianMode.class).value();
+            return Optional.of(field.getAnnotation(EndianMode.class).value());
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 
-    public static Endian getEndian(final Field field, Endian defaultValue) {
-        Endian endian = getEndian(field);
-
-        return endian != null ? endian : defaultValue;
+    public static Optional<Field> getPrimaryKeyField(final Class<?> objectClass) {
+        return Arrays.stream(objectClass.getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(PrimaryKey.class))
+                .findFirst();
     }
 
-    public static String getDatagramName(final Object object) {
-        if (object.getClass().isAnnotationPresent(Datagram.class)) {
-            return object.getClass().getAnnotation(Datagram.class).value();
-        } else {
-            return null;
+    public static Optional<String> getPrimaryKeyValue(final Object object, final Field primaryKeyField) {
+        try {
+            return Optional.ofNullable(primaryKeyField.get(object).toString());
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
         }
     }
 
-    public static String getDatagramName(final Object object, String defaultValue) {
-        String datagramName = getDatagramName(object);
-
-        return datagramName != null ? datagramName : defaultValue;
+    public static Optional<String> getDatagramName(final Class<?> objectClass) {
+        if (objectClass.isAnnotationPresent(Datagram.class)) {
+            return Optional.of(objectClass.getAnnotation(Datagram.class).value());
+        } else {
+            return Optional.empty();
+        }
     }
 
-    public static String getDatagramName(final Field field) {
+    public static Optional<String> getDatagramName(final Field field) {
         if (field.isAnnotationPresent(Datagram.class)) {
-            return field.getAnnotation(Datagram.class).value();
+            return Optional.of(field.getAnnotation(Datagram.class).value());
         } else {
-            return null;
+            return Optional.empty();
         }
     }
 
-    public static String getDatagramName(final Field field, String defaultValue) {
-        String datagramName = getDatagramName(field);
-
-        return datagramName != null ? datagramName : defaultValue;
-    }
-
-    public static String getDecodeFormula(final Field field) {
+    public static Optional<Class<? extends Formula>> getDecodeFormula(final Field field) {
         if (!field.isAnnotationPresent(DecodeFormula.class)) {
-            return null;
+            return Optional.of(field.getAnnotation(DecodeFormula.class).value());
+        } else {
+            return Optional.empty();
         }
-
-        return field.getAnnotation(DecodeFormula.class).value();
     }
 
-    public static String getEncodeFormula(final Field field) {
-        if (field.isAnnotationPresent(EncodeFormula.class) == false) {
-            return null;
+    public static Optional<Class<? extends Formula>> getEncodeFormula(final Field field) {
+        if (!field.isAnnotationPresent(EncodeFormula.class)) {
+            return Optional.of(field.getAnnotation(EncodeFormula.class).value());
+        } else {
+            return Optional.empty();
         }
-
-        return field.getAnnotation(EncodeFormula.class).value();
     }
 
     public static List<Method> getMethod(final Object object) {
@@ -101,17 +92,17 @@ public class ReflectUtils {
         return list;
     }
 
-    public static Annotation getMethodAnnotation(Method method) {
-        for (Annotation annotation: method.getAnnotations()) {
+    public static Optional<Annotation> getMethodAnnotation(Method method) {
+        for (Annotation annotation : method.getAnnotations()) {
             if (annotation instanceof BeforeDecode
                     || annotation instanceof AfterDecode
                     || annotation instanceof BeforeEncode
                     || annotation instanceof AfterEncode) {
-                return annotation;
+                return Optional.of(annotation);
             }
         }
 
-        return null;
+        return Optional.empty();
     }
 
     public static Class[] getFormulaGeneric(final Object formula) {

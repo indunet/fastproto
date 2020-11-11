@@ -5,12 +5,12 @@ import org.junit.Test;
 import static org.junit.Assert.assertArrayEquals;
 
 public class BinaryEncoderTest {
-    ByteArrayEncoder encoder = new BinaryEncoder();
+    BinaryEncoder encoder = new BinaryEncoder();
     byte[] datagram = new byte[4];
 
     @Test
     public void testSet() {
-        encoder.set(datagram, 0, new byte[] {0x01, 0x02, 0x03, 0x04});
+        encoder.encode(datagram, 0, new byte[] {0x01, 0x02, 0x03, 0x04});
 
         assertArrayEquals(datagram, new byte[] {0x01, 0x02, 0x03, 0x04});
     }
