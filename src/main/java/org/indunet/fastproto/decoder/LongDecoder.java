@@ -3,17 +3,13 @@ package org.indunet.fastproto.decoder;
 import org.indunet.fastproto.Endian;
 import org.indunet.fastproto.annotation.LongType;
 
+import java.lang.annotation.Annotation;
+
 public class LongDecoder implements Decoder<Long> {
     @Override
-    public Long decode(DecodeContext context) {
-        byte[] datagram = context.getDatagram();
-        int byteOffset = context.getDataTypeAnnotation(LongType.class).byteOffset();
-        Endian endian = context.getEndian();
+    public Long decode(final byte[] datagram, Endian endian, Annotation dataTypeAnnotation) {
+        int byteOffset = ((LongType) dataTypeAnnotation).byteOffset();
 
-        return this.decode(datagram, byteOffset, endian);
-    }
-
-    public long decode(final byte[] datagram, int byteOffset, Endian endian) {
         if (datagram.length - LongType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }

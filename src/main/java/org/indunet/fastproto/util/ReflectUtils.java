@@ -2,177 +2,184 @@ package org.indunet.fastproto.util;
 
 import org.indunet.fastproto.Endian;
 import org.indunet.fastproto.annotation.*;
+import org.indunet.fastproto.decoder.Decoder;
+import org.indunet.fastproto.encoder.Encoder;
 import org.indunet.fastproto.formula.Formula;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 public class ReflectUtils {
     public static Optional<Endian> getEndian(final Class<?> objectClass) {
-        if (objectClass.isAnnotationPresent(EndianMode.class)) {
-            return Optional.of(objectClass.getAnnotation(EndianMode.class).value());
-        } else {
-            return Optional.empty();
-        }
+        return Optional.ofNullable(objectClass.getAnnotation(EndianMode.class))
+                .map(annotation -> annotation.value());
     }
 
     public static Optional<Endian> getEndian(final Field field) {
-        if (field.isAnnotationPresent(EndianMode.class)) {
-            return Optional.of(field.getAnnotation(EndianMode.class).value());
-        } else {
-            return Optional.empty();
-        }
+        return Optional.ofNullable(field.getAnnotation(EndianMode.class))
+                .map(annotation -> annotation.value());
     }
 
     public static Optional<Field> getPrimaryKeyField(final Class<?> objectClass) {
         return Arrays.stream(objectClass.getDeclaredFields())
                 .filter(field -> field.isAnnotationPresent(PrimaryKey.class))
+                .peek(field -> field.setAccessible(true))
                 .findFirst();
     }
 
-    public static Optional<String> getPrimaryKeyValue(final Object object, final Field primaryKeyField) {
-        try {
-            return Optional.ofNullable(primaryKeyField.get(object).toString());
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+    public static Optional<String> getPrimaryKeyFieldValue(final Object object) {
+        return Arrays.stream(object.getClass().getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(PrimaryKey.class))
+                .peek(field -> field.setAccessible(true))
+                .map(field -> {
+                    try {
+                        return field.get(object).toString();
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+
+                    return null;
+                })
+                .findFirst();
+    }
+
+    public static boolean isPrimaryKeyField(final Field field) {
+        return field.isAnnotationPresent(PrimaryKey.class);
     }
 
     public static Optional<String> getDatagramName(final Class<?> objectClass) {
-        if (objectClass.isAnnotationPresent(Datagram.class)) {
-            return Optional.of(objectClass.getAnnotation(Datagram.class).value());
-        } else {
-            return Optional.empty();
-        }
+        return Optional.ofNullable(objectClass.getAnnotation(Datagram.class))
+                .map(annotation -> annotation.value());
     }
 
     public static Optional<String> getDatagramName(final Field field) {
-        if (field.isAnnotationPresent(Datagram.class)) {
-            return Optional.of(field.getAnnotation(Datagram.class).value());
-        } else {
-            return Optional.empty();
-        }
+        return Optional.ofNullable(field.getAnnotation(Datagram.class))
+                .map(annotation -> annotation.value());
     }
 
     public static Optional<Class<? extends Formula>> getDecodeFormula(final Field field) {
-        if (!field.isAnnotationPresent(DecodeFormula.class)) {
-            return Optional.of(field.getAnnotation(DecodeFormula.class).value());
-        } else {
-            return Optional.empty();
-        }
+        return Optional.ofNullable(field.getAnnotation(DecodeFormula.class))
+                .filter(annotation -> annotation.value().isAssignableFrom(Formula.class))
+                .map(annotation -> annotation.value());
     }
 
     public static Optional<Class<? extends Formula>> getEncodeFormula(final Field field) {
-        if (!field.isAnnotationPresent(EncodeFormula.class)) {
-            return Optional.of(field.getAnnotation(EncodeFormula.class).value());
-        } else {
+        return Optional.ofNullable(field.getAnnotation(EncodeFormula.class))
+                .filter(annotation -> annotation.value().isAssignableFrom(Formula.class))
+                .map(annotation -> annotation.value());
+    }
+
+    public static List<Method> getBeforeAfterCodecMethod(final Class<?> objectClass) {
+        return Arrays.stream(objectClass.getMethods())
+                .filter(method -> method.isAnnotationPresent(BeforeDecode.class))
+                .filter(method -> method.isAnnotationPresent(AfterDecode.class))
+                .filter(method -> method.isAnnotationPresent(BeforeEncode.class))
+                .filter(method -> method.isAnnotationPresent(AfterEncode.class))
+                .peek(method -> method.setAccessible(true))
+                .collect(Collectors.toList());
+    }
+
+    public static Annotation getBeforeAfterCodecAnnotation(final Method method) {
+        return Arrays.stream(method.getAnnotations())
+                .filter(annotation -> annotation instanceof BeforeDecode
+                        || annotation instanceof BeforeDecode
+                        || annotation instanceof BeforeDecode
+                        || annotation instanceof AfterEncode)
+                .findFirst()
+                .get();
+    }
+
+    public static Optional<Class<?>> getFormulaInputType(final Class<? extends Formula<?, ?>> formulaClass) {
+        try {
+            Method method = formulaClass.getMethod("transform");
+
+            return Optional.of(method.getParameterTypes()[0]);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+
             return Optional.empty();
         }
     }
 
-    public static List<Method> getMethod(final Object object) {
-        List<Method> list = new ArrayList<>();
+    public static Optional<Class<?>> getFormulaOutputType(final Class<? extends Formula<?, ?>> formulaClass) {
+        try {
+            Method method = formulaClass.getMethod("transform");
 
-        for (Method method : object.getClass().getDeclaredMethods()) {
-            if (method.isAnnotationPresent(BeforeDecode.class)
-                    || method.isAnnotationPresent(AfterDecode.class)
-                    || method.isAnnotationPresent(BeforeEncode.class)
-                    || method.isAnnotationPresent(AfterEncode.class)) {
-                list.add(method);
-            }
+            return Optional.of(method.getReturnType());
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+
+            return Optional.empty();
         }
-
-        return list;
     }
 
-    public static Optional<Annotation> getMethodAnnotation(Method method) {
-        for (Annotation annotation : method.getAnnotations()) {
-            if (annotation instanceof BeforeDecode
-                    || annotation instanceof AfterDecode
-                    || annotation instanceof BeforeEncode
-                    || annotation instanceof AfterEncode) {
-                return Optional.of(annotation);
-            }
-        }
+    public static Optional<Method> getFormulaMethod(final Class<? extends Formula<?, ?>> formulaClass) {
+        try {
+            Method method = formulaClass.getMethod("transform");
+            method.setAccessible(true);
 
-        return Optional.empty();
+            return Optional.ofNullable(method);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
     }
 
-    public static Class[] getFormulaGeneric(final Object formula) {
-        if (formula instanceof Formula == false) {
-            return null;
-        }
-
-        Type[] types = formula.getClass().getGenericInterfaces();
-
-        for (Type type: types) {
-            if (type instanceof ParameterizedType  == false) {
-                continue;
-            } else {
-                ParameterizedType parameterizedType = (ParameterizedType) type;
-
-                return Arrays.stream(parameterizedType.getActualTypeArguments()).toArray(Class[]::new);
-            }
-        }
-
-        return null;
-    }
-
-    public static boolean getDecodeIgnore(final Field field) {
+    public static boolean isDecodeIgnore(final Field field) {
         return field.isAnnotationPresent(DecodeIgnore.class);
     }
 
-    public static boolean getEncodeIgnore(final Field field) {
+    public static boolean isEncodeIgnore(final Field field) {
         return field.isAnnotationPresent(EncodeIgnore.class);
     }
 
-    public static List<Field> getDataTypeField(final Object object) {
-        List<Field> list = new ArrayList<>();
-
-        for (Field field : object.getClass().getDeclaredFields()) {
-            for (Annotation annotation : field.getAnnotations()) {
-                if (annotation.annotationType().isAnnotationPresent(DataType.class)) {
-                    list.add(field);
-                }
-            }
-        }
-
-        return list;
+    public static List<Field> getDataTypeField(final Class<?> objectClass) {
+        return Arrays.stream(objectClass.getDeclaredFields())
+                .filter(field -> Arrays.stream(field.getAnnotations())
+                        .filter(annotation -> annotation instanceof DataType)
+                        .findAny()
+                        .isPresent())
+                .peek(field -> field.setAccessible(true))
+                .collect(Collectors.toList());
     }
 
-    public static Annotation getDataTypeAnnotation(Field field) {
-        for (Annotation annotation : field.getAnnotations()) {
-            if (annotation.annotationType().isAnnotationPresent(DataType.class)) {
-                return annotation;
-            }
-        }
-
-        return null;
+    public static Optional<Annotation> getDataTypeAnnotation(final Field field) {
+        return Arrays.stream(field.getAnnotations())
+                .filter(annotation -> annotation.annotationType().isAnnotationPresent(DataType.class))
+                .findFirst();
     }
 
-    public static List<Field> getObjectType(final Object object) {
-        List<Field> list = new ArrayList<>();
-
-        for (Field field : object.getClass().getDeclaredFields()) {
-            if (field.isAnnotationPresent(ObjectType.class)) {
-                list.add(field);
-            }
-        }
-
-        return list;
+    public static List<Field> getObjectTypeField(final Class<?> objectClass) {
+        return Arrays.stream(objectClass.getDeclaredFields())
+                .filter(field -> field.isAnnotationPresent(ObjectType.class))
+                .peek(field -> field.setAccessible(true))
+                .collect(Collectors.toList());
     }
 
-    public static Method getFormulaMethod(final Class<?> clazz) throws NoSuchMethodException {
-        Method method = clazz.getDeclaredMethod("transform");
-        method.setAccessible(true);
+    public static Optional<Class<?>> getDecoderOutputType(final Decoder<?> decoder) {
+        try {
+            return Optional.ofNullable(decoder
+                    .getClass().getMethod("decode").getReturnType());
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
+    }
 
-        return method;
+    public static Optional<Class<?>> getEncoderInputType(final Encoder<?> encoder) {
+        // The last parameter is input value.
+        try {
+            Class<?>[] parameterTypes = encoder.getClass().getMethod("encode").getParameterTypes();
+
+            return Optional.ofNullable(parameterTypes[parameterTypes.length - 1]);
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+            return Optional.empty();
+        }
     }
 }

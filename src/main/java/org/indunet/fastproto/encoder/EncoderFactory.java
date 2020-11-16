@@ -8,24 +8,24 @@ import java.util.Map;
 import java.util.Optional;
 
 public class EncoderFactory {
-    Map<Class<? extends Annotation>, Encoder> encoderMap = new HashMap<>();
+    static Map<Class<? extends Annotation>, Encoder> encoderMap = new HashMap<>();
 
-    public EncoderFactory() {
-        this.encoderMap.put(BinaryType.class, new BinaryEncoder());
-        this.encoderMap.put(BooleanType.class, new BooleanEncoder());
-        this.encoderMap.put(ByteType.class, new ByteEncoder());
-        this.encoderMap.put(ShortType.class, new ShortEncoder());
-        this.encoderMap.put(IntegerType.class, new IntegerEncoder());
-        this.encoderMap.put(LongType.class, new LongEncoder());
-        this.encoderMap.put(FloatType.class, new FloatEncoder());
-        this.encoderMap.put(DoubleType.class, new DoubleEncoder());
+    static {
+        encoderMap.put(BinaryType.class, new BinaryEncoder());
+        encoderMap.put(BooleanType.class, new BooleanEncoder());
+        encoderMap.put(ByteType.class, new ByteEncoder());
+        encoderMap.put(ShortType.class, new ShortEncoder());
+        encoderMap.put(IntegerType.class, new IntegerEncoder());
+        encoderMap.put(LongType.class, new LongEncoder());
+        encoderMap.put(FloatType.class, new FloatEncoder());
+        encoderMap.put(DoubleType.class, new DoubleEncoder());
     }
 
-    Optional<Encoder<?>> create(Class<? extends Annotation> annotationClass) {
-        return Optional.ofNullable(this.encoderMap.get(annotationClass));
+    public static Optional<Encoder> create(Class<? extends Annotation> annotationClass) {
+        return Optional.ofNullable(encoderMap.get(annotationClass));
     }
 
-    public void addDecoder(Class<? extends Annotation> annotationClass, Encoder<?> encoder) {
-        this.encoderMap.put(annotationClass, encoder);
+    public static void addDecoder(Class<? extends Annotation> annotationClass, Encoder encoder) {
+        encoderMap.put(annotationClass, encoder);
     }
 }

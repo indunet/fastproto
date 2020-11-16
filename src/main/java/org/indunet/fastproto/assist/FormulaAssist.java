@@ -1,10 +1,12 @@
 package org.indunet.fastproto.assist;
 
 import org.indunet.fastproto.formula.Formula;
+import org.indunet.fastproto.formula.FormulaFactory;
 import org.indunet.fastproto.util.ReflectUtils;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Optional;
 
 public class FormulaAssist {
     Formula<?, ?> formula;
@@ -16,28 +18,22 @@ public class FormulaAssist {
 
     }
 
-    public static FormulaAssist create(final Class<? extends Formula> formulaClass) {
+    public static Optional<FormulaAssist> create(final Class<? extends Formula<?, ?>> formulaClass) {
+        FormulaAssist formulaAssist = new FormulaAssist();
+
         try {
-            Object formula = formulaClass.newInstance();
-
-            FormulaAssist formulaAssist = new FormulaAssist();
-            formulaAssist.formula = (Formula<?, ?>) formula;
-            formulaAssist.method = ReflectUtils.getFormulaMethod(clazz);
-            formulaAssist.method.setAccessible(true);
-            formulaAssist.inputType = ReflectUtils.getFormulaGeneric(clazz)[0];
-            formulaAssist.inputType = ReflectUtils.getFormulaGeneric(clazz)[1];
-
-        } catch (InstantiationException e) {
+            formulaAssist.formula = FormulaFactory.create(formulaClass);
+        } catch (IllegalAccessException | InstantiationException e) {
             e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            return Optional.empty();
         }
 
-        return null;
+        formulaAssist.method = ReflectUtils.getFormulaMethod(formulaClass).get();
+
+        formulaAssist.inputType = ReflectUtils.getFormulaInputType(formulaClass).get();
+        formulaAssist.inputType = ReflectUtils.getFormulaOutputType(formulaClass).get();
+
+        return Optional.ofNullable(formulaAssist);
     }
 
     public Formula<?, ?> getFormula() {
@@ -56,7 +52,15 @@ public class FormulaAssist {
         return outputType;
     }
 
-    public Object invokeTransform(Object object) throws InvocationTargetException, IllegalAccessException {
-        return this.method.invoke(formula, object);
+    public <T> T invokeTransform(Object object, Class<T> outputType) {
+        Object value = null;
+
+        try {
+            value = this.method.invoke(formula, object);
+        } catch (IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        return (T) value;
     }
 }

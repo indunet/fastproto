@@ -1,19 +1,16 @@
 package org.indunet.fastproto.encoder;
 
 
+import org.indunet.fastproto.Endian;
 import org.indunet.fastproto.annotation.ByteType;
 
-public class ByteEncoder implements Encoder {
+import java.lang.annotation.Annotation;
+
+public class ByteEncoder implements Encoder<Byte> {
     @Override
-    public void encode(EncodeContext context) {
-        byte[] datagram = context.getDatagram();
-        int byteOffset = context.getDataTypeAnnotation(Byte.class);
-        byte value = context.getValue(Byte.class);
+    public void encode(byte[] datagram, Endian endian, Annotation dataTypeAnnotation, Byte value) {
+        int byteOffset = ((ByteType) dataTypeAnnotation).byteOffset();
 
-        this.encode(datagram, byteOffset, value);
-    }
-
-    public void encode(byte[] datagram, int byteOffset, byte value) {
         if (byteOffset + ByteType.SIZE >= datagram.length) {
             throw new ArrayIndexOutOfBoundsException();
         }

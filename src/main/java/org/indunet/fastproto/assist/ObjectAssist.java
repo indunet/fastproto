@@ -5,12 +5,11 @@ import org.indunet.fastproto.annotation.AfterDecode;
 import org.indunet.fastproto.annotation.BeforeDecode;
 import org.indunet.fastproto.util.ReflectUtils;
 
-import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public class ObjectAssist {
     Class objectClass;
@@ -74,7 +73,8 @@ public class ObjectAssist {
         return objectAssistList;
     }
 
-    public static ObjectAssist create(Class<?> objectClass) {
+    public static ObjectAssist create(Object object) {
+        Class<?> objectClass = object.getClass();
         ObjectAssist objectAssist = new ObjectAssist();
 
         // Object.
@@ -94,14 +94,14 @@ public class ObjectAssist {
                 });
 
         // Method.
-        ReflectUtils.getMethod(objectClass).stream()
+        ReflectUtils.getBeforeAfterCodecMethod(objectClass).stream()
                 .forEach(method -> {
                     MethodAssist methodAssist = MethodAssist.create(method);
                     objectAssist.addMethodInfo(methodAssist);
                 });
 
         // Object type.
-        ReflectUtils.getObjectType(objectClass).stream()
+        ReflectUtils.getObjectTypeField(objectClass).stream()
                 .forEach(field -> {
                     objectAssist.addObjectInfo(create(field.getType()));
                 });
@@ -110,10 +110,24 @@ public class ObjectAssist {
     }
 
     public void decode(Map<String, byte[]> datagramMap, Object object) {
+//        Optional<FieldAssist> primaryKeyField = this.fieldAssistList.stream()
+//                .filter(assist -> assist.primaryKey)
+//                .findFirst();
+//
+//        if (primaryKeyField.isPresent()) {
+//
+//        }
+
         // Before Decode.
         this.methodAssistList.stream()
                 .filter(assist -> assist.annotation instanceof BeforeDecode)
-                .forEach(assist -> assist.invokeMethod(object));
+                .forEach(assist -> {
+                    try {
+                        assist.invokeMethod(object);
+                    } catch (InvocationTargetException | IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                });
 
         // Field.
         this.fieldAssistList.stream()

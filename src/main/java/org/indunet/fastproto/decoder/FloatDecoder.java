@@ -3,17 +3,13 @@ package org.indunet.fastproto.decoder;
 import org.indunet.fastproto.Endian;
 import org.indunet.fastproto.annotation.FloatType;
 
+import java.lang.annotation.Annotation;
+
 public class FloatDecoder implements Decoder<Float> {
     @Override
-    public Float decode(DecodeContext context) {
-        byte[] datagram = context.getDatagram();
-        int byteOffset = context.getDataTypeAnnotation(FloatType.class).byteOffset();
-        Endian endian = context.getEndian();
+    public Float decode(final byte[] datagram, Endian endian, Annotation dataTypeAnnotation) {
+        int byteOffset = ((FloatType) dataTypeAnnotation).byteOffset();
 
-        return this.decode(datagram, byteOffset, endian);
-    }
-
-    public float decode(final byte[] datagram, int byteOffset, Endian endian) {
         if (datagram.length - FloatType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }

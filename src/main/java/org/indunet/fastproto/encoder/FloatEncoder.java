@@ -4,18 +4,13 @@ import org.indunet.fastproto.Endian;
 import org.indunet.fastproto.annotation.DoubleType;
 import org.indunet.fastproto.annotation.FloatType;
 
-public class FloatEncoder implements Encoder {
+import java.lang.annotation.Annotation;
+
+public class FloatEncoder implements Encoder<Float> {
     @Override
-    public void encode(EncodeContext context) {
-        int byteOffset = context.getDataTypeAnnotation(DoubleType.class).byteOffset();
-        Endian endian = context.getEndian();
-        byte[] datagram = context.getDatagram();
-        float value = context.getValue(Float.class);
+    public void encode(byte[] datagram, Endian endian, Annotation dataTypeAnnotation, Float value) {
+        int byteOffset = ((FloatType) dataTypeAnnotation).byteOffset();
 
-        this.encode(datagram, byteOffset, value, endian);
-    }
-
-    public void encode(byte[] datagram, int byteOffset, float value, Endian endian) {
         if (datagram.length - FloatType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }

@@ -3,18 +3,13 @@ package org.indunet.fastproto.encoder;
 import org.indunet.fastproto.Endian;
 import org.indunet.fastproto.annotation.IntegerType;
 
-public class IntegerEncoder implements Encoder {
+import java.lang.annotation.Annotation;
+
+public class IntegerEncoder implements Encoder<Integer> {
     @Override
-    public void encode(EncodeContext context) {
-        int byteOffset = context.getDataTypeAnnotation(IntegerType.class).byteOffset();
-        Endian endian = context.getEndian();
-        byte[] datagram = context.getDatagram();
-        int value = context.getValue(Integer.class);
+    public void encode(byte[] datagram, Endian endian, Annotation dataTypeAnnotation, Integer value) {
+        int byteOffset = ((IntegerType) dataTypeAnnotation).byteOffset();
 
-        this.encode(datagram, byteOffset, value, endian);
-    }
-
-    public void encode(byte[] datagram, int byteOffset, int value, Endian endian) {
         if (datagram.length - IntegerType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }

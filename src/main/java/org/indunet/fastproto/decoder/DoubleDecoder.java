@@ -3,17 +3,13 @@ package org.indunet.fastproto.decoder;
 import org.indunet.fastproto.Endian;
 import org.indunet.fastproto.annotation.DoubleType;
 
+import java.lang.annotation.Annotation;
+
 public class DoubleDecoder implements Decoder<Double> {
     @Override
-    public Double decode(DecodeContext context) {
-        byte[] datagram = context.getDatagram();
-        int byteOffset = context.getDataTypeAnnotation(DoubleType.class).byteOffset();
-        Endian endian = context.getEndian();
+    public Double decode(final byte[] datagram, Endian endian, Annotation dataTypeAnnotation) {
+        int byteOffset = ((DoubleType) dataTypeAnnotation).byteOffset();
 
-        return this.decode(datagram, byteOffset, endian);
-    }
-
-    public double decode(final byte[] datagram, int byteOffset, Endian endian) {
         if (datagram.length - DoubleType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }

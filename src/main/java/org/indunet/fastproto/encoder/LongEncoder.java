@@ -4,18 +4,13 @@ import org.indunet.fastproto.Endian;
 import org.indunet.fastproto.annotation.IntegerType;
 import org.indunet.fastproto.annotation.LongType;
 
-public class LongEncoder implements Encoder {
+import java.lang.annotation.Annotation;
+
+public class LongEncoder implements Encoder<Long> {
     @Override
-    public void encode(EncodeContext context) {
-        int byteOffset = context.getDataTypeAnnotation(IntegerType.class).byteOffset();
-        Endian endian = context.getEndian();
-        byte[] datagram = context.getDatagram();
-        long value = context.getValue(Long.class);
+    public void encode(byte[] datagram, Endian endian, Annotation dataTypeAnnotation, Long value) {
+        int byteOffset = ((LongType) dataTypeAnnotation).byteOffset();
 
-        this.encode(datagram, byteOffset, value, endian);
-    }
-
-    public void encode(byte[] datagram, int byteOffset, long value, Endian endian) {
         if (datagram.length - LongType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }

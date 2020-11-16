@@ -3,17 +3,13 @@ package org.indunet.fastproto.decoder;
 import org.indunet.fastproto.Endian;
 import org.indunet.fastproto.annotation.ShortType;
 
+import java.lang.annotation.Annotation;
+
 public class ShortDecoder implements Decoder<Short> {
     @Override
-    public Short decode(DecodeContext context) {
-        byte[] datagram = context.getDatagram();
-        int byteOffset = context.getDataTypeAnnotation(ShortType.class).byteOffset();
-        Endian endian = context.getEndian();
+    public Short decode(final byte[] datagram, Endian endian, Annotation dataTypeAnnotation) {
+        int byteOffset = ((ShortType) dataTypeAnnotation).byteOffset();
 
-        return this.decode(datagram, byteOffset, endian);
-    }
-
-    public short decode(final byte[] datagram, int byteOffset, Endian endian) {
         if (datagram.length - ShortType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }

@@ -21,7 +21,7 @@ public class MethodAssist {
 
         method.setAccessible(true);
         methodAssist.method = method;
-        methodAssist.annotation = ReflectUtils.getMethodAnnotation(method);
+        methodAssist.annotation = ReflectUtils.getBeforeAfterCodecMethod(method);
         methodAssist.parameters = method.getParameters();
 
         return methodAssist;
