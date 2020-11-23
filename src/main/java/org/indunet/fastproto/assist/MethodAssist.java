@@ -21,7 +21,7 @@ public class MethodAssist {
 
         method.setAccessible(true);
         methodAssist.method = method;
-        methodAssist.annotation = ReflectUtils.getBeforeAfterCodecMethod(method);
+        methodAssist.annotation = ReflectUtils.getBeforeAfterCodecAnnotation(method);
         methodAssist.parameters = method.getParameters();
 
         return methodAssist;
@@ -39,7 +39,15 @@ public class MethodAssist {
         return annotation;
     }
 
-    public Object invokeMethod(Object object, Object... parameters) throws InvocationTargetException, IllegalAccessException {
-        return this.method.invoke(object, parameters);
+    public Object invokeMethod(Object object, Object... parameters) {
+        try {
+            return this.method.invoke(object, parameters);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        }
+
+        return null;
     }
 }

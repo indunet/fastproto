@@ -10,6 +10,10 @@ public class BinaryEncoder implements Encoder<byte[]> {
     public void encode(byte[] datagram, Endian endian, Annotation dataTypeAnnotation, byte[] values) {
         int byteOffset = ((BinaryType) dataTypeAnnotation).byteOffset();
 
+        this.encode(datagram, byteOffset, values);
+    }
+
+    public void encode(byte[] datagram, int byteOffset, byte[] values) {
         if (datagram.length - values.length < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }

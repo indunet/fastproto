@@ -11,6 +11,10 @@ public class LongEncoder implements Encoder<Long> {
     public void encode(byte[] datagram, Endian endian, Annotation dataTypeAnnotation, Long value) {
         int byteOffset = ((LongType) dataTypeAnnotation).byteOffset();
 
+        this.encode(datagram, byteOffset, value, endian);
+    }
+
+    public void encode(byte[] datagram, int byteOffset, long value, Endian endian) {
         if (datagram.length - LongType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }

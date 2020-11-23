@@ -10,6 +10,10 @@ public class DoubleEncoder implements Encoder<Double> {
     public void encode(byte[] datagram, Endian endian, Annotation dataTypeAnnotation, Double value) {
         int byteOffset = ((DoubleType) dataTypeAnnotation).byteOffset();
 
+        this.encode(datagram, byteOffset, value, endian);
+    }
+
+    public void encode(byte[] datagram, int byteOffset, double value, Endian endian) {
         if (datagram.length - DoubleType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }

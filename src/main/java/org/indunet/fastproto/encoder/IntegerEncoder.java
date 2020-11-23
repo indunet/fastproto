@@ -10,6 +10,10 @@ public class IntegerEncoder implements Encoder<Integer> {
     public void encode(byte[] datagram, Endian endian, Annotation dataTypeAnnotation, Integer value) {
         int byteOffset = ((IntegerType) dataTypeAnnotation).byteOffset();
 
+        this.encode(datagram, byteOffset, value, endian);
+    }
+
+    public void encode(byte[] datagram, int byteOffset, int value, Endian endian) {
         if (datagram.length - IntegerType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }

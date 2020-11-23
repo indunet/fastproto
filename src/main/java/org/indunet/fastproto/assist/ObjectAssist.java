@@ -5,6 +5,7 @@ import org.indunet.fastproto.annotation.AfterDecode;
 import org.indunet.fastproto.annotation.BeforeDecode;
 import org.indunet.fastproto.util.ReflectUtils;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,8 +74,7 @@ public class ObjectAssist {
         return objectAssistList;
     }
 
-    public static ObjectAssist create(Object object) {
-        Class<?> objectClass = object.getClass();
+    public static ObjectAssist create(Class<?> objectClass) {
         ObjectAssist objectAssist = new ObjectAssist();
 
         // Object.
@@ -86,12 +86,12 @@ public class ObjectAssist {
         Endian endian = ReflectUtils.getEndian(objectClass).orElse(Endian.Little);
         objectAssist.setEndian(endian);
 
+        List<Field> list = ReflectUtils.getDataTypeField(objectClass);
+
         // Field.
         ReflectUtils.getDataTypeField(objectClass).stream()
-                .forEach(field -> {
-                    FieldAssist fieldAssist = FieldAssist.create(field, datagramName, endian);
-                    objectAssist.addFieldInfo(fieldAssist);
-                });
+                .map(field -> FieldAssist.create(field, datagramName, endian))
+                .forEach(assist -> objectAssist.addFieldInfo(assist));
 
         // Method.
         ReflectUtils.getBeforeAfterCodecMethod(objectClass).stream()
@@ -121,18 +121,12 @@ public class ObjectAssist {
         // Before Decode.
         this.methodAssistList.stream()
                 .filter(assist -> assist.annotation instanceof BeforeDecode)
-                .forEach(assist -> {
-                    try {
-                        assist.invokeMethod(object);
-                    } catch (InvocationTargetException | IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
-                });
+                .forEach(assist -> assist.invokeMethod(object));
 
         // Field.
         this.fieldAssistList.stream()
                 .filter(assist -> assist.decodeIgnore == false)
-                .forEach(assist -> assist.invokeDecode(datagramMap, object));
+                .forEach(assist -> assist.decode(datagramMap, object));
 
         // Object.
         this.objectAssistList.stream()

@@ -11,7 +11,6 @@ import org.indunet.fastproto.util.ReflectUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.Map;
 import java.util.Optional;
 
@@ -123,19 +122,23 @@ public class FieldAssist {
         return encodeFormulaAssist;
     }
 
-    public void decode(Map<String, byte[]> datagramMap, Object object) throws IllegalAccessException, InvocationTargetException {
+    public void decode(Map<String, byte[]> datagramMap, Object object) {
         byte[] datagram = datagramMap.get(this.datagramName);
         Object value = null;
 
         if (this.decodeFormulaAssist.isPresent()) {
             value = decodeFormulaAssist.get().invokeTransform(
-                        this.decoder.get().decode(datagram, endian, dataTypeAnnotation),
-                            decodeFormulaAssist.get().getOutputType());
+                    this.decoder.get().decode(datagram, endian, dataTypeAnnotation),
+                    decodeFormulaAssist.get().getOutputType());
         } else {
             value = this.decoder.get().decode(datagram, endian, dataTypeAnnotation);
         }
 
-        this.field.set(object, value);
+        try {
+            this.field.set(object, value);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
 
     public void encode(Object object, Map<String, byte[]> datagramMap) {

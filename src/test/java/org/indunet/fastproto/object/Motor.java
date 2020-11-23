@@ -4,7 +4,7 @@ import org.indunet.fastproto.Endian;
 import org.indunet.fastproto.annotation.*;
 
 @EndianMode(Endian.Little)
-@Datagram("Motor")
+// @Datagram("Motor")
 public class Motor {
     @EndianMode(Endian.Big)
     @IntegerType(byteOffset = 0)

@@ -25,7 +25,7 @@ public class ReflectUtilsTest {
 
     @Test
     public void testGetEndianObject() throws Exception {
-        assertEquals(getEndian(motor), Endian.Little);
+        assertEquals(getEndian(motor.getClass()), Endian.Little);
     }
 
     @Test
@@ -35,7 +35,7 @@ public class ReflectUtilsTest {
 
     @Test
     public void testGetDatagramNameObject() throws Exception {
-        assertEquals(getDatagramName(motor), "motor");
+        assertEquals(getDatagramName(motor.getClass()), "motor");
     }
 
     @Test
@@ -60,7 +60,7 @@ public class ReflectUtilsTest {
 
     @Test
     public void testGetDataType() throws Exception {
-        List<Field> fieldList = getDataTypeField(motor);
+        List<Field> fieldList = getDataTypeField(motor.getClass());
 
         assertTrue(fieldList.size() > 0);
     }

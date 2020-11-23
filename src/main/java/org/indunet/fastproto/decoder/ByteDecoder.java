@@ -10,6 +10,10 @@ public class ByteDecoder implements Decoder<Byte> {
     public Byte decode(final byte[] datagram, Endian endian, Annotation dataTypeAnnotation) {
         int byteOffset = ((ByteType) dataTypeAnnotation).byteOffset();
 
+        return this.decode(datagram, byteOffset);
+    }
+
+    public byte decode(final byte[] datagram, int byteOffset) {
         if (datagram.length - ByteType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }

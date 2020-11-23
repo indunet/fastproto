@@ -141,7 +141,7 @@ public class ReflectUtils {
     public static List<Field> getDataTypeField(final Class<?> objectClass) {
         return Arrays.stream(objectClass.getDeclaredFields())
                 .filter(field -> Arrays.stream(field.getAnnotations())
-                        .filter(annotation -> annotation instanceof DataType)
+                        .filter(annotation -> annotation.annotationType().isAnnotationPresent(DataType.class))
                         .findAny()
                         .isPresent())
                 .peek(field -> field.setAccessible(true))
@@ -164,7 +164,7 @@ public class ReflectUtils {
     public static Optional<Class<?>> getDecoderOutputType(final Decoder<?> decoder) {
         try {
             return Optional.ofNullable(decoder
-                    .getClass().getMethod("decode").getReturnType());
+                    .getClass().getMethod("decode", Endian.class, Annotation.class).getReturnType());
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
             return Optional.empty();

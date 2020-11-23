@@ -10,6 +10,10 @@ public class IntegerDecoder implements Decoder<Integer> {
     public Integer decode(final byte[] datagram, Endian endian, Annotation dataTypeAnnotation) {
         int byteOffset = ((IntegerType) dataTypeAnnotation).byteOffset();
 
+        return this.decode(datagram, byteOffset, endian);
+    }
+
+    public int decode(final byte[] datagram, int byteOffset, Endian endian) {
         if (datagram.length - IntegerType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }

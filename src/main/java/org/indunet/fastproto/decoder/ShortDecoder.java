@@ -10,6 +10,10 @@ public class ShortDecoder implements Decoder<Short> {
     public Short decode(final byte[] datagram, Endian endian, Annotation dataTypeAnnotation) {
         int byteOffset = ((ShortType) dataTypeAnnotation).byteOffset();
 
+        return this.decode(datagram, byteOffset, endian);
+    }
+
+    public short decode(final byte[] datagram, int byteOffset, Endian endian) {
         if (datagram.length - ShortType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }

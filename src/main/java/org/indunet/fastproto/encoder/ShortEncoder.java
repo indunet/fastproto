@@ -10,6 +10,10 @@ public class ShortEncoder implements Encoder<Short> {
     public void encode(byte[] datagram, Endian endian, Annotation dataTypeAnnotation, Short value) {
         int byteOffset = ((ShortType) dataTypeAnnotation).byteOffset();
 
+        this.encode(datagram, byteOffset, value, endian);
+    }
+
+    public void encode(byte[] datagram, int byteOffset, short value, Endian endian) {
         if (datagram.length - ShortType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }

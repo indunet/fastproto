@@ -10,6 +10,10 @@ public class LongDecoder implements Decoder<Long> {
     public Long decode(final byte[] datagram, Endian endian, Annotation dataTypeAnnotation) {
         int byteOffset = ((LongType) dataTypeAnnotation).byteOffset();
 
+        return this.decode(datagram, byteOffset, endian);
+    }
+
+    public long decode(final byte[] datagram, int byteOffset, Endian endian) {
         if (datagram.length - LongType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }

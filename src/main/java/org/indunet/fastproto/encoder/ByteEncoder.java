@@ -17,4 +17,12 @@ public class ByteEncoder implements Encoder<Byte> {
 
         datagram[byteOffset] = value;
     }
+
+    public void encode(byte[] datagram, int byteOffset, byte value) {
+        if (byteOffset + ByteType.SIZE >= datagram.length) {
+            throw new ArrayIndexOutOfBoundsException();
+        }
+
+        datagram[byteOffset] = value;
+    }
 }

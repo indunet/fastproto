@@ -10,6 +10,10 @@ public class DoubleDecoder implements Decoder<Double> {
     public Double decode(final byte[] datagram, Endian endian, Annotation dataTypeAnnotation) {
         int byteOffset = ((DoubleType) dataTypeAnnotation).byteOffset();
 
+        return this.decode(datagram, byteOffset, endian);
+    }
+
+    public double decode(final byte[] datagram, int byteOffset, Endian endian) {
         if (datagram.length - DoubleType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }

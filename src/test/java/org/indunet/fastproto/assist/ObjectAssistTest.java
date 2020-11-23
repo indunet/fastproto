@@ -10,7 +10,7 @@ public class ObjectAssistTest {
         Motor motor = new Motor();
         Tesla tesla = new Tesla();
 
-        ObjectAssist objectAssist = ObjectAssist.create(tesla);
+        ObjectAssist objectAssist = ObjectAssist.create(tesla.getClass());
         System.out.println(objectAssist);
     }
 }

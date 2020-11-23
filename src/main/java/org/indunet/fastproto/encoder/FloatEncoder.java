@@ -11,6 +11,10 @@ public class FloatEncoder implements Encoder<Float> {
     public void encode(byte[] datagram, Endian endian, Annotation dataTypeAnnotation, Float value) {
         int byteOffset = ((FloatType) dataTypeAnnotation).byteOffset();
 
+        this.encode(datagram, byteOffset, value, endian);
+    }
+
+    public void encode(byte[] datagram, int byteOffset, float value, Endian endian) {
         if (datagram.length - FloatType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }

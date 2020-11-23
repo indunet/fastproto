@@ -14,6 +14,10 @@ public class BooleanDecoder implements Decoder<Boolean> {
         int byteOffset = ((BooleanType) dataTypeAnnotation).byteOffset();
         int bitOffset = ((BooleanType) dataTypeAnnotation).bitOffset();
 
+        return this.decode(datagram, byteOffset, bitOffset);
+    }
+
+    public boolean decode(final byte[] datagram, int byteOffset, int bitOffset) {
         if (datagram.length <= byteOffset) {
             // TODO
             throw new ArrayIndexOutOfBoundsException();

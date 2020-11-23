@@ -10,6 +10,10 @@ public class FloatDecoder implements Decoder<Float> {
     public Float decode(final byte[] datagram, Endian endian, Annotation dataTypeAnnotation) {
         int byteOffset = ((FloatType) dataTypeAnnotation).byteOffset();
 
+        return this.decode(datagram, byteOffset, endian);
+    }
+
+    public float decode(final byte[] datagram, int byteOffset, Endian endian) {
         if (datagram.length - FloatType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }

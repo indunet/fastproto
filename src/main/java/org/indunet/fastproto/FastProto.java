@@ -11,7 +11,7 @@ import java.util.Set;
 public class FastProto {
     public FastProtoContext context = new FastProtoContext();
 
-    public void decode(final byte[] datagram, Object object) throws InvocationTargetException, IllegalAccessException {
+    public void     decode(final byte[] datagram, Object object) throws InvocationTargetException, IllegalAccessException {
         Map<String, byte[]> datagramMap = new HashMap<String, byte[]>() {
             {
                 put("default", datagram);
@@ -43,11 +43,11 @@ public class FastProto {
 
     public void decode(Map<String, byte[]> datagramMap, Set<Object> objectSet) throws InvocationTargetException, IllegalAccessException {
         for (Object object: objectSet) {
-            if (!this.objectInfoMap.containsKey(object.getClass())) {
-                this.objectInfoMap.put(object.getClass(), ObjectAssist.create(object.getClass()));
+            if (!this.context.objectAssistMap.containsKey(object.getClass())) {
+                this.context.objectAssistMap.put(object.getClass(), ObjectAssist.create(object.getClass()));
             }
 
-            ObjectAssist objectAssist = this.objectInfoMap.get(object.getClass());
+            ObjectAssist objectAssist = this.context.objectAssistMap.get(object.getClass());
             objectAssist.decode(datagramMap, object);
         }
     }
