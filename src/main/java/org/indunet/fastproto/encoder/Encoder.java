@@ -50,17 +50,18 @@ public interface Encoder<T> {
                 return this;
             }
 
-            public Builder setFormulaInputType(Class<?> inputType) {
-                context.formulaInputType = Optional.ofNullable(inputType);
+            public Builder setFormulaInputType(Optional<Class<?>> formulaInputType) {
+                context.formulaInputType = formulaInputType;
 
                 return this;
             }
 
-            public Builder setFormulaOutputType(Class<?> outputType) {
-                context.formulaOutputType = Optional.ofNullable(outputType);
+            public Builder setFormulaOutputType(Optional<Class<?>> formulaOutputType) {
+                context.formulaOutputType = formulaOutputType;
 
                 return this;
             }
+
 
             public ValidationContext build() {
                 return this.context;

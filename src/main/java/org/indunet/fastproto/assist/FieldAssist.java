@@ -21,9 +21,9 @@ public class FieldAssist {
     boolean primaryKey;
     Optional<Object> primaryKeyValue;
 
-    Optional<Decoder<?>> decoder;
+    Optional<Decoder<?>> decoder = Optional.empty();
     Optional<Class<?>> decoderOutputType = Optional.empty();
-    Optional<Encoder> encoder;
+    Optional<Encoder> encoder = Optional.empty();
     Optional<Class<?>> encoderInputType = Optional.empty();
 
     Endian endian;
@@ -31,6 +31,7 @@ public class FieldAssist {
     boolean decodeIgnore;
     boolean encodeIgnore;
 
+    // Formula
     Optional<FormulaAssist> decodeFormulaAssist = Optional.empty();
     Optional<FormulaAssist> encodeFormulaAssist = Optional.empty();
 
@@ -65,27 +66,27 @@ public class FieldAssist {
 //        ReflectUtils.getEncodeFormula(field)
 //                .ifPresent(formula -> fieldAssist.encodeFormulaAssist = FormulaAssist.create(formula));
 
-        fieldAssist.decoder
-                .map(e -> e.validate(new Decoder.ValidationContext.Builder()
-                        .setFieldType(fieldAssist.fieldType)
-                        .setDataTypeAnnotation(fieldAssist.dataTypeAnnotation)
-                        .setEndian(fieldAssist.endian)
-                        .setFormulaInputType(Optional.ofNullable(fieldAssist.decodeFormulaAssist.get().inputType))
-                        .setFormulaOutputType(Optional.ofNullable(fieldAssist.decodeFormulaAssist.get().outputType))
-                        .build()))
-                .filter(Boolean::booleanValue)
-                .orElseThrow(() -> new DecodeException(""));
+//        fieldAssist.decoder
+//                .map(d -> d.validate(new Decoder.ValidationContext.Builder()
+//                        .setFieldType(fieldAssist.fieldType)
+//                        .setDataTypeAnnotation(fieldAssist.dataTypeAnnotation)
+//                        .setEndian(fieldAssist.endian)
+//                        .setFormulaInputType(fieldAssist.decodeFormulaAssist.map(a -> a.inputType))
+//                        .setFormulaOutputType(fieldAssist.decodeFormulaAssist.map(a -> a.outputType))
+//                        .build()))
+//                .filter(Boolean::booleanValue)
+//                .orElseThrow(() -> new DecodeException(""));
 
-        fieldAssist.encoder
-                .map(e -> e.validate(new Encoder.ValidationContext.Builder()
-                        .setFieldType(fieldAssist.fieldType)
-                        .setDataTypeAnnotation(fieldAssist.dataTypeAnnotation)
-                        .setEndian(fieldAssist.endian)
-                        .setFormulaInputType(fieldAssist.encodeFormulaAssist.get().inputType)
-                        .setFormulaOutputType(fieldAssist.encodeFormulaAssist.get().outputType)
-                        .build()))
-                .filter(Boolean::booleanValue)
-                .orElseThrow(() -> new EncodeException(""));
+//        fieldAssist.encoder
+//                .map(e -> e.validate(new Encoder.ValidationContext.Builder()
+//                        .setFieldType(fieldAssist.fieldType)
+//                        .setDataTypeAnnotation(fieldAssist.dataTypeAnnotation)
+//                        .setEndian(fieldAssist.endian)
+//                        .setFormulaInputType(fieldAssist.encodeFormulaAssist.map(a -> a.inputType))
+//                        .setFormulaOutputType(fieldAssist.encodeFormulaAssist.map(a -> a.outputType))
+//                        .build()))
+//                .filter(Boolean::booleanValue)
+//                .orElseThrow(() -> new EncodeException(""));
 
         return fieldAssist;
     }

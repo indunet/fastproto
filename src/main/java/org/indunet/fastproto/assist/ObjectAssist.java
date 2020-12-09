@@ -12,6 +12,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+/**
+ * @author Deng Ran
+ * @version 1.0
+ * @since 2020/10/01
+ * @see FieldAssist,FormulaAssist,MethodAssist
+ */
 public class ObjectAssist {
     Class objectClass;
 
@@ -20,6 +26,7 @@ public class ObjectAssist {
 
     List<FieldAssist> fieldAssistList = new ArrayList<>();
     List<MethodAssist> methodAssistList = new ArrayList<>();
+
     List<ObjectAssist> objectAssistList = new ArrayList<>();
 
     protected ObjectAssist() {
