@@ -6,17 +6,15 @@ import org.indunet.fastproto.annotation.BeforeDecode;
 import org.indunet.fastproto.util.ReflectUtils;
 
 import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 /**
  * @author Deng Ran
  * @version 1.0
- * @since 2020/10/01
  * @see FieldAssist,FormulaAssist,MethodAssist
+ * @since 2020/10/01
  */
 public class ObjectAssist {
     Class objectClass;
@@ -87,7 +85,7 @@ public class ObjectAssist {
         // Object.
         objectAssist.setObjectClass(objectClass);
 
-        String datagramName = ReflectUtils.getDatagramName(objectClass).orElse("Default");
+        String datagramName = ReflectUtils.getDatagramName(objectClass).orElse("default");
         objectAssist.setDatagramName(datagramName);
 
         Endian endian = ReflectUtils.getEndian(objectClass).orElse(Endian.Little);

@@ -5,8 +5,6 @@ import org.indunet.fastproto.decoder.Decoder;
 import org.indunet.fastproto.decoder.DecoderFactory;
 import org.indunet.fastproto.encoder.Encoder;
 import org.indunet.fastproto.encoder.EncoderFactory;
-import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.util.ReflectUtils;
 
 import java.lang.annotation.Annotation;
@@ -132,6 +130,7 @@ public class FieldAssist {
                     this.decoder.get().decode(datagram, endian, dataTypeAnnotation),
                     decodeFormulaAssist.get().getOutputType());
         } else {
+            // return;
             value = this.decoder.get().decode(datagram, endian, dataTypeAnnotation);
         }
 

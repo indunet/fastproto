@@ -10,7 +10,7 @@ public class Motor {
     @IntegerType(byteOffset = 0)
     int voltage;
 
-    @Datagram("sensor")
+    // @Datagram("sensor")
     @FloatType(byteOffset = 4)
     float speed;
 

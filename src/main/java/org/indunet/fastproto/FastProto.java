@@ -8,10 +8,21 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+/**
+ * The type Fast proto.
+ */
 public class FastProto {
     public FastProtoContext context = new FastProtoContext();
 
-    public void     decode(final byte[] datagram, Object object) throws InvocationTargetException, IllegalAccessException {
+    /**
+     * Decode.
+     *
+     * @param datagram the datagram
+     * @param object   the object
+     * @throws InvocationTargetException the invocation target exception
+     * @throws IllegalAccessException    the illegal access exception
+     */
+    public void decode(final byte[] datagram, Object object) throws InvocationTargetException, IllegalAccessException {
         Map<String, byte[]> datagramMap = new HashMap<String, byte[]>() {
             {
                 put("default", datagram);
@@ -27,6 +38,14 @@ public class FastProto {
         this.decode(datagramMap, objectSet);
     }
 
+    /**
+     * Decode.
+     *
+     * @param datagramMap the datagram map
+     * @param object      the object
+     * @throws InvocationTargetException the invocation target exception
+     * @throws IllegalAccessException    the illegal access exception
+     */
     public void decode(Map<String, byte[]> datagramMap, Object object) throws InvocationTargetException, IllegalAccessException {
         Set<Object> objectSet = new HashSet<Object>() {
             {
@@ -37,7 +56,7 @@ public class FastProto {
         this.decode(datagramMap, objectSet);
     }
 
-    public void decode(final Map<String, byte[]> datagramMap, Map<String ,Object> objectMap) {
+    public void decode(final Map<String, byte[]> datagramMap, Map<Object ,Object> objectMap) {
 
     }
 
@@ -50,10 +69,6 @@ public class FastProto {
             ObjectAssist objectAssist = this.context.objectAssistMap.get(object.getClass());
             objectAssist.decode(datagramMap, object);
         }
-    }
-
-    private void decode(FastProtoContext context, Object object, Map<String, byte[]> datagramMap, Set<Object> objectSet) {
-
     }
 
     public void encode(final Object object, byte[] datagram) {

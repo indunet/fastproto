@@ -164,7 +164,7 @@ public class ReflectUtils {
     public static Optional<Class<?>> getDecoderOutputType(final Decoder<?> decoder) {
         try {
             return Optional.ofNullable(decoder
-                    .getClass().getMethod("decode", Endian.class, Annotation.class).getReturnType());
+                    .getClass().getMethod("decode", byte[].class, Endian.class, Annotation.class).getReturnType());
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
             return Optional.empty();
@@ -173,13 +173,14 @@ public class ReflectUtils {
 
     public static Optional<Class<?>> getEncoderInputType(final Encoder<?> encoder) {
         // The last parameter is input value.
-        try {
-            Class<?>[] parameterTypes = encoder.getClass().getMethod("encode").getParameterTypes();
+//        try {
+            // Class<?>[] parameterTypes = encoder.getClass().getMethod("encode", byte[].class, Endian.class, Annotation.class, ).getParameterTypes();
 
-            return Optional.ofNullable(parameterTypes[parameterTypes.length - 1]);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
+            // return Optional.ofNullable(parameterTypes[parameterTypes.length - 1]);
             return Optional.empty();
-        }
+//        } catch (NoSuchMethodException e) {
+//            e.printStackTrace();
+//            return Optional.empty();
+//        }
     }
 }
