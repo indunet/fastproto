@@ -4,8 +4,11 @@ import org.indunet.fastproto.Endian;
 import org.indunet.fastproto.annotation.IntegerType;
 
 import java.lang.annotation.Annotation;
+import java.util.Arrays;
 
 public class IntegerDecoder implements Decoder<Integer> {
+    protected static final Class<?>[] VALID_TYPES = {Integer.TYPE, Long.TYPE, Integer.class, Long.class};
+
     @Override
     public Integer decode(final byte[] datagram, Endian endian, Annotation dataTypeAnnotation) {
         int byteOffset = ((IntegerType) dataTypeAnnotation).byteOffset();

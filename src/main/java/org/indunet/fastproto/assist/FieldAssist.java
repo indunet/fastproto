@@ -5,6 +5,8 @@ import org.indunet.fastproto.decoder.Decoder;
 import org.indunet.fastproto.decoder.DecoderFactory;
 import org.indunet.fastproto.encoder.Encoder;
 import org.indunet.fastproto.encoder.EncoderFactory;
+import org.indunet.fastproto.exception.CodecException;
+import org.indunet.fastproto.formula.Formula;
 import org.indunet.fastproto.util.ReflectUtils;
 
 import java.lang.annotation.Annotation;
@@ -58,9 +60,10 @@ public class FieldAssist {
             fieldAssist.encoderInputType = ReflectUtils.getEncoderInputType(d);
         });
 
+        Optional<Class<? extends Formula>> clazz = ReflectUtils.getDecodeFormula(field);
 
-//        ReflectUtils.getDecodeFormula(field)
-//                .ifPresent(formula -> fieldAssist.decodeFormulaAssist = FormulaAssist.create(formula));
+        ReflectUtils.getDecodeFormula(field)
+                .ifPresent(formula -> fieldAssist.decodeFormulaAssist = FormulaAssist.create(formula));
 //        ReflectUtils.getEncodeFormula(field)
 //                .ifPresent(formula -> fieldAssist.encodeFormulaAssist = FormulaAssist.create(formula));
 
@@ -122,11 +125,18 @@ public class FieldAssist {
     }
 
     public void decode(Map<String, byte[]> datagramMap, Object object) {
+        if (!datagramMap.containsKey(this.datagramName)) {
+            new CodecException(CodecException.Error.Datagram_Not_Found.getMessage())
+                    .printStackTrace();
+
+            return;
+        }
+
         byte[] datagram = datagramMap.get(this.datagramName);
-        Object value = null;
+        Object value;
 
         if (this.decodeFormulaAssist.isPresent()) {
-            value = decodeFormulaAssist.get().invokeTransform(
+            value = decodeFormulaAssist.get().invoke(
                     this.decoder.get().decode(datagram, endian, dataTypeAnnotation),
                     decodeFormulaAssist.get().getOutputType());
         } else {

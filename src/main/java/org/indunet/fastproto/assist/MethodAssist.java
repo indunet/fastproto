@@ -39,7 +39,7 @@ public class MethodAssist {
         return annotation;
     }
 
-    public Object invokeMethod(Object object, Object... parameters) {
+    public Object invoke(Object object, Object... parameters) {
         try {
             return this.method.invoke(object, parameters);
         } catch (IllegalAccessException e) {

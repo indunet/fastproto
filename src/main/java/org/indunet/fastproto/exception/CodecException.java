@@ -5,7 +5,7 @@ public class CodecException extends RuntimeException {
         super(message);
     }
 
-    enum Error {
+    public enum Error {
         Datagram_Not_Found(0x0001, "The datagram cannot be found."),
         Datagram_Out_Of_Range(0x0002, "The offset is out of range of the datagram."),
         Decoder_Field_Mismatch(0x0004, "The decoder and the field are unmatch."),

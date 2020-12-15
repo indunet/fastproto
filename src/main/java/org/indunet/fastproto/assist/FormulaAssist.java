@@ -20,7 +20,7 @@ public class FormulaAssist {
 
     }
 
-    public static Optional<FormulaAssist> create(final Class<? extends Formula<?, ?>> formulaClass) {
+    public static Optional<FormulaAssist> create(final Class<? extends Formula> formulaClass) {
         FormulaAssist formulaAssist = new FormulaAssist();
 
         try {
@@ -42,10 +42,6 @@ public class FormulaAssist {
         return formula;
     }
 
-    public Method getMethod() {
-        return method;
-    }
-
     public Class<?> getInputType() {
         return inputType;
     }
@@ -54,7 +50,7 @@ public class FormulaAssist {
         return outputType;
     }
 
-    public <T> T invokeTransform(Object object, Class<T> outputType) {
+    public <T> T invoke(Object object, Class<T> outputType) {
         Object value = null;
 
         try {

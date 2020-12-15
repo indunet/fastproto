@@ -2,6 +2,7 @@ package org.indunet.fastproto.object;
 
 import org.indunet.fastproto.Endian;
 import org.indunet.fastproto.annotation.*;
+import org.indunet.fastproto.function.LinearFormula;
 
 @EndianMode(Endian.Little)
 // @Datagram("Motor")
@@ -9,8 +10,6 @@ public class Motor {
     @EndianMode(Endian.Big)
     @IntegerType(byteOffset = 0)
     int voltage;
-
-    // @Datagram("sensor")
     @FloatType(byteOffset = 4)
     float speed;
 

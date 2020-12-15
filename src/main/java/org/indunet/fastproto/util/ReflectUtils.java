@@ -15,6 +15,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class ReflectUtils {
+    protected static final String FORMULA_METHOD = "transform";
+
     public static Optional<Endian> getEndian(final Class<?> objectClass) {
         return Optional.ofNullable(objectClass.getAnnotation(EndianMode.class))
                 .map(annotation -> annotation.value());
@@ -64,13 +66,13 @@ public class ReflectUtils {
 
     public static Optional<Class<? extends Formula>> getDecodeFormula(final Field field) {
         return Optional.ofNullable(field.getAnnotation(DecodeFormula.class))
-                .filter(annotation -> annotation.value().isAssignableFrom(Formula.class))
+                .filter(annotation -> Formula.class.isAssignableFrom(annotation.value()))
                 .map(annotation -> annotation.value());
     }
 
     public static Optional<Class<? extends Formula>> getEncodeFormula(final Field field) {
         return Optional.ofNullable(field.getAnnotation(EncodeFormula.class))
-                .filter(annotation -> annotation.value().isAssignableFrom(Formula.class))
+                .filter(annotation -> Formula.class.isAssignableFrom(annotation.value()))
                 .map(annotation -> annotation.value());
     }
 
@@ -94,40 +96,24 @@ public class ReflectUtils {
                 .get();
     }
 
-    public static Optional<Class<?>> getFormulaInputType(final Class<? extends Formula<?, ?>> formulaClass) {
-        try {
-            Method method = formulaClass.getMethod("transform");
-
-            return Optional.of(method.getParameterTypes()[0]);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-
-            return Optional.empty();
-        }
+    public static Optional<Class<?>> getFormulaInputType(final Class<? extends Formula> formulaClass) {
+        return Arrays.stream(formulaClass.getDeclaredMethods())
+                .filter(method -> method.getName().equals(FORMULA_METHOD))
+                .flatMap(method -> Arrays.stream(method.getParameterTypes()))
+                .findAny();
     }
 
-    public static Optional<Class<?>> getFormulaOutputType(final Class<? extends Formula<?, ?>> formulaClass) {
-        try {
-            Method method = formulaClass.getMethod("transform");
-
-            return Optional.of(method.getReturnType());
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-
-            return Optional.empty();
-        }
+    public static Optional<? extends Class<?>> getFormulaOutputType(final Class<? extends Formula> formulaClass) {
+        return Arrays.stream(formulaClass.getDeclaredMethods())
+                .filter(method -> method.getName().equals(FORMULA_METHOD))
+                .map(method -> method.getReturnType())
+                .findAny();
     }
 
-    public static Optional<Method> getFormulaMethod(final Class<? extends Formula<?, ?>> formulaClass) {
-        try {
-            Method method = formulaClass.getMethod("transform");
-            method.setAccessible(true);
-
-            return Optional.ofNullable(method);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-            return Optional.empty();
-        }
+    public static Optional<Method> getFormulaMethod(final Class<? extends Formula> formulaClass) {
+        return Arrays.stream(formulaClass.getDeclaredMethods())
+                .filter(method -> method.getName().equals(FORMULA_METHOD))
+                .findAny();
     }
 
     public static boolean isDecodeIgnore(final Field field) {

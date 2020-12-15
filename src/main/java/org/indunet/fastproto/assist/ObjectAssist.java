@@ -9,6 +9,7 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 /**
  * @author Deng Ran
@@ -18,6 +19,7 @@ import java.util.Map;
  */
 public class ObjectAssist {
     Class objectClass;
+    Optional<Field> nestedObjectField = Optional.empty();
 
     Endian endian;
     String datagramName;
@@ -108,38 +110,45 @@ public class ObjectAssist {
         // Object type.
         ReflectUtils.getObjectTypeField(objectClass).stream()
                 .forEach(field -> {
-                    objectAssist.addObjectInfo(create(field.getType()));
+                    ObjectAssist assist = create(field.getType());
+
+                    assist.nestedObjectField = Optional.of(field);
+                    objectAssist.addObjectInfo(assist);
                 });
 
         return objectAssist;
     }
 
     public void decode(Map<String, byte[]> datagramMap, Object object) {
-//        Optional<FieldAssist> primaryKeyField = this.fieldAssistList.stream()
-//                .filter(assist -> assist.primaryKey)
-//                .findFirst();
-//
-//        if (primaryKeyField.isPresent()) {
-//
-//        }
-
-        // Before Decode.
+        // Before decode method.
         this.methodAssistList.stream()
                 .filter(assist -> assist.annotation instanceof BeforeDecode)
-                .forEach(assist -> assist.invokeMethod(object));
+                .forEach(assist -> assist.invoke(object));
 
         // Field.
         this.fieldAssistList.stream()
                 .filter(assist -> assist.decodeIgnore == false)
                 .forEach(assist -> assist.decode(datagramMap, object));
 
-        // Object.
+        // Nested object.
         this.objectAssistList.stream()
-                .forEach(assist -> this.decode(datagramMap, object));
+                .forEach(assist -> assist.decode(datagramMap, assist.getNestedObject(object)));
 
-        // After Decode.
+        // After decode method.
         this.methodAssistList.stream()
                 .filter(assist -> assist.annotation instanceof AfterDecode)
-                .forEach(assist -> assist.invokeMethod(object));
+                .forEach(assist -> assist.invoke(object));
+    }
+
+    protected Object getNestedObject(Object object) {
+        Object value = null;
+
+        try {
+            value = this.nestedObjectField.get().get(object);
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return value;
     }
 }
