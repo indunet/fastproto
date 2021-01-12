@@ -18,16 +18,15 @@ import java.util.Optional;
  * @since 2020/10/01
  */
 public class ObjectAssist {
-    Class objectClass;
+    Class objectClass;  // The class of the object.
     Optional<Field> nestedObjectField = Optional.empty();
 
-    Endian endian;
-    String datagramName;
+    Endian endian;  // The endian of the object.
+    String datagramName;    // The datagram name of the object.
 
-    List<FieldAssist> fieldAssistList = new ArrayList<>();
-    List<MethodAssist> methodAssistList = new ArrayList<>();
-
-    List<ObjectAssist> objectAssistList = new ArrayList<>();
+    List<FieldAssist> fieldAssistList = new ArrayList<>();  // The fields of the object.
+    List<MethodAssist> methodAssistList = new ArrayList<>();    // The methods of the object.
+    List<ObjectAssist> objectAssistList = new ArrayList<>();    // The objects of the object.
 
     protected ObjectAssist() {
 
