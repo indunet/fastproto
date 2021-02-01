@@ -1,9 +1,14 @@
 # fastproto
 
-FastProto项目最初致力于解决物联网中边缘设备与服务器之间的通讯问题。通常边缘设备程序有C/C++开发，而服务器端普遍采用Java开发，对于嵌入式工程师更加倾向于将数据放置在二进制报文内传输，而Java工程师则希望通过半结构化得方式传输，如JSON。
-FastProto通过注解标识的方式，按照特定的协议，能够快速地将Java对象转换为二进制报文，同理也能够将二进制报文转换给Java对象，这两个过程我们称之为编码和解码。
+fastproto is a lightweight Java serialization and deserialization tool that can replace pattern files with Java annotations to achieve fine-grained control of serialization and deserialization, especially suitable for the communication between devices and servers in the Internet of Things field .
 
-以气象站为例，气象设备发送气象数据到服务器，至少包括温度、湿度、 风力、采集时间，将这些数据放置在二进制报文内传输。
 
-字节
-数据
+Weather monitoring is a typical application scenario. The weather monitoring point sends data to the server of the weather station for data aggregation. Embedded devices usually use C/C++ programming, and considering the cost of 4G traffic, edge devices and servers usually use binary messages to transmit data instead of the commonly used JSON in the Web.
+Air temperature -40～+60℃
+Air humidity 0～100%RH 0.1%RH
+Wind direction 8 directions 3°
+Wind speed 0～75m/s 0.1m/s
+Atmospheric pressure 0~150KPa 0.1KPa
+Noise 30~120dB 1dB
+Rainfall 0-8mm/min 0.2m m
+Illumination 0～200,000 Lux

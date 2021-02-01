@@ -118,7 +118,7 @@ public class ObjectAssist {
         return objectAssist;
     }
 
-    public void decode(Map<String, byte[]> datagramMap, Object object) {
+    public void decode(byte[] datagram, Object object) {
         // Before decode method.
         this.methodAssistList.stream()
                 .filter(assist -> assist.annotation instanceof BeforeDecode)

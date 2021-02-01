@@ -18,8 +18,6 @@ public class FieldAssist {
     Field field;
     Class<?> fieldType;
     Annotation dataTypeAnnotation;
-    boolean primaryKey;
-    Optional<Object> primaryKeyValue;
 
     Optional<Decoder<?>> decoder = Optional.empty();
     Optional<Class<?>> decoderOutputType = Optional.empty();
@@ -125,14 +123,6 @@ public class FieldAssist {
     }
 
     public void decode(Map<String, byte[]> datagramMap, Object object) {
-        if (!datagramMap.containsKey(this.datagramName)) {
-            new CodecException(CodecException.Error.Datagram_Not_Found.getMessage())
-                    .printStackTrace();
-
-            return;
-        }
-
-        byte[] datagram = datagramMap.get(this.datagramName);
         Object value;
 
         if (this.decodeFormulaAssist.isPresent()) {
