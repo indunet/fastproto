@@ -3,7 +3,7 @@ package org.indunet.fastproto.function;
 import org.indunet.fastproto.formula.Formula;
 
 /**
- * @author
+ * @author Deng Ran
  * @version 1.0
  */
 public class LinearFormula implements Formula<Integer, Double> {
