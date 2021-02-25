@@ -1,4 +1,4 @@
-package org.indunet.fastproto.object;
+package org.indunet.fastproto.domain;
 
 import org.indunet.fastproto.Endian;
 import org.indunet.fastproto.annotation.*;
@@ -9,17 +9,17 @@ public class AirConditioner {
     protected static final int INDOOR_TEMPERATURE_BYTE_OFFSET = 2;
 
     @ObjectType
-    Compressor compressor = new Compressor();
+    public Compressor compressor = new Compressor();
     @ObjectType
-    Valve valve = new Valve();
+    public Valve valve = new Valve();
 
     @EndianMode(Endian.Big)
     @IntegerType(byteOffset = OUTDOOR_TEMPERATURE_BYTE_OFFSET)
     @DecodeFormula(LinearFormula.class)
-    double outdoorTemperature;
+    public double outdoorTemperature;
 
     @DoubleType(byteOffset = INDOOR_TEMPERATURE_BYTE_OFFSET)
-    double indoorTemperature;
+    public double indoorTemperature;
 
     public class DatagramBuilder {
         byte[] datagram;

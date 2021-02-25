@@ -29,14 +29,14 @@ public class ReflectUtils {
 
     public static Optional<Field> getPrimaryKeyField(final Class<?> objectClass) {
         return Arrays.stream(objectClass.getDeclaredFields())
-                .filter(field -> field.isAnnotationPresent(PrimaryKey.class))
+                // .filter(field -> field.isAnnotationPresent(PrimaryKey.class))
                 .peek(field -> field.setAccessible(true))
                 .findFirst();
     }
 
     public static Optional<String> getPrimaryKeyFieldValue(final Object object) {
         return Arrays.stream(object.getClass().getDeclaredFields())
-                .filter(field -> field.isAnnotationPresent(PrimaryKey.class))
+                // .filter(field -> field.isAnnotationPresent(PrimaryKey.class))
                 .peek(field -> field.setAccessible(true))
                 .map(field -> {
                     try {
@@ -50,9 +50,9 @@ public class ReflectUtils {
                 .findFirst();
     }
 
-    public static boolean isPrimaryKeyField(final Field field) {
-        return field.isAnnotationPresent(PrimaryKey.class);
-    }
+//    public static boolean isPrimaryKeyField(final Field field) {
+//        return field.isAnnotationPresent(PrimaryKey.class);
+//    }
 
     public static Optional<String> getDatagramName(final Class<?> objectClass) {
         return Optional.ofNullable(objectClass.getAnnotation(Datagram.class))

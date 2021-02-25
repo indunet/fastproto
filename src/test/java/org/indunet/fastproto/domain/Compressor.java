@@ -1,7 +1,6 @@
-package org.indunet.fastproto.object;
+package org.indunet.fastproto.domain;
 
 import org.indunet.fastproto.annotation.FloatType;
-import org.indunet.fastproto.annotation.ObjectType;
 
 public class Compressor {
     @FloatType(byteOffset = 6)

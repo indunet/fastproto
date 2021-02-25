@@ -1,7 +1,7 @@
 package org.indunet.fastproto.assist;
 
-import org.indunet.fastproto.object.Motor;
-import org.indunet.fastproto.object.Tesla;
+import org.indunet.fastproto.domain.Motor;
+import org.indunet.fastproto.domain.Tesla;
 import org.junit.Test;
 
 public class ObjectAssistTest {

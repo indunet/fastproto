@@ -122,7 +122,7 @@ public class FieldAssist {
         return encodeFormulaAssist;
     }
 
-    public void decode(Map<String, byte[]> datagramMap, Object object) {
+    public void decode(byte[] datagram, Object object) {
         Object value;
 
         if (this.decodeFormulaAssist.isPresent()) {

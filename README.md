@@ -11,4 +11,4 @@ Wind speed 0～75m/s 0.1m/s
 Atmospheric pressure 0~150KPa 0.1KPa
 Noise 30~120dB 1dB
 Rainfall 0-8mm/min 0.2m m
-Illumination 0～200,000 Lux
+Illumination 0～200,000 Lux:

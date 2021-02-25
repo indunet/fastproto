@@ -1,6 +1,6 @@
 package org.indunet.fastproto.util;
 
-import org.indunet.fastproto.object.Motor;
+import org.indunet.fastproto.domain.Motor;
 import org.junit.Test;
 import org.junit.Before; 
 import org.junit.After;

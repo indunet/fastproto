@@ -1,17 +1,16 @@
-package org.indunet.fastproto.object;
+package org.indunet.fastproto.domain;
 
 import org.indunet.fastproto.Endian;
 import org.indunet.fastproto.annotation.*;
-import org.indunet.fastproto.function.LinearFormula;
 
 @EndianMode(Endian.Little)
 // @Datagram("Motor")
 public class Motor {
     @EndianMode(Endian.Big)
     @IntegerType(byteOffset = 0)
-    int voltage;
+    public int voltage;
     @FloatType(byteOffset = 4)
-    float speed;
+    public float speed;
 
     @BeforeDecode
     public void beforeDecode() {

@@ -1,7 +1,7 @@
 package org.indunet.fastproto;
 
-import org.indunet.fastproto.object.Motor;
-import org.indunet.fastproto.object.Tesla;
+import com.alibaba.fastjson.JSON;
+import org.indunet.fastproto.domain.Tesla;
 import org.junit.Test;
 
 public class FastProtoTest {
@@ -15,6 +15,6 @@ public class FastProtoTest {
     public void testDecode() {
         fastProto.decode(datagram, tesla);
 
-        System.out.println(tesla);
+        System.out.println(JSON.toJSONString(tesla));
     }
 }

@@ -1,4 +1,4 @@
-package org.indunet.fastproto.object;
+package org.indunet.fastproto.domain;
 
 import org.indunet.fastproto.Endian;
 import org.indunet.fastproto.annotation.EndianMode;
@@ -7,14 +7,14 @@ import org.indunet.fastproto.annotation.ObjectType;
 @EndianMode(Endian.Little)
 // @Datagram("Tesla")
 public class Tesla {
-    String vehicleCode;
+    public String vehicleCode;
 
     @ObjectType
-    Motor motor = new Motor();
+    public Motor motor = new Motor();
     @ObjectType
-    Battery battery = new Battery();
+    public Battery battery = new Battery();
     @ObjectType
-    AirConditioner airConditioner = new AirConditioner();
+    public AirConditioner airConditioner = new AirConditioner();
     @ObjectType
-    Seat seat = new Seat();
+    public Seat seat = new Seat();
 }

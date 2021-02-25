@@ -127,11 +127,11 @@ public class ObjectAssist {
         // Field.
         this.fieldAssistList.stream()
                 .filter(assist -> assist.decodeIgnore == false)
-                .forEach(assist -> assist.decode(datagramMap, object));
+                .forEach(assist -> assist.decode(datagram, object));
 
         // Nested object.
         this.objectAssistList.stream()
-                .forEach(assist -> assist.decode(datagramMap, assist.getNestedObject(object)));
+                .forEach(assist -> assist.decode(datagram, assist.getNestedObject(object)));
 
         // After decode method.
         this.methodAssistList.stream()
