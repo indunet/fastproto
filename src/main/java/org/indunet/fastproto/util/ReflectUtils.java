@@ -1,7 +1,8 @@
 package org.indunet.fastproto.util;
 
-import org.indunet.fastproto.Endian;
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.*;
+import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.decoder.Decoder;
 import org.indunet.fastproto.encoder.Encoder;
 import org.indunet.fastproto.formula.Formula;
@@ -17,13 +18,13 @@ import java.util.stream.Collectors;
 public class ReflectUtils {
     protected static final String FORMULA_METHOD = "transform";
 
-    public static Optional<Endian> getEndian(final Class<?> objectClass) {
-        return Optional.ofNullable(objectClass.getAnnotation(EndianMode.class))
+    public static Optional<EndianPolicy> getEndian(final Class<?> objectClass) {
+        return Optional.ofNullable(objectClass.getAnnotation(Endian.class))
                 .map(annotation -> annotation.value());
     }
 
-    public static Optional<Endian> getEndian(final Field field) {
-        return Optional.ofNullable(field.getAnnotation(EndianMode.class))
+    public static Optional<EndianPolicy> getEndian(final Field field) {
+        return Optional.ofNullable(field.getAnnotation(Endian.class))
                 .map(annotation -> annotation.value());
     }
 
@@ -150,7 +151,7 @@ public class ReflectUtils {
     public static Optional<Class<?>> getDecoderOutputType(final Decoder<?> decoder) {
         try {
             return Optional.ofNullable(decoder
-                    .getClass().getMethod("decode", byte[].class, Endian.class, Annotation.class).getReturnType());
+                    .getClass().getMethod("decode", byte[].class, EndianPolicy.class, Annotation.class).getReturnType());
         } catch (NoSuchMethodException e) {
             e.printStackTrace();
             return Optional.empty();

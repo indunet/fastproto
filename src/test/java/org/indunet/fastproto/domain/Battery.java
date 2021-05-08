@@ -1,8 +1,8 @@
 package org.indunet.fastproto.domain;
 
-import org.indunet.fastproto.annotation.ByteType;
-import org.indunet.fastproto.annotation.IntegerType;
-import org.indunet.fastproto.annotation.ShortType;
+import org.indunet.fastproto.annotation.type.ByteType;
+import org.indunet.fastproto.annotation.type.IntegerType;
+import org.indunet.fastproto.annotation.type.ShortType;
 
 public class Battery {
     @ShortType(byteOffset = 8)

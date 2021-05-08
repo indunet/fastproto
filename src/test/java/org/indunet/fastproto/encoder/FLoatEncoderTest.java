@@ -1,6 +1,6 @@
 package org.indunet.fastproto.encoder;
 
-import org.indunet.fastproto.Endian;
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.util.NumberUtils;
 import org.junit.Test;
 
@@ -13,11 +13,11 @@ public class FLoatEncoderTest {
 
     @Test
     public void testSet() {
-        encoder.encode(datagram, 0, pi, Endian.Little);
+        encoder.encode(datagram, 0, pi, EndianPolicy.Little);
         assertArrayEquals(datagram, NumberUtils.floatToBinary(pi));
 
         // TODO
-        encoder.encode(datagram, 0, e, Endian.Little);
+        encoder.encode(datagram, 0, e, EndianPolicy.Little);
         assertArrayEquals(datagram, NumberUtils.floatToBinary(e));
     }
 }

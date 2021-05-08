@@ -1,8 +1,8 @@
 package org.indunet.fastproto.encoder;
 
 
-import org.indunet.fastproto.Endian;
-import org.indunet.fastproto.annotation.BooleanType;
+import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.annotation.type.BooleanType;
 
 import java.lang.annotation.Annotation;
 
@@ -11,7 +11,7 @@ public class BooleanEncoder implements Encoder<Boolean> {
     public final static int BIT_OFFSET_MIN = 0;
 
     @Override
-    public void encode(byte[] datagram, Endian endian, Annotation dataTypeAnnotation, Boolean value) {
+    public void encode(byte[] datagram, EndianPolicy endian, Annotation dataTypeAnnotation, Boolean value) {
         int byteOffset = ((BooleanType) dataTypeAnnotation).byteOffset();
         int bitOffset = ((BooleanType) dataTypeAnnotation).bitOffset();
 

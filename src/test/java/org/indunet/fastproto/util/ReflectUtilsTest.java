@@ -4,7 +4,7 @@ import org.indunet.fastproto.domain.Motor;
 import org.junit.Test;
 import org.junit.Before; 
 import org.junit.After;
-import org.indunet.fastproto.Endian;
+import org.indunet.fastproto.EndianPolicy;
 
 import java.lang.reflect.Field;
 import java.util.List;
@@ -25,12 +25,12 @@ public class ReflectUtilsTest {
 
     @Test
     public void testGetEndianObject() throws Exception {
-        assertEquals(getEndian(motor.getClass()), Endian.Little);
+        assertEquals(getEndian(motor.getClass()), EndianPolicy.Little);
     }
 
     @Test
     public void testGetEndianField() throws Exception {
-        assertEquals(getEndian(motor.getClass().getDeclaredField("voltage")), Endian.Big);
+        assertEquals(getEndian(motor.getClass().getDeclaredField("voltage")), EndianPolicy.Big);
     }
 
     @Test

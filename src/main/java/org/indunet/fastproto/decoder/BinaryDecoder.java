@@ -1,17 +1,14 @@
 package org.indunet.fastproto.decoder;
 
-import org.indunet.fastproto.Endian;
-import org.indunet.fastproto.annotation.BinaryType;
-
-import java.lang.annotation.Annotation;
+import org.indunet.fastproto.annotation.type.BinaryType;
 
 public class BinaryDecoder implements Decoder<byte[]> {
     @Override
-    public byte[] decode(final byte[] datagram, Endian endian, Annotation dataTypeAnnotation) {
-        int byteOffset = ((BinaryType) dataTypeAnnotation).byteOffset();
-        int length = ((BinaryType) dataTypeAnnotation).length();
+    public byte[] decode(DecodeContext context) {
+        int byteOffset = ((BinaryType) context.getDateType()).byteOffset();
+        int length = ((BinaryType) context.getDateType()).length();
 
-        return this.decode(datagram, byteOffset, length);
+        return this.decode(context.getDatagram(), byteOffset, length);
     }
 
     public byte[] decode(final byte[] datagram, int byteOffset, int length) {

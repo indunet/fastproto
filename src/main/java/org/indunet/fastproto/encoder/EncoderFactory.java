@@ -1,6 +1,6 @@
 package org.indunet.fastproto.encoder;
 
-import org.indunet.fastproto.annotation.*;
+import org.indunet.fastproto.annotation.type.*;
 
 import java.lang.annotation.Annotation;
 import java.util.HashMap;

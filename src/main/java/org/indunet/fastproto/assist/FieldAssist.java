@@ -1,11 +1,10 @@
 package org.indunet.fastproto.assist;
 
-import org.indunet.fastproto.Endian;
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.decoder.Decoder;
 import org.indunet.fastproto.decoder.DecoderFactory;
 import org.indunet.fastproto.encoder.Encoder;
 import org.indunet.fastproto.encoder.EncoderFactory;
-import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.formula.Formula;
 import org.indunet.fastproto.util.ReflectUtils;
 
@@ -24,7 +23,7 @@ public class FieldAssist {
     Optional<Encoder> encoder = Optional.empty();
     Optional<Class<?>> encoderInputType = Optional.empty();
 
-    Endian endian;
+    EndianPolicy endian;
     String datagramName;
     boolean decodeIgnore;
     boolean encodeIgnore;
@@ -37,7 +36,7 @@ public class FieldAssist {
 
     }
 
-    public static FieldAssist create(Field field, String defaultDatagramName, Endian defaultEndian) {
+    public static FieldAssist create(Field field, String defaultDatagramName, EndianPolicy defaultEndian) {
         FieldAssist fieldAssist = new FieldAssist();
 
         field.setAccessible(true);
@@ -98,7 +97,7 @@ public class FieldAssist {
         return dataTypeAnnotation;
     }
 
-    public Endian getEndian() {
+    public EndianPolicy getEndian() {
         return endian;
     }
 

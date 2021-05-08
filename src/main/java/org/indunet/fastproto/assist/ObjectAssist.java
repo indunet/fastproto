@@ -1,6 +1,6 @@
 package org.indunet.fastproto.assist;
 
-import org.indunet.fastproto.Endian;
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.AfterDecode;
 import org.indunet.fastproto.annotation.BeforeDecode;
 import org.indunet.fastproto.util.ReflectUtils;
@@ -8,7 +8,6 @@ import org.indunet.fastproto.util.ReflectUtils;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -21,7 +20,7 @@ public class ObjectAssist {
     Class objectClass;  // The class of the object.
     Optional<Field> nestedObjectField = Optional.empty();
 
-    Endian endian;  // The endian of the object.
+    EndianPolicy endian;  // The endian of the object.
     String datagramName;    // The datagram name of the object.
 
     List<FieldAssist> fieldAssistList = new ArrayList<>();  // The fields of the object.
@@ -52,11 +51,11 @@ public class ObjectAssist {
         this.objectClass = objectClass;
     }
 
-    public Endian getEndian() {
+    public EndianPolicy getEndian() {
         return endian;
     }
 
-    public void setEndian(Endian endian) {
+    public void setEndian(EndianPolicy endian) {
         this.endian = endian;
     }
 
@@ -89,7 +88,7 @@ public class ObjectAssist {
         String datagramName = ReflectUtils.getDatagramName(objectClass).orElse("default");
         objectAssist.setDatagramName(datagramName);
 
-        Endian endian = ReflectUtils.getEndian(objectClass).orElse(Endian.Little);
+        EndianPolicy endian = ReflectUtils.getEndian(objectClass).orElse(EndianPolicy.Little);
         objectAssist.setEndian(endian);
 
         List<Field> list = ReflectUtils.getDataTypeField(objectClass);

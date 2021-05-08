@@ -6,13 +6,20 @@
 
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>0.0.1</version>
+    <version>1.0.0</version>
 
     <properties>
         <junit.version>4.12</junit.version>
+        <lombok.version>1.18.16</lombok.version>
     </properties>
 
     <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>${lombok.version}</version>
+        </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -24,6 +31,14 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.73</version>
+        </dependency>
+
+        <dependency>
+            <groupId>cc.crrc</groupId>
+            <artifactId>crrc-crypto</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/src/main/resources/crrc-crypto-1.0-encrypted.jar</systemPath>
         </dependency>
     </dependencies>
 

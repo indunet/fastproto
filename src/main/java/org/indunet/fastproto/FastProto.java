@@ -1,25 +1,41 @@
 package org.indunet.fastproto;
 
-import org.indunet.fastproto.assist.ObjectAssist;
+import lombok.Data;
+import org.indunet.fastproto.annotation.DataType;
+import org.indunet.fastproto.annotation.DecodeIgnore;
+import org.indunet.fastproto.annotation.TypeDecoder;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.Arrays;
 
+/**
+ * @author Deng Ran
+ * @version 1.0
+ */
 public class FastProto {
-    public FastProtoContext context = new FastProtoContext();
+    // TODO, decode method.
+    public static <T> T decode(byte[] datagram, Class<T> clazz) {
+        @Data
+        class Tuple {
+            Field field;
 
-    public void decode(final byte[] datagram, Object object) {
-        if (this.context.objectAssistMap.containsKey(object.getClass())) {
-            ObjectAssist objectAssist = this.context.objectAssistMap.get(object.getClass());
-            objectAssist.decode(datagram, object);
-        } else {
-            ObjectAssist objectAssist = ObjectAssist.create(object.getClass());
-            objectAssist.decode(datagram, object);
+            Object value;
         }
+
+        Arrays.stream(clazz.getDeclaredFields())
+                .filter(f -> !f.isAnnotationPresent(DecodeIgnore.class))
+                .filter(f -> Arrays.stream(f.getAnnotations())
+                    .map(Annotation::annotationType)
+                    .anyMatch(t -> t.isAnnotationPresent(DataType.class)))
+                .map(f -> {
+                    TypeDecoder::decode
+                };
+
+        return null;
     }
 
-    public void encode(final Object object, byte[] datagram) {
-        ObjectAssist objectAssist = this.context.objectAssistMap.get(object.getClass());
-        // objectAssist.encode(object, datagram);
+    public static void encode(Object object, byte[] datagram) {
+
     }
 }

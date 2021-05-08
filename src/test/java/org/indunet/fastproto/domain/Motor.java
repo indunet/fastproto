@@ -1,12 +1,14 @@
 package org.indunet.fastproto.domain;
 
-import org.indunet.fastproto.Endian;
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.*;
+import org.indunet.fastproto.annotation.type.FloatType;
+import org.indunet.fastproto.annotation.type.IntegerType;
 
-@EndianMode(Endian.Little)
+@Endian(EndianPolicy.Little)
 // @Datagram("Motor")
 public class Motor {
-    @EndianMode(Endian.Big)
+    @Endian(EndianPolicy.Big)
     @IntegerType(byteOffset = 0)
     public int voltage;
     @FloatType(byteOffset = 4)

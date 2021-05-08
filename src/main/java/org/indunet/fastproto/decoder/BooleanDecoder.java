@@ -1,20 +1,14 @@
 package org.indunet.fastproto.decoder;
 
-import org.indunet.fastproto.Endian;
-import org.indunet.fastproto.annotation.BooleanType;
-
-import java.lang.annotation.Annotation;
+import org.indunet.fastproto.annotation.type.BooleanType;
 
 public class BooleanDecoder implements Decoder<Boolean> {
-    public final static int MAX_BIT_OFFSET = 7;
-    public final static int MIN_BIT_OFFSET = 0;
-
     @Override
-    public Boolean decode(final byte[] datagram, Endian endian, Annotation dataTypeAnnotation) {
-        int byteOffset = ((BooleanType) dataTypeAnnotation).byteOffset();
-        int bitOffset = ((BooleanType) dataTypeAnnotation).bitOffset();
+    public Boolean decode(DecodeContext context) {
+        int byteOffset = ((BooleanType) context.getDateType()).byteOffset();
+        int bitOffset = ((BooleanType) context.getDateType()).bitOffset();
 
-        return this.decode(datagram, byteOffset, bitOffset);
+        return this.decode(context.getDatagram(), byteOffset, bitOffset);
     }
 
     public boolean decode(final byte[] datagram, int byteOffset, int bitOffset) {

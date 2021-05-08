@@ -1,6 +1,6 @@
 package org.indunet.fastproto.util;
 
-import org.indunet.fastproto.Endian;
+import org.indunet.fastproto.EndianPolicy;
 
 public class NumberUtils {
     public static byte[] floatToBinary(float value) {
@@ -12,18 +12,18 @@ public class NumberUtils {
     }
 
     public static byte[] intToBinary(int value) {
-        return intToBinary(value, Endian.Little);
+        return intToBinary(value, EndianPolicy.Little);
     }
 
-    public static byte[] intToBinary(int value, Endian endian) {
+    public static byte[] intToBinary(int value, EndianPolicy endian) {
         byte[] bytes = new byte[4];
 
-        if (endian == Endian.Little) {
+        if (endian == EndianPolicy.Little) {
             bytes[0] = (byte)(value & 0xFF);
             bytes[1] = (byte)(value >> 8 & 0xFF);
             bytes[2] = (byte)(value >> 16 & 0xFF);
             bytes[3] = (byte)(value >> 24 & 0xFF);
-        } else if (endian == Endian.Big) {
+        } else if (endian == EndianPolicy.Big) {
             bytes[3] = (byte)(value & 0xFF);
             bytes[2] = (byte)(value >> 8 & 0xFF);
             bytes[1] = (byte)(value >> 16 & 0xFF);
@@ -34,13 +34,13 @@ public class NumberUtils {
     }
 
     public static byte[] longToBinary(long value) {
-        return longToBinary(value, Endian.Little);
+        return longToBinary(value, EndianPolicy.Little);
     }
 
-    public static byte[] longToBinary(long value, Endian endian) {
+    public static byte[] longToBinary(long value, EndianPolicy endian) {
         byte[] bytes = new byte[8];
 
-        if (endian == Endian.Little) {
+        if (endian == EndianPolicy.Little) {
             bytes[0] |= (value & 0xFFL);
             bytes[1] = (byte)(value >> 8 & 0xFFL);
             bytes[2] = (byte)(value >> 16 & 0xFFL);
@@ -49,7 +49,7 @@ public class NumberUtils {
             bytes[5] = (byte)(value >> 40 & 0xFFL);
             bytes[6] = (byte)(value >> 48 & 0xFFL);
             bytes[7] = (byte)(value >> 56 & 0xFFL);
-        } else if (endian == Endian.Big) {
+        } else if (endian == EndianPolicy.Big) {
             bytes[7] = (byte)(value & 0xFF);
             bytes[6] = (byte)(value >> 8 & 0xFFL);
             bytes[5] = (byte)(value >> 16 & 0xFFL);
