@@ -13,10 +13,10 @@ public class DoubleEncoderTest {
 
     @Test
     public void testSet() {
-        encoder.encode(datagram, 0, e, EndianPolicy.Little);
+        encoder.encode(datagram, 0, EndianPolicy.Little, e);
         assertArrayEquals(datagram, NumberUtils.doubleToBinary(e));
 
-        encoder.encode(datagram, 0, pi, EndianPolicy.Little);
+        encoder.encode(datagram, 0, EndianPolicy.Little, pi);
         assertArrayEquals(datagram, NumberUtils.doubleToBinary(pi));
     }
 }

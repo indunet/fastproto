@@ -4,7 +4,6 @@ import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.annotation.type.DoubleType;
 import org.indunet.fastproto.annotation.type.IntegerType;
-import org.indunet.fastproto.function.LinearFormula;
 
 public class AirConditioner {
     protected static final int OUTDOOR_TEMPERATURE_BYTE_OFFSET = 0;
@@ -15,7 +14,6 @@ public class AirConditioner {
 
     @Endian(EndianPolicy.Big)
     @IntegerType(byteOffset = OUTDOOR_TEMPERATURE_BYTE_OFFSET)
-    @DecodeFormula(LinearFormula.class)
     public double outdoorTemperature;
 
     @DoubleType(byteOffset = INDOOR_TEMPERATURE_BYTE_OFFSET)

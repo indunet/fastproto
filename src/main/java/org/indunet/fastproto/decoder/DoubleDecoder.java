@@ -5,12 +5,12 @@ import org.indunet.fastproto.annotation.type.DoubleType;
 
 import java.lang.annotation.Annotation;
 
-public class DoubleDecoder implements Decoder<Double> {
+public class DoubleDecoder implements TypeDecoder<Double> {
     @Override
-    public Double decode(final byte[] datagram, EndianPolicy endian, Annotation dataTypeAnnotation) {
-        int byteOffset = ((DoubleType) dataTypeAnnotation).byteOffset();
+    public Double decode(DecodeContext context) {
+        DoubleType type = context.getDataType(DoubleType.class);
 
-        return this.decode(datagram, byteOffset, endian);
+        return this.decode(context.getDatagram(), type.byteOffset(), context.getEndian());
     }
 
     public double decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {

@@ -2,6 +2,7 @@ package org.indunet.fastproto.encoder;
 
 import lombok.Builder;
 import lombok.Data;
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.Endian;
 
 import java.lang.annotation.Annotation;
@@ -14,6 +15,15 @@ import java.lang.annotation.Annotation;
 @Builder
 public class EncodeContext {
     byte[] datagram;
-    Endian endian;
+    EndianPolicy endianPolicy;
     Annotation dataType;
+    Object value;
+
+    public <T> T getDataType(Class<T> clazz) {
+        return clazz.cast(this.dataType);
+    }
+
+    public <T> T getValue(Class<T> clazz) {
+        return clazz.cast(this.value);
+    }
 }

@@ -2,13 +2,12 @@ package org.indunet.fastproto.decoder;
 
 import org.indunet.fastproto.annotation.type.BooleanType;
 
-public class BooleanDecoder implements Decoder<Boolean> {
+public class BooleanDecoder implements TypeDecoder<Boolean> {
     @Override
     public Boolean decode(DecodeContext context) {
-        int byteOffset = ((BooleanType) context.getDateType()).byteOffset();
-        int bitOffset = ((BooleanType) context.getDateType()).bitOffset();
+        BooleanType type = context.getDataType(BooleanType.class);
 
-        return this.decode(context.getDatagram(), byteOffset, bitOffset);
+        return this.decode(context.getDatagram(), type.byteOffset(), type.bitOffset());
     }
 
     public boolean decode(final byte[] datagram, int byteOffset, int bitOffset) {

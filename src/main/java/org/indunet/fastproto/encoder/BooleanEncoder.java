@@ -1,27 +1,21 @@
 package org.indunet.fastproto.encoder;
 
 
-import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.BooleanType;
 
-import java.lang.annotation.Annotation;
-
-public class BooleanEncoder implements Encoder<Boolean> {
-    public final static int BIT_OFFSET_MAX = 7;
-    public final static int BIT_OFFSET_MIN = 0;
-
+public class BooleanEncoder implements TypeEncoder {
     @Override
-    public void encode(byte[] datagram, EndianPolicy endian, Annotation dataTypeAnnotation, Boolean value) {
-        int byteOffset = ((BooleanType) dataTypeAnnotation).byteOffset();
-        int bitOffset = ((BooleanType) dataTypeAnnotation).bitOffset();
+    public void encode(EncodeContext context) {
+        BooleanType type = context.getDataType(BooleanType.class);
+        Boolean value = context.getValue(Boolean.class);
 
-        this.encode(datagram, byteOffset, bitOffset, value);
+        this.encode(context.getDatagram(), type.byteOffset(), type.bitOffset(), value);
     }
 
     public void encode(byte[] datagram, int byteOffset, int bitOffset, boolean value) {
         if (datagram.length <= byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
-        } else if (bitOffset < BIT_OFFSET_MIN || bitOffset > BIT_OFFSET_MAX) {
+        } else if (bitOffset < BooleanType.MIN_BIT_OFFSET || bitOffset > BooleanType.MAX_BIT_OFFSET) {
             throw new ArrayIndexOutOfBoundsException();
         }
 

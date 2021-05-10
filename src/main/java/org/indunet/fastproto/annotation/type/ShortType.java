@@ -1,8 +1,8 @@
 package org.indunet.fastproto.annotation.type;
 
 import org.indunet.fastproto.annotation.DataType;
-import org.indunet.fastproto.annotation.TypeDecoder;
-import org.indunet.fastproto.annotation.TypeEncoder;
+import org.indunet.fastproto.annotation.Decoder;
+import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.decoder.ShortDecoder;
 import org.indunet.fastproto.encoder.ShortEncoder;
 
@@ -16,8 +16,8 @@ import java.lang.annotation.Target;
  * @version 1.0
  */
 @DataType
-@TypeDecoder(ShortDecoder.class)
-@TypeEncoder(ShortEncoder.class)
+@Decoder(ShortDecoder.class)
+@Encoder(ShortEncoder.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ShortType {

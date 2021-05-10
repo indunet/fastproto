@@ -5,14 +5,12 @@ import org.indunet.fastproto.annotation.type.IntegerType;
 
 import java.lang.annotation.Annotation;
 
-public class IntegerDecoder implements Decoder<Integer> {
-    protected static final Class<?>[] VALID_TYPES = {Integer.TYPE, Long.TYPE, Integer.class, Long.class};
-
+public class IntegerDecoder implements TypeDecoder<Integer> {
     @Override
-    public Integer decode(final byte[] datagram, EndianPolicy endian, Annotation dataTypeAnnotation) {
-        int byteOffset = ((IntegerType) dataTypeAnnotation).byteOffset();
+    public Integer decode(DecodeContext context) {
+        IntegerType type = context.getDataType(IntegerType.class);
 
-        return this.decode(datagram, byteOffset, endian);
+        return this.decode(context.getDatagram(), type.byteOffset(), context.getEndian());
     }
 
     public int decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {

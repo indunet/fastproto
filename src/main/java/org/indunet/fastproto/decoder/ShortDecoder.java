@@ -5,12 +5,12 @@ import org.indunet.fastproto.annotation.type.ShortType;
 
 import java.lang.annotation.Annotation;
 
-public class ShortDecoder implements Decoder<Short> {
+public class ShortDecoder implements TypeDecoder<Short> {
     @Override
-    public Short decode(final byte[] datagram, EndianPolicy endian, Annotation dataTypeAnnotation) {
-        int byteOffset = ((ShortType) dataTypeAnnotation).byteOffset();
+    public Short decode(DecodeContext context) {
+        ShortType type = context.getDataType(ShortType.class);
 
-        return this.decode(datagram, byteOffset, endian);
+        return this.decode(context.getDatagram(), type.byteOffset(), context.getEndian());
     }
 
     public short decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {

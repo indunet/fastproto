@@ -1,156 +1,81 @@
 package org.indunet.fastproto.assist;
 
+import lombok.Builder;
+import lombok.Data;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.decoder.Decoder;
-import org.indunet.fastproto.decoder.DecoderFactory;
-import org.indunet.fastproto.encoder.Encoder;
-import org.indunet.fastproto.encoder.EncoderFactory;
-import org.indunet.fastproto.formula.Formula;
-import org.indunet.fastproto.util.ReflectUtils;
+import org.indunet.fastproto.annotation.DataType;
+import org.indunet.fastproto.annotation.Decoder;
+import org.indunet.fastproto.annotation.Encoder;
+import org.indunet.fastproto.annotation.Endian;
+import org.indunet.fastproto.decoder.DecodeContext;
+import org.indunet.fastproto.decoder.TypeDecoder;
+import org.indunet.fastproto.encoder.TypeEncoder;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.util.Map;
+import java.lang.reflect.Type;
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Stream;
 
+/**
+ * @author Deng Ran
+ * @version 1.0
+ */
+@Data
+@Builder
 public class FieldAssist {
+    Class<?> parent;
     Field field;
-    Class<?> fieldType;
-    Annotation dataTypeAnnotation;
-
-    Optional<Decoder<?>> decoder = Optional.empty();
-    Optional<Class<?>> decoderOutputType = Optional.empty();
-    Optional<Encoder> encoder = Optional.empty();
-    Optional<Class<?>> encoderInputType = Optional.empty();
-
-    EndianPolicy endian;
-    String datagramName;
-    boolean decodeIgnore;
-    boolean encodeIgnore;
-
-    // Formula
-    Optional<FormulaAssist> decodeFormulaAssist = Optional.empty();
-    Optional<FormulaAssist> encodeFormulaAssist = Optional.empty();
+    Object value;
+    Optional<Function> formula;
+    Optional<Annotation> dataType;
+    EndianPolicy endianPolicy;
+    Class<? extends TypeDecoder<?>> decoderClass;
+    Class<TypeEncoder> encoderCLass;
+    TypeDecoder<?> typeDecoder;
+    TypeEncoder typeEncoder;
 
     protected FieldAssist() {
 
     }
 
-    public static FieldAssist create(Field field, String defaultDatagramName, EndianPolicy defaultEndian) {
-        FieldAssist fieldAssist = new FieldAssist();
+    public static FieldAssist create(Class<?> parent, Field field) {
+        Optional<Annotation> dataType = Arrays.stream(field.getAnnotations())
+                .filter(a -> a.annotationType().isAnnotationPresent(DataType.class))
+                .findAny();
+        EndianPolicy policy = Stream.of(field.getAnnotation(Endian.class), parent.getAnnotation(Endian.class))
+                .map(Endian::value)
+                .findFirst()
+                .orElse(EndianPolicy.Little);
+        Class<? extends TypeDecoder<?>> decoderClass = dataType.map()
 
-        field.setAccessible(true);
-        fieldAssist.field = field;
-        fieldAssist.fieldType = field.getType();
-        fieldAssist.datagramName = ReflectUtils.getDatagramName(field).orElse(defaultDatagramName);
-        fieldAssist.dataTypeAnnotation = ReflectUtils.getDataTypeAnnotation(field).get();
-        fieldAssist.endian = ReflectUtils.getEndian(field).orElse(defaultEndian);
-        fieldAssist.decodeIgnore = ReflectUtils.isDecodeIgnore(field);
-        fieldAssist.encodeIgnore = ReflectUtils.isEncodeIgnore(field);
-
-        fieldAssist.decoder = DecoderFactory.create(fieldAssist.dataTypeAnnotation.annotationType());
-        fieldAssist.decoder.ifPresent(d -> {
-            fieldAssist.decoderOutputType = ReflectUtils.getDecoderOutputType(d);
-        });
-        fieldAssist.encoder = EncoderFactory.create(fieldAssist.dataTypeAnnotation.annotationType());
-        fieldAssist.encoder.ifPresent(d -> {
-            fieldAssist.encoderInputType = ReflectUtils.getEncoderInputType(d);
-        });
-
-        Optional<Class<? extends Formula>> clazz = ReflectUtils.getDecodeFormula(field);
-
-        ReflectUtils.getDecodeFormula(field)
-                .ifPresent(formula -> fieldAssist.decodeFormulaAssist = FormulaAssist.create(formula));
-//        ReflectUtils.getEncodeFormula(field)
-//                .ifPresent(formula -> fieldAssist.encodeFormulaAssist = FormulaAssist.create(formula));
-
-//        fieldAssist.decoder
-//                .map(d -> d.validate(new Decoder.ValidationContext.Builder()
-//                        .setFieldType(fieldAssist.fieldType)
-//                        .setDataTypeAnnotation(fieldAssist.dataTypeAnnotation)
-//                        .setEndian(fieldAssist.endian)
-//                        .setFormulaInputType(fieldAssist.decodeFormulaAssist.map(a -> a.inputType))
-//                        .setFormulaOutputType(fieldAssist.decodeFormulaAssist.map(a -> a.outputType))
-//                        .build()))
-//                .filter(Boolean::booleanValue)
-//                .orElseThrow(() -> new DecodeException(""));
-
-//        fieldAssist.encoder
-//                .map(e -> e.validate(new Encoder.ValidationContext.Builder()
-//                        .setFieldType(fieldAssist.fieldType)
-//                        .setDataTypeAnnotation(fieldAssist.dataTypeAnnotation)
-//                        .setEndian(fieldAssist.endian)
-//                        .setFormulaInputType(fieldAssist.encodeFormulaAssist.map(a -> a.inputType))
-//                        .setFormulaOutputType(fieldAssist.encodeFormulaAssist.map(a -> a.outputType))
-//                        .build()))
-//                .filter(Boolean::booleanValue)
-//                .orElseThrow(() -> new EncodeException(""));
-
-        return fieldAssist;
-    }
-
-    public Field getField() {
-        return field;
-    }
-
-    public Annotation getDataTypeAnnotation() {
-        return dataTypeAnnotation;
-    }
-
-    public EndianPolicy getEndian() {
-        return endian;
-    }
-
-    public String getDatagramName() {
-        return datagramName;
-    }
-
-    public boolean isDecodeIgnore() {
-        return decodeIgnore;
-    }
-
-    public boolean isEncodeIgnore() {
-        return encodeIgnore;
-    }
-
-    public Optional<FormulaAssist> getDecodeFormulaAssist() {
-        return decodeFormulaAssist;
-    }
-
-    public Optional<FormulaAssist> getEncodeFormulaAssist() {
-        return encodeFormulaAssist;
+        return FieldAssist.builder()
+                .parent(parent)
+                .field(field)
+                .endianPolicy(Stream.of(field.getAnnotation(Endian.class), parent.getAnnotation(Endian.class))
+                    .map(Endian::value)
+                    .findFirst()
+                    .orElse(EndianPolicy.Little))
+                .decoderClass()
+                .encoderCLass()
+                .typeDecoder()
+                .typeEncoder()
+                .build();
     }
 
     public void decode(byte[] datagram, Object object) {
-        Object value;
+        DecodeContext context = DecodeContext.builder()
+                .endian(this.endianPolicy)
+                .datagram(datagram)
+                .build();
 
-        if (this.decodeFormulaAssist.isPresent()) {
-            value = decodeFormulaAssist.get().invoke(
-                    this.decoder.get().decode(datagram, endian, dataTypeAnnotation),
-                    decodeFormulaAssist.get().getOutputType());
-        } else {
-            // return;
-            value = this.decoder.get().decode(datagram, endian, dataTypeAnnotation);
-        }
-
+        Object value = this.typeDecoder.decode(context);
         try {
-            this.field.set(object, value);
+            field.set(object, value);
         } catch (IllegalAccessException e) {
             e.printStackTrace();
-        }
-    }
-
-    public void encode(Object object, Map<String, byte[]> datagramMap) {
-        byte[] datagram = datagramMap.get(this.datagramName);
-
-        if (this.encodeFormulaAssist.isPresent()) {
-            this.encoder.get().encode(
-                    datagram,
-                    endian,
-                    dataTypeAnnotation,
-                    this.encoder.get().cast(object));
-        } else {
-            this.encoder.get().encode(new byte[100], endian, dataTypeAnnotation, 100);
         }
     }
 }

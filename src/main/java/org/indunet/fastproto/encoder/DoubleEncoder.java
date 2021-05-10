@@ -3,17 +3,16 @@ package org.indunet.fastproto.encoder;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.DoubleType;
 
-import java.lang.annotation.Annotation;
-
-public class DoubleEncoder implements Encoder<Double> {
+public class DoubleEncoder implements TypeEncoder {
     @Override
-    public void encode(byte[] datagram, EndianPolicy endian, Annotation dataTypeAnnotation, Double value) {
-        int byteOffset = ((DoubleType) dataTypeAnnotation).byteOffset();
+    public void encode(EncodeContext context) {
+        DoubleType type = context.getDataType(DoubleType.class);
+        Double value = context.getValue(Double.class);
 
-        this.encode(datagram, byteOffset, value, endian);
+        this.encode(context.getDatagram(), type.byteOffset(), context.getEndianPolicy(), value);
     }
 
-    public void encode(byte[] datagram, int byteOffset, double value, EndianPolicy endian) {
+    public void encode(byte[] datagram, int byteOffset, EndianPolicy endian, double value) {
         if (datagram.length - DoubleType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }

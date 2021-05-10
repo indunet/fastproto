@@ -12,9 +12,9 @@ public class FastProtoTest {
     //Motor motor = new Motor();
 
     @Test
-    public void testDecode() {
-        fastProto.decode(datagram, tesla);
+    public void testDecode() throws InstantiationException, IllegalAccessException {
+        fastProto.decode(datagram, Tesla.class);
 
-        System.out.println(JSON.toJSONString(tesla));
+        // System.out.println(JSON.toJSONString(tesla));
     }
 }

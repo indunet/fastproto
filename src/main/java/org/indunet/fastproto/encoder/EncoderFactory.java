@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 
 public class EncoderFactory {
-    static Map<Class<? extends Annotation>, Encoder> encoderMap = new HashMap<>();
+    static Map<Class<? extends Annotation>, TypeEncoder> encoderMap = new HashMap<>();
 
     static {
         encoderMap.put(BinaryType.class, new BinaryEncoder());
@@ -21,11 +21,11 @@ public class EncoderFactory {
         encoderMap.put(DoubleType.class, new DoubleEncoder());
     }
 
-    public static Optional<Encoder> create(Class<? extends Annotation> annotationClass) {
+    public static Optional<TypeEncoder> create(Class<? extends Annotation> annotationClass) {
         return Optional.ofNullable(encoderMap.get(annotationClass));
     }
 
-    public static void addDecoder(Class<? extends Annotation> annotationClass, Encoder encoder) {
+    public static void addDecoder(Class<? extends Annotation> annotationClass, TypeEncoder encoder) {
         encoderMap.put(annotationClass, encoder);
     }
 }

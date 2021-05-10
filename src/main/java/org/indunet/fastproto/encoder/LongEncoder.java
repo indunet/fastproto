@@ -3,22 +3,21 @@ package org.indunet.fastproto.encoder;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.LongType;
 
-import java.lang.annotation.Annotation;
-
-public class LongEncoder implements Encoder<Long> {
+public class LongEncoder implements TypeEncoder {
     @Override
-    public void encode(byte[] datagram, EndianPolicy endian, Annotation dataTypeAnnotation, Long value) {
-        int byteOffset = ((LongType) dataTypeAnnotation).byteOffset();
+    public void encode(EncodeContext context) {
+        LongType type = context.getDataType(LongType.class);
+        Long value = context.getValue(Long.class);
 
-        this.encode(datagram, byteOffset, value, endian);
+        this.encode(context.getDatagram(), type.byteOffset(), context.getEndianPolicy(), value);
     }
 
-    public void encode(byte[] datagram, int byteOffset, long value, EndianPolicy endian) {
+    public void encode(byte[] datagram, int byteOffset, EndianPolicy policy, long value) {
         if (datagram.length - LongType.SIZE < byteOffset) {
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        if (endian == EndianPolicy.Little) {
+        if (policy == EndianPolicy.Little) {
             datagram[byteOffset] = (byte) (value & 0xFFL);
             datagram[byteOffset + 1] = (byte) (value >> 8 & 0xFFL);
             datagram[byteOffset + 2] = (byte) (value >> 16 & 0xFFL);
@@ -27,7 +26,7 @@ public class LongEncoder implements Encoder<Long> {
             datagram[byteOffset + 5] = (byte) (value >> 40 & 0xFFL);
             datagram[byteOffset + 6] = (byte) (value >> 48 & 0xFFL);
             datagram[byteOffset + 7] = (byte) (value >> 56 & 0xFFL);
-        } else if (endian == EndianPolicy.Big) {
+        } else if (policy == EndianPolicy.Big) {
             datagram[byteOffset + 7] = (byte) (value & 0xFFL);
             datagram[byteOffset + 6] = (byte) (value >> 8 & 0xFFL);
             datagram[byteOffset + 5] = (byte) (value >> 16 & 0xFFL);

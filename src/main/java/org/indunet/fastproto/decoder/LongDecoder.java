@@ -5,12 +5,12 @@ import org.indunet.fastproto.annotation.type.LongType;
 
 import java.lang.annotation.Annotation;
 
-public class LongDecoder implements Decoder<Long> {
+public class LongDecoder implements TypeDecoder<Long> {
     @Override
-    public Long decode(final byte[] datagram, EndianPolicy endian, Annotation dataTypeAnnotation) {
-        int byteOffset = ((LongType) dataTypeAnnotation).byteOffset();
+    public Long decode(DecodeContext context) {
+        LongType type = context.getDataType(LongType.class);
 
-        return this.decode(datagram, byteOffset, endian);
+        return this.decode(context.getDatagram(), type.byteOffset(), context.getEndian());
     }
 
     public long decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {

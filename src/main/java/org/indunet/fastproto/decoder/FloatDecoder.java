@@ -5,12 +5,12 @@ import org.indunet.fastproto.annotation.type.FloatType;
 
 import java.lang.annotation.Annotation;
 
-public class FloatDecoder implements Decoder<Float> {
+public class FloatDecoder implements TypeDecoder<Float> {
     @Override
-    public Float decode(final byte[] datagram, EndianPolicy endian, Annotation dataTypeAnnotation) {
-        int byteOffset = ((FloatType) dataTypeAnnotation).byteOffset();
+    public Float decode(DecodeContext context) {
+        FloatType type = context.getDataType(FloatType.class);
 
-        return this.decode(datagram, byteOffset, endian);
+        return this.decode(context.getDatagram(), type.byteOffset(), context.getEndian());
     }
 
     public float decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {

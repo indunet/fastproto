@@ -1,6 +1,6 @@
 package org.indunet.fastproto.annotation;
 
-import org.indunet.fastproto.encoder.Encoder;
+import org.indunet.fastproto.encoder.TypeEncoder;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -13,6 +13,6 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TypeEncoder {
-    Class<? extends Encoder<?>> value();
+public @interface Encoder {
+    Class<? extends TypeEncoder> value();
 }

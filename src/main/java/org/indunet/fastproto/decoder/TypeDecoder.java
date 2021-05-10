@@ -1,6 +1,6 @@
 package org.indunet.fastproto.decoder;
 
 @FunctionalInterface
-public interface Decoder<R> {
+public interface TypeDecoder<R> {
     R decode(DecodeContext context);
 }

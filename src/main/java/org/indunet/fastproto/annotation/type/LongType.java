@@ -1,8 +1,8 @@
 package org.indunet.fastproto.annotation.type;
 
 import org.indunet.fastproto.annotation.DataType;
-import org.indunet.fastproto.annotation.TypeDecoder;
-import org.indunet.fastproto.annotation.TypeEncoder;
+import org.indunet.fastproto.annotation.Decoder;
+import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.decoder.LongDecoder;
 import org.indunet.fastproto.encoder.LongEncoder;
 
@@ -16,8 +16,8 @@ import java.lang.annotation.Target;
  * @version 1.0
  */
 @DataType
-@TypeDecoder(LongDecoder.class)
-@TypeEncoder(LongEncoder.class)
+@Decoder(LongDecoder.class)
+@Encoder(LongEncoder.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LongType {

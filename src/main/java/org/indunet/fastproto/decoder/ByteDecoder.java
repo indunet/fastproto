@@ -1,16 +1,13 @@
 package org.indunet.fastproto.decoder;
 
-import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.ByteType;
 
-import java.lang.annotation.Annotation;
-
-public class ByteDecoder implements Decoder<Byte> {
+public class ByteDecoder implements TypeDecoder<Byte> {
     @Override
-    public Byte decode(final byte[] datagram, EndianPolicy endian, Annotation dataTypeAnnotation) {
-        int byteOffset = ((ByteType) dataTypeAnnotation).byteOffset();
+    public Byte decode(DecodeContext context) {
+        ByteType type = context.getDataType(ByteType.class);
 
-        return this.decode(datagram, byteOffset);
+        return this.decode(context.getDatagram(), type.byteOffset());
     }
 
     public byte decode(final byte[] datagram, int byteOffset) {

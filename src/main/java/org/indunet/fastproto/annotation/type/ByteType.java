@@ -1,9 +1,10 @@
 package org.indunet.fastproto.annotation.type;
 
 import org.indunet.fastproto.annotation.DataType;
-import org.indunet.fastproto.annotation.TypeDecoder;
-import org.indunet.fastproto.annotation.TypeEncoder;
+import org.indunet.fastproto.annotation.Decoder;
+import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.decoder.ByteDecoder;
+import org.indunet.fastproto.encoder.ByteEncoder;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -15,8 +16,8 @@ import java.lang.annotation.Target;
  * @version 1.0
  */
 @DataType
-@TypeDecoder(ByteDecoder.class)
-@TypeEncoder(TypeEncoder.class)
+@Decoder(ByteDecoder.class)
+@Encoder(ByteEncoder.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ByteType {

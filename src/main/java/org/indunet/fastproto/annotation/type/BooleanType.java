@@ -1,8 +1,8 @@
 package org.indunet.fastproto.annotation.type;
 
 import org.indunet.fastproto.annotation.DataType;
-import org.indunet.fastproto.annotation.TypeDecoder;
-import org.indunet.fastproto.annotation.TypeEncoder;
+import org.indunet.fastproto.annotation.Decoder;
+import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.decoder.BooleanDecoder;
 import org.indunet.fastproto.encoder.BooleanEncoder;
 
@@ -17,8 +17,8 @@ import java.lang.annotation.Target;
  * @version 1.0
  */
 @DataType
-@TypeDecoder(BooleanDecoder.class)
-@TypeEncoder(BooleanEncoder.class)
+@Decoder(BooleanDecoder.class)
+@Encoder(BooleanEncoder.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BooleanType {
