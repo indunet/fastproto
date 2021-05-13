@@ -8,7 +8,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @version 1.0
  */
 public class FastProto {
-    protected ConcurrentHashMap<Class<?>, ClassAssist> assists = new ConcurrentHashMap<>();
+    protected ConcurrentHashMap<Class<?>, TypeAssist> assists = new ConcurrentHashMap<>();
 
     // TODO, decode method.
     public <T> T decode(byte[] datagram, Class<T> clazz) {

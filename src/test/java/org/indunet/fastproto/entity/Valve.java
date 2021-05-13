@@ -1,4 +1,4 @@
-package org.indunet.fastproto.domain;
+package org.indunet.fastproto.entity;
 
 import org.indunet.fastproto.annotation.type.BooleanType;
 

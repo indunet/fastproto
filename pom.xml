@@ -31,14 +31,7 @@
             <groupId>com.alibaba</groupId>
             <artifactId>fastjson</artifactId>
             <version>1.2.73</version>
-        </dependency>
-
-        <dependency>
-            <groupId>cc.crrc</groupId>
-            <artifactId>crrc-crypto</artifactId>
-            <version>1.0</version>
-            <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/crrc-crypto-1.0-encrypted.jar</systemPath>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 

@@ -1,7 +1,6 @@
 package org.indunet.fastproto;
 
-import com.alibaba.fastjson.JSON;
-import org.indunet.fastproto.domain.Tesla;
+import org.indunet.fastproto.entity.Tesla;
 import org.junit.Test;
 
 import java.util.Optional;

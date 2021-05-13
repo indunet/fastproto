@@ -1,4 +1,4 @@
-package org.indunet.fastproto.domain;
+package org.indunet.fastproto.entity;
 
 import org.indunet.fastproto.annotation.type.ByteType;
 import org.indunet.fastproto.annotation.type.IntegerType;
