@@ -3,11 +3,11 @@ package org.indunet.fastproto.encoder;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.FloatType;
 
-public class FloatEncoder implements TypeEncoder {
+public class FloatEncoder implements TypeEncoder<Float> {
     @Override
-    public void encode(EncodeContext context) {
+    public void encode(EncodeContext<Float> context) {
         FloatType type = context.getDataType(FloatType.class);
-        Float value = context.getValue(Float.class);
+        Float value = context.getValue();
 
         this.encode(context.getDatagram(), type.byteOffset(), context.getEndianPolicy(), value);
     }

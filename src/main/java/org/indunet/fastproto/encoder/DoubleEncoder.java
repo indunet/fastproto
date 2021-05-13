@@ -3,11 +3,11 @@ package org.indunet.fastproto.encoder;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.DoubleType;
 
-public class DoubleEncoder implements TypeEncoder {
+public class DoubleEncoder implements TypeEncoder<Double> {
     @Override
-    public void encode(EncodeContext context) {
+    public void encode(EncodeContext<Double> context) {
         DoubleType type = context.getDataType(DoubleType.class);
-        Double value = context.getValue(Double.class);
+        Double value = context.getValue();
 
         this.encode(context.getDatagram(), type.byteOffset(), context.getEndianPolicy(), value);
     }

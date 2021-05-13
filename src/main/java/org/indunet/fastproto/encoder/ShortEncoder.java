@@ -5,11 +5,11 @@ import org.indunet.fastproto.annotation.type.ShortType;
 
 import java.lang.annotation.Annotation;
 
-public class ShortEncoder implements TypeEncoder {
+public class ShortEncoder implements TypeEncoder<Short> {
     @Override
-    public void encode(EncodeContext context) {
+    public void encode(EncodeContext<Short> context) {
         ShortType type = context.getDataType(ShortType.class);
-        Short value = context.getValue(Short.class);
+        Short value = context.getValue();
 
         this.encode(context.getDatagram(), type.byteOffset(), context.getEndianPolicy(), value);
     }

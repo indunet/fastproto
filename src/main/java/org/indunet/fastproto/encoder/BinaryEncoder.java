@@ -2,11 +2,11 @@ package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.annotation.type.BinaryType;
 
-public class BinaryEncoder implements TypeEncoder {
+public class BinaryEncoder implements TypeEncoder<byte[]> {
     @Override
-    public void encode(EncodeContext context) {
+    public void encode(EncodeContext<byte[]> context) {
         BinaryType type = context.getDataType(BinaryType.class);
-        byte[] bytes = context.getValue(byte[].class);
+        byte[] bytes = context.getValue();
 
         this.encode(context.getDatagram(), type.byteOffset(), bytes);
     }

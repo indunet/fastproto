@@ -3,11 +3,11 @@ package org.indunet.fastproto.encoder;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.LongType;
 
-public class LongEncoder implements TypeEncoder {
+public class LongEncoder implements TypeEncoder<Long> {
     @Override
-    public void encode(EncodeContext context) {
+    public void encode(EncodeContext<Long> context) {
         LongType type = context.getDataType(LongType.class);
-        Long value = context.getValue(Long.class);
+        Long value = context.getValue();
 
         this.encode(context.getDatagram(), type.byteOffset(), context.getEndianPolicy(), value);
     }

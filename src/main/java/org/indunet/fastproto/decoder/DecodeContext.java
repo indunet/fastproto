@@ -17,12 +17,12 @@ import java.util.function.Function;
 @Data
 @Builder
 public class DecodeContext {
-    Field field;
+    Object object;
     byte[] datagram;
+
+    Field field;
     EndianPolicy endian;
     Annotation dateType;
-    TypeDecoder decoder;
-    Function formula;
 
     public <T> T getDataType(Class<T> clazz) {
         return clazz.cast(this.dateType);
