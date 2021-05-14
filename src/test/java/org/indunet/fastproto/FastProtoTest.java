@@ -1,9 +1,15 @@
 package org.indunet.fastproto;
 
+import org.indunet.fastproto.annotation.type.BooleanType;
+import org.indunet.fastproto.decoder.BooleanDecoder;
 import org.indunet.fastproto.entity.Tesla;
 import org.junit.Test;
 
+import java.lang.reflect.Array;
+import java.lang.reflect.ParameterizedType;
+import java.util.Arrays;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -16,16 +22,18 @@ public class FastProtoTest {
 
     @Test
     public void testDecode() throws InstantiationException, IllegalAccessException {
-        fastProto.decode(datagram, Tesla.class);
+        TypeAssist assist = TypeAssist.create(Tesla.class);
 
+        System.out.println(assist);
 
-        Optional.of(1)
-                .flatMap(x -> Optional.of(x + 1))
-                .ifPresent(System.out::println);
-        // System.out.println(JSON.toJSONString(tesla));
+        Arrays.stream(BooleanDecoder.class.getGenericInterfaces())
+                .filter(t -> t instanceof ParameterizedType)
+                .map(t -> (ParameterizedType) t)
+                .flatMap(t -> Arrays.stream(t.getActualTypeArguments()))
+                .findFirst();
+    }
 
-        Stream.of(1, 2, 3)
-                .flatMap(i -> IntStream.range(0, i).mapToObj(String::valueOf))
-                .forEach(System.out::println);
+    public <T, R> Function<T, R> get() {
+        return (T x) -> (R) (x);
     }
 }

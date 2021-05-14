@@ -14,5 +14,5 @@ import java.lang.annotation.Target;
 @Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Decoder {
-    Class<? extends TypeDecoder<?>> value();
+    Class<? extends TypeDecoder> value();
 }

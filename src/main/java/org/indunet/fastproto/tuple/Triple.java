@@ -1,8 +1,16 @@
 package org.indunet.fastproto.tuple;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
- * @author
+ * @author Deng Ran
  * @version 1.0
  */
-public class Triple {
+@AllArgsConstructor
+@Getter
+public class Triple<A, B, C> {
+    A c1;
+    B c2;
+    C c3;
 }

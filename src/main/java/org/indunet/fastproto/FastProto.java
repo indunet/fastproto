@@ -1,5 +1,9 @@
 package org.indunet.fastproto;
 
+import org.indunet.fastproto.decoder.BooleanDecoder;
+import org.indunet.fastproto.decoder.Decoders;
+import org.indunet.fastproto.decoder.TypeDecoder;
+
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -14,6 +18,21 @@ public class FastProto {
     public <T> T decode(byte[] datagram, Class<T> clazz) {
         Objects.requireNonNull(datagram);
         Objects.requireNonNull(clazz);
+
+
+//        TypeAssist.create(clazz)
+//                .toDecodeContexts(datagram).stream()
+//                .peek(c -> {
+//                    try {
+//                        Class<? extends TypeDecoder> cc = null;
+//
+//
+//                    } catch (InstantiationException e) {
+//                        e.printStackTrace();
+//                    } catch (IllegalAccessException e) {
+//                        e.printStackTrace();
+//                    }
+//                });
 
         return null;
     }

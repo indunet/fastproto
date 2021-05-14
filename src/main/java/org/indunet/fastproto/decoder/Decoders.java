@@ -15,7 +15,7 @@ public class Decoders {
     protected static ConcurrentHashMap<Class<? extends TypeDecoder>, TypeDecoder> deocders = new ConcurrentHashMap<>();
     protected static ConcurrentHashMap<Class<? extends Function>, Function> formulas = new ConcurrentHashMap<>();
 
-    public static <T> TypeDecoder<T> getDecoder(Class<? extends TypeDecoder<T>> clazz) {
+    public static <T> TypeDecoder<T> getDecoder(Class<? extends TypeDecoder> clazz) {
         return deocders.computeIfPresent(clazz, (c, __) -> {
             try {
                 return c.newInstance();
@@ -29,7 +29,8 @@ public class Decoders {
         });
     }
 
-    public static <T, R> Function<DecodeContext, R> getDecoder(Class<? extends TypeDecoder<T>> clazz, Function<T, R> formula) {
-        return (DecodeContext c) -> formula.apply(getDecoder(clazz).decode(c));
+    public static <T, R> Function<DecodeContext, R> getDecoder(Class<? extends TypeDecoder> clazz, Function<T, R> formula) {
+        TypeDecoder<T> decoder = getDecoder(clazz);
+        return (DecodeContext c) -> formula.apply((T) getDecoder(clazz).decode(c));
     }
 }
