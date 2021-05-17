@@ -14,7 +14,7 @@ public class TypeAssistTest {
     @Test
     public void testCreate() {
         TypeAssist assist = TypeAssist.create(Tesla.class);
-        // List<DecodeContext> contexts = assist.toDecodeContext(new byte[100]);
+        List<DecodeContext> contexts = assist.toDecodeContexts(new byte[100]);
 
         System.out.println("Successfully");
     }

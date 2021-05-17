@@ -3,11 +3,7 @@ package org.indunet.fastproto.decoder;
 import lombok.Builder;
 import lombok.Data;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.encoder.TypeEncoder;
-
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.function.Function;
+import org.indunet.fastproto.TypeAssist;
 
 /**
  * @author Deng Ran
@@ -18,19 +14,14 @@ import java.util.function.Function;
 public class DecodeContext {
     Object object;
     byte[] datagram;
+    TypeAssist typeAssist;
 
-    Field field;
-    EndianPolicy endian;
-    Annotation dateType;
-
-    Class<? extends TypeDecoder> decoder;
-    Class<? extends TypeEncoder> encoder;
-
-    Class<? extends Function> decodeFormula;
-    Class<? extends Function> encodeFormula;
+    public EndianPolicy getEndianPolicy() {
+        return this.typeAssist.getEndianPolicy();
+    }
 
     public <T> T getDataType(Class<T> clazz) {
-        return clazz.cast(this.dateType);
+        return clazz.cast(this.typeAssist.getDataType());
     }
 
     public <T> T getObject(Class<T> clazz) {

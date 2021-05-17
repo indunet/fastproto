@@ -1,10 +1,12 @@
 package org.indunet.fastproto.entity;
 
+import lombok.ToString;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.annotation.type.FloatType;
 import org.indunet.fastproto.annotation.type.IntegerType;
 
+@ToString
 @Endian(EndianPolicy.Little)
 // @Datagram("Motor")
 public class Motor {

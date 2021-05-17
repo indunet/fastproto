@@ -10,7 +10,7 @@ public class DoubleDecoder implements TypeDecoder<Double> {
     public Double decode(DecodeContext context) {
         DoubleType type = context.getDataType(DoubleType.class);
 
-        return this.decode(context.getDatagram(), type.byteOffset(), context.getEndian());
+        return this.decode(context.getDatagram(), type.byteOffset(), context.getEndianPolicy());
     }
 
     public double decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {

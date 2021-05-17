@@ -1,10 +1,12 @@
 package org.indunet.fastproto.entity;
 
+import lombok.ToString;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.annotation.type.DoubleType;
 import org.indunet.fastproto.annotation.type.IntegerType;
 
+@ToString
 public class AirConditioner {
     protected static final int OUTDOOR_TEMPERATURE_BYTE_OFFSET = 0;
     protected static final int INDOOR_TEMPERATURE_BYTE_OFFSET = 2;

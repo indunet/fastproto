@@ -2,6 +2,10 @@ package org.indunet.fastproto.exception;
 
 // TODO, exception enum.
 public class CodecException extends RuntimeException {
+    public CodecException() {
+
+    }
+
     public CodecException(String message) {
         super(message);
     }
