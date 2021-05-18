@@ -12,7 +12,7 @@ public class FloatDecoderTest {
 
     @Test
     public void testGet() {
-        assertEquals(decoder.decode(NumberUtils.floatToBinary(pi), 0, EndianPolicy.Little), pi, 0.0001);
-        assertEquals(decoder.decode(NumberUtils.floatToBinary(e), 0, EndianPolicy.Little), e, 0.0001);
+        assertEquals(decoder.decode(NumberUtils.floatToBinary(pi), 0, EndianPolicy.LITTLE), pi, 0.0001);
+        assertEquals(decoder.decode(NumberUtils.floatToBinary(e), 0, EndianPolicy.LITTLE), e, 0.0001);
     }
 }

@@ -19,12 +19,12 @@ public class FloatEncoder implements TypeEncoder<Float> {
 
         int bits = Float.floatToIntBits(value);
 
-        if (endian == EndianPolicy.Little) {
+        if (endian == EndianPolicy.LITTLE) {
             datagram[byteOffset] = (byte) (bits & 0xFFL);
             datagram[byteOffset + 1] = (byte) (bits >> 8 & 0xFFL);
             datagram[byteOffset + 2] = (byte) (bits >> 16 & 0xFFL);
             datagram[byteOffset + 3] = (byte) (bits >> 24 & 0xFFL);
-        } else if (endian == EndianPolicy.Big) {
+        } else if (endian == EndianPolicy.BIG) {
             datagram[byteOffset + 3] = (byte) (bits & 0xFFL);
             datagram[byteOffset + 2] = (byte) (bits >> 8 & 0xFFL);
             datagram[byteOffset + 1] = (byte) (bits >> 16 & 0xFFL);

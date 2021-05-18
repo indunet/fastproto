@@ -7,16 +7,18 @@ import lombok.ToString;
 import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.TypeDecoder;
+import org.indunet.fastproto.encoder.EncodeContext;
 import org.indunet.fastproto.encoder.TypeEncoder;
 import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.DecodeException.DecodeError;
 import org.indunet.fastproto.tuple.Pair;
 import org.indunet.fastproto.tuple.Tuple;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Field;
+import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
@@ -80,7 +82,7 @@ public class TypeAssist {
 
         EndianPolicy endianPolicy = Optional.ofNullable(clazz.getAnnotation(Endian.class))
                 .map(Endian::value)
-                .get();
+                .orElse(null);
         Boolean decodeIgnore = clazz.isAnnotationPresent(DecodeIgnore.class);
         Boolean encodeIgnore = clazz.isAnnotationPresent(EncodeIgnore.class);
 
@@ -90,7 +92,7 @@ public class TypeAssist {
                 .filter(isDataType)
                 .peek(f -> f.setAccessible(true))
                 .map(TypeAssist::create);
-                // TODO, set default endian policy.
+        // TODO, set default endian policy.
 
         TypeAssist assist = TypeAssist.builder()
                 .type(clazz)
@@ -117,7 +119,7 @@ public class TypeAssist {
     protected static TypeAssist create(Field field) {
         EndianPolicy policy = Optional.ofNullable(field.getAnnotation(Endian.class))
                 .map(Endian::value)
-                .get();
+                .orElse(null);
         Boolean decodeIgnore = field.isAnnotationPresent(DecodeIgnore.class);
         Boolean encodeIgnore = field.isAnnotationPresent(EncodeIgnore.class);
         Annotation dataType = Arrays.stream(field.getAnnotations())
@@ -128,18 +130,18 @@ public class TypeAssist {
                 .map(Annotation::annotationType)
                 .map(t -> t.getAnnotation(Decoder.class))
                 .map(Decoder::value)
-                .orElseThrow(DecodeException::new);
+                .orElse(null);
         Class<? extends TypeEncoder> encoder = Optional.of(dataType)
                 .map(Annotation::annotationType)
                 .map(t -> t.getAnnotation(Encoder.class))
                 .map(Encoder::value)
-                .orElseThrow(EncodeException::new);
+                .orElse(null);
         Class<? extends Function> decodeFormula = Optional.ofNullable(field.getAnnotation(DecodeFormula.class))
                 .map(DecodeFormula::value)
-                .get();
+                .orElse(null);
         Class<? extends Function> encodeFormula = Optional.ofNullable(field.getAnnotation(EncodeFormula.class))
                 .map(EncodeFormula::value)
-                .get();
+                .orElse(null);
 
         return TypeAssist.builder()
                 .type(field.getType())
@@ -190,16 +192,32 @@ public class TypeAssist {
 
             return Stream.concat(fieldStream, classStream)
                     .collect(Collectors.toList());
-        } catch (InstantiationException e) {
+        } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+            throw new DecodeException(
+                    MessageFormat.format(DecodeError.FAIL_INITIALIZING_DECODE_OBJECT.getMessage(), this.type.getName()), e);
         }
-
-        throw new CodecException();
     }
 
     public List<DecodeContext> toDecodeContexts(byte[] datagram) {
         return this.toDecodeContexts(datagram, null);
+    }
+
+    public <T> EncodeContext<T> toEncodeContext(Object object, byte[] datagram) {
+//        try {
+//            Object value = this.field.get(object);
+//
+//            return EncodeContext.create(this.field.getType())
+//                    .setDatagram(datagram)
+//                    .setValue(value)
+//                    .setTypeAssist(this);
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        }
+        return null;
+    }
+
+    public List<EncodeContext<?>> toEncodeContexts(Object object, byte[] datagram) {
+        return null;
     }
 }

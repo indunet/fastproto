@@ -3,14 +3,12 @@ package org.indunet.fastproto.decoder;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.FloatType;
 
-import java.lang.annotation.Annotation;
-
 public class FloatDecoder implements TypeDecoder<Float> {
     @Override
     public Float decode(DecodeContext context) {
         FloatType type = context.getDataType(FloatType.class);
 
-        return this.decode(context.getDatagram(), type.byteOffset(), context.getEndian());
+        return this.decode(context.getDatagram(), type.byteOffset(), context.getEndianPolicy());
     }
 
     public float decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {
@@ -21,12 +19,12 @@ public class FloatDecoder implements TypeDecoder<Float> {
         int value = 0;
 
 
-        if (endian == EndianPolicy.Little) {
+        if (endian == EndianPolicy.LITTLE) {
             value |= (datagram[byteOffset] & 0xFF);
             value |= ((datagram[byteOffset + 1] & 0xFF) << 8);
             value |= ((datagram[byteOffset + 2] & 0xFF) << 16);
             value |= ((datagram[byteOffset + 3] & 0xFF) << 24);
-        } else if (endian == EndianPolicy.Big) {
+        } else if (endian == EndianPolicy.BIG) {
             value |= (datagram[byteOffset + 3] & 0xFF);
             value |= ((datagram[byteOffset + 2] & 0xFF) << 8);
             value |= ((datagram[byteOffset + 1] & 0xFF) << 16);

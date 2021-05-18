@@ -12,4 +12,8 @@ import lombok.Getter;
 public class Pair<A, B> {
     A c1;
     B c2;
+
+    public <C> Triple<A, B, C> append(C c3) {
+        return new Triple(c1, c2, c3);
+    }
 }

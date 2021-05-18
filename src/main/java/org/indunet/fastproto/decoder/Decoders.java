@@ -1,66 +1,49 @@
 package org.indunet.fastproto.decoder;
 
-import org.indunet.fastproto.decoder.DecodeContext;
-import org.indunet.fastproto.decoder.TypeDecoder;
-import org.indunet.fastproto.encoder.EncodeContext;
-import org.indunet.fastproto.encoder.TypeEncoder;
+import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodeException.DecodeError;
 
-import java.util.Map;
+import java.text.MessageFormat;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * @author Deng Ran
  * @version 1.0
  */
 public class Decoders {
-    protected static ConcurrentHashMap<Class<? extends TypeDecoder>, TypeDecoder> deocders = new ConcurrentHashMap<>();
+    protected static ConcurrentHashMap<Class<? extends TypeDecoder>, TypeDecoder<?>> decoders = new ConcurrentHashMap<>();
     protected static ConcurrentHashMap<Class<? extends Function>, Function> formulas = new ConcurrentHashMap<>();
 
-    public static <T> TypeDecoder<T> getDecoder(Class<? extends TypeDecoder> clazz) {
-        return deocders.computeIfAbsent(clazz, (c) -> {
+    public static Function<DecodeContext, ?> getDecoder(Class<? extends TypeDecoder> clazz) {
+        return decoders.computeIfAbsent(clazz, c -> {
             try {
                 return c.newInstance();
-            } catch (InstantiationException e) {
+            } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                throw new DecodeException(
+                        MessageFormat.format(DecodeError.FAIL_INITIALIZING_DECODER.getMessage(), clazz.getName()), e);
             }
+        })::decode;
+    }
 
-            return null;
+    public static <T, R> Function<T, R> getFormula(Class<? extends Function> clazz) {
+        return formulas.computeIfAbsent(clazz, c -> {
+            try {
+                return c.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+                throw new DecodeException(
+                        MessageFormat.format(DecodeError.FAIL_INITIALIZING_DECODE_FORMULA.getMessage(), clazz.getName()), e);
+            }
         });
     }
 
-    public static <T> TypeDecoder<T> getDecoder(Class<? extends TypeDecoder> clazz, Class<T> type) {
-        return deocders.computeIfAbsent(clazz, (c) -> {
-            try {
-                return c.newInstance();
-            } catch (InstantiationException e) {
-                e.printStackTrace();
-            } catch (IllegalAccessException e) {
-                e.printStackTrace();
-            }
-
-            return null;
-        });
-    }
-
-    public static <T, R> Function<DecodeContext, R> getDecoder(Class<? extends TypeDecoder> clazz, Function<T, R> formula) {
-        TypeDecoder<T> decoder = getDecoder(clazz);
-        return (DecodeContext c) -> formula.apply((T) getDecoder(clazz).decode(c));
-    }
-
-    public static <T> TypeEncoder<T> getEncoder(Class<? extends TypeEncoder> clazz) {
-        try {
-            return clazz.newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
+    public static Function<DecodeContext, ?> getDecoder(Class<? extends TypeDecoder> decoderClass, Class<? extends Function> formulaClass) {
+        if (formulaClass != null) {
+            return getDecoder(decoderClass).andThen(getFormula(formulaClass));
+        } else {
+            return getDecoder(decoderClass);
         }
-
-        return null;
     }
 }

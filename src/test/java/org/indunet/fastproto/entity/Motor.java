@@ -7,10 +7,10 @@ import org.indunet.fastproto.annotation.type.FloatType;
 import org.indunet.fastproto.annotation.type.IntegerType;
 
 @ToString
-@Endian(EndianPolicy.Little)
+@Endian(EndianPolicy.LITTLE)
 // @Datagram("Motor")
 public class Motor {
-    @Endian(EndianPolicy.Big)
+    @Endian(EndianPolicy.BIG)
     @IntegerType(byteOffset = 0)
     public int voltage;
     @FloatType(byteOffset = 4)

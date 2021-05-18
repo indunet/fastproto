@@ -14,7 +14,7 @@ public class AirConditioner {
     public Compressor compressor = new Compressor();
     public Valve valve = new Valve();
 
-    @Endian(EndianPolicy.Big)
+    @Endian(EndianPolicy.BIG)
     @IntegerType(byteOffset = OUTDOOR_TEMPERATURE_BYTE_OFFSET)
     public double outdoorTemperature;
 

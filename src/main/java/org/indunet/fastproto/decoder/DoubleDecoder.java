@@ -3,8 +3,6 @@ package org.indunet.fastproto.decoder;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.DoubleType;
 
-import java.lang.annotation.Annotation;
-
 public class DoubleDecoder implements TypeDecoder<Double> {
     @Override
     public Double decode(DecodeContext context) {
@@ -20,7 +18,7 @@ public class DoubleDecoder implements TypeDecoder<Double> {
 
         long value = 0;
 
-        if (endian == EndianPolicy.Little) {
+        if (endian == EndianPolicy.LITTLE) {
             value |= (datagram[byteOffset] & 0xFFL);
             value |= ((datagram[byteOffset + 1] & 0xFFL) << 8);
             value |= ((datagram[byteOffset + 2] & 0xFFL) << 16);
@@ -29,7 +27,7 @@ public class DoubleDecoder implements TypeDecoder<Double> {
             value |= ((datagram[byteOffset + 5] & 0xFFL) << 40);
             value |= ((datagram[byteOffset + 6] & 0xFFL) << 48);
             value |= ((datagram[byteOffset + 7] & 0xFFL) << 56);
-        } else if (endian == EndianPolicy.Big) {
+        } else if (endian == EndianPolicy.BIG) {
             value |= (datagram[byteOffset + 7] & 0xFFL);
             value |= ((datagram[byteOffset + 6] & 0xFFL) << 8);
             value |= ((datagram[byteOffset + 5] & 0xFFL) << 16);

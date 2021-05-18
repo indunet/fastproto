@@ -2,7 +2,6 @@ package org.indunet.fastproto;
 
 import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.Decoders;
-import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.tuple.Tuple;
 
 import java.lang.reflect.Field;
@@ -28,11 +27,18 @@ public class FastProto {
                 .map(DecodeContext::getObject)
                 .map(clazz::cast)
                 .findFirst()
-                .orElseThrow(DecodeException::new);
+                .get();
 
         contexts.stream()
-                .map(c -> Tuple.get(Decoders.getDecoder(c.getTypeAssist().getDecoderClass()), c))
-                .map(t -> Tuple.get(t.getC1().decode(t.getC2()), t.getC2()))
+                .map(c -> Tuple.get(
+                        Decoders.getDecoder(
+                                c.getTypeAssist().getDecoderClass(),
+                                c.getTypeAssist().getDecodeFormula()),
+                        c))
+                .map(t -> Tuple.get(
+                        t.getC1().apply(t.getC2()),
+                        t.getC2()))
+                .map(t -> t.append(t.getC2().getTypeAssist().getDecodeFormula()))
                 .forEach(t -> {
                     Field f = t.getC2().getTypeAssist().getField();
                     Object o = t.getC2().getObject();

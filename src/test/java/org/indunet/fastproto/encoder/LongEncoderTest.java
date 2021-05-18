@@ -11,8 +11,8 @@ public class LongEncoderTest {
 
     @Test
     public void testSet() {
-        encoder.encode(datagram, 0, EndianPolicy.Little, 0x0102030405060708L);
-        encoder.encode(datagram, 8, EndianPolicy.Little, -1L);
+        encoder.encode(datagram, 0, EndianPolicy.LITTLE, 0x0102030405060708L);
+        encoder.encode(datagram, 8, EndianPolicy.LITTLE, -1L);
 
         assertArrayEquals(datagram, new byte[]{0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01,
                 -1, -1, -1, -1, -1, -1, -1, -1});

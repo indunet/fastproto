@@ -17,12 +17,12 @@ public class IntegerEncoder implements TypeEncoder<Integer> {
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        if (policy == EndianPolicy.Little) {
+        if (policy == EndianPolicy.LITTLE) {
             datagram[byteOffset] = (byte) (value & 0xFF);
             datagram[byteOffset + 1] = (byte) (value >> 8 & 0xFF);
             datagram[byteOffset + 2] = (byte) (value >> 16 & 0xFF);
             datagram[byteOffset + 3] = (byte) (value >> 24 & 0xFF);
-        } else if (policy == EndianPolicy.Big) {
+        } else if (policy == EndianPolicy.BIG) {
             datagram[byteOffset + 3] = (byte) (value & 0xFF);
             datagram[byteOffset + 2] = (byte) (value >> 8 & 0xFF);
             datagram[byteOffset + 1] = (byte) (value >> 16 & 0xFF);

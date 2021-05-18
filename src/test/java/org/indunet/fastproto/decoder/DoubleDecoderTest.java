@@ -12,7 +12,7 @@ public class DoubleDecoderTest {
 
     @Test
     public void testDecode() {
-         assertEquals(decoder.decode(NumberUtils.doubleToBinary(pi), 0, EndianPolicy.Little), pi, 0.001);
-         assertEquals(decoder.decode(NumberUtils.doubleToBinary(e), 0, EndianPolicy.Little), e, 0.001);
+         assertEquals(decoder.decode(NumberUtils.doubleToBinary(pi), 0, EndianPolicy.LITTLE), pi, 0.001);
+         assertEquals(decoder.decode(NumberUtils.doubleToBinary(e), 0, EndianPolicy.LITTLE), e, 0.001);
     }
 }

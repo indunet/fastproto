@@ -3,7 +3,9 @@ package org.indunet.fastproto.encoder;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.Getter;
 import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.TypeAssist;
 
 import java.lang.annotation.Annotation;
 
@@ -11,16 +13,12 @@ import java.lang.annotation.Annotation;
  * @author Deng Ran
  * @version 1.0
  */
-@Data
-@Builder
-@AllArgsConstructor
+@Getter
 public class EncodeContext<T> {
-    Object object;
     byte[] datagram;
     T value;
 
-    EndianPolicy endianPolicy;
-    Annotation dataType;
+    TypeAssist typeAssist;
 
     protected EncodeContext() {
 
@@ -30,7 +28,25 @@ public class EncodeContext<T> {
         return new EncodeContext<T>();
     }
 
+    public EncodeContext<T> setDatagram(byte[] datagram) {
+        this.datagram = datagram;
+
+        return this;
+    }
+
+    public EncodeContext<T> setValue(Object value) {
+        this.value = (T) value;
+
+        return this;
+    }
+
+    public EncodeContext<T> setTypeAssist(TypeAssist assist) {
+        this.typeAssist = assist;
+
+        return this;
+    }
+
     public <T> T getDataType(Class<T> clazz) {
-        return clazz.cast(this.dataType);
+        return clazz.cast(this.typeAssist.getDataType());
     }
 }
