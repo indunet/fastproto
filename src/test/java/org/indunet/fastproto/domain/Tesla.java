@@ -1,4 +1,4 @@
-package org.indunet.fastproto.entity;
+package org.indunet.fastproto.domain;
 
 import lombok.ToString;
 import org.indunet.fastproto.EndianPolicy;

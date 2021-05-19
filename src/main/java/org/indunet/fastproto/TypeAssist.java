@@ -203,17 +203,18 @@ public class TypeAssist {
         return this.toDecodeContexts(datagram, null);
     }
 
-    public <T> EncodeContext<T> toEncodeContext(Object object, byte[] datagram) {
-//        try {
-//            Object value = this.field.get(object);
-//
-//            return EncodeContext.create(this.field.getType())
-//                    .setDatagram(datagram)
-//                    .setValue(value)
-//                    .setTypeAssist(this);
-//        } catch (IllegalAccessException e) {
-//            e.printStackTrace();
-//        }
+    public EncodeContext<?> toEncodeContext(Object object, byte[] datagram) {
+        try {
+            Object value = this.field.get(object);
+
+            return EncodeContext.builder()
+                    .datagram(datagram)
+                    .value(this.field.getType().cast(value))
+                    .typeAssist(this)
+                    .build();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
         return null;
     }
 

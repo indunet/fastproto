@@ -1,4 +1,4 @@
-package org.indunet.fastproto.entity;
+package org.indunet.fastproto.domain;
 
 /**
  * @author Deng Ran

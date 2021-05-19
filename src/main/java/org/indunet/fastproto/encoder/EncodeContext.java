@@ -14,6 +14,7 @@ import java.lang.annotation.Annotation;
  * @version 1.0
  */
 @Getter
+@Builder
 public class EncodeContext<T> {
     byte[] datagram;
     T value;
@@ -22,28 +23,6 @@ public class EncodeContext<T> {
 
     protected EncodeContext() {
 
-    }
-
-    public static <T> EncodeContext<T> create(Class<T> clazz) {
-        return new EncodeContext<T>();
-    }
-
-    public EncodeContext<T> setDatagram(byte[] datagram) {
-        this.datagram = datagram;
-
-        return this;
-    }
-
-    public EncodeContext<T> setValue(Object value) {
-        this.value = (T) value;
-
-        return this;
-    }
-
-    public EncodeContext<T> setTypeAssist(TypeAssist assist) {
-        this.typeAssist = assist;
-
-        return this;
     }
 
     public <T> T getDataType(Class<T> clazz) {

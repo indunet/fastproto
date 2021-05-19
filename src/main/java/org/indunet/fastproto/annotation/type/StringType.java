@@ -6,10 +6,7 @@ import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.decoder.StringDecoder;
 import org.indunet.fastproto.encoder.StringEncoder;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 
 /**
  * @author Deng Ran
@@ -24,6 +21,8 @@ public @interface StringType {
     int byteOffset();
 
     int length();
+
+    Class<? extends Annotation> dataType() default BinaryType.class;
 
     String charsetName() default "utf-8";
 }

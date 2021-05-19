@@ -34,7 +34,8 @@ public class DecodeException extends CodecException {
         EXCEEDED_DATAGRAM_SIZE("Exceeded datagram size."),
         FAIL_INITIALIZING_DECODER("Fail initializing decoder {0}."),
         FAIL_INITIALIZING_DECODE_FORMULA("Fail initializing decode formula {0}."),
-        FAIL_INITIALIZING_DECODE_OBJECT("Fail initializing decode object {0}");
+        FAIL_INITIALIZING_DECODE_OBJECT("Fail initializing decode object {0}"),
+        NOT_FOUND_DECODER("Decoder for data type {0} cannot be found.");
 
         String message;
     }

@@ -1,6 +1,6 @@
 package org.indunet.fastproto;
 
-import org.indunet.fastproto.entity.Tesla;
+import org.indunet.fastproto.domain.Tesla;
 import org.junit.Test;
 
 public class FastProtoTest {

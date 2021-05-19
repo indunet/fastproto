@@ -1,4 +1,4 @@
-package org.indunet.fastproto.entity;
+package org.indunet.fastproto.domain;
 
 import org.indunet.fastproto.annotation.type.FloatType;
 
