@@ -12,6 +12,8 @@ import org.indunet.fastproto.encoder.TypeEncoder;
 import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.DecodeException.DecodeError;
+import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodeException.EncodeError;
 import org.indunet.fastproto.tuple.Pair;
 import org.indunet.fastproto.tuple.Tuple;
 
@@ -203,22 +205,40 @@ public class TypeAssist {
         return this.toDecodeContexts(datagram, null);
     }
 
-    public EncodeContext<?> toEncodeContext(Object object, byte[] datagram) {
+    public <T> EncodeContext<T> toEncodeContext(Object object, byte[] datagram) {
         try {
             Object value = this.field.get(object);
 
-            return EncodeContext.builder()
-                    .datagram(datagram)
-                    .value(this.field.getType().cast(value))
-                    .typeAssist(this)
-                    .build();
+            return new EncodeContext(datagram, this, this.field.getType().cast(value)) {};
         } catch (IllegalAccessException e) {
             e.printStackTrace();
+            throw new EncodeException(
+                    MessageFormat.format(EncodeError.FAIL_GETTING_FIELD_VALUE.getMessage(), this.field.getName()), e);
         }
-        return null;
     }
 
     public List<EncodeContext<?>> toEncodeContexts(Object object, byte[] datagram) {
-        return null;
+        Stream<EncodeContext> fieldStream = this.elements.stream()
+                .filter(a -> a.getElementType() == ElementType.FIELD)
+                .map(a -> a.toEncodeContext(object, datagram));
+
+        Stream<EncodeContext> classStream = this.elements.stream()
+                .filter(a -> a.getElementType() == ElementType.TYPE)
+                .flatMap(a -> {
+                    if (object != null && field != null) {
+                        try {
+                            return a.toEncodeContexts(this.field.get(object), datagram).stream();
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                            throw new DecodeException(
+                                    MessageFormat.format(EncodeError.FAIL_GETTING_FIELD_VALUE.getMessage(), this.type.getName()), e);
+                        }
+                    } else {
+                        return null;
+                    }
+                });
+
+        return Stream.concat(fieldStream, classStream)
+                    .collect(Collectors.toList());
     }
 }

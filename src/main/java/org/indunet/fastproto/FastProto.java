@@ -2,6 +2,8 @@ package org.indunet.fastproto;
 
 import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.Decoders;
+import org.indunet.fastproto.encoder.EncodeContext;
+import org.indunet.fastproto.encoder.Encoders;
 import org.indunet.fastproto.tuple.Tuple;
 
 import java.lang.reflect.Field;
@@ -57,5 +59,28 @@ public class FastProto {
     public static void encode(Object object, byte[] datagram) {
         Objects.requireNonNull(object);
         Objects.requireNonNull(datagram);
+
+        TypeAssist assist = assists.computeIfAbsent(object.getClass(), c -> TypeAssist.create(c));
+        List<EncodeContext<?>> contexts = assist.toEncodeContexts(object, datagram);
+
+        contexts.stream()
+                .map(c -> Tuple.get(
+                        Encoders.getEncoder(c.getTypeAssist().getEncoderClass()),
+                        Encoders.getFormula(c.getTypeAssist().getEncodeFormula()),
+                        c))
+                .map(t -> {
+                    t.getC1().accept(t.getC3().create(t.getC2().apply(t.getC3().getValue())));
+                })
+                .map(t -> t.append(t.getC2().getTypeAssist().getDecodeFormula()))
+                .forEach(t -> {
+                    Field f = t.getC2().getTypeAssist().getField();
+                    Object o = t.getC2().getObject();
+
+                    try {
+                        f.set(o, t.getC1());
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 }
