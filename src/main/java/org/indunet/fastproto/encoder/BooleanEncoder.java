@@ -3,11 +3,11 @@ package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.annotation.type.BooleanType;
 
-public class BooleanEncoder implements TypeEncoder<Boolean> {
+public class BooleanEncoder implements TypeEncoder {
     @Override
-    public void encode(EncodeContext<Boolean> context) {
+    public void encode(EncodeContext context) {
         BooleanType type = context.getDataType(BooleanType.class);
-        Boolean value = context.getValue();
+        Boolean value = context.getValue(Boolean.class);
 
         this.encode(context.getDatagram(), type.byteOffset(), type.bitOffset(), value);
     }

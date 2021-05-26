@@ -1,10 +1,12 @@
 package org.indunet.fastproto.domain;
 
+import lombok.Data;
 import lombok.ToString;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.Endian;
 import org.indunet.fastproto.annotation.type.LongType;
 
+@Data
 @ToString
 @Endian(EndianPolicy.LITTLE)
 public class Tesla {
@@ -13,6 +15,6 @@ public class Tesla {
     public Battery battery;
     public AirConditioner airConditioner;
     public Seat seat;
-    @LongType(byteOffset = 0)
-    Long mileage;
+    @LongType(value = 0)
+    long mileage;
 }

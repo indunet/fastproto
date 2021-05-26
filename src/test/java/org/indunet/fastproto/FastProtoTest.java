@@ -1,5 +1,6 @@
 package org.indunet.fastproto;
 
+import org.indunet.fastproto.domain.AirConditioner;
 import org.indunet.fastproto.domain.Tesla;
 import org.junit.Test;
 
@@ -10,5 +11,20 @@ public class FastProtoTest {
     public void testDecode() {
         Tesla tesla = FastProto.decode(datagram, Tesla.class);
         System.out.println(tesla.toString());
+    }
+
+    @Test
+    public void testEncode() {
+        Tesla tesla = new Tesla();
+        AirConditioner airConditioner = new AirConditioner();
+
+        airConditioner.setIndoorTemperature(23.0);
+        tesla.setAirConditioner(airConditioner);
+
+        byte[] datagram = new byte[100];
+        tesla.setMileage(100l);
+        FastProto.encode(tesla, datagram);
+
+        System.out.println(datagram);
     }
 }

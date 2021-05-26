@@ -1,6 +1,6 @@
 package org.indunet.fastproto.annotation.type;
 
-import org.indunet.fastproto.annotation.DataType;
+import org.indunet.fastproto.annotation.Type;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.decoder.DoubleDecoder;
@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
  * @author Deng Ran
  * @version 1.0
  */
-@DataType
+@Type
 @Decoder(DoubleDecoder.class)
 @Encoder(DoubleEncoder.class)
 @Target(ElementType.FIELD)
@@ -25,5 +25,5 @@ public @interface DoubleType {
     double MAX = Double.MAX_VALUE;
     double MIN = Double.MIN_VALUE;
 
-    int byteOffset();
+    int value();
 }

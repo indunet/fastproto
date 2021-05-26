@@ -1,5 +1,6 @@
 package org.indunet.fastproto;
 
+import com.sun.image.codec.jpeg.JPEGEncodeParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -14,8 +15,6 @@ import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.DecodeException.DecodeError;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.exception.EncodeException.EncodeError;
-import org.indunet.fastproto.tuple.Pair;
-import org.indunet.fastproto.tuple.Tuple;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -59,32 +58,32 @@ public class TypeAssist {
 
     }
 
-    public static TypeAssist create(Class<?> clazz) {
+    public static TypeAssist of(Class<?> clazz) {
         Predicate<Field> isDataType = f -> Arrays.stream(f.getAnnotations())
                 .map(a -> a.annotationType())
-                .anyMatch(t -> t.isAnnotationPresent(DataType.class));
+                .anyMatch(t -> t.isAnnotationPresent(Type.class));
 
         // Nested types.
         Stream<TypeAssist> typeStream = Arrays.stream(clazz.getDeclaredFields())
                 .filter(f -> !f.isAnnotationPresent(DecodeIgnore.class)
                         && !f.isAnnotationPresent(EncodeIgnore.class))
                 .filter(isDataType.negate())
-                .peek(f -> f.setAccessible(true))
-                .map(f -> Tuple.get(f, f.getType()))
-                .map(t -> Tuple.get(t.getC1(), TypeAssist.create(t.getC2())))
-                .peek(t -> {
-                    Boolean decodeIgnore = t.getC1().isAnnotationPresent(DecodeIgnore.class);
-                    Boolean encodeIgnore = t.getC1().isAnnotationPresent(EncodeIgnore.class);
-                    t.getC2().setDecodeIgnore(decodeIgnore);
-                    t.getC2().setEncodeIgnore(encodeIgnore);
-                    t.getC2().setField(t.getC1());
-                })
-                .map(Pair::getC2)
-                .filter(TypeAssist::hasElement);
+                .map(f -> {
+                    f.setAccessible(true);
+                    Class<?> c = f.getType();
+                    TypeAssist a = TypeAssist.of(c);
+                    Boolean decodeIgnore = f.isAnnotationPresent(DecodeIgnore.class);
+                    Boolean encodeIgnore = f.isAnnotationPresent(EncodeIgnore.class);
+                    a.setDecodeIgnore(decodeIgnore);
+                    a.setEncodeIgnore(encodeIgnore);
+                    a.setField(f);
+
+                    return a;
+                }).filter(TypeAssist::hasElement);
 
         EndianPolicy endianPolicy = Optional.ofNullable(clazz.getAnnotation(Endian.class))
                 .map(Endian::value)
-                .orElse(null);
+                .orElse(EndianPolicy.LITTLE);
         Boolean decodeIgnore = clazz.isAnnotationPresent(DecodeIgnore.class);
         Boolean encodeIgnore = clazz.isAnnotationPresent(EncodeIgnore.class);
 
@@ -93,8 +92,12 @@ public class TypeAssist {
                         && !f.isAnnotationPresent(EncodeIgnore.class))
                 .filter(isDataType)
                 .peek(f -> f.setAccessible(true))
-                .map(TypeAssist::create);
-        // TODO, set default endian policy.
+                .map(TypeAssist::of)
+                .peek(a -> {
+                    if (a.getEndianPolicy() == null) {
+                        a.setEndianPolicy(endianPolicy);
+                    }
+                });
 
         TypeAssist assist = TypeAssist.builder()
                 .type(clazz)
@@ -118,14 +121,14 @@ public class TypeAssist {
         return assist;
     }
 
-    protected static TypeAssist create(Field field) {
+    protected static TypeAssist of(Field field) {
         EndianPolicy policy = Optional.ofNullable(field.getAnnotation(Endian.class))
                 .map(Endian::value)
                 .orElse(null);
         Boolean decodeIgnore = field.isAnnotationPresent(DecodeIgnore.class);
         Boolean encodeIgnore = field.isAnnotationPresent(EncodeIgnore.class);
         Annotation dataType = Arrays.stream(field.getAnnotations())
-                .filter(a -> a.annotationType().isAnnotationPresent(DataType.class))
+                .filter(a -> a.annotationType().isAnnotationPresent(Type.class))
                 .findAny()
                 .orElseThrow(CodecException::new);
         Class<? extends TypeDecoder> decoder = Optional.of(dataType)
@@ -205,11 +208,14 @@ public class TypeAssist {
         return this.toDecodeContexts(datagram, null);
     }
 
-    public <T> EncodeContext<T> toEncodeContext(Object object, byte[] datagram) {
+    public EncodeContext toEncodeContext(Object object, byte[] datagram) {
         try {
-            Object value = this.field.get(object);
 
-            return new EncodeContext(datagram, this, this.field.getType().cast(value)) {};
+            return EncodeContext.builder()
+                    .datagram(datagram)
+                    .typeAssist(this)
+                    .value(this.field.get(object))
+                    .build();
         } catch (IllegalAccessException e) {
             e.printStackTrace();
             throw new EncodeException(
@@ -217,7 +223,7 @@ public class TypeAssist {
         }
     }
 
-    public List<EncodeContext<?>> toEncodeContexts(Object object, byte[] datagram) {
+    public List<EncodeContext> toEncodeContexts(Object object, byte[] datagram) {
         Stream<EncodeContext> fieldStream = this.elements.stream()
                 .filter(a -> a.getElementType() == ElementType.FIELD)
                 .map(a -> a.toEncodeContext(object, datagram));
@@ -225,20 +231,21 @@ public class TypeAssist {
         Stream<EncodeContext> classStream = this.elements.stream()
                 .filter(a -> a.getElementType() == ElementType.TYPE)
                 .flatMap(a -> {
-                    if (object != null && field != null) {
-                        try {
-                            return a.toEncodeContexts(this.field.get(object), datagram).stream();
-                        } catch (IllegalAccessException e) {
-                            e.printStackTrace();
-                            throw new DecodeException(
-                                    MessageFormat.format(EncodeError.FAIL_GETTING_FIELD_VALUE.getMessage(), this.type.getName()), e);
+                    try {
+                        if (object != null && a.field.get(object) != null) {
+                            return a.toEncodeContexts(a.field.get(object), datagram).stream();
+                        } else {
+                            return Stream.empty();
                         }
-                    } else {
-                        return null;
+                    } catch (IllegalAccessException e) {
+                        e.printStackTrace();
+                        throw new DecodeException(
+                                MessageFormat.format(EncodeError.FAIL_GETTING_FIELD_VALUE.getMessage(), this.type.getName()), e);
                     }
                 });
 
         return Stream.concat(fieldStream, classStream)
+                    .filter(c -> c.getValue() != null)
                     .collect(Collectors.toList());
     }
 }

@@ -4,12 +4,13 @@ import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.Decoders;
 import org.indunet.fastproto.encoder.EncodeContext;
 import org.indunet.fastproto.encoder.Encoders;
-import org.indunet.fastproto.tuple.Tuple;
 
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 /**
  * @author Deng Ran
@@ -23,7 +24,7 @@ public class FastProto {
         Objects.requireNonNull(datagram);
         Objects.requireNonNull(clazz);
 
-        TypeAssist assist = assists.computeIfAbsent(clazz, c -> TypeAssist.create(c));
+        TypeAssist assist = assists.computeIfAbsent(clazz, c -> TypeAssist.of(c));
         List<DecodeContext> contexts = assist.toDecodeContexts(datagram);
         T object = contexts.stream()
                 .map(DecodeContext::getObject)
@@ -31,22 +32,18 @@ public class FastProto {
                 .findFirst()
                 .get();
 
-        contexts.stream()
-                .map(c -> Tuple.get(
-                        Decoders.getDecoder(
-                                c.getTypeAssist().getDecoderClass(),
-                                c.getTypeAssist().getDecodeFormula()),
-                        c))
-                .map(t -> Tuple.get(
-                        t.getC1().apply(t.getC2()),
-                        t.getC2()))
-                .map(t -> t.append(t.getC2().getTypeAssist().getDecodeFormula()))
-                .forEach(t -> {
-                    Field f = t.getC2().getTypeAssist().getField();
-                    Object o = t.getC2().getObject();
+        contexts.parallelStream()
+                .forEach(c -> {
+                    TypeAssist a = c.getTypeAssist();
+                    Function<DecodeContext, ?> func = Decoders.getDecoder(
+                            a.getDecoderClass(),
+                            a.getDecodeFormula());
+                    Object value = func.apply(c);
+                    Field f = a.getField();
+                    Object o = c.getObject();
 
                     try {
-                        f.set(o, t.getC1());
+                        f.set(o, value);
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     }
@@ -60,27 +57,19 @@ public class FastProto {
         Objects.requireNonNull(object);
         Objects.requireNonNull(datagram);
 
-        TypeAssist assist = assists.computeIfAbsent(object.getClass(), c -> TypeAssist.create(c));
-        List<EncodeContext<?>> contexts = assist.toEncodeContexts(object, datagram);
+        TypeAssist assist = assists.computeIfAbsent(object.getClass(), c -> TypeAssist.of(c));
+        List<EncodeContext> contexts = assist.toEncodeContexts(object, datagram);
 
         contexts.stream()
-                .map(c -> Tuple.get(
-                        Encoders.getEncoder(c.getTypeAssist().getEncoderClass()),
-                        Encoders.getFormula(c.getTypeAssist().getEncodeFormula()),
-                        c))
-                .map(t -> {
-                    t.getC1().accept(t.getC3().create(t.getC2().apply(t.getC3().getValue())));
-                })
-                .map(t -> t.append(t.getC2().getTypeAssist().getDecodeFormula()))
-                .forEach(t -> {
-                    Field f = t.getC2().getTypeAssist().getField();
-                    Object o = t.getC2().getObject();
-
-                    try {
-                        f.set(o, t.getC1());
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
+                .forEach(c -> {
+                    if (c.getTypeAssist().getEncodeFormula() != null) {
+                        Object o = Encoders.getFormula(c.getTypeAssist().getEncodeFormula())
+                                .apply(c.getValue());
+                        c.setValue(o);
                     }
+
+                    Consumer<EncodeContext> consumer = Encoders.getEncoder(c.getTypeAssist().getEncoderClass());
+                    consumer.accept(c);
                 });
     }
 }

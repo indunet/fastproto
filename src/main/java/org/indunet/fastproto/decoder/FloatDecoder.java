@@ -8,7 +8,7 @@ public class FloatDecoder implements TypeDecoder<Float> {
     public Float decode(DecodeContext context) {
         FloatType type = context.getDataType(FloatType.class);
 
-        return this.decode(context.getDatagram(), type.byteOffset(), context.getEndianPolicy());
+        return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }
 
     public float decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {

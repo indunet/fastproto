@@ -9,13 +9,13 @@ import org.indunet.fastproto.formula.VoltageFormula;
 
 @ToString
 public class Battery {
-    @ShortType(byteOffset = 8)
+    @ShortType(value = 8)
     public short current;
 
-    @ByteType(byteOffset = 9)
+    @ByteType(value = 9)
     @DecodeFormula(VoltageFormula.class)
     public double voltage;
 
-    @IntegerType(byteOffset = 4)
+    @IntegerType(value = 4)
     public int temperature;
 }

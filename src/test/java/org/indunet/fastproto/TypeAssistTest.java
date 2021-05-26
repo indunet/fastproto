@@ -13,7 +13,7 @@ import java.util.List;
 public class TypeAssistTest {
     @Test
     public void testCreate() {
-        TypeAssist assist = TypeAssist.create(Tesla.class);
+        TypeAssist assist = TypeAssist.of(Tesla.class);
         List<DecodeContext> contexts = assist.toDecodeContexts(new byte[100]);
 
         System.out.println("Successfully");

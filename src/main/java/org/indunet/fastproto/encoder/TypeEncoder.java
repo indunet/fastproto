@@ -1,6 +1,6 @@
 package org.indunet.fastproto.encoder;
 
 @FunctionalInterface
-public interface TypeEncoder<T> {
-    void encode(EncodeContext<T> context);
+public interface TypeEncoder {
+    void encode(EncodeContext context);
 }

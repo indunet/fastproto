@@ -8,7 +8,7 @@ public class IntegerDecoder implements TypeDecoder<Integer> {
     public Integer decode(DecodeContext context) {
         IntegerType type = context.getDataType(IntegerType.class);
 
-        return this.decode(context.getDatagram(), type.byteOffset(), context.getEndianPolicy());
+        return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }
 
     public int decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {

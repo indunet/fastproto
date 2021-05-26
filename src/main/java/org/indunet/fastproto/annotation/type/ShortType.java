@@ -1,6 +1,6 @@
 package org.indunet.fastproto.annotation.type;
 
-import org.indunet.fastproto.annotation.DataType;
+import org.indunet.fastproto.annotation.Type;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.decoder.ShortDecoder;
@@ -15,7 +15,7 @@ import java.lang.annotation.Target;
  * @author Deng Ran
  * @version 1.0
  */
-@DataType
+@Type
 @Decoder(ShortDecoder.class)
 @Encoder(ShortEncoder.class)
 @Target(ElementType.FIELD)
@@ -25,6 +25,6 @@ public @interface ShortType {
     int MAX = Short.MAX_VALUE;
     int MIN = Short.MIN_VALUE;
 
-    int byteOffset();
+    int value();
 
 }

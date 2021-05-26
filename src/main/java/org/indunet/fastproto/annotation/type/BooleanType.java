@@ -1,6 +1,6 @@
 package org.indunet.fastproto.annotation.type;
 
-import org.indunet.fastproto.annotation.DataType;
+import org.indunet.fastproto.annotation.Type;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.decoder.BooleanDecoder;
@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
  * @author Deng Ran
  * @version 1.0
  */
-@DataType
+@Type
 @Decoder(BooleanDecoder.class)
 @Encoder(BooleanEncoder.class)
 @Target(ElementType.FIELD)

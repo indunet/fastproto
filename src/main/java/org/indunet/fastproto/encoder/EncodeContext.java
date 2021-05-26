@@ -13,15 +13,19 @@ import java.lang.annotation.Annotation;
  * @author Deng Ran
  * @version 1.0
  */
-@Getter
-@AllArgsConstructor
-public class EncodeContext<T> {
+@Data
+@Builder
+public class EncodeContext {
     byte[] datagram;
     TypeAssist typeAssist;
-    T value;
+    Object value;
 
     public <T> T getDataType(Class<T> clazz) {
         return clazz.cast(this.typeAssist.getDataType());
+    }
+
+    public <T> T getValue(Class<T> clazz) {
+        return (T) value;
     }
 
     public EndianPolicy getEndianPolicy() {

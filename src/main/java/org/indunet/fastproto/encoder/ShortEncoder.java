@@ -3,13 +3,13 @@ package org.indunet.fastproto.encoder;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.ShortType;
 
-public class ShortEncoder implements TypeEncoder<Short> {
+public class ShortEncoder implements TypeEncoder {
     @Override
-    public void encode(EncodeContext<Short> context) {
+    public void encode(EncodeContext context) {
         ShortType type = context.getDataType(ShortType.class);
-        Short value = context.getValue();
+        Short value = context.getValue(Short.class);
 
-        this.encode(context.getDatagram(), type.byteOffset(), context.getEndianPolicy(), value);
+        this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);
     }
 
     public void encode(byte[] datagram, int byteOffset, EndianPolicy policy, short value) {

@@ -1,24 +1,25 @@
 package org.indunet.fastproto.domain;
 
+import lombok.Data;
 import lombok.ToString;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.annotation.type.DoubleType;
-import org.indunet.fastproto.annotation.type.IntegerType;
 
+@Data
 @ToString
 public class AirConditioner {
-    protected static final int OUTDOOR_TEMPERATURE_BYTE_OFFSET = 0;
-    protected static final int INDOOR_TEMPERATURE_BYTE_OFFSET = 2;
+    protected static final int OUTDOOR_TEMPERATURE_BYTE_OFFSET = 10;
+    protected static final int INDOOR_TEMPERATURE_BYTE_OFFSET = 20;
 
     public Compressor compressor = new Compressor();
     public Valve valve = new Valve();
 
     @Endian(EndianPolicy.BIG)
-    @IntegerType(byteOffset = OUTDOOR_TEMPERATURE_BYTE_OFFSET)
+    @DoubleType(value = OUTDOOR_TEMPERATURE_BYTE_OFFSET)
     public double outdoorTemperature;
 
-    @DoubleType(byteOffset = INDOOR_TEMPERATURE_BYTE_OFFSET)
+    @DoubleType(value = INDOOR_TEMPERATURE_BYTE_OFFSET)
     public double indoorTemperature;
 
     public class DatagramBuilder {

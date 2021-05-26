@@ -1,6 +1,6 @@
 package org.indunet.fastproto.annotation.type;
 
-import org.indunet.fastproto.annotation.DataType;
+import org.indunet.fastproto.annotation.Type;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.decoder.IntegerDecoder;
@@ -11,7 +11,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-@DataType
+@Type
 @Decoder(IntegerDecoder.class)
 @Encoder(IntegerEncoder.class)
 @Target(ElementType.FIELD)
@@ -21,5 +21,5 @@ public @interface IntegerType {
     int MAX = Integer.MAX_VALUE;
     int MIN = Integer.MIN_VALUE;
 
-    int byteOffset();
+    int value();
 }

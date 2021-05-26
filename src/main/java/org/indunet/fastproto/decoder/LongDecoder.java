@@ -8,7 +8,7 @@ public class LongDecoder implements TypeDecoder<Long> {
     public Long decode(DecodeContext context) {
         LongType type = context.getDataType(LongType.class);
 
-        return this.decode(context.getDatagram(), type.byteOffset(), context.getEndianPolicy());
+        return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }
 
     public long decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {

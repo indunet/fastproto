@@ -3,6 +3,6 @@ package org.indunet.fastproto.domain;
 import org.indunet.fastproto.annotation.type.FloatType;
 
 public class Compressor {
-    @FloatType(byteOffset = 6)
+    @FloatType(value = 6)
     float pressure;
 }

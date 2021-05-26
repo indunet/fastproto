@@ -11,9 +11,9 @@ import org.indunet.fastproto.annotation.type.IntegerType;
 // @Datagram("Motor")
 public class Motor {
     @Endian(EndianPolicy.BIG)
-    @IntegerType(byteOffset = 0)
+    @IntegerType(value = 0)
     public int voltage;
-    @FloatType(byteOffset = 4)
+    @FloatType(value = 4)
     public float speed;
 
     public void beforeDecode() {

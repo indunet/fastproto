@@ -3,13 +3,13 @@ package org.indunet.fastproto.encoder;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.IntegerType;
 
-public class IntegerEncoder implements TypeEncoder<Integer> {
+public class IntegerEncoder implements TypeEncoder {
     @Override
-    public void encode(EncodeContext<Integer> context) {
+    public void encode(EncodeContext context) {
         IntegerType type = context.getDataType(IntegerType.class);
-        Integer value = context.getValue();
+        Integer value = context.getValue(Integer.class);
 
-        this.encode(context.getDatagram(), type.byteOffset(), context.getEndianPolicy(), value);
+        this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);
     }
 
     public void encode(byte[] datagram, int byteOffset, EndianPolicy policy, int value) {

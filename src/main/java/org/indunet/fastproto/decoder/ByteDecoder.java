@@ -7,7 +7,7 @@ public class ByteDecoder implements TypeDecoder<Byte> {
     public Byte decode(DecodeContext context) {
         ByteType type = context.getDataType(ByteType.class);
 
-        return this.decode(context.getDatagram(), type.byteOffset());
+        return this.decode(context.getDatagram(), type.value());
     }
 
     public byte decode(final byte[] datagram, int byteOffset) {

@@ -3,13 +3,13 @@ package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.annotation.type.ByteType;
 
-public class ByteEncoder implements TypeEncoder<Byte> {
+public class ByteEncoder implements TypeEncoder {
     @Override
-    public void encode(EncodeContext<Byte> context) {
+    public void encode(EncodeContext context) {
         ByteType type = context.getDataType(ByteType.class);
-        Byte value = context.getValue();
+        Byte value = context.getValue(Byte.class);
 
-        this.encode(context.getDatagram(), type.byteOffset(), value);
+        this.encode(context.getDatagram(), type.value(), value);
     }
 
     public void encode(byte[] datagram, int byteOffset, byte value) {
