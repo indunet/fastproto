@@ -2,6 +2,9 @@ package org.indunet.fastproto.decoder;
 
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.ShortType;
+import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodeException.DecodeError;
+
 
 public class ShortDecoder implements TypeDecoder<Short> {
     @Override
@@ -13,7 +16,7 @@ public class ShortDecoder implements TypeDecoder<Short> {
 
     public short decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {
         if (datagram.length - ShortType.SIZE < byteOffset) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         short value = 0;

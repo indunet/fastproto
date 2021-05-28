@@ -1,16 +1,4 @@
-# FastProto
+# What is FastProto?
 
-FastProto is a lightweight Java serialization and deserialization tool that can replace pattern files with Java annotations to achieve fine-grained control of serialization and deserialization, especially suitable for the communication between devices and servers in the Internet of Things field .
+FastProto is a project that was conceived and designed in 2018. The original intention was to solve practical problems encountered in work. To put it simply, in the field of IoT, binary messages are usually used to transmit data between devices and servers, instead of the commonly used JSON format in Web. The server usually needs to parse binary messages according to the specified protocol. If need to send data to device, it also needs to perform data packets according to the specified protocol. Although it is not challenging for most developers, the whole process is extremely boring and error-prone. If there is an easier way to convert binary messages into Java objects, or convert Java objects into binary messages, developers can focus more on the business implementation of the system. Based on the above ideas, FastProto was born.
 
-
-Weather monitoring is a typical application scenario. The weather monitoring point sends data to the server of the weather station for data aggregation. Embedded devices usually use C/C++ programming, and considering the cost of 4G traffic, edge devices and servers usually use binary messages to transmit data instead of the commonly used JSON in the Web.
-Air temperature -40～+60℃
-Air humidity 0～100%RH 0.1%RH
-Wind direction 8 directions 3°
-Wind speed 0～75m/s 0.1m/s
-Atmospheric pressure 0~150KPa 0.1KPa
-Noise 30~120dB 1dB
-Rainfall 0-8mm/min 0.2m
-Illumination 0～200,000 Lux:
-
-# RoadMap

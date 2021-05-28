@@ -1,6 +1,8 @@
 package org.indunet.fastproto.decoder;
 
 import org.indunet.fastproto.annotation.type.BooleanType;
+import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodeException.DecodeError;
 
 public class BooleanDecoder implements TypeDecoder<Boolean> {
     @Override
@@ -11,11 +13,12 @@ public class BooleanDecoder implements TypeDecoder<Boolean> {
     }
 
     public boolean decode(final byte[] datagram, int byteOffset, int bitOffset) {
-        if (datagram.length <= byteOffset) {
-            // TODO
-            throw new ArrayIndexOutOfBoundsException();
+        if (bitOffset > BooleanType.MAX_BIT_OFFSET || bitOffset < BooleanType.MIN_BIT_OFFSET) {
+            throw new DecodeException(DecodeError.ILLEGAL_BIT_OFFSET);
+        } else if (byteOffset >= datagram.length) {
+            throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
+        } else {
+            return (datagram[byteOffset] & (0x01 << bitOffset)) != 0;
         }
-
-        return (datagram[byteOffset] & (0x01 << bitOffset)) != 0;
     }
 }

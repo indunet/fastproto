@@ -31,6 +31,7 @@ import java.util.stream.Stream;
 /**
  * @author Deng Ran
  * @version 1.0
+ * @since 1.8
  */
 @Data
 @Builder
@@ -57,8 +58,21 @@ public class TypeAssist {
 
     }
 
+    public boolean hasElement() {
+        return this.elements != null && !this.elements.isEmpty();
+    }
+
+    public void setValue(Object object, Object value) {
+        try {
+            this.field.set(object, value);
+        } catch (IllegalAccessException e) {
+            throw new DecodeException(
+                    MessageFormat.format(DecodeError.FAIL_ASSIGN_VALUE.getMessage(), this.field.getName()), e);
+        }
+    }
+
     public static TypeAssist of(Class<?> clazz) {
-        Predicate<Field> isDataType = f -> Arrays.stream(f.getAnnotations())
+        Predicate<Field> isType = f -> Arrays.stream(f.getAnnotations())
                 .map(Annotation::annotationType)
                 .anyMatch(t -> t.isAnnotationPresent(Type.class));
 
@@ -66,7 +80,7 @@ public class TypeAssist {
         Stream<TypeAssist> typeStream = Arrays.stream(clazz.getDeclaredFields())
                 .filter(f -> !f.isAnnotationPresent(DecodeIgnore.class)
                         && !f.isAnnotationPresent(EncodeIgnore.class))
-                .filter(isDataType.negate())
+                .filter(isType.negate())
                 .map(f -> {
                     f.setAccessible(true);
                     Class<?> c = f.getType();
@@ -80,6 +94,7 @@ public class TypeAssist {
                     return a;
                 }).filter(TypeAssist::hasElement);
 
+        // Default as little endian.
         EndianPolicy endianPolicy = Optional.ofNullable(clazz.getAnnotation(Endian.class))
                 .map(Endian::value)
                 .orElse(EndianPolicy.LITTLE);
@@ -89,7 +104,7 @@ public class TypeAssist {
         Stream<TypeAssist> fieldStream = Arrays.stream(clazz.getDeclaredFields())
                 .filter(f -> !f.isAnnotationPresent(DecodeIgnore.class)
                         && !f.isAnnotationPresent(EncodeIgnore.class))
-                .filter(isDataType)
+                .filter(isType)
                 .peek(f -> f.setAccessible(true))
                 .map(TypeAssist::of)
                 .peek(a -> {
@@ -161,10 +176,6 @@ public class TypeAssist {
                 .encodeIgnore(encodeIgnore)
                 .elementType(ElementType.FIELD)
                 .build();
-    }
-
-    public boolean hasElement() {
-        return this.elements != null && !this.elements.isEmpty();
     }
 
     protected DecodeContext toDecodeContext(byte[] datagram, Object object) {

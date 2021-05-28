@@ -2,6 +2,8 @@ package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.FloatType;
+import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodeException.EncodeError;
 
 public class FloatEncoder implements TypeEncoder {
     @Override
@@ -14,7 +16,7 @@ public class FloatEncoder implements TypeEncoder {
 
     public void encode(byte[] datagram, int byteOffset, EndianPolicy endian, float value) {
         if (datagram.length - FloatType.SIZE < byteOffset) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         int bits = Float.floatToIntBits(value);

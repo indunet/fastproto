@@ -1,6 +1,9 @@
 package org.indunet.fastproto.decoder;
 
 import org.indunet.fastproto.annotation.type.StringType;
+import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodeException.DecodeError;
+
 
 import java.nio.charset.Charset;
 import java.util.Arrays;
@@ -22,6 +25,8 @@ public class StringDecoder implements TypeDecoder<String> {
         if (length == -1) {
             return new String(
                     Arrays.copyOfRange(datagram, byteOffset, datagram.length - byteOffset), charset);
+        } else if (byteOffset + length >= datagram.length) {
+            throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         } else {
             return new String(
                     Arrays.copyOfRange(datagram, byteOffset, byteOffset + length), charset);

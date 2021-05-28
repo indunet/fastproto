@@ -1,6 +1,9 @@
 package org.indunet.fastproto.decoder;
 
 import org.indunet.fastproto.annotation.type.ByteType;
+import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodeException.DecodeError;
+
 
 public class ByteDecoder implements TypeDecoder<Byte> {
     @Override
@@ -12,7 +15,7 @@ public class ByteDecoder implements TypeDecoder<Byte> {
 
     public byte decode(final byte[] datagram, int byteOffset) {
         if (datagram.length - ByteType.SIZE < byteOffset) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         return datagram[byteOffset];

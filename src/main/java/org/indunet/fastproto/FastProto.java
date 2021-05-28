@@ -15,11 +15,11 @@ import java.util.function.Function;
 /**
  * @author Deng Ran
  * @version 1.0
+ * @since 1.8
  */
 public class FastProto {
     protected static ConcurrentHashMap<Class<?>, TypeAssist> assists = new ConcurrentHashMap<>();
 
-    // TODO, decode method.
     public static <T> T decode(byte[] datagram, Class<T> clazz) {
         Objects.requireNonNull(datagram);
         Objects.requireNonNull(clazz);
@@ -39,20 +39,13 @@ public class FastProto {
                             a.getDecoderClass(),
                             a.getDecodeFormula());
                     Object value = func.apply(c);
-                    Field f = a.getField();
                     Object o = c.getObject();
-
-                    try {
-                        f.set(o, value);
-                    } catch (IllegalAccessException e) {
-                        e.printStackTrace();
-                    }
+                    a.setValue(o, value);
                 });
 
         return object;
     }
 
-    // TODO, encode method.
     public static void encode(Object object, byte[] datagram) {
         Objects.requireNonNull(object);
         Objects.requireNonNull(datagram);

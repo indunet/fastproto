@@ -2,6 +2,8 @@ package org.indunet.fastproto.decoder;
 
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.DoubleType;
+import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodeException.DecodeError;
 
 public class DoubleDecoder implements TypeDecoder<Double> {
     @Override
@@ -13,7 +15,7 @@ public class DoubleDecoder implements TypeDecoder<Double> {
 
     public double decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {
         if (datagram.length - DoubleType.SIZE < byteOffset) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         long value = 0;

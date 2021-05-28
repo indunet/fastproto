@@ -2,6 +2,9 @@ package org.indunet.fastproto.decoder;
 
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.LongType;
+import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodeException.DecodeError;
+
 
 public class LongDecoder implements TypeDecoder<Long> {
     @Override
@@ -13,7 +16,7 @@ public class LongDecoder implements TypeDecoder<Long> {
 
     public long decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {
         if (datagram.length - LongType.SIZE < byteOffset) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         long value = 0;

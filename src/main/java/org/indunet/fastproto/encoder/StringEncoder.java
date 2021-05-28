@@ -4,6 +4,8 @@ import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.ShortType;
 import org.indunet.fastproto.annotation.type.StringType;
 import sun.awt.CharsetString;
+import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodeException.EncodeError;
 
 import java.nio.charset.Charset;
 
@@ -26,6 +28,8 @@ public class StringEncoder implements TypeEncoder {
 
         if (length == -1) {
             System.arraycopy(bytes, 0, datagram, byteOffset, bytes.length);
+        } else if (byteOffset + length >= datagram.length) {
+            throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         } else {
             System.arraycopy(bytes, 0, datagram, byteOffset, length);
         }

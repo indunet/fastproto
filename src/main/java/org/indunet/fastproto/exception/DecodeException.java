@@ -32,11 +32,13 @@ public class DecodeException extends CodecException {
     public enum DecodeError {
         NO_VALID_DECODER_FOUND("No valid decoder found for {0}."),
         EXCEEDED_DATAGRAM_SIZE("Exceeded datagram size."),
+        ILLEGAL_BIT_OFFSET("Illegal bit offset."),
         FAIL_INITIALIZING_DECODER("Fail initializing decoder {0}."),
         FAIL_INITIALIZING_DECODE_FORMULA("Fail initializing decode formula {0}."),
         FAIL_INITIALIZING_DECODE_OBJECT("Fail initializing decode object {0}"),
         NOT_FOUND_DECODER("Decoder for data type {0} cannot be found."),
-        ILLEGAL_TIMESTAMP_PARAMETERS("Illgeal timestamp parameters.");
+        ILLEGAL_TIMESTAMP_PARAMETERS("Illgeal timestamp parameters."),
+        FAIL_ASSIGN_VALUE("Fail assigning value for field {0}");
 
         String message;
     }

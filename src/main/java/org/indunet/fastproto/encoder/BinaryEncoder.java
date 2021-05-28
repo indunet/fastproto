@@ -1,6 +1,8 @@
 package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.annotation.type.BinaryType;
+import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodeException.EncodeError;
 
 public class BinaryEncoder implements TypeEncoder {
     @Override
@@ -12,8 +14,8 @@ public class BinaryEncoder implements TypeEncoder {
     }
 
     public void encode(byte[] datagram, int byteOffset, byte[] bytes) {
-        if (datagram.length - bytes.length < byteOffset) {
-            throw new ArrayIndexOutOfBoundsException();
+        if (byteOffset + bytes.length >= datagram.length) {
+            throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         System.arraycopy(bytes, 0, datagram, byteOffset, bytes.length);
