@@ -1,6 +1,5 @@
 package org.indunet.fastproto;
 
-import com.sun.image.codec.jpeg.JPEGEncodeParam;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -60,7 +59,7 @@ public class TypeAssist {
 
     public static TypeAssist of(Class<?> clazz) {
         Predicate<Field> isDataType = f -> Arrays.stream(f.getAnnotations())
-                .map(a -> a.annotationType())
+                .map(Annotation::annotationType)
                 .anyMatch(t -> t.isAnnotationPresent(Type.class));
 
         // Nested types.
@@ -127,6 +126,7 @@ public class TypeAssist {
                 .orElse(null);
         Boolean decodeIgnore = field.isAnnotationPresent(DecodeIgnore.class);
         Boolean encodeIgnore = field.isAnnotationPresent(EncodeIgnore.class);
+
         Annotation dataType = Arrays.stream(field.getAnnotations())
                 .filter(a -> a.annotationType().isAnnotationPresent(Type.class))
                 .findAny()
@@ -245,7 +245,7 @@ public class TypeAssist {
                 });
 
         return Stream.concat(fieldStream, classStream)
-                    .filter(c -> c.getValue() != null)
-                    .collect(Collectors.toList());
+                .filter(c -> c.getValue() != null)
+                .collect(Collectors.toList());
     }
 }

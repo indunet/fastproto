@@ -17,7 +17,7 @@ public class LongEncoder implements TypeEncoder {
             throw new ArrayIndexOutOfBoundsException();
         }
 
-        if (policy == EndianPolicy.LITTLE) {
+        if (policy == EndianPolicy.BIG) {
             datagram[byteOffset + 7] = (byte) (value & 0xFFL);
             datagram[byteOffset + 6] = (byte) (value >> 8 & 0xFFL);
             datagram[byteOffset + 5] = (byte) (value >> 16 & 0xFFL);
@@ -26,7 +26,7 @@ public class LongEncoder implements TypeEncoder {
             datagram[byteOffset + 2] = (byte) (value >> 40 & 0xFFL);
             datagram[byteOffset + 1] = (byte) (value >> 48 & 0xFFL);
             datagram[byteOffset] = (byte) (value >> 56 & 0xFFL);
-        } else  {
+        } else {
             datagram[byteOffset] = (byte) (value & 0xFFL);
             datagram[byteOffset + 1] = (byte) (value >> 8 & 0xFFL);
             datagram[byteOffset + 2] = (byte) (value >> 16 & 0xFFL);

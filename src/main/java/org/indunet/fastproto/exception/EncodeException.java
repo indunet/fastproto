@@ -31,7 +31,8 @@ public class EncodeException extends CodecException {
         EXCEEDED_DATAGRAM_SIZE("Exceeded datagram size."),
         FAIL_INITIALIZING_ENCODER("Fail initializing encoder of {0}."),
         FAIL_INITIALIZING_ENCODE_FORMULA("Fail initilizing encode formula of {0}."),
-        FAIL_GETTING_FIELD_VALUE("Unable to get the value of filed {0}.");
+        FAIL_GETTING_FIELD_VALUE("Unable to get the value of filed {0}."),
+        ILLEGAL_TIMESTAMP_PARAMETERS("Illgeal timestamp parameters.");
 
         String message;
     }

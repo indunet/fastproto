@@ -35,7 +35,8 @@ public class DecodeException extends CodecException {
         FAIL_INITIALIZING_DECODER("Fail initializing decoder {0}."),
         FAIL_INITIALIZING_DECODE_FORMULA("Fail initializing decode formula {0}."),
         FAIL_INITIALIZING_DECODE_OBJECT("Fail initializing decode object {0}"),
-        NOT_FOUND_DECODER("Decoder for data type {0} cannot be found.");
+        NOT_FOUND_DECODER("Decoder for data type {0} cannot be found."),
+        ILLEGAL_TIMESTAMP_PARAMETERS("Illgeal timestamp parameters.");
 
         String message;
     }

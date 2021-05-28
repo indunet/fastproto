@@ -1,5 +1,8 @@
 package org.indunet.fastproto.exception;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * @author Deng Ran
  * @version 1.0
