@@ -5,6 +5,10 @@ import org.indunet.fastproto.decoder.*;
 
 import java.nio.charset.Charset;
 
+/**
+ * @author Deng Ran
+ * @since 1.0.0
+ */
 public class DecodeUtils {
     protected static BinaryDecoder binaryDecoder = new BinaryDecoder();
     protected static BooleanDecoder booleanDecoder = new BooleanDecoder();

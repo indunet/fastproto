@@ -30,8 +30,7 @@ import java.util.stream.Stream;
 
 /**
  * @author Deng Ran
- * @version 1.0
- * @since 1.8
+ * @since 1.0.0
  */
 @Data
 @Builder
@@ -56,19 +55,6 @@ public class TypeAssist {
 
     protected TypeAssist() {
 
-    }
-
-    public boolean hasElement() {
-        return this.elements != null && !this.elements.isEmpty();
-    }
-
-    public void setValue(Object object, Object value) {
-        try {
-            this.field.set(object, value);
-        } catch (IllegalAccessException e) {
-            throw new DecodeException(
-                    MessageFormat.format(DecodeError.FAIL_ASSIGN_VALUE.getMessage(), this.field.getName()), e);
-        }
     }
 
     public static TypeAssist of(Class<?> clazz) {
@@ -176,6 +162,19 @@ public class TypeAssist {
                 .encodeIgnore(encodeIgnore)
                 .elementType(ElementType.FIELD)
                 .build();
+    }
+
+    public boolean hasElement() {
+        return this.elements != null && !this.elements.isEmpty();
+    }
+
+    public void setValue(Object object, Object value) {
+        try {
+            this.field.set(object, value);
+        } catch (IllegalAccessException e) {
+            throw new DecodeException(
+                    MessageFormat.format(DecodeError.FAIL_ASSIGN_VALUE.getMessage(), this.field.getName()), e);
+        }
     }
 
     protected DecodeContext toDecodeContext(byte[] datagram, Object object) {

@@ -5,7 +5,6 @@ import org.indunet.fastproto.decoder.Decoders;
 import org.indunet.fastproto.encoder.EncodeContext;
 import org.indunet.fastproto.encoder.Encoders;
 
-import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
@@ -14,12 +13,18 @@ import java.util.function.Function;
 
 /**
  * @author Deng Ran
- * @version 1.0
- * @since 1.8
+ * @since 1.0.0
  */
 public class FastProto {
     protected static ConcurrentHashMap<Class<?>, TypeAssist> assists = new ConcurrentHashMap<>();
 
+    /**
+     * Convert binary message into object.
+     *
+     * @param datagram binary message
+     * @param clazz deserialized object
+     * @return deserialize object instance
+     */
     public static <T> T decode(byte[] datagram, Class<T> clazz) {
         Objects.requireNonNull(datagram);
         Objects.requireNonNull(clazz);
@@ -46,6 +51,13 @@ public class FastProto {
         return object;
     }
 
+    /**
+     * Convert object into binary message.
+     *
+     * @param object serialized object
+     * @param datagram binary message
+     * @return void
+     */
     public static void encode(Object object, byte[] datagram) {
         Objects.requireNonNull(object);
         Objects.requireNonNull(datagram);

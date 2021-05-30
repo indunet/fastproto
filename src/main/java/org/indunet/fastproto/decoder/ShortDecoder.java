@@ -5,7 +5,11 @@ import org.indunet.fastproto.annotation.type.ShortType;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.DecodeException.DecodeError;
 
-
+/**
+ * @author Deng Ran
+ * @see TypeDecoder
+ * @since 1.0.0
+ */
 public class ShortDecoder implements TypeDecoder<Short> {
     @Override
     public Short decode(DecodeContext context) {

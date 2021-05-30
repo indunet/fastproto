@@ -12,7 +12,7 @@ import java.util.function.Function;
 
 /**
  * @author Deng Ran
- * @version 1.0
+ * @since 1.0.0
  */
 public class Encoders {
     protected static ConcurrentHashMap<Class<? extends TypeEncoder>, TypeEncoder> encoders = new ConcurrentHashMap<>();

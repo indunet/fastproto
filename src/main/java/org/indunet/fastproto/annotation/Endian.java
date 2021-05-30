@@ -9,7 +9,7 @@ import java.lang.annotation.Target;
 
 /**
  * @author Deng Ran
- * @version 1.0
+ * @since 1.0.0
  */
 @Target({ElementType.TYPE, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)

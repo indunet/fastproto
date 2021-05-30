@@ -1,4 +1,4 @@
-package org.indunet.fastproto.tesla;
+package org.indunet.fastproto.iot.tesla;
 
 import lombok.*;
 import org.indunet.fastproto.EndianPolicy;

@@ -5,7 +5,8 @@ import lombok.Getter;
 
 /**
  * @author Deng Ran
- * @version 1.0
+ * @see CodecException
+ * @since 1.0.0
  */
 public class EncodeException extends CodecException {
     public EncodeException(EncodeError error) {

@@ -1,10 +1,10 @@
 package org.indunet.fastproto;
 
-import org.indunet.fastproto.tesla.Battery;
-import org.indunet.fastproto.tesla.Motor;
-import org.indunet.fastproto.tesla.Tesla;
+import org.indunet.fastproto.iot.tesla.Battery;
+import org.indunet.fastproto.iot.tesla.Motor;
+import org.indunet.fastproto.iot.tesla.Tesla;
 import org.indunet.fastproto.util.EncodeUtils;
-import org.indunet.fastproto.weather.Device;
+import org.indunet.fastproto.iot.weather.Metrics;
 import org.junit.Test;
 import java.sql.Timestamp;
 
@@ -59,7 +59,7 @@ public class FastProtoTest {
     @Test
     public void testWeather() {
         byte[] datagram = new byte[26];
-        Device device = Device.builder()
+        Metrics metrics = Metrics.builder()
                 .id((short) 101)
                 .time(new Timestamp(System.currentTimeMillis()))
                 .humidity(85)
@@ -68,18 +68,18 @@ public class FastProtoTest {
                 .build();
 
         // Init datagram.
-        EncodeUtils.type(datagram, 0, device.getId());
-        EncodeUtils.type(datagram, 2, device.getTime().getTime());
-        EncodeUtils.type(datagram, 10, device.getHumidity());
-        EncodeUtils.type(datagram, 14, device.getTemperature());
-        EncodeUtils.type(datagram, 18, device.getPressure());
+        EncodeUtils.type(datagram, 0, metrics.getId());
+        EncodeUtils.type(datagram, 2, metrics.getTime().getTime());
+        EncodeUtils.type(datagram, 10, metrics.getHumidity());
+        EncodeUtils.type(datagram, 14, metrics.getTemperature());
+        EncodeUtils.type(datagram, 18, metrics.getPressure());
 
         // Test decode.
-        assertEquals(FastProto.decode(datagram, Device.class).toString(), device.toString());
+        assertEquals(FastProto.decode(datagram, Metrics.class).toString(), metrics.toString());
 
         // Test encode.
         byte[] cache = new byte[26];
-        FastProto.encode(device, cache);
+        FastProto.encode(metrics, cache);
         assertArrayEquals(cache, datagram);
     }
 }

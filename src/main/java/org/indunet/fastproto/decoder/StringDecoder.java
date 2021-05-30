@@ -4,15 +4,14 @@ import org.indunet.fastproto.annotation.type.StringType;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.DecodeException.DecodeError;
 
-
 import java.nio.charset.Charset;
 import java.util.Arrays;
 
 /**
  * @author Deng Ran
- * @version 1.0
+ * @see TypeDecoder
+ * @since 1.1.0
  */
-// TODO, Deng Ran
 public class StringDecoder implements TypeDecoder<String> {
     @Override
     public String decode(DecodeContext context) {

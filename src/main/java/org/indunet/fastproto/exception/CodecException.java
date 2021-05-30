@@ -1,11 +1,8 @@
 package org.indunet.fastproto.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 /**
  * @author Deng Ran
- * @version 1.0
+ * @since 1.0.0
  */
 public class CodecException extends RuntimeException {
     public CodecException() {

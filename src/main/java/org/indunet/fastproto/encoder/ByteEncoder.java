@@ -5,6 +5,11 @@ import org.indunet.fastproto.annotation.type.ByteType;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.exception.EncodeException.EncodeError;
 
+/**
+ * @author Deng Ran
+ * @since 1.0.0
+ * @see TypeEncoder
+ */
 public class ByteEncoder implements TypeEncoder {
     @Override
     public void encode(EncodeContext context) {

@@ -3,11 +3,10 @@ package org.indunet.fastproto.exception;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
-import java.lang.annotation.ElementType;
-
 /**
  * @author Deng Ran
- * @version 1.0
+ * @see CodecException
+ * @since 1.0.0
  */
 public class DecodeException extends CodecException {
 

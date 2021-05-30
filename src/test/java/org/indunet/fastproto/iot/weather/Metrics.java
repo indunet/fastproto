@@ -1,4 +1,4 @@
-package org.indunet.fastproto.weather;
+package org.indunet.fastproto.iot.weather;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class Device {
+public class Metrics {
     @ShortType(0)
     short id;
     @TimestampType(2)

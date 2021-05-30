@@ -5,6 +5,11 @@ import org.indunet.fastproto.annotation.type.DoubleType;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.DecodeException.DecodeError;
 
+/**
+ * @author Deng Ran
+ * @see TypeDecoder
+ * @since 1.0.0
+ */
 public class DoubleDecoder implements TypeDecoder<Double> {
     @Override
     public Double decode(DecodeContext context) {

@@ -3,6 +3,11 @@ package org.indunet.fastproto.encoder;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.DoubleType;
 
+/**
+ * @author Deng Ran
+ * @since 1.0.0
+ * @see TypeEncoder
+ */
 public class DoubleEncoder implements TypeEncoder {
     @Override
     public void encode(EncodeContext context) {

@@ -4,7 +4,11 @@ import org.indunet.fastproto.annotation.type.ByteType;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.DecodeException.DecodeError;
 
-
+/**
+ * @author Deng Ran
+ * @see TypeDecoder
+ * @since 1.0.0
+ */
 public class ByteDecoder implements TypeDecoder<Byte> {
     @Override
     public Byte decode(DecodeContext context) {

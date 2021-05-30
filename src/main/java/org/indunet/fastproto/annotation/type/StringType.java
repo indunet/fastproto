@@ -1,8 +1,8 @@
 package org.indunet.fastproto.annotation.type;
 
-import org.indunet.fastproto.annotation.Type;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
+import org.indunet.fastproto.annotation.Type;
 import org.indunet.fastproto.decoder.StringDecoder;
 import org.indunet.fastproto.encoder.StringEncoder;
 
@@ -13,7 +13,8 @@ import java.lang.annotation.Target;
 
 /**
  * @author Deng Ran
- * @version 1.0
+ * @see Type
+ * @since 1.1.0
  */
 @Type
 @Decoder(StringDecoder.class)

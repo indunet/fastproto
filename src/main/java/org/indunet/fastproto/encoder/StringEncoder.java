@@ -1,9 +1,6 @@
 package org.indunet.fastproto.encoder;
 
-import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.type.ShortType;
 import org.indunet.fastproto.annotation.type.StringType;
-import sun.awt.CharsetString;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.exception.EncodeException.EncodeError;
 
@@ -11,7 +8,8 @@ import java.nio.charset.Charset;
 
 /**
  * @author Deng Ran
- * @version 1.0
+ * @see TypeEncoder
+ * @since 1.1.0
  */
 public class StringEncoder implements TypeEncoder {
     @Override

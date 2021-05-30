@@ -3,6 +3,10 @@ package org.indunet.fastproto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+/**
+ * @author Deng Ran
+ * @since 1.0.0
+ */
 @Getter
 @AllArgsConstructor
 public enum EndianPolicy {

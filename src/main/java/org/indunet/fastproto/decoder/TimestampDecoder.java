@@ -15,7 +15,8 @@ import java.util.concurrent.TimeUnit;
 
 /**
  * @author Deng Ran
- * @version 1.0
+ * @see TypeDecoder
+ * @since 1.1.0
  */
 public class TimestampDecoder implements TypeDecoder<Timestamp> {
     @Override

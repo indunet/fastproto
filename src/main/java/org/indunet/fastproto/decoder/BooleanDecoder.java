@@ -4,6 +4,11 @@ import org.indunet.fastproto.annotation.type.BooleanType;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.DecodeException.DecodeError;
 
+/**
+ * @author Deng Ran
+ * @see TypeDecoder
+ * @since 1.0.0
+ */
 public class BooleanDecoder implements TypeDecoder<Boolean> {
     @Override
     public Boolean decode(DecodeContext context) {

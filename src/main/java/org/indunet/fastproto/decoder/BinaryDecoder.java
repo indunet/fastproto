@@ -4,6 +4,11 @@ import org.indunet.fastproto.annotation.type.BinaryType;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.DecodeException.DecodeError;
 
+/**
+ * @author Deng Ran
+ * @see TypeDecoder
+ * @since 1.0.0
+ */
 public class BinaryDecoder implements TypeDecoder<byte[]> {
     @Override
     public byte[] decode(DecodeContext context) {

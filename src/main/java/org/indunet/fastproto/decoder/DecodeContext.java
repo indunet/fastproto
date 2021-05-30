@@ -4,18 +4,10 @@ import lombok.Builder;
 import lombok.Data;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.TypeAssist;
-import org.indunet.fastproto.annotation.Decoder;
-import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.DecodeException.DecodeError;
-
-import java.lang.annotation.Annotation;
-import java.text.MessageFormat;
-import java.util.Optional;
-import java.util.function.Function;
 
 /**
  * @author Deng Ran
- * @version 1.0
+ * @since 1.0.0
  */
 @Data
 @Builder

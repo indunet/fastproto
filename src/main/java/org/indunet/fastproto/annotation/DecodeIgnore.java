@@ -7,7 +7,8 @@ import java.lang.annotation.Target;
 
 /**
  * @author Deng Ran
- * @version 1.0
+ * @see Decoder
+ * @since 1.0.0
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
