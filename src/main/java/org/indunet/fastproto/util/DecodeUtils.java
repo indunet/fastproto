@@ -20,6 +20,11 @@ public class DecodeUtils {
     protected static FloatDecoder floatDecoder = new FloatDecoder();
     protected static DoubleDecoder doubleDecoder = new DoubleDecoder();
     protected static StringDecoder stringDecoder = new StringDecoder();
+    protected static Integer8Decoder integer8Decoder = new Integer8Decoder();
+    protected static Integer16Decoder integer16Decoder = new Integer16Decoder();
+    protected static UInteger8Decoder uInteger8Decoder = new UInteger8Decoder();
+    protected static UInteger16Decoder uInteger16Decoder = new UInteger16Decoder();
+    protected static UInteger32Decoder uInteger32Decoder = new UInteger32Decoder();
 
     public static byte[] binaryType(final byte[] datagram, int byteOffset, int length) {
         return binaryDecoder.decode(datagram, byteOffset, length);
@@ -37,8 +42,32 @@ public class DecodeUtils {
         return booleanDecoder.decode(datagram, byteOffset, bitOffset);
     }
 
+    public static int integer8Type(final byte[] datagram, int byteOffset) {
+        return integer8Decoder.decode(datagram, byteOffset);
+    }
+
+    public static int uInteger8Type(final byte[] datagram, int byteOffset) {
+        return uInteger8Decoder.decode(datagram, byteOffset);
+    }
+
     public static byte byteType(final byte[] datagram, int byteOffset) {
         return byteDecoder.decode(datagram, byteOffset);
+    }
+
+    public static int integer16Type(final byte[] datagram, int byteOffset) {
+        return integer16Type(datagram, byteOffset, EndianPolicy.LITTLE);
+    }
+
+    public static int integer16Type(final byte[] datagram, int byteOffset, EndianPolicy policy) {
+        return integer16Decoder.decode(datagram, byteOffset, policy);
+    }
+
+    public static int uInteger16Type(final byte[] datagram, int byteOffset) {
+        return uInteger16Type(datagram, byteOffset, EndianPolicy.LITTLE);
+    }
+
+    public static int uInteger16Type(final byte[] datagram, int byteOffset, EndianPolicy policy) {
+        return uInteger16Decoder.decode(datagram, byteOffset, policy);
     }
 
     public static short shortType(final byte[] datagram, int byteOffset) {
@@ -47,6 +76,14 @@ public class DecodeUtils {
 
     public static short shortType(final byte[] datagram, int byteOffset, EndianPolicy policy) {
         return shortDecoder.decode(datagram, byteOffset, policy);
+    }
+
+    public static long uInteger32Type(final byte[] datagram, int byteOffset) {
+        return uInteger32Type(datagram, byteOffset, EndianPolicy.LITTLE);
+    }
+
+    public static long uInteger32Type(final byte[] datagram, int byteOffset, EndianPolicy policy) {
+        return uInteger32Decoder.decode(datagram, byteOffset, policy);
     }
 
     public static int integerType(final byte[] datagram, int byteOffset) {

@@ -20,12 +20,18 @@ public class EncodeUtils {
     protected static FloatEncoder floatEncoder = new FloatEncoder();
     protected static DoubleEncoder doubleEncoder = new DoubleEncoder();
     protected static StringEncoder stringEncoder = new StringEncoder();
+    protected static Integer8Encoder integer8Encoder = new Integer8Encoder();
+    protected static Integer16Encoder integer16Encoder = new Integer16Encoder();
+    protected static UInteger8Encoder uInteger8Encoder = new UInteger8Encoder();
+    protected static UInteger16Encoder uInteger16Encoder = new UInteger16Encoder();
+    protected static UInteger32Encoder uInteger32Encoder = new UInteger32Encoder();
 
-    public static void type(final byte[] datagram, int byteOffset, byte[] values) {
+
+    public static void type(byte[] datagram, int byteOffset, byte[] values) {
         binaryEncoder.encode(datagram, byteOffset, values);
     }
 
-    public static void binaryType(final byte[] datagram, int byteOffset, byte[] values) {
+    public static void binaryType(byte[] datagram, int byteOffset, byte[] values) {
         binaryEncoder.encode(datagram, byteOffset, values);
     }
 
@@ -37,123 +43,155 @@ public class EncodeUtils {
         characterType(datagram, byteOffset, EndianPolicy.LITTLE, value);
     }
 
-    public static void type(final byte[] datagram, int byteOffset, EndianPolicy policy, char value) {
+    public static void type(byte[] datagram, int byteOffset, EndianPolicy policy, char value) {
+        characterEncoder.encode(datagram, byteOffset, policy, value);
+    }
+
+    public static void characterType(byte[] datagram, int byteOffset, EndianPolicy policy, char value) {
         characterType(datagram, byteOffset, policy, value);
     }
 
-    public static void characterType(final byte[] datagram, int byteOffset, EndianPolicy policy, char value) {
-        characterType(datagram, byteOffset, policy, value);
-    }
-
-    public static void type(final byte[] datagram, int byteOffset, int bitOffset, boolean value) {
+    public static void type(byte[] datagram, int byteOffset, int bitOffset, boolean value) {
         booleanEncoder.encode(datagram, byteOffset, bitOffset, value);
     }
 
-    public static void booleanType(final byte[] datagram, int byteOffset, int bitOffset, boolean value) {
+    public static void booleanType(byte[] datagram, int byteOffset, int bitOffset, boolean value) {
         booleanEncoder.encode(datagram, byteOffset, bitOffset, value);
     }
 
-    public static void type(final byte[] datagram, int byteOffset, byte value) {
+    public static void type(byte[] datagram, int byteOffset, byte value) {
         byteEncoder.encode(datagram, byteOffset, value);
     }
 
-    public static void byteType(final byte[] datagram, int byteOffset, byte value) {
+    public static void integer8Type(byte[] datagram, int byteOffset, int value) {
+        integer8Encoder.encode(datagram, byteOffset, value);
+    }
+
+    public static void uInteger8Type(byte[] datagram, int byteOffset, int value) {
+        uInteger8Encoder.encode(datagram, byteOffset, value);
+    }
+
+    public static void byteType(byte[] datagram, int byteOffset, byte value) {
         byteEncoder.encode(datagram, byteOffset, value);
     }
 
-    public static void type(final byte[] datagram, int byteOffset, short value) {
+    public static void type(byte[] datagram, int byteOffset, short value) {
         shortType(datagram, byteOffset, EndianPolicy.LITTLE, value);
     }
 
-    public static void shortType(final byte[] datagram, int byteOffset, short value) {
+    public static void integer16Type(byte[] datagram, int byteOffset, int value) {
+        integer16Type(datagram, byteOffset, EndianPolicy.LITTLE, value);
+    }
+
+    public static void integer16Type(byte[] datagram, int byteOffset, EndianPolicy policy, int value) {
+        integer16Encoder.encode(datagram, byteOffset, policy, value);
+    }
+
+    public static void uInteger16Type(byte[] datagram, int byteOffset, int value) {
+        uInteger16Type(datagram, byteOffset, EndianPolicy.LITTLE, value);
+    }
+
+    public static void uInteger16Type(byte[] datagram, int byteOffset, EndianPolicy policy, int value) {
+        uInteger16Encoder.encode(datagram, byteOffset, policy, value);
+    }
+
+    public static void shortType(byte[] datagram, int byteOffset, short value) {
         shortType(datagram, byteOffset, EndianPolicy.LITTLE, value);
     }
 
-    public static void type(final byte[] datagram, int byteOffset, EndianPolicy policy, short value) {
+    public static void type(byte[] datagram, int byteOffset, EndianPolicy policy, short value) {
         shortEncoder.encode(datagram, byteOffset, policy, value);
     }
 
-    public static void shortType(final byte[] datagram, int byteOffset, EndianPolicy policy, short value) {
+    public static void shortType(byte[] datagram, int byteOffset, EndianPolicy policy, short value) {
         shortEncoder.encode(datagram, byteOffset, policy, value);
     }
 
-    public static void type(final byte[] datagram, int byteOffset, int value) {
+    public static void uInteger32Type(byte[] datagram, int byteOffset, long value) {
+        uInteger32Type(datagram, byteOffset, EndianPolicy.LITTLE, value);
+    }
+
+    public static void uInteger32Type(byte[] datagram, int byteOffset, EndianPolicy policy, long value) {
+        uInteger32Encoder.encode(datagram, byteOffset, policy, value);
+    }
+
+    public static void type(byte[] datagram, int byteOffset, int value) {
         integerType(datagram, byteOffset, EndianPolicy.LITTLE, value);
     }
 
-    public static void integerType(final byte[] datagram, int byteOffset, int value) {
+    public static void integerType(byte[] datagram, int byteOffset, int value) {
         integerType(datagram, byteOffset, EndianPolicy.LITTLE, value);
     }
 
-    public static void type(final byte[] datagram, int byteOffset, EndianPolicy policy, int value) {
+    public static void type(byte[] datagram, int byteOffset, EndianPolicy policy, int value) {
         integerEncoder.encode(datagram, byteOffset, policy, value);
     }
 
-    public static void integerType(final byte[] datagram, int byteOffset, EndianPolicy policy, int value) {
+    public static void integerType(byte[] datagram, int byteOffset, EndianPolicy policy, int value) {
         integerEncoder.encode(datagram, byteOffset, policy, value);
     }
 
-    public static void type(final byte[] datagram, int byteOffset, long value) {
+    public static void type(byte[] datagram, int byteOffset, long value) {
         longType(datagram, byteOffset, EndianPolicy.LITTLE, value);
     }
 
-    public static void longType(final byte[] datagram, int byteOffset, long value) {
+    public static void longType(byte[] datagram, int byteOffset, long value) {
         longType(datagram, byteOffset, EndianPolicy.LITTLE, value);
     }
 
-    public static void type(final byte[] datagram, int byteOffset, EndianPolicy policy, long value) {
+    public static void type(byte[] datagram, int byteOffset, EndianPolicy policy, long value) {
         longEncoder.encode(datagram, byteOffset, policy, value);
     }
 
-    public static void longType(final byte[] datagram, int byteOffset, EndianPolicy policy, long value) {
+    public static void longType(byte[] datagram, int byteOffset, EndianPolicy policy, long value) {
         longEncoder.encode(datagram, byteOffset, policy, value);
     }
 
-    public static void type(final byte[] datagram, int byteOffset, float value) {
+    public static void type(byte[] datagram, int byteOffset, float value) {
         floatType(datagram, byteOffset, EndianPolicy.LITTLE, value);
     }
 
-    public static void floatType(final byte[] datagram, int byteOffset, float value) {
+    public static void floatType(byte[] datagram, int byteOffset, float value) {
         floatType(datagram, byteOffset, EndianPolicy.LITTLE, value);
     }
 
-    public static void type(final byte[] datagram, int byteOffset, EndianPolicy policy, float value) {
+    public static void type(byte[] datagram, int byteOffset, EndianPolicy policy, float value) {
         floatEncoder.encode(datagram, byteOffset, policy, value);
     }
 
-    public static void floatType(final byte[] datagram, int byteOffset, EndianPolicy policy, float value) {
+    public static void floatType(byte[] datagram, int byteOffset, EndianPolicy policy, float value) {
         floatEncoder.encode(datagram, byteOffset, policy, value);
     }
 
-    public static void type(final byte[] datagram, int byteOffset, double value) {
+    public static void type(byte[] datagram, int byteOffset, double value) {
         doubleType(datagram, byteOffset, EndianPolicy.LITTLE, value);
     }
 
-    public static void doubleType(final byte[] datagram, int byteOffset, double value) {
+    public static void doubleType(byte[] datagram, int byteOffset, double value) {
         doubleType(datagram, byteOffset, EndianPolicy.LITTLE, value);
     }
 
-    public static void type(final byte[] datagram, int byteOffset, EndianPolicy policy, double value) {
+    public static void type(byte[] datagram, int byteOffset, EndianPolicy policy, double value) {
         doubleEncoder.encode(datagram, byteOffset, policy, value);
     }
 
-    public static void doubleType(final byte[] datagram, int byteOffset, EndianPolicy policy, double value) {
+    public static void doubleType(byte[] datagram, int byteOffset, EndianPolicy policy, double value) {
         doubleEncoder.encode(datagram, byteOffset, policy, value);
     }
 
-    public static void type(final byte[] datagram, int byteOffset, int length, String value) {
+    public static void type(byte[] datagram, int byteOffset, int length, String value) {
         stringType(datagram, byteOffset, length, Charset.defaultCharset(), value);
     }
 
-    public static void stringType(final byte[] datagram, int byteOffset, int length, String value) {
+    public static void stringType(byte[] datagram, int byteOffset, int length, String value) {
         stringType(datagram, byteOffset, length, Charset.defaultCharset(), value);
     }
 
-    public static void type(final byte[] datagram, int byteOffset, int length, Charset set, String value) {
+    public static void type(byte[] datagram, int byteOffset, int length, Charset set, String value) {
         stringEncoder.encode(datagram, byteOffset, length, set, value);
     }
 
-    public static void stringType(final byte[] datagram, int byteOffset, int length, Charset set, String value) {
+    public static void stringType(byte[] datagram, int byteOffset, int length, Charset set, String value) {
         stringEncoder.encode(datagram, byteOffset, length, set, value);
     }
 }

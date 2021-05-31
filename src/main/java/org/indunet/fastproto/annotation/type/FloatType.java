@@ -23,8 +23,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FloatType {
     int SIZE = Float.SIZE >> 3;
-    float MAX = Float.MAX_VALUE;
-    float MIN = Float.MIN_VALUE;
+    float MAX_VALUE = Float.MAX_VALUE;
+    float MIN_VALUE = Float.MIN_VALUE;
 
     int value();
 }

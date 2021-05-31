@@ -71,7 +71,7 @@ FastProto.encode(metrics, datagram);
 
 ### License
 
-FastProto is released under the [Apache 2.0 license](license.txt).
+FastProto is released under the [Apache 2.0 license](license).
 
 ```
 Copyright 1999-2020 indunet.org group Holding Ltd.

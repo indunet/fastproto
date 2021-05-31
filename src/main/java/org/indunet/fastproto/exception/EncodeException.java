@@ -30,6 +30,7 @@ public class EncodeException extends CodecException {
     public enum EncodeError {
         NO_VALID_ENCODER_FOUND("No valid encoder found for {0}"),
         EXCEEDED_DATAGRAM_SIZE("Exceeded datagram size."),
+        EXCEEDED_TYPE_SIZE_LIMIT("Exceeded limitation of {} size."),
         ILLEGAL_BIT_OFFSET("Illegal bit offset."),
         FAIL_INITIALIZING_ENCODER("Fail initializing encoder of {0}."),
         FAIL_INITIALIZING_ENCODE_FORMULA("Fail initilizing encode formula of {0}."),

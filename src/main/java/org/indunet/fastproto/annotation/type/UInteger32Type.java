@@ -1,15 +1,6 @@
 package org.indunet.fastproto.annotation.type;
 
-/**
- * @author Deng Ran
- * @version 1.1.0
- */
-
-import org.indunet.fastproto.annotation.Decoder;
-import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.annotation.Type;
-import org.indunet.fastproto.decoder.ByteDecoder;
-import org.indunet.fastproto.encoder.ByteEncoder;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -19,15 +10,15 @@ import java.lang.annotation.Target;
 /**
  * @author Deng Ran
  * @see Type
- * @since 1.0.0
+ * @since 2.0.0
  */
 @Type
-@Decoder(ByteDecoder.class)
-@Encoder(ByteEncoder.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CharacterType {
-    int SIZE = Character.SIZE >> 3;
+public @interface UInteger32Type {
+    int SIZE = Integer.SIZE >> 3;
+    int MAX_VALUE = Integer.MAX_VALUE - Integer.MIN_VALUE;
+    int MIN_VALUE = 0;
 
     int value();
 }

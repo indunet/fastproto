@@ -23,8 +23,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DoubleType {
     int SIZE = Double.SIZE >> 3;
-    double MAX = Double.MAX_VALUE;
-    double MIN = Double.MIN_VALUE;
+    double MAX_VALUE = Double.MAX_VALUE;
+    double MIN_VALUE = Double.MIN_VALUE;
 
     int value();
 }
