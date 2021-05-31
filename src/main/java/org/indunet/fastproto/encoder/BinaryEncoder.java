@@ -19,7 +19,7 @@ public class BinaryEncoder implements TypeEncoder {
     }
 
     public void encode(byte[] datagram, int byteOffset, byte[] bytes) {
-        if (byteOffset + bytes.length >= datagram.length) {
+        if (byteOffset + bytes.length > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

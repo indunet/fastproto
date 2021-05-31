@@ -18,7 +18,7 @@ public class ByteDecoder implements TypeDecoder<Byte> {
     }
 
     public byte decode(final byte[] datagram, int byteOffset) {
-        if (datagram.length - ByteType.SIZE < byteOffset) {
+        if (byteOffset + ByteType.SIZE > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

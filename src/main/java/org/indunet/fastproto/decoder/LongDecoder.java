@@ -19,7 +19,7 @@ public class LongDecoder implements TypeDecoder<Long> {
     }
 
     public long decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {
-        if (datagram.length - LongType.SIZE < byteOffset) {
+        if (byteOffset + LongType.SIZE > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

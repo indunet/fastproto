@@ -24,7 +24,7 @@ public class StringDecoder implements TypeDecoder<String> {
         if (length == -1) {
             return new String(
                     Arrays.copyOfRange(datagram, byteOffset, datagram.length - byteOffset), charset);
-        } else if (byteOffset + length >= datagram.length) {
+        } else if (byteOffset + length > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         } else {
             return new String(

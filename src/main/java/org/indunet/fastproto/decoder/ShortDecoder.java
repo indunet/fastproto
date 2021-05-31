@@ -19,7 +19,7 @@ public class ShortDecoder implements TypeDecoder<Short> {
     }
 
     public short decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {
-        if (datagram.length - ShortType.SIZE < byteOffset) {
+        if (byteOffset + ShortType.SIZE > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

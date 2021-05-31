@@ -20,7 +20,7 @@ public class LongEncoder implements TypeEncoder {
     }
 
     public void encode(byte[] datagram, int byteOffset, EndianPolicy policy, long value) {
-        if (datagram.length - LongType.SIZE < byteOffset) {
+        if (byteOffset + LongType.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

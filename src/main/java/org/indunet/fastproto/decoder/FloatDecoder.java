@@ -19,7 +19,7 @@ public class FloatDecoder implements TypeDecoder<Float> {
     }
 
     public float decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {
-        if (datagram.length - FloatType.SIZE < byteOffset) {
+        if (byteOffset + FloatType.SIZE > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

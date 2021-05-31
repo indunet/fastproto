@@ -18,7 +18,7 @@ public class DoubleEncoder implements TypeEncoder {
     }
 
     public void encode(byte[] datagram, int byteOffset, EndianPolicy endian, double value) {
-        if (datagram.length - DoubleType.SIZE < byteOffset) {
+        if (byteOffset + DoubleType.SIZE > datagram.length) {
             throw new ArrayIndexOutOfBoundsException();
         }
 

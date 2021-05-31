@@ -26,7 +26,7 @@ public class StringEncoder implements TypeEncoder {
 
         if (length == -1) {
             System.arraycopy(bytes, 0, datagram, byteOffset, bytes.length);
-        } else if (byteOffset + length >= datagram.length) {
+        } else if (byteOffset + length > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         } else {
             System.arraycopy(bytes, 0, datagram, byteOffset, length);

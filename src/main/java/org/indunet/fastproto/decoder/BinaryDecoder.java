@@ -18,7 +18,7 @@ public class BinaryDecoder implements TypeDecoder<byte[]> {
     }
 
     public byte[] decode(final byte[] datagram, int byteOffset, int length) {
-        if (datagram.length - length < byteOffset) {
+        if (byteOffset + length > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE, new ArrayIndexOutOfBoundsException());
         }
 

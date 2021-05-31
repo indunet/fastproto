@@ -19,12 +19,16 @@ import java.sql.Timestamp;
 public class Metrics {
     @ShortType(0)
     short id;
+
     @TimestampType(2)
     Timestamp time;
+
     @IntegerType(10)
     int humidity;
+
     @FloatType(14)
     float temperature;
+
     @DoubleType(18)
     double pressure;
 }

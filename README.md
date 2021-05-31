@@ -12,7 +12,58 @@ FastProto is was conceived and designed in 2018. The original intention was to s
 * Unsigned types
 * Auto type
 
+# Maven
+```xml
+<dependency>
+    <groupId>org.indunet</groupId>
+    <artifactId>fastproto</artifactId>
+    <version>1.1.2</version>
+</dependency>
+```
+
 # Quick Start
+Define a Java class with FastProto annotations like below:
+```java
+public class Metrics {
+    @ShortType(0)
+    short id;
+
+    @TimestampType(2)
+    Timestamp time;
+
+    @IntegerType(10)
+    int humidity;
+
+    @FloatType(14)
+    float temperature;
+
+    @DoubleType(18)
+    double pressure;
+}
+```
+And then convert the object into datagram or convert datagram into the object like below:
+```java
+byte[] datagram = new byte[64];
+
+Metrics metrics = FastProto.decode(datagram, Metrics.class);
+FastProto.encode(metrics, datagram);
+```
+
+# Data Type
+|Annotation|Java Type|C/C++ Type|Size| 
+|:----:|:----:|:----:|:----:|
+|BooleanType|Boolean/boolean|bool|1 Bit|
+|CharacterType|Character/char|--|2 Bytes|
+|ByteType|Byte/byte|char|1 Byte|
+|ShortType|Short/short|short|2 Bytes|
+|IntegerType|Integer/int|long|4 Bytes|
+|LongType|Long/long|long long|8 Bytes|
+|FloatType|Float/float|float|4 Bytes|
+|DoubleType|Double/double|double|8 Bytes|
+|BinaryType|byte[]|char[]|N Bytes|
+|StringType|java.lang.String|--|N Bytes|
+|TimestampType|java.sql.Timestamp|--|4/8 Bytes|
+
 
 ## Build Requirements
 * Java 1.8+

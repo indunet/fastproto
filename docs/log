@@ -1,5 +1,0 @@
-1. Decoder和Encoder接口的设计是否合理？
-2. DecoderFactory和EncoderFactory保存Decoder和Encoder实例是否合理？
-3. FormulaFactory保存Formula是否合理？
-4. 设计Assit元数据类是否合理？可否将创建类提取出来？
-5. 有没有比FastProtoContext更优的方法？

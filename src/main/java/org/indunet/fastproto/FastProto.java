@@ -56,7 +56,6 @@ public class FastProto {
      *
      * @param object serialized object
      * @param datagram binary message
-     * @return void
      */
     public static void encode(Object object, byte[] datagram) {
         Objects.requireNonNull(object);

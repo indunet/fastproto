@@ -30,7 +30,7 @@ public class TimestampDecoder implements TypeDecoder<Timestamp> {
 
     public Timestamp decode(final byte[] datagram, int byteOffset, DataType dataType, EndianPolicy policy, TimeUnit unit) {
         if (dataType == DataType.LONG_TYPE && unit == TimeUnit.MILLISECONDS) {
-            if (byteOffset + LongType.SIZE >= datagram.length) {
+            if (byteOffset + LongType.SIZE > datagram.length) {
                 throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
             }
 
@@ -38,7 +38,7 @@ public class TimestampDecoder implements TypeDecoder<Timestamp> {
 
             return new Timestamp(value);
         } else if (dataType == DataType.INTEGER_TYPE && unit == TimeUnit.SECONDS) {
-            if (byteOffset + IntegerType.SIZE >= datagram.length) {
+            if (byteOffset + IntegerType.SIZE > datagram.length) {
                 throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
             }
 

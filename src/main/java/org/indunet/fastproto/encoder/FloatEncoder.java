@@ -20,7 +20,7 @@ public class FloatEncoder implements TypeEncoder {
     }
 
     public void encode(byte[] datagram, int byteOffset, EndianPolicy endian, float value) {
-        if (datagram.length - FloatType.SIZE < byteOffset) {
+        if (byteOffset + FloatType.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

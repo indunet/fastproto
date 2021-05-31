@@ -20,7 +20,7 @@ public class IntegerEncoder implements TypeEncoder {
     }
 
     public void encode(byte[] datagram, int byteOffset, EndianPolicy policy, int value) {
-        if (datagram.length - IntegerType.SIZE < byteOffset) {
+        if (byteOffset + IntegerType.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

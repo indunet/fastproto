@@ -20,7 +20,7 @@ public class ShortEncoder implements TypeEncoder {
     }
 
     public void encode(byte[] datagram, int byteOffset, EndianPolicy policy, short value) {
-        if (datagram.length - ShortType.SIZE < byteOffset) {
+        if (byteOffset + ShortType.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

@@ -19,7 +19,7 @@ public class IntegerDecoder implements TypeDecoder<Integer> {
     }
 
     public int decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {
-        if (datagram.length - IntegerType.SIZE < byteOffset) {
+        if (byteOffset + IntegerType.SIZE > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

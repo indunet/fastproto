@@ -30,13 +30,13 @@ public class TimestampEncoder implements TypeEncoder {
 
     public void encode(byte[] datagram, int byteOffset, DataType dataType, EndianPolicy policy, TimeUnit unit, Timestamp value) {
         if (dataType == Type.DataType.LONG_TYPE && unit == TimeUnit.MILLISECONDS) {
-            if (byteOffset + LongType.SIZE >= datagram.length) {
+            if (byteOffset + LongType.SIZE > datagram.length) {
                 throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
             }
 
             EncodeUtils.longType(datagram, byteOffset, policy, value.getTime());
         } else if (dataType == DataType.INTEGER_TYPE && unit == TimeUnit.SECONDS) {
-            if (byteOffset + IntegerType.SIZE >= datagram.length) {
+            if (byteOffset + IntegerType.SIZE > datagram.length) {
                 throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
             }
 

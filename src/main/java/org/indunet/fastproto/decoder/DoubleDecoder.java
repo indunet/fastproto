@@ -19,7 +19,7 @@ public class DoubleDecoder implements TypeDecoder<Double> {
     }
 
     public double decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {
-        if (datagram.length - DoubleType.SIZE < byteOffset) {
+        if (byteOffset + DoubleType.SIZE > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

@@ -11,6 +11,7 @@ import java.nio.charset.Charset;
  */
 public class EncodeUtils {
     protected static BinaryEncoder binaryEncoder = new BinaryEncoder();
+    protected static CharacterEncoder characterEncoder = new CharacterEncoder();
     protected static BooleanEncoder booleanEncoder = new BooleanEncoder();
     protected static ByteEncoder byteEncoder = new ByteEncoder();
     protected static ShortEncoder shortEncoder = new ShortEncoder();
@@ -26,6 +27,22 @@ public class EncodeUtils {
 
     public static void binaryType(final byte[] datagram, int byteOffset, byte[] values) {
         binaryEncoder.encode(datagram, byteOffset, values);
+    }
+
+    public static void type(final byte[] datagram, int byteOffset, char value) {
+        characterType(datagram, byteOffset, EndianPolicy.LITTLE, value);
+    }
+
+    public static void characterType(final byte[] datagram, int byteOffset, char value) {
+        characterType(datagram, byteOffset, EndianPolicy.LITTLE, value);
+    }
+
+    public static void type(final byte[] datagram, int byteOffset, EndianPolicy policy, char value) {
+        characterType(datagram, byteOffset, policy, value);
+    }
+
+    public static void characterType(final byte[] datagram, int byteOffset, EndianPolicy policy, char value) {
+        characterType(datagram, byteOffset, policy, value);
     }
 
     public static void type(final byte[] datagram, int byteOffset, int bitOffset, boolean value) {
