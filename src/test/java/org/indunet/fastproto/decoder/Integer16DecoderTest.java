@@ -1,17 +1,21 @@
 package org.indunet.fastproto.decoder;
 
 import org.indunet.fastproto.EndianPolicy;
-import org.junit.Test;
+import org.indunet.fastproto.exception.DecodeException;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Deng Ran
  * @since 1.2.1
  */
 public class Integer16DecoderTest {
+    Integer16Decoder decoder = new Integer16Decoder();
+
     @Test
-    public void testDecode() {
+    public void testDecode1() {
         byte[] datagram = new byte[10];
 
         // Value 1
@@ -23,11 +27,15 @@ public class Integer16DecoderTest {
         datagram[2] |= (value >> 8);
         datagram[3] |= (value & 0xFF);
 
-        Integer16Decoder decoder = new Integer16Decoder();
+        assertEquals(this.decoder.decode(datagram, 0, EndianPolicy.LITTLE), 1 + 256 * 2);
+        assertEquals(this.decoder.decode(datagram, 0, EndianPolicy.BIG), 256 + 2);
+        assertEquals(this.decoder.decode(datagram, 2, EndianPolicy.BIG), -29);
+    }
 
-        assertEquals(decoder.decode(datagram, 0, EndianPolicy.LITTLE), 1 + 256 * 2);
-        assertEquals(decoder.decode(datagram, 0, EndianPolicy.BIG), 256 + 2);
+    @Test
+    public void testDecode2() {
+        byte[] datagram = new byte[10];
 
-        assertEquals(decoder.decode(datagram, 2, EndianPolicy.BIG), -29);
+        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 10, EndianPolicy.LITTLE));
     }
 }

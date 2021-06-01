@@ -2,7 +2,7 @@ package org.indunet.fastproto.encoder;
 
 /**
  * @author Deng Ran
- * @version 1.0
+ * @since 1.0.0
  */
 public class EncodersTest {
 }

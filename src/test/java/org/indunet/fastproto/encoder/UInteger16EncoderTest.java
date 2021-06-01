@@ -2,9 +2,9 @@ package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.exception.EncodeException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Deng Ran
@@ -24,17 +24,13 @@ public class UInteger16EncoderTest {
         assertArrayEquals(datagram, cache);
     }
 
-    @Test(expected = EncodeException.class)
+    @Test
     public void testEncode2() {
         byte[] datagram = new byte[10];
 
-        encoder.encode(datagram, 10, EndianPolicy.LITTLE, 1);
-    }
-
-    @Test(expected = EncodeException.class)
-    public void testEncode3() {
-        byte[] datagram = new byte[10];
-
-        encoder.encode(datagram, 10, EndianPolicy.LITTLE, Integer.MAX_VALUE);
+        assertThrows(EncodeException.class,
+                () -> encoder.encode(datagram, 10, EndianPolicy.LITTLE, 1));
+        assertThrows(EncodeException.class,
+                () -> encoder.encode(datagram, 10, EndianPolicy.LITTLE, Integer.MAX_VALUE));
     }
 }

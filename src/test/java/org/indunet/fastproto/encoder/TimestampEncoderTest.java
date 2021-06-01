@@ -3,12 +3,12 @@ package org.indunet.fastproto.encoder;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.Type;
 import org.indunet.fastproto.util.NumberUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import java.sql.Timestamp;
 import java.util.concurrent.TimeUnit;
+import java.sql.Timestamp;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 /**
  * @author Deng Ran

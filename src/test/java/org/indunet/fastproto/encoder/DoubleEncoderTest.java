@@ -1,22 +1,37 @@
 package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.util.NumberUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+/**
+ * @author Deng Ran
+ * @since 1.0.0
+ */
 public class DoubleEncoderTest {
     DoubleEncoder encoder = new DoubleEncoder();
-    byte[] datagram = new byte[8];
-    double pi = 3.141, e = 2.718;
 
     @Test
-    public void testSet() {
+    public void testEncode1() {
+        byte[] datagram = new byte[8];
+        double pi = 3.141, e = 2.718;
+
         encoder.encode(datagram, 0, EndianPolicy.LITTLE, e);
         assertArrayEquals(datagram, NumberUtils.doubleToBinary(e));
 
         encoder.encode(datagram, 0, EndianPolicy.LITTLE, pi);
         assertArrayEquals(datagram, NumberUtils.doubleToBinary(pi));
+    }
+
+    @Test
+    public void testEncode2() {
+        byte[] datagram = new byte[10];
+
+        assertThrows(EncodeException.class, () ->
+                this.encoder.encode(datagram, 10, EndianPolicy.LITTLE, 3.141));
     }
 }

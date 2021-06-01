@@ -41,7 +41,7 @@
     </licenses>
 
     <properties>
-        <junit.version>4.12</junit.version>
+        <junit.version>5.7.2</junit.version>
         <lombok.version>1.18.16</lombok.version>
     </properties>
 
@@ -124,8 +124,8 @@
         </dependency>
 
         <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>

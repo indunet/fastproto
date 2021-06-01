@@ -5,11 +5,12 @@ import org.indunet.fastproto.iot.tesla.Motor;
 import org.indunet.fastproto.iot.tesla.Tesla;
 import org.indunet.fastproto.util.EncodeUtils;
 import org.indunet.fastproto.iot.weather.Metrics;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
+
 import java.sql.Timestamp;
 
-import static org.junit.Assert.assertArrayEquals;
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FastProtoTest {
     @Test

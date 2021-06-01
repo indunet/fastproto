@@ -1,7 +1,9 @@
 package org.indunet.fastproto.decoder;
 
-import org.junit.Test;
-import static org.junit.Assert.*;
+import org.indunet.fastproto.EndianPolicy;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.*;
 
 public class BooleanDecoderTest {
     BooleanDecoder decoder = new BooleanDecoder();
@@ -9,11 +11,11 @@ public class BooleanDecoderTest {
 
     @Test
     public void testDecode() {
-        assertEquals(decoder.decode(datagram, 0, 0), true);
-        assertEquals(decoder.decode(datagram, 0, 1), false);
+        assertTrue(decoder.decode(datagram, 0, 0));
+        assertFalse(decoder.decode(datagram, 0, 1));
 
-        assertEquals(decoder.decode(datagram, 1, 1), true);
-        assertEquals(decoder.decode(datagram, 2, 2), true);
-        assertEquals(decoder.decode(datagram, 3, 3), true);
+        assertTrue(decoder.decode(datagram, 1, 1));
+        assertTrue(decoder.decode(datagram, 2, 2));
+        assertTrue(decoder.decode(datagram, 3, 3));
     }
 }

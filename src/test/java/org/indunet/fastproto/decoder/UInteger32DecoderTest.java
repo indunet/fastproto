@@ -2,9 +2,10 @@ package org.indunet.fastproto.decoder;
 
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.exception.DecodeException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Deng Ran
@@ -25,10 +26,10 @@ public class UInteger32DecoderTest {
         assertEquals(decoder.decode(datagram, 0, EndianPolicy.BIG), 256 * 256 * 256 + 2);
     }
 
-    @Test(expected = DecodeException.class)
+    @Test
     public void testDecode2() {
         byte[] datagram = new byte[10];
 
-        decoder.decode(datagram, 8, EndianPolicy.LITTLE);
+        assertThrows(DecodeException.class, () -> decoder.decode(datagram, 8, EndianPolicy.LITTLE));
     }
 }

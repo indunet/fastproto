@@ -2,6 +2,8 @@ package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.DoubleType;
+import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodeException.EncodeError;
 
 /**
  * @author Deng Ran
@@ -19,7 +21,7 @@ public class DoubleEncoder implements TypeEncoder {
 
     public void encode(byte[] datagram, int byteOffset, EndianPolicy endian, double value) {
         if (byteOffset + DoubleType.SIZE > datagram.length) {
-            throw new ArrayIndexOutOfBoundsException();
+            throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         long bits = Double.doubleToLongBits(value);

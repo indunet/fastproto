@@ -2,9 +2,9 @@ package org.indunet.fastproto.decoder;
 
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.util.NumberUtils;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class FloatDecoderTest {
     FloatDecoder decoder = new FloatDecoder();

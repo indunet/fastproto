@@ -1,9 +1,10 @@
 package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.exception.EncodeException;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Deng Ran
@@ -23,17 +24,11 @@ public class Integer8EncoderTest {
         assertEquals(datagram[1], -52);
     }
 
-    @Test(expected = EncodeException.class)
+    @Test
     public void testEncode2() {
         byte[] datagram = new byte[10];
 
-        encoder.encode(datagram, 10, 1);
-    }
-
-    @Test(expected = EncodeException.class)
-    public void testEncode3() {
-        byte[] datagram = new byte[10];
-
-        encoder.encode(datagram, 10, 255);
+        assertThrows(EncodeException.class, () -> encoder.encode(datagram, 10, 1));
+        assertThrows(EncodeException.class, () -> encoder.encode(datagram, 10, 255));
     }
 }
