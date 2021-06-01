@@ -1,6 +1,10 @@
 package org.indunet.fastproto.annotation.type;
 
+import org.indunet.fastproto.annotation.Decoder;
+import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.annotation.Type;
+import org.indunet.fastproto.decoder.UInteger8Decoder;
+import org.indunet.fastproto.encoder.UInteger8Encoder;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -13,6 +17,8 @@ import java.lang.annotation.Target;
  * @since 2.0.0
  */
 @Type
+@Decoder(UInteger8Decoder.class)
+@Encoder(UInteger8Encoder.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UInteger8Type {

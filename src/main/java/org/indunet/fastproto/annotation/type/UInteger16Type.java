@@ -1,6 +1,10 @@
 package org.indunet.fastproto.annotation.type;
 
+import org.indunet.fastproto.annotation.Decoder;
+import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.annotation.Type;
+import org.indunet.fastproto.decoder.UInteger16Decoder;
+import org.indunet.fastproto.encoder.UInteger16Encoder;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -9,10 +13,12 @@ import java.lang.annotation.Target;
 
 /**
  * @author Deng Ran
- * @see Type
  * @version 2.0.0
+ * @see Type
  */
 @Type
+@Decoder(UInteger16Decoder.class)
+@Encoder(UInteger16Encoder.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UInteger16Type {
