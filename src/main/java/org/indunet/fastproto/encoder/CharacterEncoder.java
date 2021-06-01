@@ -21,7 +21,7 @@ public class CharacterEncoder implements TypeEncoder {
     }
 
     public void encode(byte[] datagram, int byteOffset, EndianPolicy policy, char value) {
-        if (byteOffset + CharacterType.size > datagram.length) {
+        if (byteOffset + CharacterType.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

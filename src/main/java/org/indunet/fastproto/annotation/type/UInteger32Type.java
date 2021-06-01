@@ -17,7 +17,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UInteger32Type {
     int SIZE = Integer.SIZE >> 3;
-    int MAX_VALUE = Integer.MAX_VALUE - Integer.MIN_VALUE;
+    long MAX_VALUE = (long) Integer.MAX_VALUE - Integer.MIN_VALUE;
     int MIN_VALUE = 0;
 
     int value();

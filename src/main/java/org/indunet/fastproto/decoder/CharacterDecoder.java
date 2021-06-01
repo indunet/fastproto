@@ -20,7 +20,7 @@ public class CharacterDecoder implements TypeDecoder<Character> {
     }
 
     public Character decode(final byte[] datagram, int byteOffset, EndianPolicy policy) {
-        if (byteOffset + CharacterType.size > datagram.length) {
+        if (byteOffset + CharacterType.SIZE > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
