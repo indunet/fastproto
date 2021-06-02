@@ -12,9 +12,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Integer type, corresponding to Java Integer/int.
+ *
  * @author Deng Ran
  * @see Type
- * @since 2.0.0
+ * @since 1.2.0
  */
 @Type
 @Decoder(UInteger8Decoder.class)

@@ -14,6 +14,8 @@ import java.lang.annotation.Target;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Timestamp type, corresponding to Java java.sql.Timestamp.
+ *
  * @author Deng Ran
  * @see Type
  * @since 1.1.0

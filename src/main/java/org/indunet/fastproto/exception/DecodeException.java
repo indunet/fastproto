@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
+ * Decode exception.
+ *
  * @author Deng Ran
  * @see CodecException
  * @since 1.0.0

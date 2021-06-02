@@ -8,6 +8,8 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
 import java.text.MessageFormat;
 
 /**
+ * Integer16 type encoder.
+ *
  * @author Deng Ran
  * @see TypeEncoder
  * @since 1.2.0

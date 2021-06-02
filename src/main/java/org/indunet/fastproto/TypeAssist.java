@@ -29,6 +29,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
+ * Type assist.
+ *
  * @author Deng Ran
  * @since 1.0.0
  */

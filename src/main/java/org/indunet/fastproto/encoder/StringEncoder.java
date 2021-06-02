@@ -7,6 +7,8 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
 import java.nio.charset.Charset;
 
 /**
+ * String type encoder.
+ *
  * @author Deng Ran
  * @see TypeEncoder
  * @since 1.1.0

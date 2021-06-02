@@ -12,6 +12,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Double type, corresponding to Java Double/double.
+ *
  * @author Deng Ran
  * @see Type
  * @since 1.0.0

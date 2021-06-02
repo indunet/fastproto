@@ -6,6 +6,8 @@ import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.exception.EncodeException.EncodeError;
 
 /**
+ * Long type encoder.
+ *
  * @author Deng Ran
  * @since 1.0.0
  * @see TypeEncoder

@@ -8,6 +8,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Specify type decoder.
+ *
  * @author Deng Ran
  * @see Encoder
  * @since 1.0.0

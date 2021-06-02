@@ -6,6 +6,8 @@ import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.TypeAssist;
 
 /**
+ *  The context of type decoder.
+ *
  * @author Deng Ran
  * @since 1.0.0
  */

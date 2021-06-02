@@ -13,6 +13,8 @@ import java.lang.annotation.Target;
 
 
 /**
+ * Boolean type, corresponding to Java Boolean/boolean.
+ *
  * @author Deng Ran
  * @see Type
  * @since 1.0.0

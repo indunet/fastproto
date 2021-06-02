@@ -12,6 +12,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Short type, corresponding to Java Short/short.
+ *
  * @author Deng Ran
  * @see Type
  * @since 1.0.0

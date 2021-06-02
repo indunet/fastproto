@@ -6,16 +6,19 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+
 /**
  * @author Deng Ran
- * @version 1.0
+ * @see TypeAssist
+ * @since 1.0.0
  */
 public class TypeAssistTest {
     @Test
-    public void testCreate() {
+    public void testOf() {
         TypeAssist assist = TypeAssist.of(Tesla.class);
         List<DecodeContext> contexts = assist.toDecodeContexts(new byte[100]);
 
-        System.out.println("Successfully");
+        assertNotNull(contexts);
     }
 }

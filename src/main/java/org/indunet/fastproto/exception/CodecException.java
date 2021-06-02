@@ -1,6 +1,8 @@
 package org.indunet.fastproto.exception;
 
 /**
+ * Codec exception.
+ *
  * @author Deng Ran
  * @since 1.0.0
  */

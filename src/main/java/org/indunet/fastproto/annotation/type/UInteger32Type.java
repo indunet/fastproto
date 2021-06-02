@@ -12,9 +12,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Long type, corresponding to Java Long/long.
+ *
  * @author Deng Ran
  * @see Type
- * @since 2.0.0
+ * @since 1.2.0
  */
 @Type
 @Decoder(UInteger32Decoder.class)

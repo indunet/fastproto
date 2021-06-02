@@ -12,6 +12,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Float type, corresponding to Java Float/float.
+ *
  * @author Deng Ran
  * @see Type
  * @since 1.0.0

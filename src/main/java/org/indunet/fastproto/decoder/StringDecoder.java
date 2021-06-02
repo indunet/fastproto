@@ -8,6 +8,8 @@ import java.nio.charset.Charset;
 import java.util.Arrays;
 
 /**
+ * String type decoder.
+ *
  * @author Deng Ran
  * @see TypeDecoder
  * @since 1.1.0

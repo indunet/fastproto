@@ -12,6 +12,8 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 /**
+ * FastProto API.
+ *
  * @author Deng Ran
  * @since 1.0.0
  */

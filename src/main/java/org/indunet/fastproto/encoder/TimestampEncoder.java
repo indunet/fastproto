@@ -14,6 +14,8 @@ import java.sql.Timestamp;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * Timestamp type encoder.
+ *
  * @author Deng Ran
  * @see TypeEncoder
  * @since 1.1.0

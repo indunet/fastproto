@@ -6,6 +6,8 @@ import org.indunet.fastproto.encoder.*;
 import java.nio.charset.Charset;
 
 /**
+ * Encode utils.
+ *
  * @author Deng Ran
  * @since 1.0.0
  */
@@ -43,12 +45,12 @@ public class EncodeUtils {
         characterType(datagram, byteOffset, EndianPolicy.LITTLE, value);
     }
 
-    public static void type(byte[] datagram, int byteOffset, EndianPolicy policy, char value) {
-        characterEncoder.encode(datagram, byteOffset, policy, value);
+    public static void characterType(byte[] datagram, int byteOffset, EndianPolicy policy, char value) {
+        type(datagram, byteOffset, policy, value);
     }
 
-    public static void characterType(byte[] datagram, int byteOffset, EndianPolicy policy, char value) {
-        characterType(datagram, byteOffset, policy, value);
+    public static void type(byte[] datagram, int byteOffset, EndianPolicy policy, char value) {
+        characterEncoder.encode(datagram, byteOffset, policy, value);
     }
 
     public static void type(byte[] datagram, int byteOffset, int bitOffset, boolean value) {
@@ -177,6 +179,10 @@ public class EncodeUtils {
 
     public static void doubleType(byte[] datagram, int byteOffset, EndianPolicy policy, double value) {
         doubleEncoder.encode(datagram, byteOffset, policy, value);
+    }
+
+    public static void type(byte[] datagram, int byteOffset, String value) {
+        stringType(datagram, byteOffset, value.length(), Charset.defaultCharset(), value);
     }
 
     public static void type(byte[] datagram, int byteOffset, int length, String value) {

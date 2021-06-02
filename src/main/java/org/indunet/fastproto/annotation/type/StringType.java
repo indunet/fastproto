@@ -10,8 +10,11 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.nio.charset.StandardCharsets;
 
 /**
+ * String type, corresponding to Java String.
+ *
  * @author Deng Ran
  * @see Type
  * @since 1.1.0
@@ -26,5 +29,5 @@ public @interface StringType {
 
     int length() default -1;
 
-    String charsetName() default "utf-8";
+    String charsetName() default "UTF-8";
 }

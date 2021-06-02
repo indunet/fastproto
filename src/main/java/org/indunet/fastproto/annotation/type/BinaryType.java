@@ -12,6 +12,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Binary type, corresponding to Java byte array.
+ *
  * @author Deng Ran
  * @see Type
  * @since 1.0.0

@@ -6,6 +6,8 @@ import org.indunet.fastproto.decoder.*;
 import java.nio.charset.Charset;
 
 /**
+ * Decode utils.
+ *
  * @author Deng Ran
  * @since 1.0.0
  */

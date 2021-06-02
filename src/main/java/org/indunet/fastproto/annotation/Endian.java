@@ -8,6 +8,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Specify endian according to hardware platform.
+ *
  * @author Deng Ran
  * @since 1.0.0
  */

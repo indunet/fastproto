@@ -4,6 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
+ * Endian policy.
+ *
  * @author Deng Ran
  * @since 1.0.0
  */

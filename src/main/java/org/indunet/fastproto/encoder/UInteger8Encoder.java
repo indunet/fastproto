@@ -8,6 +8,8 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
 import java.text.MessageFormat;
 
 /**
+ * UInteger8 type encoder.
+ *
  * @author Deng Ran
  * @see TypeEncoder
  * @since 1.2.0

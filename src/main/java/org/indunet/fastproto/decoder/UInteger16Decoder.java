@@ -6,6 +6,8 @@ import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.DecodeException.DecodeError;
 
 /**
+ * UInteger16 type decoder.
+ *
  * @author Deng Ran
  * @see TypeDecoder
  * @since 1.2.0
@@ -13,7 +15,10 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class UInteger16Decoder implements TypeDecoder<Integer> {
     @Override
     public Integer decode(DecodeContext context) {
-        return null;
+        UInteger16Type type = context.getDataType(UInteger16Type.class);
+        EndianPolicy policy = context.getEndianPolicy();
+
+        return this.decode(context.getDatagram(), type.value(), policy);
     }
 
     public int decode(final byte[] datagram, int byteOffset, EndianPolicy policy) {

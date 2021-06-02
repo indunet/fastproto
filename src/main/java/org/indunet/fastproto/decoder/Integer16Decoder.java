@@ -6,6 +6,8 @@ import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.DecodeException.DecodeError;
 
 /**
+ * Integer type decoder.
+ *
  * @author Deng Ran
  * @see TypeDecoder
  * @since 1.2.0
