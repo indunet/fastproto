@@ -1,6 +1,5 @@
 package org.indunet.fastproto.iot;
 
-import com.sun.tracing.ProviderName;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
