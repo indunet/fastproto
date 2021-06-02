@@ -6,7 +6,7 @@
 
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>1.2.3</version>
+    <version>1.2.4</version>
     <packaging>jar</packaging>
     <name>FastProto</name>
     <description>A binary serialization and deserialization tool written in Java.</description>
