@@ -20,7 +20,7 @@ FastProto is was conceived and designed in 2018. The original intention was to s
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>1.1.2</version>
+    <version>1.2.3</version>
 </dependency>
 ```
 
