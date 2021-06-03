@@ -10,6 +10,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.function.Function;
 
 /**
  * Integer type, corresponding to Java Integer/int.
@@ -29,4 +30,8 @@ public @interface IntegerType {
     int MIN_VALUE = Integer.MIN_VALUE;
 
     int value();
+
+    Class<? extends Function<Integer, ?>>[] afterDecode() default {};
+
+    Class<? extends Function<?, Integer>>[] beforeEncode() default {};
 }

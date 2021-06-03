@@ -12,6 +12,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.function.Function;
 
 /**
  * Character type, corresponding to Java Character/char.
@@ -29,4 +30,8 @@ public @interface CharacterType {
     int SIZE = Character.SIZE >> 3;
 
     int value();
+
+    Class<? extends Function<Character, ?>>[] afterDecode() default {};
+
+    Class<? extends Function<?, Character>>[] beforeEncode() default {};
 }

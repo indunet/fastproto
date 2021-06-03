@@ -11,6 +11,7 @@ import java.util.function.Function;
  * @see Decoder
  * @since 1.0.0
  */
+@Deprecated
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DecodeFormula {

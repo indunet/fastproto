@@ -10,6 +10,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.function.Function;
 
 /**
  * Byte type, corresponding to Java Byte/byte.
@@ -29,4 +30,8 @@ public @interface ByteType {
     int MIN_VALUE = Byte.MIN_VALUE;
 
     int value();
+
+    Class<? extends Function<Byte, ?>>[] afterDecode() default {};
+
+    Class<? extends Function<?, Byte>>[] beforeEncode() default {};
 }

@@ -10,6 +10,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.function.Function;
 
 /**
  * Float type, corresponding to Java Float/float.
@@ -29,4 +30,8 @@ public @interface FloatType {
     float MIN_VALUE = Float.MIN_VALUE;
 
     int value();
+
+    Class<? extends Function<Float, ?>>[] afterDecode() default {};
+
+    Class<? extends Function<?, Float>>[] beforeEncode() default {};
 }

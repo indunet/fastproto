@@ -16,7 +16,7 @@ public class BinaryDecoder implements TypeDecoder<byte[]> {
     public byte[] decode(DecodeContext context) {
         BinaryType type = context.getDataType(BinaryType.class);
 
-        return this.decode(context.getDatagram(), type.byteOffset(), type.length());
+        return this.decode(context.getDatagram(), type.value(), type.length());
     }
 
     public byte[] decode(final byte[] datagram, int byteOffset, int length) {

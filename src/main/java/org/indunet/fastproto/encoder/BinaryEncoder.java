@@ -17,7 +17,7 @@ public class BinaryEncoder implements TypeEncoder {
         BinaryType type = context.getDataType(BinaryType.class);
         byte[] bytes = context.getValue(byte[].class);
 
-        this.encode(context.getDatagram(), type.byteOffset(), bytes);
+        this.encode(context.getDatagram(), type.value(), bytes);
     }
 
     public void encode(byte[] datagram, int byteOffset, byte[] bytes) {

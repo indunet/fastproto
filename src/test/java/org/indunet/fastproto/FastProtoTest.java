@@ -110,6 +110,7 @@ public class FastProtoTest {
                 .aUInteger8(8)
                 .aUInteger16(16)
                 .aUInteger32(32l)
+                .speed(10.1f)
                 .build();
 
         // Init datagram.
@@ -129,6 +130,9 @@ public class FastProtoTest {
         EncodeUtils.type(datagram, 50, everything.getAString());
         EncodeUtils.type(datagram, 56, everything.getATimestamp().getTime());
         EncodeUtils.type(datagram, 64, everything.getACharacter());
+
+        // There is a formula.
+        EncodeUtils.uInteger8Type(datagram, 66, (int) (everything.getSpeed() * 10));
 
         // Test decode.
         assertEquals(FastProto.decode(datagram, Everything.class).toString(), everything.toString());

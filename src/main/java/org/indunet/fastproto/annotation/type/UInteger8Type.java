@@ -10,6 +10,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.sql.Timestamp;
+import java.util.function.Function;
 
 /**
  * Integer type, corresponding to Java Integer/int.
@@ -29,4 +31,8 @@ public @interface UInteger8Type {
     int MIN_VALUE = 0;
 
     int value();
+
+    Class<? extends Function<Integer, ?>>[] afterDecode() default {};
+
+    Class<? extends Function<?, Integer>>[] beforeEncode() default {};
 }
