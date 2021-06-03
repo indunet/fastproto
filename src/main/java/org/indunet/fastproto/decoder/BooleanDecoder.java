@@ -16,7 +16,7 @@ public class BooleanDecoder implements TypeDecoder<Boolean> {
     public Boolean decode(DecodeContext context) {
         BooleanType type = context.getDataType(BooleanType.class);
 
-        return this.decode(context.getDatagram(), type.byteOffset(), type.bitOffset());
+        return this.decode(context.getDatagram(), type.value(), type.bitOffset());
     }
 
     public boolean decode(final byte[] datagram, int byteOffset, int bitOffset) {

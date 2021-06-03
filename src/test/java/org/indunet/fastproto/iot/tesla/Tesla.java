@@ -22,7 +22,7 @@ public class Tesla {
     Timestamp time;
     @FloatType(16)
     float speed;
-    @BooleanType(byteOffset = 20, bitOffset = 0)
+    @BooleanType(value = 20, bitOffset = 0)
     boolean active;
 
     Battery battery;

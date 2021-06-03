@@ -10,6 +10,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.function.Function;
 
 /**
  * Short type, corresponding to Java Short/short.
@@ -30,4 +31,7 @@ public @interface ShortType {
 
     int value();
 
+    Class<? extends Function<Short, ?>>[] afterDecode() default {};
+
+    Class<? extends Function<?, Short>>[] beforeEncode() default {};
 }

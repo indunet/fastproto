@@ -14,7 +14,7 @@ import org.indunet.fastproto.annotation.type.ShortType;
 public class Battery {
     @ShortType(22)
     short capacity;
-    @BooleanType(byteOffset = 24, bitOffset = 0)
+    @BooleanType(value = 24, bitOffset = 0)
     boolean locked;
     @IntegerType(26)
     int voltage;

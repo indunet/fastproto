@@ -17,7 +17,10 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
+import java.lang.reflect.Array;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -144,12 +147,34 @@ public class TypeAssist {
                 .map(t -> t.getAnnotation(Encoder.class))
                 .map(Encoder::value)
                 .orElse(null);
-        Class<? extends Function> decodeFormula = Optional.ofNullable(field.getAnnotation(DecodeFormula.class))
-                .map(DecodeFormula::value)
-                .orElse(null);
-        Class<? extends Function> encodeFormula = Optional.ofNullable(field.getAnnotation(EncodeFormula.class))
-                .map(EncodeFormula::value)
-                .orElse(null);
+
+//        Class<? extends Function> decodeFormula = Optional.ofNullable(field.getAnnotation(DecodeFormula.class))
+//                .map(DecodeFormula::value)
+//                .orElse(null);
+//        Class<? extends Function> encodeFormula = Optional.ofNullable(field.getAnnotation(EncodeFormula.class))
+//                .map(EncodeFormula::value)
+//                .orElse(null);
+
+        Function<String, Class<? extends Function>> formula = name -> {
+            try {
+                Class clazz = dataType.annotationType();
+                Method method = clazz.getMethod(name);
+                Object array = method.invoke(dataType);
+
+                return Optional.of(array)
+                        .filter(a -> a.getClass().isArray())
+                        .filter(a -> Array.getLength(a) >= 1)
+                        .map(a -> Array.get(a, 0))
+                        .map(o -> (Class<? extends Function>) o)
+                        .orElse(null);
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+                throw new DecodeException(
+                        MessageFormat.format(DecodeError.FAIL_GETTING_DECODE_FORMULA.getMessage(), dataType.annotationType().getName()));
+            }
+        };
+
+        Class<? extends Function> afterDecode = formula.apply("afterDecode");
+        Class<? extends Function> beforeEncode = formula.apply("beforeEncode");
 
         return TypeAssist.builder()
                 .type(field.getType())
@@ -157,8 +182,8 @@ public class TypeAssist {
                 .dataType(dataType)
                 .decoderClass(decoder)
                 .encoderClass(encoder)
-                .decodeFormula(decodeFormula)
-                .encodeFormula(encodeFormula)
+                .decodeFormula(afterDecode)
+                .encodeFormula(beforeEncode)
                 .endianPolicy(policy)
                 .decodeIgnore(decodeIgnore)
                 .encodeIgnore(encodeIgnore)

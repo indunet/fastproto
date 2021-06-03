@@ -10,6 +10,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.function.Function;
 
 /**
  * Long type, corresponding to Java Long/long.
@@ -29,4 +30,8 @@ public @interface UInteger32Type {
     int MIN_VALUE = 0;
 
     int value();
+
+    Class<? extends Function<Long, ?>>[] afterDecode() default {};
+
+    Class<? extends Function<?, Long>>[] beforeEncode() default {};
 }

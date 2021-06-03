@@ -19,7 +19,7 @@ public class StringEncoder implements TypeEncoder {
         StringType dataType = context.getDataType(StringType.class);
         String value = context.getValue(String.class);
 
-        this.encode(context.getDatagram(), dataType.byteOffset(), dataType.length(), Charset.defaultCharset(), value);
+        this.encode(context.getDatagram(), dataType.value(), dataType.length(), Charset.defaultCharset(), value);
     }
 
     // TODO, throw exception.

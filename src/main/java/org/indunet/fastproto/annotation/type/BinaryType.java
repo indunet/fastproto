@@ -10,6 +10,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.function.Function;
 
 /**
  * Binary type, corresponding to Java byte array.
@@ -24,7 +25,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BinaryType {
-    int byteOffset();
+    int value();
 
-    int length();
+    int length() default -1;
+
+    Class<? extends Function<byte[], ?>>[] afterDecode() default {};
+
+    Class<? extends Function<?, byte[]>>[] beforeEncode() default {};
 }

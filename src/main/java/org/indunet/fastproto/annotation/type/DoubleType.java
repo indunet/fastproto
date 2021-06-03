@@ -10,6 +10,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.function.Function;
 
 /**
  * Double type, corresponding to Java Double/double.
@@ -29,4 +30,8 @@ public @interface DoubleType {
     double MIN_VALUE = Double.MIN_VALUE;
 
     int value();
+
+    Class<? extends Function<Double, ?>>[] afterDecode() default {};
+
+    Class<? extends Function<?, Double>>[] beforeEncode() default {};
 }

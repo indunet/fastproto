@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.indunet.fastproto.annotation.type.*;
+import org.indunet.fastproto.iot.formula.DecodeSpeedFormula;
+import org.indunet.fastproto.iot.formula.EncodeSpeedFormula;
 
 import java.sql.Timestamp;
 
@@ -17,7 +19,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Everything {
-    @BooleanType(byteOffset = 0, bitOffset = 1)
+    @BooleanType(value = 0, bitOffset = 1)
     Boolean aBoolean;
 
     @ByteType(1)
@@ -53,10 +55,10 @@ public class Everything {
     @UInteger32Type(36)
     Long aUInteger32;
 
-    @BinaryType(byteOffset = 40, length = 10)
+    @BinaryType(value = 40, length = 10)
     byte[] aByteArray;
 
-    @StringType(byteOffset = 50, length = 6)
+    @StringType(value = 50, length = 6)
     String aString;
 
     @TimestampType(56)
@@ -64,4 +66,8 @@ public class Everything {
 
     @CharacterType(64)
     Character aCharacter;
+
+    @UInteger8Type(value = 66, afterDecode = DecodeSpeedFormula.class, beforeEncode = EncodeSpeedFormula.class)
+    float speed;
 }
+

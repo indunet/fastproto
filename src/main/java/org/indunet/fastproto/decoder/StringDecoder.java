@@ -19,7 +19,7 @@ public class StringDecoder implements TypeDecoder<String> {
     public String decode(DecodeContext context) {
         StringType type = context.getDataType(StringType.class);
 
-        return this.decode(context.getDatagram(), type.byteOffset(), type.length(), Charset.forName(type.charsetName()));
+        return this.decode(context.getDatagram(), type.value(), type.length(), Charset.forName(type.charsetName()));
     }
 
     public String decode(byte[] datagram, int byteOffset, int length, Charset charset) {

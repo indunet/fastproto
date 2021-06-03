@@ -4,17 +4,18 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto is was conceived and designed in 2018. The original intention was to solve practical problems encountered in work. To put it simply, in the field of IoT, binary messages are usually used to transmit data between devices and servers, instead of the commonly used JSON format in Web. The server usually needs to parse binary messages according to the specified protocol. If send data to device, it also needs to perform data packets according to the specified protocol. Although it is not challenging for most developers, the whole process is extremely boring and error-prone. If there is an easier way to convert binary messages into Java objects, or convert Java objects into binary messages, developers can focus more on the business implementation of the system. Based on the above ideas, FastProto was born.
+FastProto is a binary serialization & deserialization tool written in Java, allowing users to precisely control the serialization & deserialization details through annotations, such as data type, data address, endian, and data transformation formula.
 
 # *Features*
 * Serialization and deserialization
 * Support all basic Java data types
 * Support String type and Timestamp type
+* Support unsigned data type
 * User-defined endian
 
 # *Developing*
-* Unsigned types
-* Auto type
+* AutoType
+* Compress
 
 # *Maven*
 ```xml

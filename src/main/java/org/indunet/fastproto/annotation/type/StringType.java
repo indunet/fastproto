@@ -11,6 +11,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.nio.charset.StandardCharsets;
+import java.util.function.Function;
 
 /**
  * String type, corresponding to Java String.
@@ -25,9 +26,13 @@ import java.nio.charset.StandardCharsets;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface StringType {
-    int byteOffset();
+    int value();
 
     int length() default -1;
 
     String charsetName() default "UTF-8";
+
+    Class<? extends Function<String, ?>>[] afterDecode() default {};
+
+    Class<? extends Function<?, String>>[] beforeEncode() default {};
 }

@@ -10,6 +10,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.function.Function;
 
 
 /**
@@ -28,7 +29,11 @@ public @interface BooleanType {
     int MAX_BIT_OFFSET = 7;
     int MIN_BIT_OFFSET = 0;
 
-    int byteOffset();
+    int value();
 
-    int bitOffset();
+    int bitOffset() default 0;
+
+    Class<? extends Function<Boolean, ?>>[] afterDecode() default {};
+
+    Class<? extends Function<?, Boolean>>[] beforeEncode() default {};
 }
