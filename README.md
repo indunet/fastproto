@@ -7,6 +7,7 @@
 FastProto is a binary serialization & deserialization tool written in Java. 
 Different from other serialization tools, FastProto allows developers to accurately control the serialization process 
 through annotations, including byte offset, bit offset, data types, byte sequence(endian), data transformation formulas.
+
 FastProto solves the problem of cross-language and cross-platform data exchange of Java in a new way, especially suitable for the field of Internet of Things.
 
 ## *Features*
@@ -99,32 +100,32 @@ FastProto.encode(metrics, datagram);
 
 ### Data Type Annotations
 
-| Annotation      | Java               | C/C++          | Size        | Description                                                |
-|:---------------:|:------------------:|:--------------:|:-----------:|:----------------------------------------------------------:|
-| `@BooleanType`    | Boolean / boolean  | bool           | 1 Bit       | Avaliable on boolean type and its wrapper class.           |
-| `@CharacterType`  | Character / char   | --             | 2 Bytes     | Avaliable on char type and its wrapper class.              |
-| `@ByteType`       | Byte / byte        | char           | 1 Byte      | Avaliable on byte type and its wrapper class.              |
-| `@ShortType`      | Short / short      | short          | 2 Bytes     | Avaliable on short type and its wrapper class.             |
-| `@IntegerType`    | Integer / int      | int            | 4 Bytes     | Avaliable on int type and its wrapper class.               |
-| `@LongType`       | Long / long        | long long      | 8 Bytes     | Avaliable on long type and its wrapper class.              |
-| `@FloatType`      | Float / float      | float          | 4 Bytes     | Avaliable on float type and its wrapper class.             |
-| `@DoubleType`     | Double / double    | double         | 8 Bytes     | Avaliable on double type and its wrapper class.            |
-| `@Integer8Type`   | Integer / int      | char           | 1 Byte      | Avaliable on int type and its wrapper class.               |
-| `@Integer16Type`  | Integer / int      | short          | 2 Bytes     | Avaliable on int type and its wrapper class.               |
-| `@UInteger8Type`  | Integer / int      | unsigned char  | 1 Byte      | Avaliable on int type and its wrapper class.               |
-| `@UInteger16Type` | Integer / int      | unsigned short | 2 Bytes     | Avaliable on int type and its wrapper class.               |
-| `@UInteger32Type` | Long / long        | unsigned long  | 4 Bytes     | Avaliable on long type and its wrapper class.              |
-| `@BinaryType`     | byte[]             | char[]         | N Bytes     | Avaliable on byte[] type.                                  |
-| `@StringType`     | java.lang.String   | --             | N Bytes     | Avaliable on String.                                       |
-| `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 Bytes | Avaliable on Timestamp, default as 8 bytes in millisecond. |
+| Annotation      | Java               | C/C++          | Size        |
+|:---------------:|:------------------:|:--------------:|:-----------:|
+| `@BooleanType`    | Boolean / boolean  | bool           | 1 Bit       |
+| `@CharacterType`  | Character / char   | --             | 2 Bytes     |
+| `@ByteType`       | Byte / byte        | char           | 1 Byte      |
+| `@ShortType`      | Short / short      | short          | 2 Bytes     |
+| `@IntegerType`    | Integer / int      | int            | 4 Bytes     |
+| `@LongType`       | Long / long        | long long      | 8 Bytes     |
+| `@FloatType`      | Float / float      | float          | 4 Bytes     |
+| `@DoubleType`     | Double / double    | double         | 8 Bytes     |
+| `@Integer8Type`   | Integer / int      | char           | 1 Byte      |
+| `@Integer16Type`  | Integer / int      | short          | 2 Bytes     |
+| `@UInteger8Type`  | Integer / int      | unsigned char  | 1 Byte      |
+| `@UInteger16Type` | Integer / int      | unsigned short | 2 Bytes     |
+| `@UInteger32Type` | Long / long        | unsigned long  | 4 Bytes     |
+| `@BinaryType`     | byte[]             | char[]         | N Bytes     |
+| `@StringType`     | java.lang.String   | --             | N Bytes     |
+| `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 Bytes |
 
 ### Assist Annotations
 
 | Annotation    | Scope        | Description                           |
 |:-------------:|:------------:|:-------------------------------------:|
-| `@Endian`       | Type & Field | Byte sequence, default little endian. |
-| `@DecodeIgnore` | Field        | Ignore the filed when decoding.       |
-| `@EncodeIgnore` | Field        | Ignore the filed when encoding.       |
+| `@Endian`       | Type & Field | Byte sequence, default as little endian. |
+| `@DecodeIgnore` | Field        | Ignore the field when decoding.       |
+| `@EncodeIgnore` | Field        | Ignore the field when encoding.       |
 
 # *Build Requirements*
 
