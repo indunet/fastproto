@@ -16,7 +16,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class DecodersTest {
     @Test
     public void testGet() {
-        Class<? extends TypeDecoder> clazz = Optional.ofNullable(BooleanType.class)
+        Class<? extends TypeDecoder> clazz = Optional.of(BooleanType.class)
                 .map(c -> c.getAnnotation(Decoder.class))
                 .map(Decoder::value)
                 .get();
