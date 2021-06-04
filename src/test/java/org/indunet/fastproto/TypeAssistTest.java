@@ -1,9 +1,12 @@
 package org.indunet.fastproto;
 
+import lombok.SneakyThrows;
 import org.indunet.fastproto.decoder.DecodeContext;
+import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.iot.tesla.Tesla;
 import org.junit.jupiter.api.Test;
 
+import java.io.UnsupportedEncodingException;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;

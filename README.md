@@ -4,20 +4,23 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto is a binary serialization & deserialization tool written in Java, allowing users to precisely control the serialization & deserialization details through annotations, such as data type, data address, endian, and data transformation formula.
+FastProto is a binary serialization & deserialization tool written in Java. 
+Different from other serialization tools, FastProto allows developers to accurately control the serialization process 
+through annotations, including byte offset, bit offset, data types, byte sequence(endian), data transformation formulas.
+FastProto solves the problem of cross-language and cross-platform data exchange of Java in a new way, especially suitable for the field of Internet of Things.
 
-# *Features*
-* Serialization and deserialization
-* Support all basic Java data types
-* Support String type and Timestamp type
-* Support unsigned data type
-* User-defined endian
+## *Features*
+* Binary serialization & deserialization
+* Control the serialization process through annotations
+* Support all Java primitive data types and their wrapper classes
+* Support Unsigned and signed 8-bit 16-bit 32-bit integer, binary, String and Timestamp
+* Custom byte sequence(endian)
 
-# *Developing*
-* AutoType
-* Compress
+## *Under Developing*
+* AutoType, automatically detect all Java primitive data types and their wrapper classes when using AutoType
+* Compress, datagram compression & decompression
 
-# *Maven*
+## *Maven*
 ```xml
 <dependency>
     <groupId>org.indunet</groupId>
@@ -27,59 +30,108 @@ FastProto is a binary serialization & deserialization tool written in Java, allo
 ```
 
 # *Quick Start*
-Define a Java class with FastProto annotations like below:
+
+Imagine such an application, there is a monitoring device collecting weather data in realtime and sends it to 
+the weather station server in the form of binary datagram, the datagram protocol is as follows:
+
+| Byte Offset | Bit Offset | Data Type(C)   | Signal Name       | unit |
+|:-----------:|:----------:|:--------------:|:-----------------:|:----:|
+| 0           |            | unsigned char  | device id         |      |
+| 1           |            |                | reserved          |      |
+| 2-9         |            | long long      | time              |  ms  |
+| 10-11       |            | unsigned short | humidity          |  %RH |
+| 12-13       |            | short          | temperature       |  ℃  | 
+| 14-17       |            | unsigned int   | pressure          |  Pa  |
+| 18          | 0          | bool           | temperature valid |      |
+| 18          | 1          | bool           | humidity valid    |      |
+| 18          | 2          | bool           | pressure valid    |      |
+| 18          | 3-7        |                | reserved          |      |
+| 19          |            |                | reserved          |      |
+
+The binary datagram contains 8 signals of different data types, define the Java data object and annotate it with FastProto
+annotations according to the above datagram protocol.
+
 ```java
-public class Metrics {
-    @ShortType(0)
-    short id;
+public class WeatherMetrics {
+    @UInteger8Type(0)
+    int id;
 
     @TimestampType(2)
     Timestamp time;
 
-    @IntegerType(10)
+    @UInteger16Type(10)
     int humidity;
 
-    @FloatType(14)
-    float temperature;
+    @Integer16Type(12)
+    int temperature;
 
-    @DoubleType(18)
-    double pressure;
+    @UInteger32Type(14)
+    long pressure;
+
+    @BooleanType(value = 18, bitOffset = 0)
+    boolean temperatureValid;
+
+    @BooleanType(value = 18, bitOffset = 1)
+    boolean humidityValid;
+
+    @BooleanType(value = 18, bitOffset = 2)
+    boolean pressureValid;
 }
 ```
-And then convert the object into datagram or convert datagram into the object like below:
-```java
-byte[] datagram = new byte[64];
+Deserialize the binary datagram into Java data object through `FastProto::decode()` method.
 
-Metrics metrics = FastProto.decode(datagram, Metrics.class);
+```
+byte[] datagram = ...   // Datagram sent by monitoring device.
+
+WeatherMetrics metrics = FastProto.decode(datagram, WeatherMetrics.class);
+```
+
+The serialization process is similar, allocate enough memory space and serialize the Java data object into binary 
+datagram through `FastProto::encode()` method.
+
+```
+byte[] datagram = new byte[20];
+
 FastProto.encode(metrics, datagram);
 ```
 
 # *FastProto Annotations*
-|Annotation|Java|C/C++|Size| 
-|:----:|:----:|:----:|:----:|
-|@BooleanType|Boolean / boolean|bool|1 Bit|
-|@CharacterType|Character / char|--|2 Bytes|
-|@ByteType|Byte / byte|char|1 Byte|
-|@ShortType|Short / short|short|2 Bytes|
-|@IntegerType|Integer / int|long|4 Bytes|
-|@LongType|Long / long|long long|8 Bytes|
-|@FloatType|Float / float|float|4 Bytes|
-|@DoubleType|Double / double|double|8 Bytes|
-|@Integer8Type|Integer / int|char|1 Byte|
-|@Integer16Type|Integer / int|short|2 Bytes|
-|@UInteger8Type|Integer / int|unsigned char|1 Byte|
-|@UInteger16Type|Integer / int|unsigned short|2 Bytes|
-|@UInteger32Type|Long / long|unsigned long|4 Bytes|
-|@BinaryType|byte[]|char[]|N Bytes|
-|@StringType|java.lang.String|--|N Bytes|
-|@TimestampType|java.sql.Timestamp|--|4 / 8 Bytes|
 
+### Data Type Annotations
 
-## *Build Requirements*
+| Annotation      | Java               | C/C++          | Size        | Description                                                |
+|:---------------:|:------------------:|:--------------:|:-----------:|:----------------------------------------------------------:|
+| `@BooleanType`    | Boolean / boolean  | bool           | 1 Bit       | Avaliable on boolean type and its wrapper class.           |
+| `@CharacterType`  | Character / char   | --             | 2 Bytes     | Avaliable on char type and its wrapper class.              |
+| `@ByteType`       | Byte / byte        | char           | 1 Byte      | Avaliable on byte type and its wrapper class.              |
+| `@ShortType`      | Short / short      | short          | 2 Bytes     | Avaliable on short type and its wrapper class.             |
+| `@IntegerType`    | Integer / int      | int            | 4 Bytes     | Avaliable on int type and its wrapper class.               |
+| `@LongType`       | Long / long        | long long      | 8 Bytes     | Avaliable on long type and its wrapper class.              |
+| `@FloatType`      | Float / float      | float          | 4 Bytes     | Avaliable on float type and its wrapper class.             |
+| `@DoubleType`     | Double / double    | double         | 8 Bytes     | Avaliable on double type and its wrapper class.            |
+| `@Integer8Type`   | Integer / int      | char           | 1 Byte      | Avaliable on int type and its wrapper class.               |
+| `@Integer16Type`  | Integer / int      | short          | 2 Bytes     | Avaliable on int type and its wrapper class.               |
+| `@UInteger8Type`  | Integer / int      | unsigned char  | 1 Byte      | Avaliable on int type and its wrapper class.               |
+| `@UInteger16Type` | Integer / int      | unsigned short | 2 Bytes     | Avaliable on int type and its wrapper class.               |
+| `@UInteger32Type` | Long / long        | unsigned long  | 4 Bytes     | Avaliable on long type and its wrapper class.              |
+| `@BinaryType`     | byte[]             | char[]         | N Bytes     | Avaliable on byte[] type.                                  |
+| `@StringType`     | java.lang.String   | --             | N Bytes     | Avaliable on String.                                       |
+| `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 Bytes | Avaliable on Timestamp, default as 8 bytes in millisecond. |
+
+### Assist Annotations
+
+| Annotation    | Scope        | Description                           |
+|:-------------:|:------------:|:-------------------------------------:|
+| `@Endian`       | Type & Field | Byte sequence, default little endian. |
+| `@DecodeIgnore` | Field        | Ignore the filed when decoding.       |
+| `@EncodeIgnore` | Field        | Ignore the filed when encoding.       |
+
+# *Build Requirements*
+
 * Java 1.8+
 * Maven 3.5+
 
-## *License*
+# *License*
 
 FastProto is released under the [Apache 2.0 license](license).
 
@@ -97,3 +149,4 @@ distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
+```

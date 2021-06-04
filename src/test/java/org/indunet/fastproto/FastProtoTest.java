@@ -67,19 +67,25 @@ public class FastProtoTest {
     public void testWeather() {
         byte[] datagram = new byte[26];
         WeatherMetrics metrics = WeatherMetrics.builder()
-                .id((short) 101)
+                .id(101)
                 .time(new Timestamp(System.currentTimeMillis()))
                 .humidity(85)
-                .temperature(25.2f)
-                .pressure(7.5)
+                .temperature(-15)
+                .pressure(13)
+                .humidityValid(true)
+                .temperatureValid(true)
+                .pressureValid(true)
                 .build();
 
         // Init datagram.
-        EncodeUtils.type(datagram, 0, metrics.getId());
+        EncodeUtils.uInteger8Type(datagram, 0, metrics.getId());
         EncodeUtils.type(datagram, 2, metrics.getTime().getTime());
-        EncodeUtils.type(datagram, 10, metrics.getHumidity());
-        EncodeUtils.type(datagram, 14, metrics.getTemperature());
-        EncodeUtils.type(datagram, 18, metrics.getPressure());
+        EncodeUtils.uInteger16Type(datagram, 10, metrics.getHumidity());
+        EncodeUtils.integer16Type(datagram, 12, metrics.getTemperature());
+        EncodeUtils.uInteger32Type(datagram, 14, metrics.getPressure());
+        EncodeUtils.type(datagram, 18, 0, metrics.isHumidityValid());
+        EncodeUtils.type(datagram, 18, 1, metrics.isTemperatureValid());
+        EncodeUtils.type(datagram, 18, 2, metrics.isPressureValid());
 
         // Test decode.
         assertEquals(FastProto.decode(datagram, WeatherMetrics.class).toString(), metrics.toString());
