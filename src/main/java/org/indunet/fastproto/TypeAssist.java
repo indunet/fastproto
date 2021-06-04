@@ -1,9 +1,6 @@
 package org.indunet.fastproto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.ToString;
+import lombok.*;
 import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.TypeDecoder;
@@ -37,10 +34,10 @@ import java.util.stream.Stream;
  * @author Deng Ran
  * @since 1.0.0
  */
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
-@ToString(exclude = {"parent"})
 public class TypeAssist {
     TypeAssist parent;
     Class<?> type;

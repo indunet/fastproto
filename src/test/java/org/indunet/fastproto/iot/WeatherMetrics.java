@@ -17,18 +17,27 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 public class WeatherMetrics {
-    @ShortType(0)
-    short id;
+    @UInteger8Type(0)
+    int id;
 
     @TimestampType(2)
     Timestamp time;
 
-    @IntegerType(10)
+    @UInteger16Type(10)
     int humidity;
 
-    @FloatType(14)
-    float temperature;
+    @Integer16Type(12)
+    int temperature;
 
-    @DoubleType(18)
-    double pressure;
+    @UInteger32Type(14)
+    long pressure;
+
+    @BooleanType(value = 18, bitOffset = 0)
+    boolean temperatureValid;
+
+    @BooleanType(value = 18, bitOffset = 1)
+    boolean humidityValid;
+
+    @BooleanType(value = 18, bitOffset = 2)
+    boolean pressureValid;
 }

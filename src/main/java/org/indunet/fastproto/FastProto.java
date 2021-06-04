@@ -1,12 +1,12 @@
 package org.indunet.fastproto;
 
+import lombok.NonNull;
 import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.Decoders;
 import org.indunet.fastproto.encoder.EncodeContext;
 import org.indunet.fastproto.encoder.Encoders;
 
 import java.util.List;
-import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -24,13 +24,10 @@ public class FastProto {
      * Convert binary message into object.
      *
      * @param datagram binary message
-     * @param clazz deserialized object
+     * @param clazz    deserialized object
      * @return deserialize object instance
      */
-    public static <T> T decode(byte[] datagram, Class<T> clazz) {
-        Objects.requireNonNull(datagram);
-        Objects.requireNonNull(clazz);
-
+    public static <T> T decode(@NonNull byte[] datagram, @NonNull Class<T> clazz) {
         TypeAssist assist = assists.computeIfAbsent(clazz, c -> TypeAssist.of(c));
         List<DecodeContext> contexts = assist.toDecodeContexts(datagram);
         T object = contexts.stream()
@@ -56,13 +53,10 @@ public class FastProto {
     /**
      * Convert object into binary message.
      *
-     * @param object serialized object
+     * @param object   serialized object
      * @param datagram binary message
      */
-    public static void encode(Object object, byte[] datagram) {
-        Objects.requireNonNull(object);
-        Objects.requireNonNull(datagram);
-
+    public static void encode(@NonNull Object object, @NonNull byte[] datagram) {
         TypeAssist assist = assists.computeIfAbsent(object.getClass(), c -> TypeAssist.of(c));
         List<EncodeContext> contexts = assist.toEncodeContexts(object, datagram);
 
