@@ -1,8 +1,8 @@
 # *What is FastProto?*
 
 [![Build Status](https://travis-ci.com/indunet/fastproto.svg?branch=master)](https://travis-ci.com/indunet/fastproto)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![codecov](https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU)](https://codecov.io/gh/indunet/fastproto)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 FastProto is a binary serialization & deserialization tool written in Java. 
@@ -36,7 +36,7 @@ FastProto solves the problem of cross-language and cross-platform data exchange 
 Imagine such an application, there is a monitoring device collecting weather data in realtime and sends it to 
 the weather station server in the form of binary datagram, the datagram protocol is as follows:
 
-| Byte Offset | Bit Offset | Data Type(C)   | Signal Name       | unit |
+| Byte Offset | Bit Offset | Data Type(C)   | Signal Name       | Unit |
 |:-----------:|:----------:|:--------------:|:-----------------:|:----:|
 | 0           |            | unsigned char  | device id         |      |
 | 1           |            |                | reserved          |      |

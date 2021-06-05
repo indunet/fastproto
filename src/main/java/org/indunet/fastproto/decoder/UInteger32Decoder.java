@@ -1,5 +1,6 @@
 package org.indunet.fastproto.decoder;
 
+import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.exception.DecodeException;
@@ -9,20 +10,22 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
  * UInteger32 type decoder.
  *
  * @author Deng Ran
- * @see TypeDecoder
+ * @see TypeDecoder,UInteger32Type
  * @since 1.2.0
  */
 public class UInteger32Decoder implements TypeDecoder<Long> {
     @Override
-    public Long decode(DecodeContext context) {
+    public Long decode(@NonNull DecodeContext context) {
         UInteger32Type type = context.getDataType(UInteger32Type.class);
         EndianPolicy policy = context.getEndianPolicy();
 
         return this.decode(context.getDatagram(), type.value(), policy);
     }
 
-    public long decode(final byte[] datagram, int byteOffset, EndianPolicy policy) {
-        if (byteOffset + UInteger32Type.SIZE > datagram.length) {
+    public long decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy policy) {
+        if (byteOffset < 0) {
+            throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
+        } else if (byteOffset + UInteger32Type.SIZE > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

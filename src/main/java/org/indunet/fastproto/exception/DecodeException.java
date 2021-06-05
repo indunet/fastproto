@@ -33,7 +33,9 @@ public class DecodeException extends CodecException {
     public enum DecodeError {
         NO_VALID_DECODER_FOUND("No valid decoder found for {0}."),
         EXCEEDED_DATAGRAM_SIZE("Exceeded datagram size."),
-        ILLEGAL_BIT_OFFSET("Illegal bit offset."),
+        ILLEGAL_BIT_OFFSET("Illegal bit offset, must be in [0, 7]."),
+        ILLEGAL_BYTE_OFFSET("Illegal byte offset, must be larger than or equal to 0."),
+        ILLEGAL_PARAMETER("Illegal parameter."),
         FAIL_INITIALIZING_DECODER("Fail initializing decoder {0}."),
         FAIL_GETTING_DECODE_FORMULA("Fail getting decode formula {0}"),
         FAIL_INITIALIZING_DECODE_FORMULA("Fail initializing decode formula {0}."),

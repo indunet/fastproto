@@ -1,5 +1,6 @@
 package org.indunet.fastproto.decoder;
 
+import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.ShortType;
 import org.indunet.fastproto.exception.DecodeException;
@@ -14,14 +15,16 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
  */
 public class ShortDecoder implements TypeDecoder<Short> {
     @Override
-    public Short decode(DecodeContext context) {
+    public Short decode(@NonNull DecodeContext context) {
         ShortType type = context.getDataType(ShortType.class);
 
         return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }
 
-    public short decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {
-        if (byteOffset + ShortType.SIZE > datagram.length) {
+    public short decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {
+        if (byteOffset < 0) {
+            throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
+        } else if (byteOffset + ShortType.SIZE > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

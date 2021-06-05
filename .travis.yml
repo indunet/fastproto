@@ -7,4 +7,4 @@ after_success:
   - codecov
 branches:
   except:
-    - develop
+    - appveyor

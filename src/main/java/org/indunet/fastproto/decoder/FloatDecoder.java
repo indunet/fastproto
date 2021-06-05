@@ -1,5 +1,6 @@
 package org.indunet.fastproto.decoder;
 
+import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.FloatType;
 import org.indunet.fastproto.exception.DecodeException;
@@ -9,7 +10,7 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
  * Float type decoder.
  *
  * @author Deng Ran
- * @see TypeDecoder
+ * @see TypeDecoder,FloatType
  * @since 1.0.0
  */
 public class FloatDecoder implements TypeDecoder<Float> {
@@ -20,13 +21,14 @@ public class FloatDecoder implements TypeDecoder<Float> {
         return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }
 
-    public float decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {
-        if (byteOffset + FloatType.SIZE > datagram.length) {
+    public float decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {
+        if (byteOffset < 0) {
+            throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
+        } else if (byteOffset + FloatType.SIZE > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         int value = 0;
-
 
         if (endian == EndianPolicy.LITTLE) {
             value |= (datagram[byteOffset] & 0xFF);

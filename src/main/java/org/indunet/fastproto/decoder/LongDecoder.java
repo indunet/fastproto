@@ -1,5 +1,6 @@
 package org.indunet.fastproto.decoder;
 
+import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.LongType;
 import org.indunet.fastproto.exception.DecodeException;
@@ -14,14 +15,16 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
  */
 public class LongDecoder implements TypeDecoder<Long> {
     @Override
-    public Long decode(DecodeContext context) {
+    public Long decode(@NonNull DecodeContext context) {
         LongType type = context.getDataType(LongType.class);
 
         return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }
 
-    public long decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {
-        if (byteOffset + LongType.SIZE > datagram.length) {
+    public long decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {
+        if (byteOffset < 0) {
+            throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
+        } else if (byteOffset + LongType.SIZE > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
