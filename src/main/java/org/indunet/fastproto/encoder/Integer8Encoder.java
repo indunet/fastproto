@@ -1,6 +1,5 @@
 package org.indunet.fastproto.encoder;
 
-import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.Integer8Type;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.exception.EncodeException.EncodeError;
@@ -11,7 +10,7 @@ import java.text.MessageFormat;
  * Integer8 type encoder.
  *
  * @author Deng Ran
- * @see TypeEncoder
+ * @see TypeEncoder,Integer8Type
  * @since 1.2.0
  */
 public class Integer8Encoder implements TypeEncoder {

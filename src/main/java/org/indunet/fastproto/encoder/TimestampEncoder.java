@@ -1,5 +1,6 @@
 package org.indunet.fastproto.encoder;
 
+import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.Type;
 import org.indunet.fastproto.annotation.Type.DataType;
@@ -22,7 +23,7 @@ import java.util.concurrent.TimeUnit;
  */
 public class TimestampEncoder implements TypeEncoder {
     @Override
-    public void encode(EncodeContext context) {
+    public void encode(@NonNull EncodeContext context) {
         EndianPolicy policy = context.getEndianPolicy();
         TimestampType type = context.getDataType(TimestampType.class);
         Timestamp value = context.getValue(Timestamp.class);
@@ -30,7 +31,7 @@ public class TimestampEncoder implements TypeEncoder {
         this.encode(context.getDatagram(), type.value(), type.dataType(), policy, type.unit(), value);
     }
 
-    public void encode(byte[] datagram, int byteOffset, DataType dataType, EndianPolicy policy, TimeUnit unit, Timestamp value) {
+    public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull DataType dataType, @NonNull EndianPolicy policy, @NonNull TimeUnit unit, @NonNull Timestamp value) {
         if (dataType == Type.DataType.LONG_TYPE && unit == TimeUnit.MILLISECONDS) {
             if (byteOffset + LongType.SIZE > datagram.length) {
                 throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);

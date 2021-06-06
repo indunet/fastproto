@@ -22,7 +22,7 @@ public class UInteger32DecoderTest {
         datagram[2] = 0;
         datagram[3] = 2;
 
-        assertEquals(decoder.decode(datagram, 0, EndianPolicy.LITTLE), 1 + 2 * 256l * 256 * 256);
+        assertEquals(decoder.decode(datagram, 0, EndianPolicy.LITTLE), 1 + 2 * 256L * 256 * 256);
         assertEquals(decoder.decode(datagram, 0, EndianPolicy.BIG), 256 * 256 * 256 + 2);
     }
 
@@ -30,6 +30,7 @@ public class UInteger32DecoderTest {
     public void testDecode2() {
         byte[] datagram = new byte[10];
 
+        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -1, EndianPolicy.LITTLE));
         assertThrows(DecodeException.class, () -> decoder.decode(datagram, 8, EndianPolicy.LITTLE));
     }
 }

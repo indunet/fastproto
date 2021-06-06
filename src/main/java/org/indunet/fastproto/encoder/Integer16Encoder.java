@@ -1,5 +1,6 @@
 package org.indunet.fastproto.encoder;
 
+import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.Integer16Type;
 import org.indunet.fastproto.exception.EncodeException;
@@ -11,12 +12,12 @@ import java.text.MessageFormat;
  * Integer16 type encoder.
  *
  * @author Deng Ran
- * @see TypeEncoder
+ * @see TypeEncoder,Integer16Type
  * @since 1.2.0
  */
 public class Integer16Encoder implements TypeEncoder {
     @Override
-    public void encode(EncodeContext context) {
+    public void encode(@NonNull EncodeContext context) {
         Integer16Type type = context.getDataType(Integer16Type.class);
         EndianPolicy policy = context.getEndianPolicy();
         Integer value = context.getValue(Integer.class);
@@ -24,7 +25,7 @@ public class Integer16Encoder implements TypeEncoder {
         this.encode(context.getDatagram(), type.value(), policy, value);
     }
 
-    public void encode(byte[] datagram, int byteOffset, EndianPolicy policy, int value) {
+    public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull EndianPolicy policy, int value) {
         if (byteOffset + Integer16Type.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         } else if (value > Integer16Type.MAX_VALUE || value < Integer16Type.MIN_VALUE) {

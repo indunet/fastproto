@@ -103,28 +103,28 @@ FastProto.encode(metrics, datagram);
 
 | Annotation      | Java               | C/C++          | Size        |
 |:---------------:|:------------------:|:--------------:|:-----------:|
-| `@BooleanType`    | Boolean / boolean  | bool           | 1 Bit       |
-| `@CharacterType`  | Character / char   | --             | 2 Bytes     |
-| `@ByteType`       | Byte / byte        | char           | 1 Byte      |
-| `@ShortType`      | Short / short      | short          | 2 Bytes     |
-| `@IntegerType`    | Integer / int      | int            | 4 Bytes     |
-| `@LongType`       | Long / long        | long long      | 8 Bytes     |
-| `@FloatType`      | Float / float      | float          | 4 Bytes     |
-| `@DoubleType`     | Double / double    | double         | 8 Bytes     |
-| `@Integer8Type`   | Integer / int      | char           | 1 Byte      |
-| `@Integer16Type`  | Integer / int      | short          | 2 Bytes     |
-| `@UInteger8Type`  | Integer / int      | unsigned char  | 1 Byte      |
-| `@UInteger16Type` | Integer / int      | unsigned short | 2 Bytes     |
-| `@UInteger32Type` | Long / long        | unsigned long  | 4 Bytes     |
-| `@BinaryType`     | byte[]             | char[]         | N Bytes     |
-| `@StringType`     | java.lang.String   | --             | N Bytes     |
-| `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 Bytes |
+| `@BooleanType`    | Boolean / boolean  | bool           | 1 bit       |
+| `@CharacterType`  | Character / char   | --             | 2 bytes     |
+| `@ByteType`       | Byte / byte        | char           | 1 byte      |
+| `@ShortType`      | Short / short      | short          | 2 bytes     |
+| `@IntegerType`    | Integer / int      | int            | 4 bytes     |
+| `@LongType`       | Long / long        | long long      | 8 bytes     |
+| `@FloatType`      | Float / float      | float          | 4 bytes     |
+| `@DoubleType`     | Double / double    | double         | 8 bytes     |
+| `@Integer8Type`   | Integer / int      | char           | 1 byte      |
+| `@Integer16Type`  | Integer / int      | short          | 2 bytes     |
+| `@UInteger8Type`  | Integer / int      | unsigned char  | 1 byte      |
+| `@UInteger16Type` | Integer / int      | unsigned short | 2 bytes     |
+| `@UInteger32Type` | Long / long        | unsigned long  | 4 bytes     |
+| `@BinaryType`     | byte[]             | char[]         | N bytes     |
+| `@StringType`     | java.lang.String   | --             | N bytes     |
+| `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 bytes |
 
 ### Assist Annotations
 
 | Annotation    | Scope        | Description                           |
 |:-------------:|:------------:|:-------------------------------------:|
-| `@Endian`       | Type & Field | Byte sequence, default as little endian. |
+| `@Endian`       | Class & Field | Byte sequence, default as little endian. |
 | `@DecodeIgnore` | Field        | Ignore the field when decoding.       |
 | `@EncodeIgnore` | Field        | Ignore the field when encoding.       |
 

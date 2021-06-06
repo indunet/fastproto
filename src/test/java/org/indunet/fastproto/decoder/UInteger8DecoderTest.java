@@ -27,6 +27,7 @@ public class UInteger8DecoderTest {
     public void testDecode2() {
         byte[] datagram = new byte[10];
 
+        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -1));
         assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 10));
     }
 }

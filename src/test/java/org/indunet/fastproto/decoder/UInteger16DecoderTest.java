@@ -28,6 +28,7 @@ public class UInteger16DecoderTest {
     public void testDecode2() {
         byte[] datagram = new byte[10];
 
+        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -1, EndianPolicy.LITTLE));
         assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 10, EndianPolicy.LITTLE));
     }
 }
