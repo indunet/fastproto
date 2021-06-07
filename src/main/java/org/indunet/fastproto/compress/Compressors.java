@@ -13,10 +13,10 @@ import static org.indunet.fastproto.compress.CompressPolicy.*;
  * @see Compressor
  * @since 1.3.0
  */
-public class CompressorFactory {
+public class Compressors {
     static ConcurrentHashMap<CompressPolicy, Compressor> compressors = new ConcurrentHashMap<>();
 
-    public static Compressor create(Compress compress) {
+    public static Compressor get(Compress compress) {
         switch (compress.value()) {
             case GZIP:
                 return compressors.computeIfAbsent(CompressPolicy.GZIP, __ -> new GzipCompressor());

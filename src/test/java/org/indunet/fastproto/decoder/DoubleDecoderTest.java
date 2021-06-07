@@ -22,7 +22,14 @@ public class DoubleDecoderTest {
     public void testDecode2() {
         byte[] datagram = new byte[10];
 
+        assertThrows(NullPointerException.class,
+                () -> this.decoder.decode(null));
+        assertThrows(NullPointerException.class,
+                () -> this.decoder.decode(null, 10, EndianPolicy.LITTLE));
+
         assertThrows(DecodeException.class,
-                () -> this.decoder.decode(datagram, 10, EndianPolicy.LITTLE));
+                () -> this.decoder.decode(datagram, -1, EndianPolicy.LITTLE));
+        assertThrows(DecodeException.class,
+                () -> this.decoder.decode(datagram, 8, EndianPolicy.LITTLE));
     }
 }

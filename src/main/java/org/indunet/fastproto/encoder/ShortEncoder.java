@@ -23,7 +23,9 @@ public class ShortEncoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull EndianPolicy policy, short value) {
-        if (byteOffset + ShortType.SIZE > datagram.length) {
+        if (byteOffset < 0) {
+            throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
+        } else if (byteOffset + ShortType.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

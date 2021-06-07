@@ -26,7 +26,9 @@ public class Integer16Encoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull EndianPolicy policy, int value) {
-        if (byteOffset + Integer16Type.SIZE > datagram.length) {
+        if (byteOffset < 0) {
+            throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
+        } else if (byteOffset + Integer16Type.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         } else if (value > Integer16Type.MAX_VALUE || value < Integer16Type.MIN_VALUE) {
             throw new EncodeException(

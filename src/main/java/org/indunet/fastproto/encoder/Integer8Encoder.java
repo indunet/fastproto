@@ -23,7 +23,9 @@ public class Integer8Encoder implements TypeEncoder {
     }
 
     public void encode(byte[] datagram, int byteOffset, int value) {
-        if (byteOffset + Integer8Type.SIZE > datagram.length) {
+        if (byteOffset < 0) {
+            throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
+        } else if (byteOffset + Integer8Type.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         } else if (value > Integer8Type.MAX_VALUE || value < Integer8Type.MIN_VALUE) {
             throw new EncodeException(

@@ -28,7 +28,10 @@ public class Integer8EncoderTest {
     public void testEncode2() {
         byte[] datagram = new byte[10];
 
-        assertThrows(EncodeException.class, () -> encoder.encode(datagram, 10, 1));
+        assertThrows(NullPointerException.class, () -> this.encoder.encode(null));
+        assertThrows(NullPointerException.class, () -> this.encoder.encode(null, 0, 8));
+
+        assertThrows(EncodeException.class, () -> encoder.encode(datagram, -1, 1));
         assertThrows(EncodeException.class, () -> encoder.encode(datagram, 10, 255));
     }
 }

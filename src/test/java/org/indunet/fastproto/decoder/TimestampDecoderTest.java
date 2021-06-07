@@ -31,6 +31,10 @@ public class TimestampDecoderTest {
     public void testDecode2() {
         byte[] datagram = new byte[10];
 
-        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 10,Type.DataType.LONG_TYPE, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS));
+        assertThrows(NullPointerException.class, () -> this.decoder.decode(null));
+        assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 0, Type.DataType.LONG_TYPE, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS));
+
+        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -1, Type.DataType.LONG_TYPE, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS));
+        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 10, Type.DataType.LONG_TYPE, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS));
     }
 }

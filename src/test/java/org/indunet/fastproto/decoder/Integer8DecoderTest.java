@@ -1,5 +1,6 @@
 package org.indunet.fastproto.decoder;
 
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.exception.DecodeException;
 import org.junit.jupiter.api.Test;
 
@@ -27,6 +28,10 @@ public class Integer8DecoderTest {
     public void testDecode2() {
         byte[] datagram = new byte[10];
 
+        assertThrows(NullPointerException.class, () -> this.decoder.decode(null));
+        assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 0));
+
+        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -1));
         assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 10));
     }
 }

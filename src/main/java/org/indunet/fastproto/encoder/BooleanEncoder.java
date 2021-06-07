@@ -22,7 +22,9 @@ public class BooleanEncoder implements TypeEncoder {
     }
 
     public void encode(byte[] datagram, int byteOffset, int bitOffset, boolean value) {
-        if (byteOffset >= datagram.length) {
+        if (byteOffset < 0) {
+            throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
+        } else if (byteOffset >= datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         } else if (bitOffset < BooleanType.MIN_BIT_OFFSET || bitOffset > BooleanType.MAX_BIT_OFFSET) {
             throw new EncodeException(EncodeError.ILLEGAL_BIT_OFFSET);

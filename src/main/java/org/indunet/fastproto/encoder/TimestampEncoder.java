@@ -32,7 +32,9 @@ public class TimestampEncoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull DataType dataType, @NonNull EndianPolicy policy, @NonNull TimeUnit unit, @NonNull Timestamp value) {
-        if (dataType == Type.DataType.LONG_TYPE && unit == TimeUnit.MILLISECONDS) {
+        if (byteOffset < 0) {
+            throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
+        } else if (dataType == Type.DataType.LONG_TYPE && unit == TimeUnit.MILLISECONDS) {
             if (byteOffset + LongType.SIZE > datagram.length) {
                 throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
             }

@@ -31,7 +31,12 @@ public class FLoatEncoderTest {
     public void testEncode2() {
         byte[] datagram = new byte[10];
 
+        assertThrows(NullPointerException.class, () -> this.encoder.encode(null));
+        assertThrows(NullPointerException.class, () -> this.encoder.encode(null, 0, null, 3.14f));
+
         assertThrows(EncodeException.class, () ->
                 this.encoder.encode(datagram, 10, EndianPolicy.LITTLE, 3.141f));
+        assertThrows(EncodeException.class, () ->
+                this.encoder.encode(datagram, -1, EndianPolicy.LITTLE, 3.141f));
     }
 }

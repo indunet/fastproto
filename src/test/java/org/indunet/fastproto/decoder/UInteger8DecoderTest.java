@@ -1,7 +1,11 @@
 package org.indunet.fastproto.decoder;
 
+import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.annotation.Type;
 import org.indunet.fastproto.exception.DecodeException;
 import org.junit.jupiter.api.Test;
+
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -26,6 +30,9 @@ public class UInteger8DecoderTest {
     @Test
     public void testDecode2() {
         byte[] datagram = new byte[10];
+
+        assertThrows(NullPointerException.class, () -> this.decoder.decode(null));
+        assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 0));
 
         assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -1));
         assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 10));
