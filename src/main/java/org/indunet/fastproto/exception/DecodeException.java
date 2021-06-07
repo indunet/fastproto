@@ -42,7 +42,8 @@ public class DecodeException extends CodecException {
         FAIL_INITIALIZING_DECODE_OBJECT("Fail initializing decode object {0}"),
         NOT_FOUND_DECODER("Decoder for data type {0} cannot be found."),
         ILLEGAL_TIMESTAMP_PARAMETERS("Illgeal timestamp parameters."),
-        FAIL_ASSIGN_VALUE("Fail assigning value for field {0}");
+        FAIL_ASSIGN_VALUE("Fail assigning value for field {0}"),
+        FAIL_DECOMPRESS_DATAGRAM("Fail decompressing datagram with {0}");
 
         String message;
     }

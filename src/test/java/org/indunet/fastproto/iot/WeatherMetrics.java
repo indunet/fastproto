@@ -4,7 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.indunet.fastproto.annotation.Compress;
 import org.indunet.fastproto.annotation.type.*;
+import org.indunet.fastproto.compress.CompressPolicy;
 
 import java.sql.Timestamp;
 
@@ -16,6 +18,7 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@Compress(value = CompressPolicy.DEFLATE, level = 2)
 public class WeatherMetrics {
     @UInteger8Type(0)
     int id;
