@@ -36,7 +36,7 @@ FastProto solves the problem of cross-language and cross-platform data exchange 
 Imagine such an application, there is a monitoring device collecting weather data in realtime and sends it to 
 the weather station server in the form of binary datagram, the datagram protocol is as follows:
 
-| Byte Offset | Bit Offset | Data Type(C)   | Signal Name       | Unit |
+| Byte Offset | Bit Offset | Data Type(C/C++)   | Signal Name       | Unit |
 |:-----------:|:----------:|:--------------:|:-----------------:|:----:|
 | 0           |            | unsigned char  | device id         |      |
 | 1           |            |                | reserved          |      |
@@ -127,6 +127,7 @@ FastProto.encode(metrics, datagram);
 | `@Endian`       | Class & Field | Byte sequence, default as little endian. |
 | `@DecodeIgnore` | Field        | Ignore the field when decoding.       |
 | `@EncodeIgnore` | Field        | Ignore the field when encoding.       |
+| `@Compress` | Class        | Compress or decompress datagram, default as GZIP. |
 
 # *Build Requirements*
 

@@ -39,7 +39,8 @@ public class EncodeException extends CodecException {
         FAIL_INITIALIZING_ENCODER("Fail initializing encoder of {0}."),
         FAIL_INITIALIZING_ENCODE_FORMULA("Fail initilizing encode formula of {0}."),
         FAIL_GETTING_FIELD_VALUE("Unable to get the value of filed {0}."),
-        ILLEGAL_TIMESTAMP_PARAMETERS("Illgeal timestamp parameters.");
+        ILLEGAL_TIMESTAMP_PARAMETERS("Illgeal timestamp parameters."),
+        FAIL_COMPRESS_DATAGRAM("Fail compressing datagram with {0}");
 
         String message;
     }

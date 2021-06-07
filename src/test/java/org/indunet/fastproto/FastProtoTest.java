@@ -1,5 +1,7 @@
 package org.indunet.fastproto;
 
+import lombok.val;
+import org.indunet.fastproto.compress.DeflateCompressor;
 import org.indunet.fastproto.iot.Everything;
 import org.indunet.fastproto.iot.WeatherMetrics;
 import org.indunet.fastproto.iot.tesla.Battery;
@@ -64,7 +66,7 @@ public class FastProtoTest {
     }
 
     @Test
-    public void testWeather() {
+    public void testWeather1() {
         byte[] datagram = new byte[26];
         WeatherMetrics metrics = WeatherMetrics.builder()
                 .id(101)
@@ -88,11 +90,48 @@ public class FastProtoTest {
         EncodeUtils.type(datagram, 18, 2, metrics.isPressureValid());
 
         // Test decode.
-        assertEquals(FastProto.decode(datagram, WeatherMetrics.class).toString(), metrics.toString());
+        assertEquals(
+                FastProto.decode(datagram, WeatherMetrics.class, false).toString(), metrics.toString());
 
         // Test encode.
-        byte[] cache = new byte[26];
-        FastProto.encode(metrics, cache);
+        byte[] cache = FastProto.encode(metrics, 26, false);
+        assertArrayEquals(cache, datagram);
+    }
+
+    @Test
+    public void testWeather2() {
+        byte[] datagram = new byte[26];
+        WeatherMetrics metrics = WeatherMetrics.builder()
+                .id(101)
+                .time(new Timestamp(System.currentTimeMillis()))
+                .humidity(85)
+                .temperature(-15)
+                .pressure(13)
+                .humidityValid(true)
+                .temperatureValid(true)
+                .pressureValid(true)
+                .build();
+        val compressor = new DeflateCompressor(2);
+
+        // Init datagram.
+        EncodeUtils.uInteger8Type(datagram, 0, metrics.getId());
+        EncodeUtils.type(datagram, 2, metrics.getTime().getTime());
+        EncodeUtils.uInteger16Type(datagram, 10, metrics.getHumidity());
+        EncodeUtils.integer16Type(datagram, 12, metrics.getTemperature());
+        EncodeUtils.uInteger32Type(datagram, 14, metrics.getPressure());
+        EncodeUtils.type(datagram, 18, 0, metrics.isHumidityValid());
+        EncodeUtils.type(datagram, 18, 1, metrics.isTemperatureValid());
+        EncodeUtils.type(datagram, 18, 2, metrics.isPressureValid());
+
+        // Compress the datagram.
+        datagram = compressor.compress(datagram);
+
+        // Test decode.
+        assertEquals(
+                FastProto.decode(datagram, WeatherMetrics.class).toString(), metrics.toString());
+
+        // Test encode.
+        byte[] cache = FastProto.encode(metrics, 26);
         assertArrayEquals(cache, datagram);
     }
 
