@@ -27,7 +27,7 @@ FastProto solves the problem of cross-language and cross-platform data exchange 
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>1.2.3</version>
+    <version>1.3.0</version>
 </dependency>
 ```
 
