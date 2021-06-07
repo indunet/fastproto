@@ -1,5 +1,6 @@
 package org.indunet.fastproto.encoder;
 
+import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.ShortType;
 import org.indunet.fastproto.exception.EncodeException;
@@ -14,14 +15,14 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
  */
 public class ShortEncoder implements TypeEncoder {
     @Override
-    public void encode(EncodeContext context) {
+    public void encode(@NonNull EncodeContext context) {
         ShortType type = context.getDataType(ShortType.class);
         Short value = context.getValue(Short.class);
 
         this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);
     }
 
-    public void encode(byte[] datagram, int byteOffset, EndianPolicy policy, short value) {
+    public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull EndianPolicy policy, short value) {
         if (byteOffset + ShortType.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         }

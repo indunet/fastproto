@@ -9,8 +9,8 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
  * Float type encoder.
  *
  * @author Deng Ran
+ * @see TypeEncoder,FloatType
  * @since 1.0.0
- * @see TypeEncoder
  */
 public class FloatEncoder implements TypeEncoder {
     @Override

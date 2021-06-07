@@ -10,7 +10,7 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
  *
  * @author Deng Ran
  * @since 1.0.0
- * @see TypeEncoder
+ * @see TypeEncoder,BooleanType
  */
 public class BooleanEncoder implements TypeEncoder {
     @Override

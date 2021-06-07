@@ -1,8 +1,8 @@
 # *What is FastProto?*
 
 [![Build Status](https://travis-ci.com/indunet/fastproto.svg?branch=master)](https://travis-ci.com/indunet/fastproto)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![codecov](https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU)](https://codecov.io/gh/indunet/fastproto)
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 FastProto is a binary serialization & deserialization tool written in Java. 
@@ -36,7 +36,7 @@ FastProto solves the problem of cross-language and cross-platform data exchange 
 Imagine such an application, there is a monitoring device collecting weather data in realtime and sends it to 
 the weather station server in the form of binary datagram, the datagram protocol is as follows:
 
-| Byte Offset | Bit Offset | Data Type(C)   | Signal Name       | unit |
+| Byte Offset | Bit Offset | Data Type(C/C++)   | Signal Name       | Unit |
 |:-----------:|:----------:|:--------------:|:-----------------:|:----:|
 | 0           |            | unsigned char  | device id         |      |
 | 1           |            |                | reserved          |      |
@@ -103,30 +103,31 @@ FastProto.encode(metrics, datagram);
 
 | Annotation      | Java               | C/C++          | Size        |
 |:---------------:|:------------------:|:--------------:|:-----------:|
-| `@BooleanType`    | Boolean / boolean  | bool           | 1 Bit       |
-| `@CharacterType`  | Character / char   | --             | 2 Bytes     |
-| `@ByteType`       | Byte / byte        | char           | 1 Byte      |
-| `@ShortType`      | Short / short      | short          | 2 Bytes     |
-| `@IntegerType`    | Integer / int      | int            | 4 Bytes     |
-| `@LongType`       | Long / long        | long long      | 8 Bytes     |
-| `@FloatType`      | Float / float      | float          | 4 Bytes     |
-| `@DoubleType`     | Double / double    | double         | 8 Bytes     |
-| `@Integer8Type`   | Integer / int      | char           | 1 Byte      |
-| `@Integer16Type`  | Integer / int      | short          | 2 Bytes     |
-| `@UInteger8Type`  | Integer / int      | unsigned char  | 1 Byte      |
-| `@UInteger16Type` | Integer / int      | unsigned short | 2 Bytes     |
-| `@UInteger32Type` | Long / long        | unsigned long  | 4 Bytes     |
-| `@BinaryType`     | byte[]             | char[]         | N Bytes     |
-| `@StringType`     | java.lang.String   | --             | N Bytes     |
-| `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 Bytes |
+| `@BooleanType`    | Boolean / boolean  | bool           | 1 bit       |
+| `@CharacterType`  | Character / char   | --             | 2 bytes     |
+| `@ByteType`       | Byte / byte        | char           | 1 byte      |
+| `@ShortType`      | Short / short      | short          | 2 bytes     |
+| `@IntegerType`    | Integer / int      | int            | 4 bytes     |
+| `@LongType`       | Long / long        | long long      | 8 bytes     |
+| `@FloatType`      | Float / float      | float          | 4 bytes     |
+| `@DoubleType`     | Double / double    | double         | 8 bytes     |
+| `@Integer8Type`   | Integer / int      | char           | 1 byte      |
+| `@Integer16Type`  | Integer / int      | short          | 2 bytes     |
+| `@UInteger8Type`  | Integer / int      | unsigned char  | 1 byte      |
+| `@UInteger16Type` | Integer / int      | unsigned short | 2 bytes     |
+| `@UInteger32Type` | Long / long        | unsigned long  | 4 bytes     |
+| `@BinaryType`     | byte[]             | char[]         | N bytes     |
+| `@StringType`     | java.lang.String   | --             | N bytes     |
+| `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 bytes |
 
 ### Assist Annotations
 
 | Annotation    | Scope        | Description                           |
 |:-------------:|:------------:|:-------------------------------------:|
-| `@Endian`       | Type & Field | Byte sequence, default as little endian. |
+| `@Endian`       | Class & Field | Byte sequence, default as little endian. |
 | `@DecodeIgnore` | Field        | Ignore the field when decoding.       |
 | `@EncodeIgnore` | Field        | Ignore the field when encoding.       |
+| `@Compress` | Class        | Compress or decompress datagram, default as GZIP. |
 
 # *Build Requirements*
 

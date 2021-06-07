@@ -33,14 +33,17 @@ public class DecodeException extends CodecException {
     public enum DecodeError {
         NO_VALID_DECODER_FOUND("No valid decoder found for {0}."),
         EXCEEDED_DATAGRAM_SIZE("Exceeded datagram size."),
-        ILLEGAL_BIT_OFFSET("Illegal bit offset."),
+        ILLEGAL_BIT_OFFSET("Illegal bit offset, must be in [0, 7]."),
+        ILLEGAL_BYTE_OFFSET("Illegal byte offset, must be larger than or equal to 0."),
+        ILLEGAL_PARAMETER("Illegal parameter."),
         FAIL_INITIALIZING_DECODER("Fail initializing decoder {0}."),
         FAIL_GETTING_DECODE_FORMULA("Fail getting decode formula {0}"),
         FAIL_INITIALIZING_DECODE_FORMULA("Fail initializing decode formula {0}."),
         FAIL_INITIALIZING_DECODE_OBJECT("Fail initializing decode object {0}"),
         NOT_FOUND_DECODER("Decoder for data type {0} cannot be found."),
         ILLEGAL_TIMESTAMP_PARAMETERS("Illgeal timestamp parameters."),
-        FAIL_ASSIGN_VALUE("Fail assigning value for field {0}");
+        FAIL_ASSIGN_VALUE("Fail assigning value for field {0}"),
+        FAIL_DECOMPRESS_DATAGRAM("Fail decompressing datagram with {0}");
 
         String message;
     }

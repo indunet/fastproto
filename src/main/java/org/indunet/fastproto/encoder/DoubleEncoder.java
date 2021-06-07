@@ -9,8 +9,8 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
  * Double type encoder.
  *
  * @author Deng Ran
+ * @see TypeEncoder,DoubleType
  * @since 1.0.0
- * @see TypeEncoder
  */
 public class DoubleEncoder implements TypeEncoder {
     @Override

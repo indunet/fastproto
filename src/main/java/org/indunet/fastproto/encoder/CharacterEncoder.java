@@ -9,7 +9,7 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
  * Character type encoder.
  *
  * @author Deng Ran
- * @see TypeEncoder
+ * @see TypeEncoder,CharacterType
  * @since 1.1.0
  */
 public class CharacterEncoder implements TypeEncoder {

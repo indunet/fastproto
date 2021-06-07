@@ -33,11 +33,14 @@ public class EncodeException extends CodecException {
         NO_VALID_ENCODER_FOUND("No valid encoder found for {0}"),
         EXCEEDED_DATAGRAM_SIZE("Exceeded datagram size."),
         EXCEEDED_TYPE_SIZE_LIMIT("Exceeded limitation of {0} size."),
-        ILLEGAL_BIT_OFFSET("Illegal bit offset."),
+        ILLEGAL_BIT_OFFSET("Illegal bit offset, must be in [0, 7]."),
+        ILLEGAL_BYTE_OFFSET("Illegal byte offset, must be larger than or equal to 0."),
+        ILLEGAL_PARAMETER("Illegal parameter."),
         FAIL_INITIALIZING_ENCODER("Fail initializing encoder of {0}."),
         FAIL_INITIALIZING_ENCODE_FORMULA("Fail initilizing encode formula of {0}."),
         FAIL_GETTING_FIELD_VALUE("Unable to get the value of filed {0}."),
-        ILLEGAL_TIMESTAMP_PARAMETERS("Illgeal timestamp parameters.");
+        ILLEGAL_TIMESTAMP_PARAMETERS("Illgeal timestamp parameters."),
+        FAIL_COMPRESS_DATAGRAM("Fail compressing datagram with {0}");
 
         String message;
     }

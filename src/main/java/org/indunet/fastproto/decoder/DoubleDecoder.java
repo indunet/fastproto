@@ -1,5 +1,6 @@
 package org.indunet.fastproto.decoder;
 
+import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.DoubleType;
 import org.indunet.fastproto.exception.DecodeException;
@@ -9,7 +10,7 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
  * Double type decoder.
  *
  * @author Deng Ran
- * @see TypeDecoder
+ * @see TypeDecoder,DoubleType
  * @since 1.0.0
  */
 public class DoubleDecoder implements TypeDecoder<Double> {
@@ -20,8 +21,10 @@ public class DoubleDecoder implements TypeDecoder<Double> {
         return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }
 
-    public double decode(final byte[] datagram, int byteOffset, EndianPolicy endian) {
-        if (byteOffset + DoubleType.SIZE > datagram.length) {
+    public double decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {
+        if (byteOffset < 0) {
+            throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
+        } else if (byteOffset + DoubleType.SIZE > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

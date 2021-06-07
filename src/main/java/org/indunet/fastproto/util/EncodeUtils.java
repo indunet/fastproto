@@ -30,11 +30,15 @@ public class EncodeUtils {
 
 
     public static void type(byte[] datagram, int byteOffset, byte[] values) {
-        binaryEncoder.encode(datagram, byteOffset, values);
+        binaryEncoder.encode(datagram, byteOffset, -1, values);
     }
 
     public static void binaryType(byte[] datagram, int byteOffset, byte[] values) {
-        binaryEncoder.encode(datagram, byteOffset, values);
+        binaryEncoder.encode(datagram, byteOffset, -1, values);
+    }
+
+    public static void binaryType(byte[] datagram, int byteOffset, int length, byte[] values) {
+        binaryEncoder.encode(datagram, byteOffset, length, values);
     }
 
     public static void type(final byte[] datagram, int byteOffset, char value) {
