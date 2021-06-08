@@ -7,7 +7,7 @@
 
 FastProto is a binary serialization & deserialization tool written in Java. 
 Different from other serialization tools, FastProto allows developers to accurately control the serialization process 
-through annotations, including byte offset, bit offset, data types, byte sequence(endian), data transformation formulas.
+through annotations, including byte offset, bit offset, data types, endianness, data transformation formulas.
 
 FastProto solves the problem of cross-language and cross-platform data exchange of Java in a new way, especially suitable for the field of Internet of Things.
 
@@ -16,11 +16,13 @@ FastProto solves the problem of cross-language and cross-platform data exchange 
 * Control the serialization process through annotations
 * Support all Java primitive data types and their wrapper classes
 * Support Unsigned and signed 8-bit 16-bit 32-bit integer, binary, String and Timestamp
-* Custom byte sequence(endian)
+* Custom endianness, big endian or little endian
+* Support datagram compress and decompress(gzip, deflate)
 
 ## *Under Developing*
-* AutoType, automatically detect all Java primitive data types and their wrapper classes when using AutoType
-* Compress, datagram compression & decompression
+
+* AutoType, automatically infer all Java primitive data types and their wrapper classes when using AutoType
+* Cyclic Redundancy Check(CRC8, CRC16, CRC32)
 
 ## *Maven*
 ```xml
@@ -88,13 +90,11 @@ byte[] datagram = ...   // Datagram sent by monitoring device.
 WeatherMetrics metrics = FastProto.decode(datagram, WeatherMetrics.class);
 ```
 
-The serialization process is similar, allocate enough memory space and serialize the Java data object into binary 
-datagram through `FastProto::encode()` method.
+The serialization process is similar, serialize the Java data object into binary datagram through `FastProto::encode()` 
+method, the second parameter is the datagram size.
 
 ```
-byte[] datagram = new byte[20];
-
-FastProto.encode(metrics, datagram);
+byte[] datagram = FastProto.encode(metrics, 20);
 ```
 
 # *FastProto Annotations*
@@ -124,7 +124,7 @@ FastProto.encode(metrics, datagram);
 
 | Annotation    | Scope        | Description                           |
 |:-------------:|:------------:|:-------------------------------------:|
-| `@Endian`       | Class & Field | Byte sequence, default as little endian. |
+| `@Endian`       | Class & Field | Endianness, default as little endian. |
 | `@DecodeIgnore` | Field        | Ignore the field when decoding.       |
 | `@EncodeIgnore` | Field        | Ignore the field when encoding.       |
 | `@Compress` | Class        | Compress or decompress datagram, default as GZIP. |
