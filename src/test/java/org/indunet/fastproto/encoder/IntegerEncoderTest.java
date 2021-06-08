@@ -12,18 +12,19 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Deng Ran
- * @since 1.0.0
+ * @since 1.4.0
  */
-public class LongEncoderTest {
-    LongEncoder encoder = new LongEncoder();
+public class IntegerEncoderTest {
+    IntegerEncoder encoder = new IntegerEncoder();
 
     @ParameterizedTest
     @MethodSource
-    public void testEncode1(byte[] datagram, int byteOffset, EndianPolicy policy, long value, byte[] expected) {
+    public void testEncode1(byte[] datagram, int byteOffset, EndianPolicy policy, int value, byte[] expected) {
         encoder.encode(datagram, byteOffset, policy, value);
 
         assertArrayEquals(expected, datagram);
@@ -31,9 +32,9 @@ public class LongEncoderTest {
 
     public static List<Arguments> testEncode1() {
         return Stream.of(
-                Arguments.arguments(new byte[8], 0, EndianPolicy.LITTLE, -101L, BinaryUtils.valueOf(-101L)),
-                Arguments.arguments(new byte[8], 0, EndianPolicy.BIG, (long) Integer.MAX_VALUE,
-                        BinaryUtils.valueOf((long) Integer.MAX_VALUE, EndianPolicy.BIG))
+                Arguments.arguments(new byte[4], 0, EndianPolicy.LITTLE, -101, BinaryUtils.valueOf(-101)),
+                Arguments.arguments(new byte[4], 0, EndianPolicy.BIG, Integer.MAX_VALUE,
+                        BinaryUtils.valueOf(Integer.MAX_VALUE, EndianPolicy.BIG))
         ).collect(Collectors.toList());
     }
 
@@ -45,8 +46,8 @@ public class LongEncoderTest {
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null, 0, EndianPolicy.BIG, 8));
 
         assertThrows(EncodeException.class,
-                () -> this.encoder.encode(datagram, -1, EndianPolicy.LITTLE, -1L));
+                () -> this.encoder.encode(datagram, -1, EndianPolicy.LITTLE, 11));
         assertThrows(EncodeException.class,
-                () -> this.encoder.encode(datagram, 8, EndianPolicy.LITTLE, -1L));
+                () -> this.encoder.encode(datagram, 8, EndianPolicy.LITTLE, 12));
     }
 }

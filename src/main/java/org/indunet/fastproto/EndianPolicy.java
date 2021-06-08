@@ -2,6 +2,10 @@ package org.indunet.fastproto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.indunet.fastproto.exception.CodecException;
+import org.indunet.fastproto.exception.CodecException.CodecError;
+
+import java.util.Arrays;
 
 /**
  * Endian policy.
@@ -17,4 +21,11 @@ public enum EndianPolicy {
 
     int code;
     String name;
+
+    public static EndianPolicy byName(String name) {
+        return Arrays.stream(EndianPolicy.values())
+                .filter(p -> p.getName().equals(name))
+                .findFirst()
+                .orElseThrow(() -> new CodecException(CodecError.INVALID_ENDIAN_POLICY));
+    }
 }

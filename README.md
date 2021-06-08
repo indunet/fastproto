@@ -129,6 +129,22 @@ byte[] datagram = FastProto.encode(metrics, 20);
 | `@EncodeIgnore` | Field        | Ignore the field when encoding.       |
 | `@Compress` | Class        | Compress or decompress datagram, default as GZIP. |
 
+# *Performance Test*
+
+### Environment
+* Windows 10
+* JDK 1.8.0
+* AMD Ryzen 5 3500U, 2.1GHz, 8 cores
+
+### Test Data
+* The test datagram is 128 bytes
+* The test object consists of 48 fields(24 boolean, 16 int, 8 double)
+
+**Serialization speed: 3000 per second**
+
+**Deserialization speed: 1800 per second**
+
+
 # *Build Requirements*
 
 * Java 1.8+
