@@ -2,11 +2,10 @@ package org.indunet.fastproto.encoder;
 
 import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.Type;
-import org.indunet.fastproto.annotation.Type.DataType;
-import org.indunet.fastproto.annotation.type.IntegerType;
+import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.LongType;
 import org.indunet.fastproto.annotation.type.TimestampType;
+import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.exception.EncodeException.EncodeError;
 import org.indunet.fastproto.util.EncodeUtils;
@@ -28,20 +27,22 @@ public class TimestampEncoder implements TypeEncoder {
         TimestampType type = context.getDataType(TimestampType.class);
         Timestamp value = context.getValue(Timestamp.class);
 
-        this.encode(context.getDatagram(), type.value(), type.dataType(), policy, type.unit(), value);
+        this.encode(context.getDatagram(), type.value(), type.protocolType(), policy, type.unit(), value);
     }
 
-    public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull DataType dataType, @NonNull EndianPolicy policy, @NonNull TimeUnit unit, @NonNull Timestamp value) {
+    public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull ProtocolType dataType, @NonNull EndianPolicy policy, @NonNull TimeUnit unit, @NonNull Timestamp value) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
         if (byteOffset < 0) {
             throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
-        } else if (dataType == Type.DataType.LONG_TYPE && unit == TimeUnit.MILLISECONDS) {
+        } else if (dataType == ProtocolType.LONG && unit == TimeUnit.MILLISECONDS) {
             if (byteOffset + LongType.SIZE > datagram.length) {
                 throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
             }
 
             EncodeUtils.longType(datagram, byteOffset, policy, value.getTime());
-        } else if (dataType == DataType.INTEGER_TYPE && unit == TimeUnit.SECONDS) {
-            if (byteOffset + IntegerType.SIZE > datagram.length) {
+        } else if (dataType == ProtocolType.UINTEGER32 && unit == TimeUnit.SECONDS) {
+            if (byteOffset + UInteger32Type.SIZE > datagram.length) {
                 throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
             }
 

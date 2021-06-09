@@ -18,7 +18,7 @@ public class ByteEncoderTest {
         byte[] datagram = new byte[10];
 
         encoder.encode(datagram, 0, (byte) 1);
-        encoder.encode(datagram, 1, (byte) -128);
+        encoder.encode(datagram, 1 - datagram.length, (byte) -128);
 
         assertEquals(datagram[0], 1);
         assertEquals(datagram[1], -128);
@@ -31,7 +31,7 @@ public class ByteEncoderTest {
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null));
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null, 0, (byte) 1));
 
-        assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, -1, (byte) 1));
+        assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, -101, (byte) 1));
         assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, 10, (byte) 1));
     }
 }

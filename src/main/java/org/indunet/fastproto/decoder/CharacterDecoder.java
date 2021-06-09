@@ -23,6 +23,8 @@ public class CharacterDecoder implements TypeDecoder<Character> {
     }
 
     public Character decode(final byte[] datagram, int byteOffset, @NonNull EndianPolicy policy) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
         if (byteOffset < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
         } else if (byteOffset + CharacterType.SIZE > datagram.length) {

@@ -18,7 +18,7 @@ public class Integer8EncoderTest {
         byte[] datagram = new byte[10];
 
         encoder.encode(datagram, 0, 10);
-        encoder.encode(datagram, 1, -52);
+        encoder.encode(datagram, 1 - datagram.length, -52);
 
         assertEquals(datagram[0], 10);
         assertEquals(datagram[1], -52);
@@ -31,7 +31,7 @@ public class Integer8EncoderTest {
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null));
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null, 0, 8));
 
-        assertThrows(EncodeException.class, () -> encoder.encode(datagram, -1, 1));
+        assertThrows(EncodeException.class, () -> encoder.encode(datagram, -101, 1));
         assertThrows(EncodeException.class, () -> encoder.encode(datagram, 10, 255));
     }
 }

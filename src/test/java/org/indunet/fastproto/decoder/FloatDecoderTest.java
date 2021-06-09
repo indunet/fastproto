@@ -2,7 +2,7 @@ package org.indunet.fastproto.decoder;
 
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.util.NumberUtils;
+import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -14,8 +14,11 @@ public class FloatDecoderTest {
 
     @Test
     public void testDecode1() {
-        assertEquals(decoder.decode(NumberUtils.floatToBinary(pi), 0, EndianPolicy.LITTLE), pi, 0.0001);
-        assertEquals(decoder.decode(NumberUtils.floatToBinary(e), 0, EndianPolicy.LITTLE), e, 0.0001);
+        assertEquals(decoder.decode(BinaryUtils.valueOf(pi), 0, EndianPolicy.LITTLE), pi, 0.0001);
+        assertEquals(decoder.decode(BinaryUtils.valueOf(e), 0, EndianPolicy.LITTLE), e, 0.0001);
+
+        assertEquals(decoder.decode(BinaryUtils.valueOf(e, EndianPolicy.BIG), 0, EndianPolicy.BIG), e, 0.0001);
+        assertEquals(decoder.decode(BinaryUtils.valueOf(e, EndianPolicy.BIG), -4, EndianPolicy.BIG), e, 0.0001);
     }
 
     @Test

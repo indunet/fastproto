@@ -17,6 +17,7 @@ public class BinaryDecoderTest {
         assertArrayEquals(decoder.decode(datagram, 3, 4), new byte[]{3, 4, 5, 6});
         assertArrayEquals(decoder.decode(datagram, 5, 5), new byte[]{5, 6, 7, 8, 9});
         assertArrayEquals(decoder.decode(datagram, 6, -1), new byte[]{6, 7, 8, 9});
+        assertArrayEquals(decoder.decode(datagram, -4, -1), new byte[]{6, 7, 8, 9});
     }
 
     @Test

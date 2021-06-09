@@ -24,6 +24,8 @@ public class StringDecoder implements TypeDecoder<String> {
     }
 
     public String decode(@NonNull byte[] datagram, int byteOffset, int length, @NonNull Charset charset) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
         if (byteOffset < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
         } else if (length < -1) {

@@ -2,7 +2,15 @@ package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
+
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -12,15 +20,22 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class LongEncoderTest {
     LongEncoder encoder = new LongEncoder();
-    byte[] datagram = new byte[16];
 
-    @Test
-    public void testEncode1() {
-        encoder.encode(datagram, 0, EndianPolicy.LITTLE, 0x0102030405060708L);
-        encoder.encode(datagram, 8, EndianPolicy.LITTLE, -1L);
+    @ParameterizedTest
+    @MethodSource
+    public void testEncode1(byte[] datagram, int byteOffset, EndianPolicy policy, long value, byte[] expected) {
+        encoder.encode(datagram, byteOffset, policy, value);
 
-        assertArrayEquals(datagram, new byte[]{0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01,
-                -1, -1, -1, -1, -1, -1, -1, -1});
+        assertArrayEquals(expected, datagram);
+    }
+
+    public static List<Arguments> testEncode1() {
+        return Stream.of(
+                Arguments.arguments(new byte[8], 0, EndianPolicy.LITTLE, -101L, BinaryUtils.valueOf(-101L)),
+                Arguments.arguments(new byte[8], -8, EndianPolicy.LITTLE, -101L, BinaryUtils.valueOf(-101L)),
+                Arguments.arguments(new byte[8], 0, EndianPolicy.BIG, (long) Integer.MAX_VALUE,
+                        BinaryUtils.valueOf((long) Integer.MAX_VALUE, EndianPolicy.BIG))
+        ).collect(Collectors.toList());
     }
 
     @Test

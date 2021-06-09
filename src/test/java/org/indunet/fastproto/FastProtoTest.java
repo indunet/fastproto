@@ -11,6 +11,7 @@ import org.indunet.fastproto.util.EncodeUtils;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,7 +26,7 @@ public class FastProtoTest {
     public void testTesla() {
         byte[] datagram = new byte[44];
         Tesla tesla = Tesla.builder()
-                .id(101)
+                .id(101L)
                 .time(new Timestamp(System.currentTimeMillis()))
                 .active(true)
                 .speed(78.9f)
@@ -55,14 +56,18 @@ public class FastProtoTest {
         EncodeUtils.type(datagram, 36, tesla.getMotor().getCurrent());
         EncodeUtils.type(datagram, 40, tesla.getMotor().getTemperature());
 
-        // Test decode.
-        assertEquals(FastProto.decode(datagram, Tesla.class).toString(), tesla.toString());
-        // System.out.println(FastProto.decode(datagram, Tesla.class));
+        // Test decode with multi-thread.
+        IntStream.range(0, 10).parallel()
+                .forEach(__ -> {
+                    assertEquals(FastProto.decode(datagram, Tesla.class).toString(), tesla.toString());
+                });
 
-        // Test encode.
-        byte[] cache = new byte[44];
-        FastProto.encode(tesla, cache);
-        assertArrayEquals(cache, datagram);
+        // Test encode with multi-thread.
+        IntStream.range(0, 10).parallel()
+                .forEach(__ -> {
+                    byte[] cache = FastProto.encode(tesla, 44);
+                    assertArrayEquals(cache, datagram);
+                });
     }
 
     @Test
@@ -183,9 +188,7 @@ public class FastProtoTest {
         assertEquals(FastProto.decode(datagram, Everything.class).toString(), everything.toString());
 
         // Test encode.
-        byte[] cache = new byte[70];
-
-        FastProto.encode(everything, cache);
+        byte[] cache = FastProto.encode(everything, 70);
         assertArrayEquals(cache, datagram);
     }
 }

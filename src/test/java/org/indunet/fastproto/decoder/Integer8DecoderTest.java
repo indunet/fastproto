@@ -22,6 +22,7 @@ public class Integer8DecoderTest {
 
         assertEquals(this.decoder.decode(datagram, 0), -10);
         assertEquals(this.decoder.decode(datagram, 1), 29);
+        assertEquals(this.decoder.decode(datagram, 1 - datagram.length), 29);
     }
 
     @Test
@@ -31,7 +32,7 @@ public class Integer8DecoderTest {
         assertThrows(NullPointerException.class, () -> this.decoder.decode(null));
         assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 0));
 
-        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -1));
+        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -101));
         assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 10));
     }
 }

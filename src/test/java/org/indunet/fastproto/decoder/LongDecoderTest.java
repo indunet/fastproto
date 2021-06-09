@@ -20,14 +20,16 @@ public class LongDecoderTest {
 
     @ParameterizedTest
     @MethodSource
-    public void testDecode1(byte[] datagram, long value) {
-        assertEquals(decoder.decode(datagram, 0, EndianPolicy.LITTLE), value);
+    public void testDecode1(byte[] datagram, EndianPolicy policy, long value) {
+        assertEquals(decoder.decode(datagram, 0, policy), value);
+        assertEquals(decoder.decode(datagram, -8, policy), value);
     }
 
     public static List<Arguments> testDecode1() {
         return Stream.of(
-                Arguments.arguments(new byte[] {-1, -1, -1, -1, -1, -1, -1, -1}, -1L),
-                Arguments.arguments(new byte[] {0, 0, 0, 0, 1, 0, 0, 1}, (long) Math.pow(256, 4) + (long) Math.pow(256, 7))
+                Arguments.arguments(new byte[] {-1, -1, -1, -1, -1, -1, -1, -1}, EndianPolicy.LITTLE, -1L),
+                Arguments.arguments(new byte[] {0, 0, 0, 0, 1, 0, 0, 1}, EndianPolicy.LITTLE, (long) Math.pow(256, 4) + (long) Math.pow(256, 7)),
+                Arguments.arguments(new byte[] {0, 0, 0, 0, 1, 0, 0, 1}, EndianPolicy.BIG, (long) Math.pow(256, 3) + 1)
         ).collect(Collectors.toList());
     }
 

@@ -23,7 +23,7 @@ public class DecodeContext {
     }
 
     public <T> T getDataType(Class<T> clazz) {
-        return clazz.cast(this.typeAssist.getDataType());
+        return clazz.cast(this.typeAssist.getTypeAnnotation());
     }
 
     public <T> T getObject(Class<T> clazz) {
