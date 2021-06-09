@@ -10,6 +10,7 @@ import org.indunet.fastproto.exception.CodecException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.function.Predicate;
 
 /**
  * @author Deng Ran
@@ -44,10 +45,21 @@ public enum ProtocolType {
                 .orElseThrow(CodecException::new);
     }
 
-    @SneakyThrows
-    public Type javaType() {
-        val field = typeAnnotationClass.getField("JAVA_TYPE");
+    public static ProtocolType byAutoType(Type type) {
+        return Arrays.stream(ProtocolType.values())
+                .filter(t -> Arrays.asList(t.javaTypes()).contains(type))
+                .findFirst()
+                .orElseThrow(CodecException::new);
+    }
 
-        return (Type) field.get(null);
+    public Type javaType() {
+        return javaTypes()[0];
+    }
+
+    @SneakyThrows
+    public Type[] javaTypes() {
+        val field = typeAnnotationClass.getField("JAVA_TYPES");
+
+        return (Type[]) field.get(null);
     }
 }

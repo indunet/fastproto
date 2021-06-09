@@ -33,6 +33,7 @@ public class IntegerEncoderTest {
     public static List<Arguments> testEncode1() {
         return Stream.of(
                 Arguments.arguments(new byte[4], 0, EndianPolicy.LITTLE, -101, BinaryUtils.valueOf(-101)),
+                Arguments.arguments(new byte[4], -4, EndianPolicy.LITTLE, -101, BinaryUtils.valueOf(-101)),
                 Arguments.arguments(new byte[4], 0, EndianPolicy.BIG, Integer.MAX_VALUE,
                         BinaryUtils.valueOf(Integer.MAX_VALUE, EndianPolicy.BIG))
         ).collect(Collectors.toList());

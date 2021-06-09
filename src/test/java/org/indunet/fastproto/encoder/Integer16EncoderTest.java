@@ -19,7 +19,7 @@ public class Integer16EncoderTest {
         byte[] datagram = new byte[4];
 
         encoder.encode(datagram, 0, EndianPolicy.LITTLE, 0x0102);
-        encoder.encode(datagram, 2, EndianPolicy.BIG, -300);
+        encoder.encode(datagram, 2 - datagram.length, EndianPolicy.BIG, -300);
 
         byte[] cache = new byte[4];
         cache[0] = 2;

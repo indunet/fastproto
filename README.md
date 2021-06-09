@@ -7,29 +7,33 @@
 
 FastProto is a binary serialization & deserialization tool written in Java. 
 Different from other serialization tools, FastProto allows developers to accurately control the serialization process 
-through annotations, including byte offset, bit offset, data types, endianness, data transformation formulas.
+through annotations, including byte offset, bit offset, data types, endianness,  reverse addressing, data transformation formulas.
 
 FastProto solves the problem of cross-language and cross-platform data exchange of Java in a new way, especially suitable for the field of Internet of Things.
 
 ## *Features*
+
 * Binary serialization & deserialization
 * Control the serialization process through annotations
 * Support all Java primitive data types and their wrapper classes
-* Support Unsigned and signed 8-bit 16-bit 32-bit integer, binary, String and Timestamp
-* Custom endianness, big endian or little endian
+* Support unsigned data types such as uint8, uint16 and uint32
+* Custom endianness(big endian or little endian), datagram reverse addressing
 * Support datagram compress and decompress(gzip, deflate)
+* AutoType, automatically infer all Java primitive data types and their wrapper classes when using `@AutoType`
 
 ## *Under Developing*
 
-* AutoType, automatically infer all Java primitive data types and their wrapper classes when using AutoType
 * Cyclic Redundancy Check(CRC8, CRC16, CRC32)
+* Kafka serializer & deserializer
+* Netty decoder & encoder
 
 ## *Maven*
+
 ```xml
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>1.3.0</version>
+    <version>1.4.1</version>
 </dependency>
 ```
 
@@ -99,28 +103,32 @@ byte[] datagram = FastProto.encode(metrics, 20);
 
 # *FastProto Annotations*
 
-### Data Type Annotations
+FastProto's protocol type adopts Java naming rules. In addition to Java primitive data types and their wrapper classes, 
+it also supports Timestamp, String and byte array. The above types can be replaced by `@AutoType`. FastProto automatically 
+infer by the field type. Thinking of cross-platform data transmission, unsigned data types such as uint8, uint16 and
+ uint32 are also introduced.
 
-| Annotation      | Java               | C/C++          | Size        |
-|:---------------:|:------------------:|:--------------:|:-----------:|
-| `@BooleanType`    | Boolean / boolean  | bool           | 1 bit       |
-| `@CharacterType`  | Character / char   | --             | 2 bytes     |
-| `@ByteType`       | Byte / byte        | char           | 1 byte      |
-| `@ShortType`      | Short / short      | short          | 2 bytes     |
-| `@IntegerType`    | Integer / int      | int            | 4 bytes     |
-| `@LongType`       | Long / long        | long long      | 8 bytes     |
-| `@FloatType`      | Float / float      | float          | 4 bytes     |
-| `@DoubleType`     | Double / double    | double         | 8 bytes     |
-| `@Integer8Type`   | Integer / int      | char           | 1 byte      |
-| `@Integer16Type`  | Integer / int      | short          | 2 bytes     |
-| `@UInteger8Type`  | Integer / int      | unsigned char  | 1 byte      |
-| `@UInteger16Type` | Integer / int      | unsigned short | 2 bytes     |
-| `@UInteger32Type` | Long / long        | unsigned long  | 4 bytes     |
-| `@BinaryType`     | byte[]             | char[]         | N bytes     |
-| `@StringType`     | java.lang.String   | --             | N bytes     |
-| `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 bytes |
+| Annotation      | Java               | C/C++          | Size        |   AutoType |
+|:---------------:|:------------------:|:--------------:|:-----------:|:-----------:|
+| `@BooleanType`    | Boolean / boolean  | bool           | 1 bit       | √        |    
+| `@CharacterType`  | Character / char   | --             | 2 bytes     | √        |
+| `@ByteType`       | Byte / byte        | char           | 1 byte      | √       |
+| `@ShortType`      | Short / short      | short          | 2 bytes     | √       |
+| `@IntegerType`    | Integer / int      | int            | 4 bytes     | √       |
+| `@LongType`       | Long / long        | long long      | 8 bytes     | √       |
+| `@FloatType`      | Float / float      | float          | 4 bytes     | √       |
+| `@DoubleType`     | Double / double    | double         | 8 bytes     | √       |
+| `@Integer8Type`   | Integer / int      | char           | 1 byte      | ×       |
+| `@Integer16Type`  | Integer / int      | short          | 2 bytes     | ×       |
+| `@UInteger8Type`  | Integer / int      | unsigned char  | 1 byte      | ×       |
+| `@UInteger16Type` | Integer / int      | unsigned short | 2 bytes     | ×       |
+| `@UInteger32Type` | Long / long        | unsigned long  | 4 bytes     | ×       |
+| `@BinaryType`     | byte[]             | char[]         | N bytes     | √       |
+| `@StringType`     | java.lang.String   | --             | N bytes     | √       |
+| `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 bytes | √       |
 
-### Assist Annotations
+In addition to protocol type annotations, FastProto also provides some annotation assistance to help developers control 
+the serialization process more accurately.
 
 | Annotation    | Scope        | Description                           |
 |:-------------:|:------------:|:-------------------------------------:|
@@ -131,18 +139,12 @@ byte[] datagram = FastProto.encode(metrics, 20);
 
 # *Performance Test*
 
-### Environment
 * Windows 10
 * JDK 1.8.0
 * AMD Ryzen 5 3500U, 2.1GHz, 8 cores
 
-### Test Data
-* The test datagram is 128 bytes
-* The test object consists of 48 fields(24 boolean, 16 int, 8 double)
-
-**Serialization speed: 3000 per second**
-
-**Deserialization speed: 1800 per second**
+The length of the test message is 128 bytes, and the test data object contains 48 fields(24 Boolean, 16 Integer, 8 Double). 
+**FastProto can serialize 3000 objects or deserialize 1800 datagram within 1 second.**
 
 
 # *Build Requirements*

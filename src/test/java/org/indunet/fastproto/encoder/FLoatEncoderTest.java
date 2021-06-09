@@ -26,7 +26,7 @@ public class FLoatEncoderTest {
         encoder.encode(datagram, 0, EndianPolicy.LITTLE, e);
         assertArrayEquals(datagram, BinaryUtils.valueOf(e));
 
-        encoder.encode(datagram, 0, EndianPolicy.BIG, e);
+        encoder.encode(datagram, 0 - datagram.length, EndianPolicy.BIG, e);
         assertArrayEquals(datagram, BinaryUtils.valueOf(e, EndianPolicy.BIG));
     }
 

@@ -21,6 +21,8 @@ public class Integer8Decoder implements TypeDecoder<Integer> {
     }
 
     public int decode(@NonNull final byte[] datagram, int byteOffset) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
         if (byteOffset < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
         } else if (byteOffset + Integer8Type.SIZE > datagram.length) {

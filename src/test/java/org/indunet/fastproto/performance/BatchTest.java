@@ -16,6 +16,9 @@ import java.util.stream.IntStream;
  * @since 1.4.0
  */
 public class BatchTest {
+    protected static final int DECODE_NUM = 10;     // 1800 per second
+    protected static final int ENCODE_NUM = 10;     // 3000 per second
+
     @ParameterizedTest
     @MethodSource
     public void testDecode(byte[] datagram) {
@@ -25,7 +28,7 @@ public class BatchTest {
     public static List<Arguments> testDecode() {
         val random = new Random(System.currentTimeMillis());
 
-        return IntStream.range(0, 1800)
+        return IntStream.range(0, DECODE_NUM)
                 .mapToObj(__ -> {
                     byte[] d = new byte[128];
 
@@ -46,7 +49,7 @@ public class BatchTest {
     public static List<Arguments> testEncode() {
         val random = new Random(System.currentTimeMillis());
 
-        return IntStream.range(0, 3000)
+        return IntStream.range(0, ENCODE_NUM)
                 .mapToObj(__ -> {
                     byte[] d = new byte[128];
 

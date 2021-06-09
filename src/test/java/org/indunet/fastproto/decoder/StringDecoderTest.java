@@ -31,7 +31,8 @@ public class StringDecoderTest {
     public static List<Arguments> testDecode1() {
         return Stream.of(
                 Arguments.arguments("ABCabc".getBytes(), 0, -1, StandardCharsets.UTF_8, "ABCabc"),
-                Arguments.arguments("abcdef".getBytes(), 3, 3, StandardCharsets.UTF_8, "def")
+                Arguments.arguments("abcdef".getBytes(), 3, 3, StandardCharsets.UTF_8, "def"),
+                Arguments.arguments("abcdef".getBytes(), -3, 3, StandardCharsets.UTF_8, "def")
         ).collect(Collectors.toList());
     }
 

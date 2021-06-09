@@ -26,7 +26,7 @@ public class DoubleEncoderTest {
         encoder.encode(datagram, 0, EndianPolicy.LITTLE, pi);
         assertArrayEquals(datagram, BinaryUtils.valueOf(pi));
 
-        encoder.encode(datagram, 0, EndianPolicy.BIG, pi);
+        encoder.encode(datagram, 0 - datagram.length, EndianPolicy.BIG, pi);
         assertArrayEquals(datagram, BinaryUtils.valueOf(pi, EndianPolicy.BIG));
     }
 

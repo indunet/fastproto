@@ -7,6 +7,7 @@ import org.indunet.fastproto.annotation.type.BooleanType;
 import org.indunet.fastproto.annotation.type.FloatType;
 import org.indunet.fastproto.annotation.type.LongType;
 import org.indunet.fastproto.annotation.type.TimestampType;
+
 import java.sql.Timestamp;
 
 @Data
@@ -17,11 +18,14 @@ import java.sql.Timestamp;
 @Endian(EndianPolicy.LITTLE)
 public class Tesla {
     @LongType(0)
-    long id;
+    Long id;
+
     @TimestampType(8)
     Timestamp time;
+
     @FloatType(16)
     float speed;
+
     @BooleanType(value = 20, bitOffset = 0)
     boolean active;
 

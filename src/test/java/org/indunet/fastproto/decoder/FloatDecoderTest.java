@@ -18,6 +18,7 @@ public class FloatDecoderTest {
         assertEquals(decoder.decode(BinaryUtils.valueOf(e), 0, EndianPolicy.LITTLE), e, 0.0001);
 
         assertEquals(decoder.decode(BinaryUtils.valueOf(e, EndianPolicy.BIG), 0, EndianPolicy.BIG), e, 0.0001);
+        assertEquals(decoder.decode(BinaryUtils.valueOf(e, EndianPolicy.BIG), -4, EndianPolicy.BIG), e, 0.0001);
     }
 
     @Test

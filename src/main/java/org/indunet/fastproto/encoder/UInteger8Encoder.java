@@ -26,6 +26,8 @@ public class UInteger8Encoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, int value) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
         if (byteOffset < 0) {
             throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
         } else if (byteOffset + UInteger8Type.SIZE > datagram.length) {

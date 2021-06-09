@@ -19,6 +19,7 @@ public class ByteDecoderTest {
         assertEquals(decoder.decode(datagram, 4), 2);
         assertEquals(decoder.decode(datagram, 10), 8);
         assertEquals(decoder.decode(datagram, 11), 9);
+        assertEquals(decoder.decode(datagram, 11 - datagram.length), 9);
     }
 
     @Test
@@ -28,7 +29,7 @@ public class ByteDecoderTest {
         assertThrows(NullPointerException.class, () -> this.decoder.decode(null));
         assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 2));
 
-        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -1));
+        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -101));
         assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 10));
 
     }

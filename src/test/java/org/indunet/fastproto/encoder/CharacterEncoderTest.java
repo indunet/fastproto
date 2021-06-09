@@ -19,7 +19,7 @@ public class CharacterEncoderTest {
         byte[] datagram = new byte[10];
 
         encoder.encode(datagram, 0, EndianPolicy.LITTLE, 'A');
-        encoder.encode(datagram, 2, EndianPolicy.BIG, 'a');
+        encoder.encode(datagram, 2 - datagram.length, EndianPolicy.BIG, 'a');
 
         byte[] cache = new byte[10];
         cache[0] = 65;

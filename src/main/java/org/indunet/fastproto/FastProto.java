@@ -37,8 +37,8 @@ public class FastProto {
     /**
      * Convert binary datagram into object.
      *
-     * @param datagram binary message
-     * @param clazz    deserialized object
+     * @param datagram       binary message
+     * @param clazz          deserialized object
      * @param enableCompress enable compress or not
      * @return object.
      */
@@ -52,11 +52,6 @@ public class FastProto {
 
         TypeAssist assist = assists.computeIfAbsent(clazz, c -> TypeAssist.of(c));
         List<DecodeContext> contexts = assist.toDecodeContexts(datagram);
-        T object = contexts.stream()
-                .map(DecodeContext::getObject)
-                .map(clazz::cast)
-                .findFirst()
-                .get();
 
         contexts.parallelStream()
                 .forEach(c -> {
@@ -69,7 +64,7 @@ public class FastProto {
                     a.setValue(o, value);
                 });
 
-        return object;
+        return assist.getObject(clazz);
     }
 
     /**
@@ -99,7 +94,7 @@ public class FastProto {
     /**
      * Convert object into binary datagram.
      *
-     * @param object   serialized object
+     * @param object serialized object
      * @param length the length of the datagram.
      * @return binary datagram.
      */
@@ -110,8 +105,8 @@ public class FastProto {
     /**
      * Convert object into binary datagram.
      *
-     * @param object   serialized object
-     * @param length the length of the datagram.
+     * @param object         serialized object
+     * @param length         the length of the datagram.
      * @param enableCompress enable compress or not
      * @return binary datagram.
      */

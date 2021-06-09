@@ -18,7 +18,7 @@ public class UInteger32EncoderTest {
         byte[] datagram = new byte[8];
 
         encoder.encode(datagram, 0, EndianPolicy.LITTLE, 0x01020304);
-        encoder.encode(datagram, 4, EndianPolicy.BIG, 0x05060708);
+        encoder.encode(datagram, 4 - datagram.length, EndianPolicy.BIG, 0x05060708);
 
         byte[] cache = new byte[]{0x04, 0x03, 0x02, 0x01, 0x05, 0x06, 0x07, 0x08};
         assertArrayEquals(datagram, cache);

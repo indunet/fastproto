@@ -24,6 +24,7 @@ public class UInteger32DecoderTest {
 
         assertEquals(decoder.decode(datagram, 0, EndianPolicy.LITTLE), 1 + 2 * 256L * 256 * 256);
         assertEquals(decoder.decode(datagram, 0, EndianPolicy.BIG), 256 * 256 * 256 + 2);
+        assertEquals(decoder.decode(datagram, 0 - datagram.length, EndianPolicy.BIG), 256 * 256 * 256 + 2);
     }
 
     @Test

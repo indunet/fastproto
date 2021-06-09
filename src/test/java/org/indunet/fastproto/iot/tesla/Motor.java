@@ -1,6 +1,7 @@
 package org.indunet.fastproto.iot.tesla;
 
 import lombok.*;
+import org.indunet.fastproto.annotation.type.AutoType;
 import org.indunet.fastproto.annotation.type.FloatType;
 import org.indunet.fastproto.annotation.type.IntegerType;
 import org.indunet.fastproto.annotation.type.ShortType;
@@ -11,10 +12,12 @@ import org.indunet.fastproto.annotation.type.ShortType;
 @NoArgsConstructor
 @Builder
 public class Motor {
-    @ShortType(34)
+    @AutoType(34)
     short voltage;
-    @IntegerType(36)
+
+    @AutoType(36)
     int current;
-    @FloatType(40)
+
+    @AutoType(40)
     float temperature;
 }

@@ -18,6 +18,7 @@ public class DoubleDecoderTest {
         assertEquals(decoder.decode(BinaryUtils.valueOf(e), 0, EndianPolicy.LITTLE), e, 0.001);
 
         assertEquals(decoder.decode(BinaryUtils.valueOf(pi, EndianPolicy.BIG), 0, EndianPolicy.BIG), pi, 0.001);
+        assertEquals(decoder.decode(BinaryUtils.valueOf(pi, EndianPolicy.BIG), -8, EndianPolicy.BIG), pi, 0.001);
     }
 
     @Test

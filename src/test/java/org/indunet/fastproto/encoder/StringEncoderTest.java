@@ -32,6 +32,7 @@ public class StringEncoderTest {
     public static List<Arguments> testEncode1() {
         return Stream.of(
                 Arguments.arguments(new byte[6], 0, -1, StandardCharsets.UTF_8, "ABCabc", "ABCabc".getBytes()),
+                Arguments.arguments(new byte[6], -6, -1, StandardCharsets.UTF_8, "ABCabc", "ABCabc".getBytes()),
                 Arguments.arguments(new byte[8], 2, 6, StandardCharsets.UTF_8, "ABCabc", new byte[]{0, 0, 'A', 'B', 'C', 'a', 'b', 'c'})
         ).collect(Collectors.toList());
     }

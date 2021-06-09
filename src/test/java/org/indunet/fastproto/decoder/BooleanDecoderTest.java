@@ -19,6 +19,7 @@ public class BooleanDecoderTest {
         assertTrue(decoder.decode(datagram, 1, 1));
         assertTrue(decoder.decode(datagram, 2, 2));
         assertTrue(decoder.decode(datagram, 3, 3));
+        assertTrue(decoder.decode(datagram, -1, 3));
     }
 
     @Test
@@ -28,7 +29,7 @@ public class BooleanDecoderTest {
         assertThrows(NullPointerException.class, () -> this.decoder.decode(null));
         assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 2, 10));
 
-        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -1, 0));
+        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -101, 0));
         assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 0, -1));
         assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 10, 0));
     }

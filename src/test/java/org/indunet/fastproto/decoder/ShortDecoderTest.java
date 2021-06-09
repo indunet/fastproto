@@ -23,6 +23,7 @@ public class ShortDecoderTest {
         // For big endian.
         assertEquals(decoder.decode(datagram, 0, EndianPolicy.BIG), 0x0001);
         assertEquals(decoder.decode(datagram, 2, EndianPolicy.BIG), 0x0203);
+        assertEquals(decoder.decode(datagram, 2 - datagram.length, EndianPolicy.BIG), 0x0203);
     }
 
     @Test

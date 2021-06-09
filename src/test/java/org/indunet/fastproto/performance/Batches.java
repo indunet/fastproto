@@ -7,8 +7,8 @@ import org.indunet.fastproto.annotation.type.IntegerType;
  * @since 1.4.0
  */
 public class Batches {
-    @IntegerType(0)
-    int id;
+//    @IntegerType(0)
+//    int id;
 
     BooleanBatch booleanBatch;
     IntegerBatch integerBatch;

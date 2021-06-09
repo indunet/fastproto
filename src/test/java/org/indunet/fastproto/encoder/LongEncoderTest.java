@@ -32,6 +32,7 @@ public class LongEncoderTest {
     public static List<Arguments> testEncode1() {
         return Stream.of(
                 Arguments.arguments(new byte[8], 0, EndianPolicy.LITTLE, -101L, BinaryUtils.valueOf(-101L)),
+                Arguments.arguments(new byte[8], -8, EndianPolicy.LITTLE, -101L, BinaryUtils.valueOf(-101L)),
                 Arguments.arguments(new byte[8], 0, EndianPolicy.BIG, (long) Integer.MAX_VALUE,
                         BinaryUtils.valueOf((long) Integer.MAX_VALUE, EndianPolicy.BIG))
         ).collect(Collectors.toList());

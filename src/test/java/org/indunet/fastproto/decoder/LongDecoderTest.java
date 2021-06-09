@@ -22,6 +22,7 @@ public class LongDecoderTest {
     @MethodSource
     public void testDecode1(byte[] datagram, EndianPolicy policy, long value) {
         assertEquals(decoder.decode(datagram, 0, policy), value);
+        assertEquals(decoder.decode(datagram, -8, policy), value);
     }
 
     public static List<Arguments> testDecode1() {

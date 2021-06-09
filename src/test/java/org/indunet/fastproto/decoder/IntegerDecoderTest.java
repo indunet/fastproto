@@ -18,6 +18,7 @@ public class IntegerDecoderTest {
 
         assertEquals(decoder.decode(datagram, 0, EndianPolicy.BIG), 0x00010001);
         assertEquals(decoder.decode(datagram, 4, EndianPolicy.BIG), -1);
+        assertEquals(decoder.decode(datagram, 4 - datagram.length, EndianPolicy.BIG), -1);
     }
 
     @Test

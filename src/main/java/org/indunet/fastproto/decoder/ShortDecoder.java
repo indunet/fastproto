@@ -22,6 +22,8 @@ public class ShortDecoder implements TypeDecoder<Short> {
     }
 
     public short decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
         if (byteOffset < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
         } else if (byteOffset + ShortType.SIZE > datagram.length) {
