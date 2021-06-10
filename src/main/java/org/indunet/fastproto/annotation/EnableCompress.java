@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Compress {
+public @interface EnableCompress {
     CompressPolicy value() default CompressPolicy.GZIP;
 
     int level() default 1;

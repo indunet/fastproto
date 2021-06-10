@@ -60,7 +60,7 @@ The binary datagram contains 8 signals of different data types, define the Java 
 annotations according to the above datagram protocol.
 
 ```java
-public class WeatherMetrics {
+public class Weather {
     @UInteger8Type(0)
     int id;
 
@@ -91,14 +91,14 @@ Deserialize the binary datagram into Java data object through `FastProto::decode
 ```
 byte[] datagram = ...   // Datagram sent by monitoring device.
 
-WeatherMetrics metrics = FastProto.decode(datagram, WeatherMetrics.class);
+Weather weather = FastProto.decode(datagram, Weather.class);
 ```
 
 The serialization process is similar, serialize the Java data object into binary datagram through `FastProto::encode()` 
 method, the second parameter is the datagram size.
 
 ```
-byte[] datagram = FastProto.encode(metrics, 20);
+byte[] datagram = FastProto.encode(weather, 20);
 ```
 
 # *FastProto Annotations*
@@ -110,22 +110,22 @@ infer by the field type. Thinking of cross-platform data transmission, unsigned 
 
 | Annotation      | Java               | C/C++          | Size        |   AutoType |
 |:---------------:|:------------------:|:--------------:|:-----------:|:-----------:|
-| `@BooleanType`    | Boolean / boolean  | bool           | 1 bit       | √        |    
-| `@CharacterType`  | Character / char   | --             | 2 bytes     | √        |
-| `@ByteType`       | Byte / byte        | char           | 1 byte      | √       |
-| `@ShortType`      | Short / short      | short          | 2 bytes     | √       |
-| `@IntegerType`    | Integer / int      | int            | 4 bytes     | √       |
-| `@LongType`       | Long / long        | long long      | 8 bytes     | √       |
-| `@FloatType`      | Float / float      | float          | 4 bytes     | √       |
-| `@DoubleType`     | Double / double    | double         | 8 bytes     | √       |
-| `@Integer8Type`   | Integer / int      | char           | 1 byte      | ×       |
-| `@Integer16Type`  | Integer / int      | short          | 2 bytes     | ×       |
-| `@UInteger8Type`  | Integer / int      | unsigned char  | 1 byte      | ×       |
-| `@UInteger16Type` | Integer / int      | unsigned short | 2 bytes     | ×       |
-| `@UInteger32Type` | Long / long        | unsigned long  | 4 bytes     | ×       |
-| `@BinaryType`     | byte[]             | char[]         | N bytes     | √       |
-| `@StringType`     | java.lang.String   | --             | N bytes     | √       |
-| `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 bytes | √       |
+| `@BooleanType`    | Boolean / boolean  | bool           | 1 bit       |  <font color=green>√</font>  |    
+| `@CharacterType`  | Character / char   | --             | 2 bytes     |  <font color=green>√</font>  |    
+| `@ByteType`       | Byte / byte        | char           | 1 byte      |  <font color=green>√</font>  |    
+| `@ShortType`      | Short / short      | short          | 2 bytes     |  <font color=green>√</font>  |    
+| `@IntegerType`    | Integer / int      | int            | 4 bytes     |  <font color=green>√</font>  |    
+| `@LongType`       | Long / long        | long long      | 8 bytes     |  <font color=green>√</font>  |    
+| `@FloatType`      | Float / float      | float          | 4 bytes     |  <font color=green>√</font>  |    
+| `@DoubleType`     | Double / double    | double         | 8 bytes     |  <font color=green>√</font>  |    
+| `@Integer8Type`   | Integer / int      | char           | 1 byte      |  <font color=red>×</font>  |    
+| `@Integer16Type`  | Integer / int      | short          | 2 bytes     |  <font color=red>×</font>  |    
+| `@UInteger8Type`  | Integer / int      | unsigned char  | 1 byte      |  <font color=red>×</font>  |    
+| `@UInteger16Type` | Integer / int      | unsigned short | 2 bytes     |  <font color=red>×</font>  |    
+| `@UInteger32Type` | Long / long        | unsigned long  | 4 bytes     |  <font color=red>×</font>  |    
+| `@BinaryType`     | byte[]             | char[]         | N bytes     |  <font color=green>√</font>  |    
+| `@StringType`     | java.lang.String   | --             | N bytes     |  <font color=green>√</font>  |    
+| `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 bytes |  <font color=green>√</font>  |    
 
 In addition to protocol type annotations, FastProto also provides some annotation assistance to help developers control 
 the serialization process more accurately.
@@ -135,7 +135,7 @@ the serialization process more accurately.
 | `@Endian`       | Class & Field | Endianness, default as little endian. |
 | `@DecodeIgnore` | Field        | Ignore the field when decoding.       |
 | `@EncodeIgnore` | Field        | Ignore the field when encoding.       |
-| `@Compress` | Class        | Compress or decompress datagram, default as GZIP. |
+| `@Compress` | Class        | Compress or decompress datagram, default as gzip. |
 
 # *Performance Test*
 

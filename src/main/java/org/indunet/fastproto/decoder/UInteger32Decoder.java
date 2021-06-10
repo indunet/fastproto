@@ -16,7 +16,7 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class UInteger32Decoder implements TypeDecoder<Long> {
     @Override
     public Long decode(@NonNull DecodeContext context) {
-        UInteger32Type type = context.getDataType(UInteger32Type.class);
+        UInteger32Type type = context.getTypeAnnotation(UInteger32Type.class);
         EndianPolicy policy = context.getEndianPolicy();
 
         return this.decode(context.getDatagram(), type.value(), policy);

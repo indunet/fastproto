@@ -16,7 +16,7 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class ShortDecoder implements TypeDecoder<Short> {
     @Override
     public Short decode(@NonNull DecodeContext context) {
-        ShortType type = context.getDataType(ShortType.class);
+        ShortType type = context.getTypeAnnotation(ShortType.class);
 
         return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }

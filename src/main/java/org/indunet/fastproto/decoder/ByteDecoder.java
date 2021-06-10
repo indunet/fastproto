@@ -15,7 +15,7 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class ByteDecoder implements TypeDecoder<Byte> {
     @Override
     public Byte decode(DecodeContext context) {
-        ByteType type = context.getDataType(ByteType.class);
+        ByteType type = context.getTypeAnnotation(ByteType.class);
 
         return this.decode(context.getDatagram(), type.value());
     }

@@ -16,7 +16,7 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class BinaryDecoder implements TypeDecoder<byte[]> {
     @Override
     public byte[] decode(@NonNull DecodeContext context) {
-        val type = context.getDataType(BinaryType.class);
+        val type = context.getTypeAnnotation(BinaryType.class);
 
         return this.decode(context.getDatagram(), type.value(), type.length());
     }

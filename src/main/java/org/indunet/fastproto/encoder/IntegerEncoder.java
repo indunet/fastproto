@@ -16,7 +16,7 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
 public class IntegerEncoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
-        IntegerType type = context.getDataType(IntegerType.class);
+        IntegerType type = context.getTypeAnnotation(IntegerType.class);
         Integer value = context.getValue(Integer.class);
 
         this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);

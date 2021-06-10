@@ -16,7 +16,7 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class UInteger16Decoder implements TypeDecoder<Integer> {
     @Override
     public Integer decode(@NonNull DecodeContext context) {
-        UInteger16Type type = context.getDataType(UInteger16Type.class);
+        UInteger16Type type = context.getTypeAnnotation(UInteger16Type.class);
         EndianPolicy policy = context.getEndianPolicy();
 
         return this.decode(context.getDatagram(), type.value(), policy);

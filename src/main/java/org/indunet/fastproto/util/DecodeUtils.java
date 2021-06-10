@@ -3,6 +3,7 @@ package org.indunet.fastproto.util;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.decoder.*;
 
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 
 /**
@@ -27,6 +28,7 @@ public class DecodeUtils {
     protected static UInteger8Decoder uInteger8Decoder = new UInteger8Decoder();
     protected static UInteger16Decoder uInteger16Decoder = new UInteger16Decoder();
     protected static UInteger32Decoder uInteger32Decoder = new UInteger32Decoder();
+    protected static UInteger64Decoder uInteger64Decoder = new UInteger64Decoder();
 
     public static byte[] binaryType(final byte[] datagram, int byteOffset, int length) {
         return binaryDecoder.decode(datagram, byteOffset, length);
@@ -126,5 +128,13 @@ public class DecodeUtils {
 
     public static String stringType(final byte[] datagram, int byteOffset, int length, Charset set) {
         return stringDecoder.decode(datagram, byteOffset, length, set);
+    }
+
+    public static BigInteger uInteger64Type(final byte[] datagram, int byteOffset) {
+        return uInteger64Type(datagram, byteOffset, EndianPolicy.LITTLE);
+    }
+
+    public static BigInteger uInteger64Type(final byte[] datagram, int byteOffset, EndianPolicy policy) {
+        return uInteger64Decoder.decode(datagram, byteOffset, policy);
     }
 }

@@ -15,7 +15,7 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
 public class FloatEncoder implements TypeEncoder {
     @Override
     public void encode(EncodeContext context) {
-        FloatType type = context.getDataType(FloatType.class);
+        FloatType type = context.getTypeAnnotation(FloatType.class);
         Float value = context.getValue(Float.class);
 
         this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);

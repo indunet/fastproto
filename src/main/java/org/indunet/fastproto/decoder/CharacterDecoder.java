@@ -16,7 +16,7 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class CharacterDecoder implements TypeDecoder<Character> {
     @Override
     public Character decode(DecodeContext context) {
-        CharacterType type = context.getDataType(CharacterType.class);
+        CharacterType type = context.getTypeAnnotation(CharacterType.class);
         EndianPolicy policy = context.getEndianPolicy();
 
         return this.decode(context.getDatagram(), type.value(), policy);

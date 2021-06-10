@@ -24,7 +24,7 @@ public class TimestampEncoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
         EndianPolicy policy = context.getEndianPolicy();
-        TimestampType type = context.getDataType(TimestampType.class);
+        TimestampType type = context.getTypeAnnotation(TimestampType.class);
         Timestamp value = context.getValue(Timestamp.class);
 
         this.encode(context.getDatagram(), type.value(), type.protocolType(), policy, type.unit(), value);

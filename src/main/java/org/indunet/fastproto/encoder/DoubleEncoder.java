@@ -15,7 +15,7 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
 public class DoubleEncoder implements TypeEncoder {
     @Override
     public void encode(EncodeContext context) {
-        DoubleType type = context.getDataType(DoubleType.class);
+        DoubleType type = context.getTypeAnnotation(DoubleType.class);
         Double value = context.getValue(Double.class);
 
         this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);

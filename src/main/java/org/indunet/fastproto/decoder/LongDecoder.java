@@ -16,7 +16,7 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class LongDecoder implements TypeDecoder<Long> {
     @Override
     public Long decode(@NonNull DecodeContext context) {
-        LongType type = context.getDataType(LongType.class);
+        LongType type = context.getTypeAnnotation(LongType.class);
 
         return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }

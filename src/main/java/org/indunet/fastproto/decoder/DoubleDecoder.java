@@ -16,7 +16,7 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class DoubleDecoder implements TypeDecoder<Double> {
     @Override
     public Double decode(DecodeContext context) {
-        DoubleType type = context.getDataType(DoubleType.class);
+        DoubleType type = context.getTypeAnnotation(DoubleType.class);
 
         return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }

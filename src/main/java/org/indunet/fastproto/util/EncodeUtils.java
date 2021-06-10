@@ -3,6 +3,7 @@ package org.indunet.fastproto.util;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.encoder.*;
 
+import java.math.BigInteger;
 import java.nio.charset.Charset;
 
 /**
@@ -27,6 +28,7 @@ public class EncodeUtils {
     protected static UInteger8Encoder uInteger8Encoder = new UInteger8Encoder();
     protected static UInteger16Encoder uInteger16Encoder = new UInteger16Encoder();
     protected static UInteger32Encoder uInteger32Encoder = new UInteger32Encoder();
+    protected static UInteger64Encoder uInteger64Encoder = new UInteger64Encoder();
 
 
     public static void type(byte[] datagram, int byteOffset, byte[] values) {
@@ -203,5 +205,21 @@ public class EncodeUtils {
 
     public static void stringType(byte[] datagram, int byteOffset, int length, Charset set, String value) {
         stringEncoder.encode(datagram, byteOffset, length, set, value);
+    }
+
+    public static void type(byte[] datagram, int byteOffset, BigInteger value) {
+        uInteger64(datagram, byteOffset, EndianPolicy.LITTLE, value);
+    }
+
+    public static void type(byte[] datagram, int byteOffset, EndianPolicy policy, BigInteger value) {
+        uInteger64(datagram, byteOffset, policy, value);
+    }
+
+    public static void uInteger64(byte[] datagram, int byteOffset, BigInteger value) {
+        uInteger64(datagram, byteOffset, EndianPolicy.LITTLE, value);
+    }
+
+    public static void uInteger64(byte[] datagram, int byteOffset, EndianPolicy policy, BigInteger value) {
+        uInteger64Encoder.encode(datagram, byteOffset, policy, value);
     }
 }

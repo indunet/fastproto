@@ -16,7 +16,7 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
 public class BinaryEncoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
-        val type = context.getDataType(BinaryType.class);
+        val type = context.getTypeAnnotation(BinaryType.class);
         val bytes = context.getValue(byte[].class);
 
         this.encode(context.getDatagram(), type.value(), type.length(), bytes);

@@ -16,7 +16,7 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
 public class LongEncoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
-        LongType type = context.getDataType(LongType.class);
+        LongType type = context.getTypeAnnotation(LongType.class);
         Long value = context.getValue(Long.class);
 
         this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);

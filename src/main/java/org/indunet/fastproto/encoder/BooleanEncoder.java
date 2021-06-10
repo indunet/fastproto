@@ -15,7 +15,7 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
 public class BooleanEncoder implements TypeEncoder {
     @Override
     public void encode(EncodeContext context) {
-        BooleanType type = context.getDataType(BooleanType.class);
+        BooleanType type = context.getTypeAnnotation(BooleanType.class);
         Boolean value = context.getValue(Boolean.class);
 
         this.encode(context.getDatagram(), type.value(), type.bitOffset(), value);

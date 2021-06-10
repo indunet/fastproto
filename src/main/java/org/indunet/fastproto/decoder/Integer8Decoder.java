@@ -15,7 +15,7 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class Integer8Decoder implements TypeDecoder<Integer> {
     @Override
     public Integer decode(@NonNull DecodeContext context) {
-        Integer8Type type = context.getDataType(Integer8Type.class);
+        Integer8Type type = context.getTypeAnnotation(Integer8Type.class);
 
         return this.decode(context.getDatagram(), type.value());
     }

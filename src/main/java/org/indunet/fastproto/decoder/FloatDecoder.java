@@ -16,7 +16,7 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class FloatDecoder implements TypeDecoder<Float> {
     @Override
     public Float decode(DecodeContext context) {
-        FloatType type = context.getDataType(FloatType.class);
+        FloatType type = context.getTypeAnnotation(FloatType.class);
 
         return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }

@@ -26,7 +26,7 @@ public class TimestampDecoder implements TypeDecoder<Timestamp> {
     @Override
     public Timestamp decode(@NonNull DecodeContext context) {
         EndianPolicy policy = context.getEndianPolicy();
-        TimestampType type = context.getDataType(TimestampType.class);
+        TimestampType type = context.getTypeAnnotation(TimestampType.class);
         ProtocolType dataType = type.protocolType();
 
         return this.decode(context.getDatagram(), type.value(), dataType, policy, type.unit());

@@ -18,7 +18,7 @@ import java.text.MessageFormat;
 public class UInteger32Encoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
-        UInteger32Type type = context.getDataType(UInteger32Type.class);
+        UInteger32Type type = context.getTypeAnnotation(UInteger32Type.class);
         EndianPolicy policy = context.getEndianPolicy();
         Long value = context.getValue(Long.class);
 
