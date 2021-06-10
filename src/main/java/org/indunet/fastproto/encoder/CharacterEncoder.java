@@ -15,7 +15,7 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
 public class CharacterEncoder implements TypeEncoder {
     @Override
     public void encode(EncodeContext context) {
-        CharacterType type = context.getDataType(CharacterType.class);
+        CharacterType type = context.getTypeAnnotation(CharacterType.class);
         Character value = context.getValue(Character.class);
         EndianPolicy policy = context.getEndianPolicy();
 
@@ -23,7 +23,11 @@ public class CharacterEncoder implements TypeEncoder {
     }
 
     public void encode(byte[] datagram, int byteOffset, EndianPolicy policy, char value) {
-        if (byteOffset + CharacterType.SIZE > datagram.length) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
+        if (byteOffset < 0) {
+            throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
+        } else if (byteOffset + CharacterType.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

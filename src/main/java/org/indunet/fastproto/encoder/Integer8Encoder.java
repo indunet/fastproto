@@ -16,14 +16,18 @@ import java.text.MessageFormat;
 public class Integer8Encoder implements TypeEncoder {
     @Override
     public void encode(EncodeContext context) {
-        Integer8Type type = context.getDataType(Integer8Type.class);
+        Integer8Type type = context.getTypeAnnotation(Integer8Type.class);
         Integer value = context.getValue(Integer.class);
 
         this.encode(context.getDatagram(), type.value(), value);
     }
 
     public void encode(byte[] datagram, int byteOffset, int value) {
-        if (byteOffset + Integer8Type.SIZE > datagram.length) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
+        if (byteOffset < 0) {
+            throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
+        } else if (byteOffset + Integer8Type.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         } else if (value > Integer8Type.MAX_VALUE || value < Integer8Type.MIN_VALUE) {
             throw new EncodeException(

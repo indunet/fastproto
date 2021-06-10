@@ -15,14 +15,18 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
 public class DoubleEncoder implements TypeEncoder {
     @Override
     public void encode(EncodeContext context) {
-        DoubleType type = context.getDataType(DoubleType.class);
+        DoubleType type = context.getTypeAnnotation(DoubleType.class);
         Double value = context.getValue(Double.class);
 
         this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);
     }
 
     public void encode(byte[] datagram, int byteOffset, EndianPolicy endian, double value) {
-        if (byteOffset + DoubleType.SIZE > datagram.length) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
+        if (byteOffset < 0) {
+            throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
+        } else if (byteOffset + DoubleType.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

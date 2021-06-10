@@ -2,7 +2,7 @@ package org.indunet.fastproto.annotation.type;
 
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
-import org.indunet.fastproto.annotation.Type;
+import org.indunet.fastproto.annotation.TypeFlag;
 import org.indunet.fastproto.decoder.UInteger8Decoder;
 import org.indunet.fastproto.encoder.UInteger8Encoder;
 
@@ -10,22 +10,23 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.sql.Timestamp;
+import java.lang.reflect.Type;
 import java.util.function.Function;
 
 /**
  * Integer type, corresponding to Java Integer/int.
  *
  * @author Deng Ran
- * @see Type
+ * @see TypeFlag
  * @since 1.2.0
  */
-@Type
+@TypeFlag
 @Decoder(UInteger8Decoder.class)
 @Encoder(UInteger8Encoder.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UInteger8Type {
+    Type[] JAVA_TYPES = {Integer.class, Integer.TYPE};
     int SIZE = Byte.SIZE >> 3;
     int MAX_VALUE = Byte.MAX_VALUE - Byte.MIN_VALUE;
     int MIN_VALUE = 0;

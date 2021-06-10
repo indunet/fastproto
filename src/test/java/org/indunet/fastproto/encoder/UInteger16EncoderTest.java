@@ -18,7 +18,7 @@ public class UInteger16EncoderTest {
         byte[] datagram = new byte[4];
 
         encoder.encode(datagram, 0, EndianPolicy.LITTLE, 0x0102);
-        encoder.encode(datagram, 2, EndianPolicy.BIG, 0x0304);
+        encoder.encode(datagram, 2 - datagram.length, EndianPolicy.BIG, 0x0304);
 
         byte[] cache = new byte[]{0x02, 0x01, 0x03, 0x04};
         assertArrayEquals(datagram, cache);

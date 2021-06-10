@@ -16,14 +16,18 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
 public class LongEncoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
-        LongType type = context.getDataType(LongType.class);
+        LongType type = context.getTypeAnnotation(LongType.class);
         Long value = context.getValue(Long.class);
 
         this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull EndianPolicy policy, long value) {
-        if (byteOffset + LongType.SIZE > datagram.length) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
+        if (byteOffset < 0) {
+            throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
+        } else if (byteOffset + LongType.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

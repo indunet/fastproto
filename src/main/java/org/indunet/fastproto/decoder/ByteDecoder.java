@@ -15,12 +15,14 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class ByteDecoder implements TypeDecoder<Byte> {
     @Override
     public Byte decode(DecodeContext context) {
-        ByteType type = context.getDataType(ByteType.class);
+        ByteType type = context.getTypeAnnotation(ByteType.class);
 
         return this.decode(context.getDatagram(), type.value());
     }
 
     public byte decode(@NonNull final byte[] datagram, int byteOffset) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
         if (byteOffset < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
         } else if (byteOffset + ByteType.SIZE > datagram.length) {

@@ -18,7 +18,7 @@ import java.text.MessageFormat;
 public class UInteger32Encoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
-        UInteger32Type type = context.getDataType(UInteger32Type.class);
+        UInteger32Type type = context.getTypeAnnotation(UInteger32Type.class);
         EndianPolicy policy = context.getEndianPolicy();
         Long value = context.getValue(Long.class);
 
@@ -26,6 +26,8 @@ public class UInteger32Encoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull EndianPolicy policy, long value) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
         if (byteOffset < 0) {
             throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
         } else if (byteOffset + UInteger32Type.SIZE > datagram.length) {

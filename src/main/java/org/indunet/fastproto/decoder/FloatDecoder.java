@@ -16,12 +16,14 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class FloatDecoder implements TypeDecoder<Float> {
     @Override
     public Float decode(DecodeContext context) {
-        FloatType type = context.getDataType(FloatType.class);
+        FloatType type = context.getTypeAnnotation(FloatType.class);
 
         return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }
 
     public float decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
         if (byteOffset < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
         } else if (byteOffset + FloatType.SIZE > datagram.length) {

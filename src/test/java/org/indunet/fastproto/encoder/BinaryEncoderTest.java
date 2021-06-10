@@ -31,13 +31,18 @@ public class BinaryEncoderTest {
         return Stream.of(
                 Arguments.arguments(new byte[4], 0, -1, new byte[] {1, 2, 3, 4}, new byte[] {1, 2, 3, 4}),
                 Arguments.arguments(new byte[6], 2, 3, new byte[] {1, 2, 3, 4}, new byte[] {0, 0, 1, 2, 3, 0}),
-                Arguments.arguments(new byte[8], 4, -1, new byte[] {1, 2, 3, 4}, new byte[] {0, 0, 0, 0, 1, 2, 3, 4})
+                Arguments.arguments(new byte[8], 4, -1, new byte[] {1, 2, 3, 4}, new byte[] {0, 0, 0, 0, 1, 2, 3, 4}),
+                Arguments.arguments(new byte[8], -4, -1, new byte[] {1, 2, 3, 4}, new byte[] {0, 0, 0, 0, 1, 2, 3, 4})
         ).collect(Collectors.toList());
     }
 
     @Test
     public void testEncode2() {
         byte[] datagram = new byte[10];
+
+        assertThrows(NullPointerException.class, () -> this.encoder.encode(null));
+        assertThrows(NullPointerException.class, () -> this.encoder.encode(null, 0, -1, new byte[8]));
+        assertThrows(NullPointerException.class, () -> this.encoder.encode(datagram, 0, -1, null));
 
         assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, -2, -1, new byte[8]));
         assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, 10, -1, new byte[8]));

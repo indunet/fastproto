@@ -15,14 +15,18 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
 public class FloatEncoder implements TypeEncoder {
     @Override
     public void encode(EncodeContext context) {
-        FloatType type = context.getDataType(FloatType.class);
+        FloatType type = context.getTypeAnnotation(FloatType.class);
         Float value = context.getValue(Float.class);
 
         this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);
     }
 
     public void encode(byte[] datagram, int byteOffset, EndianPolicy endian, float value) {
-        if (byteOffset + FloatType.SIZE > datagram.length) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
+        if (byteOffset < 0) {
+            throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
+        } else if (byteOffset + FloatType.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

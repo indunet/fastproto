@@ -16,12 +16,14 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class DoubleDecoder implements TypeDecoder<Double> {
     @Override
     public Double decode(DecodeContext context) {
-        DoubleType type = context.getDataType(DoubleType.class);
+        DoubleType type = context.getTypeAnnotation(DoubleType.class);
 
         return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }
 
     public double decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
         if (byteOffset < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
         } else if (byteOffset + DoubleType.SIZE > datagram.length) {

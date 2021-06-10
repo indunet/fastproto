@@ -2,6 +2,7 @@ package org.indunet.fastproto;
 
 import lombok.*;
 import org.indunet.fastproto.annotation.*;
+import org.indunet.fastproto.annotation.type.AutoType;
 import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.TypeDecoder;
 import org.indunet.fastproto.encoder.EncodeContext;
@@ -14,10 +15,7 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
-import java.lang.reflect.Array;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
+import java.lang.reflect.*;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
@@ -39,10 +37,12 @@ import java.util.stream.Stream;
 @Builder
 @AllArgsConstructor
 public class TypeAssist {
+    protected final static ThreadLocal<Object> instance = new ThreadLocal<>();
+
     TypeAssist parent;
-    Class<?> type;
+    Class<?> clazz;
     Field field;
-    Annotation dataType;
+    Annotation typeAnnotation;
     EndianPolicy endianPolicy;
     Boolean decodeIgnore;
     Boolean encodeIgnore;
@@ -59,10 +59,17 @@ public class TypeAssist {
 
     }
 
+    public <T> T getObject(Class<T> clazz) {
+        T object = (T) instance.get();
+        instance.remove();
+
+        return object;
+    }
+
     public static TypeAssist of(Class<?> clazz) {
         Predicate<Field> isType = f -> Arrays.stream(f.getAnnotations())
                 .map(Annotation::annotationType)
-                .anyMatch(t -> t.isAnnotationPresent(Type.class));
+                .anyMatch(t -> t.isAnnotationPresent(TypeFlag.class));
 
         // Nested types.
         Stream<TypeAssist> typeStream = Arrays.stream(clazz.getDeclaredFields())
@@ -102,9 +109,9 @@ public class TypeAssist {
                 });
 
         TypeAssist assist = TypeAssist.builder()
-                .type(clazz)
+                .clazz(clazz)
                 .field(null)
-                .dataType(null)
+                .typeAnnotation(null)
                 .decoderClass(null)
                 .encoderClass(null)
                 .decodeFormula(null)
@@ -123,6 +130,43 @@ public class TypeAssist {
         return assist;
     }
 
+    protected static Class<? extends Annotation> getTypeAnnotationClass(@NonNull Field field) {
+        Annotation typeAnnotation = getTypeAnnotation(field);
+
+        if (typeAnnotation instanceof AutoType) {
+            return ProtocolType
+                    .byAutoType(field.getType())
+                    .typeAnnotationClass;
+        } else {
+            return typeAnnotation.annotationType();
+        }
+    }
+
+    protected static Annotation getTypeAnnotation(@NonNull Field field) {
+        return Arrays.stream(field.getAnnotations())
+                .filter(a -> a.annotationType().isAnnotationPresent(TypeFlag.class))
+                .findAny()
+                .orElseThrow(CodecException::new);
+    }
+
+    protected static Annotation getProxyTypeAnnotation(@NonNull Field field) {
+        Annotation typeAnnotation = getTypeAnnotation(field);
+
+        if (typeAnnotation instanceof AutoType) {
+            Class<? extends Annotation> typeAnnotationClass = ProtocolType.byAutoType(field.getType()).typeAnnotationClass;
+            return typeAnnotationClass.cast(Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[] {typeAnnotationClass},
+                    (object, method, parameters) -> {
+                        return Arrays.stream(typeAnnotation.getClass().getMethods())
+                                .filter(m -> m.getName().equals(method.getName()))
+                                .findAny()
+                                .orElseThrow(CodecException::new)
+                                .invoke(typeAnnotation);
+                    }));
+        } else {
+            return typeAnnotation;
+        }
+    }
+
     protected static TypeAssist of(Field field) {
         EndianPolicy policy = Optional.ofNullable(field.getAnnotation(Endian.class))
                 .map(Endian::value)
@@ -130,33 +174,24 @@ public class TypeAssist {
         Boolean decodeIgnore = field.isAnnotationPresent(DecodeIgnore.class);
         Boolean encodeIgnore = field.isAnnotationPresent(EncodeIgnore.class);
 
-        Annotation dataType = Arrays.stream(field.getAnnotations())
-                .filter(a -> a.annotationType().isAnnotationPresent(Type.class))
-                .findAny()
-                .orElseThrow(CodecException::new);
-        Class<? extends TypeDecoder> decoder = Optional.of(dataType)
-                .map(Annotation::annotationType)
+        Class<? extends Annotation> typeAnnotationClass = getTypeAnnotationClass(field);
+        Annotation typeAnnotation = getTypeAnnotation(field);
+
+        Class<? extends TypeDecoder> decoder = Optional.of(typeAnnotationClass)
                 .map(t -> t.getAnnotation(Decoder.class))
                 .map(Decoder::value)
                 .orElse(null);
-        Class<? extends TypeEncoder> encoder = Optional.of(dataType)
-                .map(Annotation::annotationType)
+        Class<? extends TypeEncoder> encoder = Optional.of(typeAnnotationClass)
                 .map(t -> t.getAnnotation(Encoder.class))
                 .map(Encoder::value)
                 .orElse(null);
 
-//        Class<? extends Function> decodeFormula = Optional.ofNullable(field.getAnnotation(DecodeFormula.class))
-//                .map(DecodeFormula::value)
-//                .orElse(null);
-//        Class<? extends Function> encodeFormula = Optional.ofNullable(field.getAnnotation(EncodeFormula.class))
-//                .map(EncodeFormula::value)
-//                .orElse(null);
+
 
         Function<String, Class<? extends Function>> formula = name -> {
             try {
-                Class clazz = dataType.annotationType();
-                Method method = clazz.getMethod(name);
-                Object array = method.invoke(dataType);
+                Method method = typeAnnotation.getClass().getMethod(name);
+                Object array = method.invoke(typeAnnotation);
 
                 return Optional.of(array)
                         .filter(a -> a.getClass().isArray())
@@ -164,19 +199,71 @@ public class TypeAssist {
                         .map(a -> Array.get(a, 0))
                         .map(o -> (Class<? extends Function>) o)
                         .orElse(null);
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
                 throw new DecodeException(
-                        MessageFormat.format(DecodeError.FAIL_GETTING_DECODE_FORMULA.getMessage(), dataType.annotationType().getName()));
+                        MessageFormat.format(
+                                DecodeError.FAIL_GETTING_DECODE_FORMULA.getMessage(), typeAnnotation.annotationType().getName(), field.getName()), e);
             }
         };
 
         Class<? extends Function> afterDecode = formula.apply("afterDecode");
         Class<? extends Function> beforeEncode = formula.apply("beforeEncode");
 
+        // Check if the field and the type annotation match.
+        try {
+            // No encoder and decoder.
+            if (afterDecode == null && beforeEncode == null) {
+                val f = typeAnnotationClass.getField("JAVA_TYPES");
+
+                Arrays.stream((Type[]) f.get(typeAnnotation))
+                        .filter(t -> t == field.getType())
+                        .findAny()
+                        .orElseThrow(() -> new CodecException(MessageFormat.format(
+                                CodecException.CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
+            }
+
+            // Validate decoder return type.
+            if (afterDecode != null) {
+                Arrays.stream(afterDecode.getGenericInterfaces())
+                        .filter(i -> i instanceof ParameterizedType)
+                        .map(i -> ((ParameterizedType) i).getActualTypeArguments())
+                        .map(a -> a[1])
+                        .filter(t -> {
+                            if (field.getType().isPrimitive()) {
+                                return t == wrapperClass(field.getType().getName());
+                            } else {
+                                return t == field.getType();
+                            }
+                        }).findAny()
+                        .orElseThrow(() -> new CodecException(MessageFormat.format(
+                                CodecException.CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
+            }
+
+            // Validate encoder parameter type.
+            if (beforeEncode != null) {
+                Arrays.stream(beforeEncode.getGenericInterfaces())
+                        .filter(i -> i instanceof ParameterizedType)
+                        .map(i -> ((ParameterizedType) i).getActualTypeArguments())
+                        .map(a -> a[0])
+                        .filter(t -> {
+                            if (field.getType().isPrimitive()) {
+                                return t == wrapperClass(field.getType().getName());
+                            } else {
+                                return t == field.getType();
+                            }
+                        }).findAny()
+                        .orElseThrow(() -> new CodecException(MessageFormat.format(
+                                CodecException.CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
+            }
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            throw new CodecException(MessageFormat.format(
+                    CodecException.CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName()), e);
+        }
+
         return TypeAssist.builder()
-                .type(field.getType())
+                .clazz(field.getType())
                 .field(field)
-                .dataType(dataType)
+                .typeAnnotation(getProxyTypeAnnotation(field))
                 .decoderClass(decoder)
                 .encoderClass(encoder)
                 .decodeFormula(afterDecode)
@@ -186,6 +273,30 @@ public class TypeAssist {
                 .encodeIgnore(encodeIgnore)
                 .elementType(ElementType.FIELD)
                 .build();
+    }
+
+    public static Type wrapperClass(String name) {
+        switch (name) {
+            case "boolean":
+                return Boolean.class;
+            case "byte":
+                return Byte.class;
+            case "char":
+                return Character.class;
+            case "short":
+                return Short.class;
+            case "int":
+                return Integer.class;
+            case "long":
+                return Long.class;
+            case "float":
+                return Float.class;
+            case "double":
+                return Double.class;
+            default:
+                throw new CodecException(
+                        MessageFormat.format(CodecException.CodecError.UNSUPPORTED_TYPE.getMessage(), name));
+        }
     }
 
     public boolean hasElement() {
@@ -209,13 +320,17 @@ public class TypeAssist {
                 .build();
     }
 
-    protected List<DecodeContext> toDecodeContexts(byte[] datagram, Object object) {
+    protected List<DecodeContext> toDecodeContexts(byte[] datagram, Object parent) {
         try {
-            Object value = this.type.newInstance();
+            Object value = this.clazz.newInstance();
 
-            if (object != null && field != null) {
+            if (parent == null) {
+                instance.set(value);
+            }
+
+            if (parent != null && field != null) {
                 try {
-                    this.field.set(object, value);
+                    this.field.set(parent, value);
                 } catch (IllegalAccessException e) {
                     e.printStackTrace();
                 }
@@ -234,7 +349,7 @@ public class TypeAssist {
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
             throw new DecodeException(
-                    MessageFormat.format(DecodeError.FAIL_INITIALIZING_DECODE_OBJECT.getMessage(), this.type.getName()), e);
+                    MessageFormat.format(DecodeError.FAIL_INITIALIZING_DECODE_OBJECT.getMessage(), this.clazz.getName()), e);
         }
     }
 
@@ -244,7 +359,6 @@ public class TypeAssist {
 
     public EncodeContext toEncodeContext(Object object, byte[] datagram) {
         try {
-
             return EncodeContext.builder()
                     .datagram(datagram)
                     .typeAssist(this)
@@ -274,7 +388,7 @@ public class TypeAssist {
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                         throw new DecodeException(
-                                MessageFormat.format(EncodeError.FAIL_GETTING_FIELD_VALUE.getMessage(), this.type.getName()), e);
+                                MessageFormat.format(EncodeError.FAIL_GETTING_FIELD_VALUE.getMessage(), this.clazz.getName()), e);
                     }
                 });
 

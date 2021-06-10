@@ -16,13 +16,15 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
 public class BinaryEncoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
-        val type = context.getDataType(BinaryType.class);
+        val type = context.getTypeAnnotation(BinaryType.class);
         val bytes = context.getValue(byte[].class);
 
         this.encode(context.getDatagram(), type.value(), type.length(), bytes);
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, int length, @NonNull byte[] bytes) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
         if (byteOffset < 0) {
             throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
         } else if (length < -1) {

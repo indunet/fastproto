@@ -16,12 +16,14 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class LongDecoder implements TypeDecoder<Long> {
     @Override
     public Long decode(@NonNull DecodeContext context) {
-        LongType type = context.getDataType(LongType.class);
+        LongType type = context.getTypeAnnotation(LongType.class);
 
         return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }
 
     public long decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
         if (byteOffset < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
         } else if (byteOffset + LongType.SIZE > datagram.length) {

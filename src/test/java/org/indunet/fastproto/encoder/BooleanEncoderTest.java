@@ -25,7 +25,7 @@ public class BooleanEncoderTest {
         assertEquals(datagram[1], -128);
 
         encoder.encode(datagram, 0, 0, false);
-        encoder.encode(datagram, 1, 7, false);
+        encoder.encode(datagram, 1 - datagram.length, 7, false);
 
         assertEquals(datagram[0], 0);
         assertEquals(datagram[1], 0);
@@ -35,6 +35,11 @@ public class BooleanEncoderTest {
     public void testEncode2() {
         byte[] datagram = new byte[10];
 
+        assertThrows(NullPointerException.class, () -> this.encoder.encode(null));
+        assertThrows(NullPointerException.class, () -> this.encoder.encode(null, 0, -1, true));
+
+        assertThrows(EncodeException.class,
+                () -> this.encoder.encode(datagram, -101, 1, true));
         assertThrows(EncodeException.class,
                 () -> this.encoder.encode(datagram, 10, 1, true));
     }

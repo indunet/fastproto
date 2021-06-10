@@ -22,8 +22,8 @@ public class DecodeContext {
         return this.typeAssist.getEndianPolicy();
     }
 
-    public <T> T getDataType(Class<T> clazz) {
-        return clazz.cast(this.typeAssist.getDataType());
+    public <T> T getTypeAnnotation(Class<T> clazz) {
+        return clazz.cast(this.typeAssist.getTypeAnnotation());
     }
 
     public <T> T getObject(Class<T> clazz) {

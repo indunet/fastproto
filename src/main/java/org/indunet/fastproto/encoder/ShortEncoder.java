@@ -16,14 +16,18 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
 public class ShortEncoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
-        ShortType type = context.getDataType(ShortType.class);
+        ShortType type = context.getTypeAnnotation(ShortType.class);
         Short value = context.getValue(Short.class);
 
         this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull EndianPolicy policy, short value) {
-        if (byteOffset + ShortType.SIZE > datagram.length) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
+        if (byteOffset < 0) {
+            throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
+        } else if (byteOffset + ShortType.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 

@@ -19,7 +19,7 @@ public class CharacterEncoderTest {
         byte[] datagram = new byte[10];
 
         encoder.encode(datagram, 0, EndianPolicy.LITTLE, 'A');
-        encoder.encode(datagram, 2, EndianPolicy.BIG, 'a');
+        encoder.encode(datagram, 2 - datagram.length, EndianPolicy.BIG, 'a');
 
         byte[] cache = new byte[10];
         cache[0] = 65;
@@ -31,6 +31,10 @@ public class CharacterEncoderTest {
     public void testEncode2() {
         byte[] datagram = new byte[10];
 
+        assertThrows(NullPointerException.class, () -> this.encoder.encode(null));
+        assertThrows(NullPointerException.class, () -> this.encoder.encode(null, 0, null, 'A'));
+
+        assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, -1, EndianPolicy.LITTLE, 'A'));
         assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, 10, EndianPolicy.LITTLE, 'A'));
     }
 }

@@ -16,12 +16,14 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class ShortDecoder implements TypeDecoder<Short> {
     @Override
     public Short decode(@NonNull DecodeContext context) {
-        ShortType type = context.getDataType(ShortType.class);
+        ShortType type = context.getTypeAnnotation(ShortType.class);
 
         return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }
 
     public short decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
         if (byteOffset < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
         } else if (byteOffset + ShortType.SIZE > datagram.length) {

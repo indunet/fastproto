@@ -16,12 +16,14 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class IntegerDecoder implements TypeDecoder<Integer> {
     @Override
     public Integer decode(@NonNull DecodeContext context) {
-        IntegerType type = context.getDataType(IntegerType.class);
+        IntegerType type = context.getTypeAnnotation(IntegerType.class);
 
         return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }
 
     public int decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
         if (byteOffset < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
         } else if (byteOffset + IntegerType.SIZE > datagram.length) {

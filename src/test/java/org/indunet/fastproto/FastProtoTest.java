@@ -1,16 +1,19 @@
 package org.indunet.fastproto;
 
 import lombok.val;
+import org.indunet.fastproto.annotation.type.UInteger64Type;
 import org.indunet.fastproto.compress.DeflateCompressor;
 import org.indunet.fastproto.iot.Everything;
-import org.indunet.fastproto.iot.WeatherMetrics;
+import org.indunet.fastproto.iot.Weather;
 import org.indunet.fastproto.iot.tesla.Battery;
 import org.indunet.fastproto.iot.tesla.Motor;
 import org.indunet.fastproto.iot.tesla.Tesla;
 import org.indunet.fastproto.util.EncodeUtils;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -25,7 +28,7 @@ public class FastProtoTest {
     public void testTesla() {
         byte[] datagram = new byte[44];
         Tesla tesla = Tesla.builder()
-                .id(101)
+                .id(101L)
                 .time(new Timestamp(System.currentTimeMillis()))
                 .active(true)
                 .speed(78.9f)
@@ -55,20 +58,24 @@ public class FastProtoTest {
         EncodeUtils.type(datagram, 36, tesla.getMotor().getCurrent());
         EncodeUtils.type(datagram, 40, tesla.getMotor().getTemperature());
 
-        // Test decode.
-        assertEquals(FastProto.decode(datagram, Tesla.class).toString(), tesla.toString());
-        // System.out.println(FastProto.decode(datagram, Tesla.class));
+        // Test decode with multi-thread.
+        IntStream.range(0, 10).parallel()
+                .forEach(__ -> {
+                    assertEquals(FastProto.parseFrom(datagram, Tesla.class).toString(), tesla.toString());
+                });
 
-        // Test encode.
-        byte[] cache = new byte[44];
-        FastProto.encode(tesla, cache);
-        assertArrayEquals(cache, datagram);
+        // Test encode with multi-thread.
+        IntStream.range(0, 10).parallel()
+                .forEach(__ -> {
+                    byte[] cache = FastProto.toByteArray(tesla, 44);
+                    assertArrayEquals(cache, datagram);
+                });
     }
 
     @Test
     public void testWeather1() {
         byte[] datagram = new byte[26];
-        WeatherMetrics metrics = WeatherMetrics.builder()
+        Weather metrics = Weather.builder()
                 .id(101)
                 .time(new Timestamp(System.currentTimeMillis()))
                 .humidity(85)
@@ -91,17 +98,17 @@ public class FastProtoTest {
 
         // Test decode.
         assertEquals(
-                FastProto.decode(datagram, WeatherMetrics.class, false).toString(), metrics.toString());
+                FastProto.parseFrom(datagram, Weather.class, false).toString(), metrics.toString());
 
         // Test encode.
-        byte[] cache = FastProto.encode(metrics, 26, false);
+        byte[] cache = FastProto.toByteArray(metrics, 26, false);
         assertArrayEquals(cache, datagram);
     }
 
     @Test
     public void testWeather2() {
         byte[] datagram = new byte[26];
-        WeatherMetrics metrics = WeatherMetrics.builder()
+        Weather weather = Weather.builder()
                 .id(101)
                 .time(new Timestamp(System.currentTimeMillis()))
                 .humidity(85)
@@ -114,30 +121,30 @@ public class FastProtoTest {
         val compressor = new DeflateCompressor(2);
 
         // Init datagram.
-        EncodeUtils.uInteger8Type(datagram, 0, metrics.getId());
-        EncodeUtils.type(datagram, 2, metrics.getTime().getTime());
-        EncodeUtils.uInteger16Type(datagram, 10, metrics.getHumidity());
-        EncodeUtils.integer16Type(datagram, 12, metrics.getTemperature());
-        EncodeUtils.uInteger32Type(datagram, 14, metrics.getPressure());
-        EncodeUtils.type(datagram, 18, 0, metrics.isHumidityValid());
-        EncodeUtils.type(datagram, 18, 1, metrics.isTemperatureValid());
-        EncodeUtils.type(datagram, 18, 2, metrics.isPressureValid());
+        EncodeUtils.uInteger8Type(datagram, 0, weather.getId());
+        EncodeUtils.type(datagram, 2, weather.getTime().getTime());
+        EncodeUtils.uInteger16Type(datagram, 10, weather.getHumidity());
+        EncodeUtils.integer16Type(datagram, 12, weather.getTemperature());
+        EncodeUtils.uInteger32Type(datagram, 14, weather.getPressure());
+        EncodeUtils.type(datagram, 18, 0, weather.isHumidityValid());
+        EncodeUtils.type(datagram, 18, 1, weather.isTemperatureValid());
+        EncodeUtils.type(datagram, 18, 2, weather.isPressureValid());
 
         // Compress the datagram.
         datagram = compressor.compress(datagram);
 
         // Test decode.
         assertEquals(
-                FastProto.decode(datagram, WeatherMetrics.class).toString(), metrics.toString());
+                FastProto.parseFrom(datagram, Weather.class).toString(), weather.toString());
 
         // Test encode.
-        byte[] cache = FastProto.encode(metrics, 26);
+        byte[] cache = FastProto.toByteArray(weather, 26);
         assertArrayEquals(cache, datagram);
     }
 
     @Test
     public void testEverything() {
-        byte[] datagram = new byte[70];
+        byte[] datagram = new byte[78];
         Everything everything = Everything.builder()
                 .aBoolean(true)
                 .aByte((byte) -12)
@@ -156,6 +163,7 @@ public class FastProtoTest {
                 .aUInteger16(16)
                 .aUInteger32(32l)
                 .speed(10.1f)
+                .aUInteger64(new BigInteger(String.valueOf(UInteger64Type.MAX_VALUE)))
                 .build();
 
         // Init datagram.
@@ -175,17 +183,21 @@ public class FastProtoTest {
         EncodeUtils.type(datagram, 50, everything.getAString());
         EncodeUtils.type(datagram, 56, everything.getATimestamp().getTime());
         EncodeUtils.type(datagram, 64, everything.getACharacter());
+        EncodeUtils.type(datagram, 70, everything.getAUInteger64());
 
         // There is a formula.
         EncodeUtils.uInteger8Type(datagram, 66, (int) (everything.getSpeed() * 10));
 
         // Test decode.
-        assertEquals(FastProto.decode(datagram, Everything.class).toString(), everything.toString());
+        assertEquals(FastProto.parseFrom(datagram, Everything.class, false).toString(), everything.toString());
 
         // Test encode.
-        byte[] cache = new byte[70];
-
-        FastProto.encode(everything, cache);
+        byte[] cache = FastProto.toByteArray(everything, 78, false);
         assertArrayEquals(cache, datagram);
+
+
+        // Test with gzip
+        byte[] compressed = FastProto.toByteArray(everything, 78);
+        assertEquals(FastProto.parseFrom(compressed, Everything.class).toString(), everything.toString());
     }
 }

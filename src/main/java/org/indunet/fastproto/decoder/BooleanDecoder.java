@@ -15,12 +15,14 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class BooleanDecoder implements TypeDecoder<Boolean> {
     @Override
     public Boolean decode(DecodeContext context) {
-        BooleanType type = context.getDataType(BooleanType.class);
+        BooleanType type = context.getTypeAnnotation(BooleanType.class);
 
         return this.decode(context.getDatagram(), type.value(), type.bitOffset());
     }
 
     public boolean decode(@NonNull final byte[] datagram, int byteOffset, int bitOffset) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
         if (byteOffset < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
         } else if (bitOffset > BooleanType.MAX_BIT_OFFSET || bitOffset < BooleanType.MIN_BIT_OFFSET) {

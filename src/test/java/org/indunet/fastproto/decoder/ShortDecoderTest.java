@@ -23,12 +23,17 @@ public class ShortDecoderTest {
         // For big endian.
         assertEquals(decoder.decode(datagram, 0, EndianPolicy.BIG), 0x0001);
         assertEquals(decoder.decode(datagram, 2, EndianPolicy.BIG), 0x0203);
+        assertEquals(decoder.decode(datagram, 2 - datagram.length, EndianPolicy.BIG), 0x0203);
     }
 
     @Test
     public void testDecode2() {
         byte[] datagram = new byte[10];
 
+        assertThrows(NullPointerException.class, () -> this.decoder.decode(null));
+        assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 0, EndianPolicy.LITTLE));
+
+        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -1, EndianPolicy.LITTLE));
         assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 10, EndianPolicy.LITTLE));
     }
 }

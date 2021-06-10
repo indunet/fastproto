@@ -30,12 +30,18 @@ public class Integer16DecoderTest {
         assertEquals(this.decoder.decode(datagram, 0, EndianPolicy.LITTLE), 1 + 256 * 2);
         assertEquals(this.decoder.decode(datagram, 0, EndianPolicy.BIG), 256 + 2);
         assertEquals(this.decoder.decode(datagram, 2, EndianPolicy.BIG), -29);
+
+        assertEquals(this.decoder.decode(datagram, -8, EndianPolicy.BIG), -29);
     }
 
     @Test
     public void testDecode2() {
         byte[] datagram = new byte[10];
 
+        assertThrows(NullPointerException.class, () -> this.decoder.decode(null));
+        assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 0, EndianPolicy.LITTLE));
+
+        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -100, EndianPolicy.LITTLE));
         assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 10, EndianPolicy.LITTLE));
     }
 }

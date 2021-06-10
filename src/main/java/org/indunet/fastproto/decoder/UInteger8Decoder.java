@@ -15,12 +15,14 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class UInteger8Decoder implements TypeDecoder<Integer> {
     @Override
     public Integer decode(@NonNull DecodeContext context) {
-        UInteger8Type type = context.getDataType(UInteger8Type.class);
+        UInteger8Type type = context.getTypeAnnotation(UInteger8Type.class);
 
         return this.decode(context.getDatagram(), type.value());
     }
 
     public int decode(@NonNull final byte[] datagram, int byteOffset) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
         if (byteOffset < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
         } else if (byteOffset + UInteger8Type.SIZE > datagram.length) {

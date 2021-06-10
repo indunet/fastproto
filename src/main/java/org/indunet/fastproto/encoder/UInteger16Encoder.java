@@ -18,7 +18,7 @@ import java.text.MessageFormat;
 public class UInteger16Encoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
-        UInteger16Type type = context.getDataType(UInteger16Type.class);
+        UInteger16Type type = context.getTypeAnnotation(UInteger16Type.class);
         EndianPolicy policy = context.getEndianPolicy();
         Integer value = context.getValue(Integer.class);
 
@@ -26,6 +26,8 @@ public class UInteger16Encoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull EndianPolicy policy, int value) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
         if (byteOffset < 0) {
             throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
         } else if (byteOffset + UInteger16Type.SIZE > datagram.length) {

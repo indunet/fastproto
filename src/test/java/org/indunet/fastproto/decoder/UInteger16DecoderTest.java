@@ -22,13 +22,18 @@ public class UInteger16DecoderTest {
 
         assertEquals(decoder.decode(datagram, 0, EndianPolicy.LITTLE), 1 + 2 * 256);
         assertEquals(decoder.decode(datagram, 0, EndianPolicy.BIG), 256 + 2);
+
+        assertEquals(decoder.decode(datagram, -10, EndianPolicy.BIG), 256 + 2);
     }
 
     @Test
     public void testDecode2() {
         byte[] datagram = new byte[10];
 
-        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -1, EndianPolicy.LITTLE));
+        assertThrows(NullPointerException.class, () -> this.decoder.decode(null));
+        assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 0, EndianPolicy.LITTLE));
+
+        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -11, EndianPolicy.LITTLE));
         assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 10, EndianPolicy.LITTLE));
     }
 }

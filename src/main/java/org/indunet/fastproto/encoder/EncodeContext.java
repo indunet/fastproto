@@ -1,13 +1,9 @@
 package org.indunet.fastproto.encoder;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.Getter;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.TypeAssist;
-
-import java.lang.annotation.Annotation;
 
 /**
  * @author Deng Ran
@@ -20,8 +16,8 @@ public class EncodeContext {
     TypeAssist typeAssist;
     Object value;
 
-    public <T> T getDataType(Class<T> clazz) {
-        return clazz.cast(this.typeAssist.getDataType());
+    public <T> T getTypeAnnotation(Class<T> clazz) {
+        return (T) this.typeAssist.getTypeAnnotation();
     }
 
     public <T> T getValue(Class<T> clazz) {

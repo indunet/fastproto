@@ -2,7 +2,7 @@ package org.indunet.fastproto.annotation.type;
 
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
-import org.indunet.fastproto.annotation.Type;
+import org.indunet.fastproto.annotation.TypeFlag;
 import org.indunet.fastproto.decoder.BooleanDecoder;
 import org.indunet.fastproto.encoder.BooleanEncoder;
 
@@ -10,6 +10,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Type;
 import java.util.function.Function;
 
 
@@ -17,15 +18,16 @@ import java.util.function.Function;
  * Boolean type, corresponding to Java Boolean/boolean.
  *
  * @author Deng Ran
- * @see Type
+ * @see TypeFlag
  * @since 1.0.0
  */
-@Type
+@TypeFlag
 @Decoder(BooleanDecoder.class)
 @Encoder(BooleanEncoder.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BooleanType {
+    Type[] JAVA_TYPES = {Boolean.class, Boolean.TYPE};
     int MAX_BIT_OFFSET = 7;
     int MIN_BIT_OFFSET = 0;
 

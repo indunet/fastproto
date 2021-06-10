@@ -1,5 +1,6 @@
 package org.indunet.fastproto.encoder;
 
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.exception.EncodeException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -31,6 +32,7 @@ public class StringEncoderTest {
     public static List<Arguments> testEncode1() {
         return Stream.of(
                 Arguments.arguments(new byte[6], 0, -1, StandardCharsets.UTF_8, "ABCabc", "ABCabc".getBytes()),
+                Arguments.arguments(new byte[6], -6, -1, StandardCharsets.UTF_8, "ABCabc", "ABCabc".getBytes()),
                 Arguments.arguments(new byte[8], 2, 6, StandardCharsets.UTF_8, "ABCabc", new byte[]{0, 0, 'A', 'B', 'C', 'a', 'b', 'c'})
         ).collect(Collectors.toList());
     }
@@ -38,6 +40,10 @@ public class StringEncoderTest {
     @Test
     public void testEncode2() {
         byte[] datagram = new byte[10];
+
+        assertThrows(NullPointerException.class, () -> this.encoder.encode(null));
+        assertThrows(NullPointerException.class, () -> this.encoder.encode(null, 0, 8, StandardCharsets.UTF_8, "ABC"));
+
 
         assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, -1, 2, StandardCharsets.UTF_8, "ABC"));
         assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, 0, -2, StandardCharsets.UTF_8, "ABC"));

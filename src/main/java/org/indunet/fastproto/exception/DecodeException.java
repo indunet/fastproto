@@ -37,7 +37,7 @@ public class DecodeException extends CodecException {
         ILLEGAL_BYTE_OFFSET("Illegal byte offset, must be larger than or equal to 0."),
         ILLEGAL_PARAMETER("Illegal parameter."),
         FAIL_INITIALIZING_DECODER("Fail initializing decoder {0}."),
-        FAIL_GETTING_DECODE_FORMULA("Fail getting decode formula {0}"),
+        FAIL_GETTING_DECODE_FORMULA("Fail getting decode formula of annotation {0} on field {1}"),
         FAIL_INITIALIZING_DECODE_FORMULA("Fail initializing decode formula {0}."),
         FAIL_INITIALIZING_DECODE_OBJECT("Fail initializing decode object {0}"),
         NOT_FOUND_DECODER("Decoder for data type {0} cannot be found."),

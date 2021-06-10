@@ -19,7 +19,7 @@ public class Integer16EncoderTest {
         byte[] datagram = new byte[4];
 
         encoder.encode(datagram, 0, EndianPolicy.LITTLE, 0x0102);
-        encoder.encode(datagram, 2, EndianPolicy.BIG, -300);
+        encoder.encode(datagram, 2 - datagram.length, EndianPolicy.BIG, -300);
 
         byte[] cache = new byte[4];
         cache[0] = 2;
@@ -34,6 +34,11 @@ public class Integer16EncoderTest {
     public void testEncode2() {
         byte[] datagram = new byte[10];
 
+        assertThrows(NullPointerException.class, () -> this.encoder.encode(null));
+        assertThrows(NullPointerException.class, () -> this.encoder.encode(null, 0, EndianPolicy.BIG, 8));
+
+        assertThrows(EncodeException.class,
+                () -> this.encoder.encode(datagram, -1, EndianPolicy.LITTLE, 1));
         assertThrows(EncodeException.class,
                 () -> this.encoder.encode(datagram, 10, EndianPolicy.LITTLE, 1));
         assertThrows(EncodeException.class,

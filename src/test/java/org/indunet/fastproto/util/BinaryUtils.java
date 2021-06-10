@@ -2,20 +2,28 @@ package org.indunet.fastproto.util;
 
 import org.indunet.fastproto.EndianPolicy;
 
-public class NumberUtils {
-    public static byte[] floatToBinary(float value) {
-        return intToBinary(Float.floatToIntBits(value));
+public class BinaryUtils {
+    public static byte[] valueOf(float value) {
+        return valueOf(Float.floatToIntBits(value));
     }
 
-    public static byte[] doubleToBinary(double value) {
-        return longToBinary(Double.doubleToLongBits(value));
+    public static byte[] valueOf(float value, EndianPolicy policy) {
+        return valueOf(Float.floatToIntBits(value), policy);
     }
 
-    public static byte[] intToBinary(int value) {
-        return intToBinary(value, EndianPolicy.LITTLE);
+    public static byte[] valueOf(double value) {
+        return valueOf(Double.doubleToLongBits(value));
     }
 
-    public static byte[] intToBinary(int value, EndianPolicy endian) {
+    public static byte[] valueOf(double value, EndianPolicy policy) {
+        return valueOf(Double.doubleToLongBits(value), policy);
+    }
+
+    public static byte[] valueOf(int value) {
+        return valueOf(value, EndianPolicy.LITTLE);
+    }
+
+    public static byte[] valueOf(int value, EndianPolicy endian) {
         byte[] bytes = new byte[4];
 
         if (endian == EndianPolicy.LITTLE) {
@@ -33,11 +41,33 @@ public class NumberUtils {
         return bytes;
     }
 
-    public static byte[] longToBinary(long value) {
-        return longToBinary(value, EndianPolicy.LITTLE);
+    public static byte[] uint32of(long value) {
+        return uint32of(value, EndianPolicy.LITTLE);
     }
 
-    public static byte[] longToBinary(long value, EndianPolicy endian) {
+    public static byte[] uint32of(long value, EndianPolicy policy) {
+        byte[] bytes = new byte[4];
+
+        if (policy == EndianPolicy.LITTLE) {
+            bytes[0] = (byte)(value & 0xFF);
+            bytes[1] = (byte)(value >> 8 & 0xFF);
+            bytes[2] = (byte)(value >> 16 & 0xFF);
+            bytes[3] = (byte)(value >> 24 & 0xFF);
+        } else if (policy == EndianPolicy.BIG) {
+            bytes[7] = (byte)(value & 0xFF);
+            bytes[6] = (byte)(value >> 8 & 0xFF);
+            bytes[5] = (byte)(value >> 16 & 0xFF);
+            bytes[4] = (byte)(value >> 24 & 0xFF);
+        }
+
+        return bytes;
+    }
+
+    public static byte[] valueOf(long value) {
+        return valueOf(value, EndianPolicy.LITTLE);
+    }
+
+    public static byte[] valueOf(long value, EndianPolicy endian) {
         byte[] bytes = new byte[8];
 
         if (endian == EndianPolicy.LITTLE) {

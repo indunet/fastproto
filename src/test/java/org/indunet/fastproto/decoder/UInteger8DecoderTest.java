@@ -21,13 +21,17 @@ public class UInteger8DecoderTest {
 
         assertEquals(decoder.decode(datagram, 0), 256 - 10);
         assertEquals(decoder.decode(datagram, 1), 29);
+        assertEquals(decoder.decode(datagram, 1 - datagram.length), 29);
     }
 
     @Test
     public void testDecode2() {
         byte[] datagram = new byte[10];
 
-        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -1));
+        assertThrows(NullPointerException.class, () -> this.decoder.decode(null));
+        assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 0));
+
+        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -101));
         assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 10));
     }
 }

@@ -16,13 +16,15 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class UInteger32Decoder implements TypeDecoder<Long> {
     @Override
     public Long decode(@NonNull DecodeContext context) {
-        UInteger32Type type = context.getDataType(UInteger32Type.class);
+        UInteger32Type type = context.getTypeAnnotation(UInteger32Type.class);
         EndianPolicy policy = context.getEndianPolicy();
 
         return this.decode(context.getDatagram(), type.value(), policy);
     }
 
     public long decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy policy) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
         if (byteOffset < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
         } else if (byteOffset + UInteger32Type.SIZE > datagram.length) {

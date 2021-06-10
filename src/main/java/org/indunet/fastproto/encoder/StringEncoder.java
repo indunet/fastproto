@@ -18,13 +18,15 @@ import java.nio.charset.Charset;
 public class StringEncoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
-        val dataType = context.getDataType(StringType.class);
+        val dataType = context.getTypeAnnotation(StringType.class);
         val value = context.getValue(String.class);
 
         this.encode(context.getDatagram(), dataType.value(), dataType.length(), Charset.defaultCharset(), value);
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, int length, @NonNull Charset set, @NonNull String value) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
         if (byteOffset < 0) {
             throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
         } else if (length < -1) {

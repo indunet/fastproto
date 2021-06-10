@@ -2,7 +2,7 @@ package org.indunet.fastproto.annotation.type;
 
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
-import org.indunet.fastproto.annotation.Type;
+import org.indunet.fastproto.annotation.TypeFlag;
 import org.indunet.fastproto.decoder.Integer8Decoder;
 import org.indunet.fastproto.encoder.Integer8Encoder;
 
@@ -10,21 +10,23 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Type;
 import java.util.function.Function;
 
 /**
  * Integer8 type, corresponding to Java Integer/int.
  *
  * @author Deng Ran
+ * @see TypeFlag
  * @since 1.2.0
- * @see Type
  */
-@Type
+@TypeFlag
 @Decoder(Integer8Decoder.class)
 @Encoder(Integer8Encoder.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Integer8Type {
+    Type[] JAVA_TYPES = {Integer.class, Integer.TYPE};
     int SIZE = Byte.SIZE >> 3;
     int MAX_VALUE = Byte.MAX_VALUE;
     int MIN_VALUE = Byte.MIN_VALUE;

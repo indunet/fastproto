@@ -16,13 +16,15 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class CharacterDecoder implements TypeDecoder<Character> {
     @Override
     public Character decode(DecodeContext context) {
-        CharacterType type = context.getDataType(CharacterType.class);
+        CharacterType type = context.getTypeAnnotation(CharacterType.class);
         EndianPolicy policy = context.getEndianPolicy();
 
         return this.decode(context.getDatagram(), type.value(), policy);
     }
 
     public Character decode(final byte[] datagram, int byteOffset, @NonNull EndianPolicy policy) {
+        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+
         if (byteOffset < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
         } else if (byteOffset + CharacterType.SIZE > datagram.length) {
