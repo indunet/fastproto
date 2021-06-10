@@ -16,7 +16,7 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
 public class ByteEncoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
-        ByteType type = context.getDataType(ByteType.class);
+        ByteType type = context.getTypeAnnotation(ByteType.class);
         Byte value = context.getValue(Byte.class);
 
         this.encode(context.getDatagram(), type.value(), value);

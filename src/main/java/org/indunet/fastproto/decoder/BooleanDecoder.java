@@ -15,7 +15,7 @@ import org.indunet.fastproto.exception.DecodeException.DecodeError;
 public class BooleanDecoder implements TypeDecoder<Boolean> {
     @Override
     public Boolean decode(DecodeContext context) {
-        BooleanType type = context.getDataType(BooleanType.class);
+        BooleanType type = context.getTypeAnnotation(BooleanType.class);
 
         return this.decode(context.getDatagram(), type.value(), type.bitOffset());
     }

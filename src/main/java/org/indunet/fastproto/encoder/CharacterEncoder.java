@@ -15,7 +15,7 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
 public class CharacterEncoder implements TypeEncoder {
     @Override
     public void encode(EncodeContext context) {
-        CharacterType type = context.getDataType(CharacterType.class);
+        CharacterType type = context.getTypeAnnotation(CharacterType.class);
         Character value = context.getValue(Character.class);
         EndianPolicy policy = context.getEndianPolicy();
 

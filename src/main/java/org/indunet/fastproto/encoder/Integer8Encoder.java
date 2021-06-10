@@ -16,7 +16,7 @@ import java.text.MessageFormat;
 public class Integer8Encoder implements TypeEncoder {
     @Override
     public void encode(EncodeContext context) {
-        Integer8Type type = context.getDataType(Integer8Type.class);
+        Integer8Type type = context.getTypeAnnotation(Integer8Type.class);
         Integer value = context.getValue(Integer.class);
 
         this.encode(context.getDatagram(), type.value(), value);

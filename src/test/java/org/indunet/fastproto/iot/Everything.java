@@ -4,10 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.indunet.fastproto.annotation.EnableCompress;
 import org.indunet.fastproto.annotation.type.*;
+import org.indunet.fastproto.compress.CompressPolicy;
 import org.indunet.fastproto.iot.formula.DecodeSpeedFormula;
 import org.indunet.fastproto.iot.formula.EncodeSpeedFormula;
 
+import java.math.BigInteger;
 import java.sql.Timestamp;
 
 /**
@@ -18,6 +21,7 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@EnableCompress(CompressPolicy.GZIP)
 public class Everything {
     @BooleanType(value = 0, bitOffset = 1)
     Boolean aBoolean;
@@ -69,5 +73,8 @@ public class Everything {
 
     @UInteger8Type(value = 66, afterDecode = DecodeSpeedFormula.class, beforeEncode = EncodeSpeedFormula.class)
     float speed;
+
+    @UInteger64Type(70)
+    BigInteger aUInteger64;
 }
 

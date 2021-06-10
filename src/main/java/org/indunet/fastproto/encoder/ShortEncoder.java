@@ -16,7 +16,7 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
 public class ShortEncoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
-        ShortType type = context.getDataType(ShortType.class);
+        ShortType type = context.getTypeAnnotation(ShortType.class);
         Short value = context.getValue(Short.class);
 
         this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);

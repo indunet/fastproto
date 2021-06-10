@@ -18,7 +18,7 @@ import java.nio.charset.Charset;
 public class StringEncoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
-        val dataType = context.getDataType(StringType.class);
+        val dataType = context.getTypeAnnotation(StringType.class);
         val value = context.getValue(String.class);
 
         this.encode(context.getDatagram(), dataType.value(), dataType.length(), Charset.defaultCharset(), value);

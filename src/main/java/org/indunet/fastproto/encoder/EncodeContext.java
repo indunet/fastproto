@@ -16,8 +16,8 @@ public class EncodeContext {
     TypeAssist typeAssist;
     Object value;
 
-    public <T> T getDataType(Class<T> clazz) {
-        return clazz.cast(this.typeAssist.getTypeAnnotation());
+    public <T> T getTypeAnnotation(Class<T> clazz) {
+        return (T) this.typeAssist.getTypeAnnotation();
     }
 
     public <T> T getValue(Class<T> clazz) {

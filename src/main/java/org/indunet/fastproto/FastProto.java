@@ -2,7 +2,7 @@ package org.indunet.fastproto;
 
 import lombok.NonNull;
 import lombok.val;
-import org.indunet.fastproto.annotation.Compress;
+import org.indunet.fastproto.annotation.EnableCompress;
 import org.indunet.fastproto.compress.Compressors;
 import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.Decoders;
@@ -30,8 +30,8 @@ public class FastProto {
      * @param clazz    deserialized object
      * @return deserialize object instance
      */
-    public static <T> T decode(@NonNull byte[] datagram, @NonNull Class<T> clazz) {
-        return decode(datagram, clazz, true);
+    public static <T> T parseFrom(@NonNull byte[] datagram, @NonNull Class<T> clazz) {
+        return parseFrom(datagram, clazz, true);
     }
 
     /**
@@ -42,9 +42,9 @@ public class FastProto {
      * @param enableCompress enable compress or not
      * @return object.
      */
-    public static <T> T decode(@NonNull byte[] datagram, @NonNull Class<T> clazz, boolean enableCompress) {
-        if (enableCompress && clazz.isAnnotationPresent(Compress.class)) {
-            val compress = clazz.getAnnotation(Compress.class);
+    public static <T> T parseFrom(@NonNull byte[] datagram, @NonNull Class<T> clazz, boolean enableCompress) {
+        if (enableCompress && clazz.isAnnotationPresent(EnableCompress.class)) {
+            val compress = clazz.getAnnotation(EnableCompress.class);
             val compressor = Compressors.get(compress);
 
             datagram = compressor.decompress(datagram);
@@ -70,36 +70,12 @@ public class FastProto {
     /**
      * Convert object into binary datagram.
      *
-     * @param object   serialized object
-     * @param datagram binary message
-     */
-    @Deprecated
-    public static void encode(@NonNull Object object, @NonNull byte[] datagram) {
-        TypeAssist assist = assists.computeIfAbsent(object.getClass(), c -> TypeAssist.of(c));
-        List<EncodeContext> contexts = assist.toEncodeContexts(object, datagram);
-
-        contexts.stream()
-                .forEach(c -> {
-                    if (c.getTypeAssist().getEncodeFormula() != null) {
-                        Object o = Encoders.getFormula(c.getTypeAssist().getEncodeFormula())
-                                .apply(c.getValue());
-                        c.setValue(o);
-                    }
-
-                    Consumer<EncodeContext> consumer = Encoders.getEncoder(c.getTypeAssist().getEncoderClass());
-                    consumer.accept(c);
-                });
-    }
-
-    /**
-     * Convert object into binary datagram.
-     *
      * @param object serialized object
      * @param length the length of the datagram.
      * @return binary datagram.
      */
-    public static byte[] encode(@NonNull Object object, int length) {
-        return encode(object, length, true);
+    public static byte[] toByteArray(@NonNull Object object, int length) {
+        return toByteArray(object, length, true);
     }
 
     /**
@@ -110,7 +86,7 @@ public class FastProto {
      * @param enableCompress enable compress or not
      * @return binary datagram.
      */
-    public static byte[] encode(@NonNull Object object, int length, boolean enableCompress) {
+    public static byte[] toByteArray(@NonNull Object object, int length, boolean enableCompress) {
         byte[] datagram = new byte[length];
 
         TypeAssist assist = assists.computeIfAbsent(object.getClass(), c -> TypeAssist.of(c));
@@ -128,8 +104,8 @@ public class FastProto {
                     consumer.accept(c);
                 });
 
-        if (enableCompress && object.getClass().isAnnotationPresent(Compress.class)) {
-            val compress = object.getClass().getAnnotation(Compress.class);
+        if (enableCompress && object.getClass().isAnnotationPresent(EnableCompress.class)) {
+            val compress = object.getClass().getAnnotation(EnableCompress.class);
             val compressor = Compressors.get(compress);
 
             return compressor.compress(datagram);

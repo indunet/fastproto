@@ -22,7 +22,7 @@ public class BatchTest {
     @ParameterizedTest
     @MethodSource
     public void testDecode(byte[] datagram) {
-        FastProto.decode(datagram, Batches.class);
+        FastProto.parseFrom(datagram, Batches.class);
     }
 
     public static List<Arguments> testDecode() {
@@ -43,7 +43,7 @@ public class BatchTest {
     @ParameterizedTest
     @MethodSource
     public void testEncode(Batches batches) {
-        byte[] datagram = FastProto.encode(batches, 128);
+        byte[] datagram = FastProto.toByteArray(batches, 128);
     }
 
     public static List<Arguments> testEncode() {
@@ -57,7 +57,7 @@ public class BatchTest {
                             .forEach(i -> d[i] = (byte) random.nextInt());
 
                     return d;
-                }).map(d -> FastProto.decode(d, Batches.class))
+                }).map(d -> FastProto.parseFrom(d, Batches.class))
                 .map(Arguments::arguments)
                 .collect(Collectors.toList());
     }

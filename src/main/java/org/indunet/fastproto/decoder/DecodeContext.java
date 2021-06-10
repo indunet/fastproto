@@ -22,7 +22,7 @@ public class DecodeContext {
         return this.typeAssist.getEndianPolicy();
     }
 
-    public <T> T getDataType(Class<T> clazz) {
+    public <T> T getTypeAnnotation(Class<T> clazz) {
         return clazz.cast(this.typeAssist.getTypeAnnotation());
     }
 

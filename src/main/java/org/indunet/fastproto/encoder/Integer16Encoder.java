@@ -18,7 +18,7 @@ import java.text.MessageFormat;
 public class Integer16Encoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
-        Integer16Type type = context.getDataType(Integer16Type.class);
+        Integer16Type type = context.getTypeAnnotation(Integer16Type.class);
         EndianPolicy policy = context.getEndianPolicy();
         Integer value = context.getValue(Integer.class);
 
