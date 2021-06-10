@@ -1,3 +1,5 @@
+![fastproto](logo.png "fastproto")
+
 # *What is FastProto?*
 
 [![Build Status](https://travis-ci.com/indunet/fastproto.svg?branch=master)](https://travis-ci.com/indunet/fastproto)
@@ -86,19 +88,19 @@ public class Weather {
     boolean pressureValid;
 }
 ```
-Deserialize the binary datagram into Java data object through `FastProto::decode()` method.
+Deserialize the binary datagram into Java data object through `FastProto::parseFrom()` method.
 
 ```
 byte[] datagram = ...   // Datagram sent by monitoring device.
 
-Weather weather = FastProto.decode(datagram, Weather.class);
+Weather weather = FastProto.parseFrom(datagram, Weather.class);
 ```
 
-The serialization process is similar, serialize the Java data object into binary datagram through `FastProto::encode()` 
+The serialization process is similar, serialize the Java data object into binary datagram through `FastProto::toByteArray()` 
 method, the second parameter is the datagram size.
 
 ```
-byte[] datagram = FastProto.encode(weather, 20);
+byte[] datagram = FastProto.toByteArray(weather, 20);
 ```
 
 # *FastProto Annotations*
