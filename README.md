@@ -16,7 +16,7 @@ FastProto solves the problem of cross-language and cross-platform data exchange 
 * Binary serialization & deserialization
 * Control the serialization process through annotations
 * Support all Java primitive data types and their wrapper classes
-* Support unsigned data types such as uint8, uint16 and uint32
+* Support unsigned data types such as uint8, uint16, uint32 and uint64
 * Custom endianness(big endian or little endian), datagram reverse addressing
 * Support datagram compress and decompress(gzip, deflate)
 * AutoType, automatically infer all Java primitive data types and their wrapper classes when using `@AutoType`
@@ -123,6 +123,7 @@ infer by the field type. Thinking of cross-platform data transmission, unsigned 
 | `@UInteger8Type`  | Integer / int      | unsigned char  | 1 byte      |  <font color=red>×</font>  |    
 | `@UInteger16Type` | Integer / int      | unsigned short | 2 bytes     |  <font color=red>×</font>  |    
 | `@UInteger32Type` | Long / long        | unsigned long  | 4 bytes     |  <font color=red>×</font>  |    
+| `@UInteger64Type` | BigInteger        | unsigned long long | 8 bytes     |  <font color=red>√</font>  |    
 | `@BinaryType`     | byte[]             | char[]         | N bytes     |  <font color=green>√</font>  |    
 | `@StringType`     | java.lang.String   | --             | N bytes     |  <font color=green>√</font>  |    
 | `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 bytes |  <font color=green>√</font>  |    
@@ -135,7 +136,7 @@ the serialization process more accurately.
 | `@Endian`       | Class & Field | Endianness, default as little endian. |
 | `@DecodeIgnore` | Field        | Ignore the field when decoding.       |
 | `@EncodeIgnore` | Field        | Ignore the field when encoding.       |
-| `@Compress` | Class        | Compress or decompress datagram, default as gzip. |
+| `@EnableCompress` | Class        | Compress or decompress datagram, default as gzip. |
 
 # *Performance Test*
 
