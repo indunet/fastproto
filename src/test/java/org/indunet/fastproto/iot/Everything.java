@@ -74,7 +74,7 @@ public class Everything {
     @UInteger8Type(value = 66, afterDecode = DecodeSpeedFormula.class, beforeEncode = EncodeSpeedFormula.class)
     float speed;
 
-    @UInteger64Type(70)
+    @AutoType(70)
     BigInteger aUInteger64;
 }
 
