@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since 1.3.0
  */
 class DeflateCompressorTest {
-    DeflateCompressor compressor = new DeflateCompressor();
+    DeflateCompressor compressor = DeflateCompressor.getInstance(1);
 
     @Test
     public void testCompress() {
@@ -23,6 +23,7 @@ class DeflateCompressorTest {
                 .forEach(i -> before[i] = (byte) random.nextInt());
         val after = compressor.compress(before);
 
+        assertTrue(after.length > 0);
         assertTrue(after.length <= before.length);
     }
 
@@ -35,6 +36,7 @@ class DeflateCompressorTest {
         val after = compressor.compress(datagram);
         val before = compressor.decompress(after);
 
+        assertTrue(after.length > 0);
         assertArrayEquals(datagram, before);
     }
 }

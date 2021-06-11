@@ -23,6 +23,16 @@ import java.util.zip.GZIPOutputStream;
  * @since 1.3.0
  */
 public class GzipCompressor implements Compressor {
+    protected final static GzipCompressor compressor = new GzipCompressor();
+
+    protected GzipCompressor() {
+
+    }
+
+    public static GzipCompressor getInstance() {
+        return compressor;
+    }
+
     /**
      * Compress with gzip.
      *

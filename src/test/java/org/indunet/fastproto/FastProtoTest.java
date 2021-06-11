@@ -118,7 +118,7 @@ public class FastProtoTest {
                 .temperatureValid(true)
                 .pressureValid(true)
                 .build();
-        val compressor = new DeflateCompressor(2);
+        val compressor = DeflateCompressor.getInstance(2);
 
         // Init datagram.
         EncodeUtils.uInteger8Type(datagram, 0, weather.getId());
