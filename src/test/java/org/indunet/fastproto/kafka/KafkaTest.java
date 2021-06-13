@@ -7,6 +7,7 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.indunet.fastproto.iot.Weather;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
@@ -26,7 +27,7 @@ public class KafkaTest {
     public static final SharedKafkaTestResource sharedKafkaTestResource = new SharedKafkaTestResource();
 
     @Test
-    public void testKafka() throws InterruptedException {
+    public void testKafka() {
         Properties props = new Properties();
 
         props.put("bootstrap.servers", sharedKafkaTestResource.getKafkaConnectString());
