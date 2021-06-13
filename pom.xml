@@ -6,10 +6,10 @@
 
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>1.5.0</version>
+    <version>1.5.2</version>
     <packaging>jar</packaging>
     <name>FastProto</name>
-    <description>FastProto is a binary serialization &amp; deserialization tool written in Java.</description>
+    <description>A protocolized binary serialization &amp; deserialization tool written in Java, allows developers to customize binary format through annotations.</description>
 
     <url>http://fastproto.indunet.org</url>
     <inceptionYear>2018</inceptionYear>
@@ -39,11 +39,6 @@
             <comments>A business-friendly OSS license</comments>
         </license>
     </licenses>
-
-    <properties>
-        <junit.version>5.7.2</junit.version>
-        <lombok.version>1.18.16</lombok.version>
-    </properties>
 
     <profiles>
         <profile>
@@ -148,6 +143,13 @@
         </profile>
     </profiles>
 
+    <properties>
+        <junit.version>5.7.2</junit.version>
+        <lombok.version>1.18.16</lombok.version>
+        <kafka.version>2.6.0</kafka.version>
+        <kafka.junit5>3.2.2</kafka.junit5>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -162,6 +164,28 @@
             <version>${junit.version}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka_2.13</artifactId>
+            <version>${kafka.version}</version>
+            <scope>test</scope>
+        </dependency>
+
+
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+            <version>${kafka.version}</version>
+            <optional>true</optional>
+        </dependency>
+
+        <dependency>
+            <groupId>com.salesforce.kafka.test</groupId>
+            <artifactId>kafka-junit5</artifactId>
+            <version>${kafka.junit5}</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -173,6 +197,19 @@
                     <source>8</source>
                     <target>8</target>
                 </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>3.0.0-M5</version>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.junit.jupiter</groupId>
+                        <artifactId>junit-jupiter-engine</artifactId>
+                        <version>5.3.2</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

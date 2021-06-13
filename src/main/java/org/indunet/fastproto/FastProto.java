@@ -3,7 +3,7 @@ package org.indunet.fastproto;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.annotation.EnableCompress;
-import org.indunet.fastproto.compress.Compressors;
+import org.indunet.fastproto.compress.CompressorFactory;
 import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.Decoders;
 import org.indunet.fastproto.encoder.EncodeContext;
@@ -45,7 +45,7 @@ public class FastProto {
     public static <T> T parseFrom(@NonNull byte[] datagram, @NonNull Class<T> clazz, boolean enableCompress) {
         if (enableCompress && clazz.isAnnotationPresent(EnableCompress.class)) {
             val compress = clazz.getAnnotation(EnableCompress.class);
-            val compressor = Compressors.get(compress);
+            val compressor = CompressorFactory.create(compress);
 
             datagram = compressor.decompress(datagram);
         }
@@ -105,8 +105,8 @@ public class FastProto {
                 });
 
         if (enableCompress && object.getClass().isAnnotationPresent(EnableCompress.class)) {
-            val compress = object.getClass().getAnnotation(EnableCompress.class);
-            val compressor = Compressors.get(compress);
+            val annotation = object.getClass().getAnnotation(EnableCompress.class);
+            val compressor = CompressorFactory.create(annotation);
 
             return compressor.compress(datagram);
         } else {

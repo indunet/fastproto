@@ -23,6 +23,7 @@ public class BinaryDecoder implements TypeDecoder<byte[]> {
 
     public byte[] decode(@NonNull final byte[] datagram, int byteOffset, int length) {
         byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        // length = length >= 0 ? length : datagram.length + length;
 
         if (byteOffset < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
