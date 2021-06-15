@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019-2021 indunet
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.indunet.fastproto.kafka;
 
 import lombok.val;
@@ -10,6 +26,7 @@ import java.util.HashMap;
 import java.util.Properties;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Deng Ran
@@ -46,5 +63,33 @@ public class KafkaDeserializerTest {
         serializer.configure(map, false);
 
         assertArrayEquals(serializer.serialize("device0", weather), FastProto.toByteArray(weather, 26));
+    }
+
+    @Test
+    public void testException() {
+        val props = new Properties();
+
+        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        props.put("value.serializer", ProtoKafkaConfig.SERIALIZER_NAME_VALUE);
+
+        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        props.put("value.deserializer", ProtoKafkaConfig.DESERIALIZER_NAME_VALUE);
+
+        val map = new HashMap<String, Object>();
+        Weather weather = Weather.builder()
+                .id(101)
+                .time(new Timestamp(System.currentTimeMillis()))
+                .humidity(85)
+                .temperature(-15)
+                .pressure(13)
+                .humidityValid(true)
+                .temperatureValid(true)
+                .pressureValid(true)
+                .build();
+        props.forEach((key, value) -> map.put(key.toString(), value));
+
+
+        assertThrows(ProtoKafkaException.class,  () -> serializer.configure(map, false));
+
     }
 }
