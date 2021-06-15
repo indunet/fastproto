@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019-2021 indunet
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.indunet.fastproto;
 
 import lombok.val;
@@ -118,7 +134,7 @@ public class FastProtoTest {
                 .temperatureValid(true)
                 .pressureValid(true)
                 .build();
-        val compressor = new DeflateCompressor(2);
+        val compressor = DeflateCompressor.getInstance(2);
 
         // Init datagram.
         EncodeUtils.uInteger8Type(datagram, 0, weather.getId());
@@ -144,7 +160,7 @@ public class FastProtoTest {
 
     @Test
     public void testEverything() {
-        byte[] datagram = new byte[78];
+        byte[] datagram = new byte[80];
         Everything everything = Everything.builder()
                 .aBoolean(true)
                 .aByte((byte) -12)
@@ -184,6 +200,7 @@ public class FastProtoTest {
         EncodeUtils.type(datagram, 56, everything.getATimestamp().getTime());
         EncodeUtils.type(datagram, 64, everything.getACharacter());
         EncodeUtils.type(datagram, 70, everything.getAUInteger64());
+        EncodeUtils.uInteger16Type(datagram, 78, 17);
 
         // There is a formula.
         EncodeUtils.uInteger8Type(datagram, 66, (int) (everything.getSpeed() * 10));
@@ -192,12 +209,12 @@ public class FastProtoTest {
         assertEquals(FastProto.parseFrom(datagram, Everything.class, false).toString(), everything.toString());
 
         // Test encode.
-        byte[] cache = FastProto.toByteArray(everything, 78, false);
+        byte[] cache = FastProto.toByteArray(everything, 80, false);
         assertArrayEquals(cache, datagram);
 
 
         // Test with gzip
-        byte[] compressed = FastProto.toByteArray(everything, 78);
+        byte[] compressed = FastProto.toByteArray(everything, 80);
         assertEquals(FastProto.parseFrom(compressed, Everything.class).toString(), everything.toString());
     }
 }

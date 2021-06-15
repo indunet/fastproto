@@ -1,18 +1,25 @@
+/*
+ * Copyright 2019-2021 indunet
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.indunet.fastproto;
 
-import lombok.SneakyThrows;
-import org.indunet.fastproto.annotation.type.AutoType;
-import org.indunet.fastproto.annotation.type.BooleanType;
 import org.indunet.fastproto.decoder.DecodeContext;
-import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.iot.tesla.Tesla;
 import org.junit.jupiter.api.Test;
 
-import java.io.UnsupportedEncodingException;
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -29,26 +36,5 @@ public class TypeAssistTest {
         List<DecodeContext> contexts = assist.toDecodeContexts(new byte[100]);
 
         assertNotNull(contexts);
-    }
-
-
-    @AutoType(10)
-    Boolean b;
-
-    @SneakyThrows
-    @Test
-    public void testAnnotation() {
-        AutoType auto = this.getClass().getDeclaredField("b").getAnnotation(AutoType.class);
-        BooleanType type = (BooleanType) Proxy.newProxyInstance(this.getClass().getClassLoader(), new Class[] {BooleanType.class}, (object, method, params) -> {
-            return Arrays.stream(auto.getClass().getMethods())
-                    .filter(m -> m.getName().equals(method.getName()))
-                    .findAny()
-                    .get()
-                    .invoke(auto);
-        });
-
-        System.out.println(type.value());
-        System.out.println(type.bitOffset());
-        System.out.println(type.MAX_BIT_OFFSET);
     }
 }

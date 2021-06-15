@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019-2021 indunet
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.indunet.fastproto;
 
 import lombok.*;
@@ -57,13 +73,6 @@ public class TypeAssist {
 
     protected TypeAssist() {
 
-    }
-
-    public <T> T getObject(Class<T> clazz) {
-        T object = (T) instance.get();
-        instance.remove();
-
-        return object;
     }
 
     public static TypeAssist of(Class<?> clazz) {
@@ -154,7 +163,7 @@ public class TypeAssist {
 
         if (typeAnnotation instanceof AutoType) {
             Class<? extends Annotation> typeAnnotationClass = ProtocolType.byAutoType(field.getType()).typeAnnotationClass;
-            return typeAnnotationClass.cast(Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[] {typeAnnotationClass},
+            return typeAnnotationClass.cast(Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{typeAnnotationClass},
                     (object, method, parameters) -> {
                         return Arrays.stream(typeAnnotation.getClass().getMethods())
                                 .filter(m -> m.getName().equals(method.getName()))
@@ -185,7 +194,6 @@ public class TypeAssist {
                 .map(t -> t.getAnnotation(Encoder.class))
                 .map(Encoder::value)
                 .orElse(null);
-
 
 
         Function<String, Class<? extends Function>> formula = name -> {
@@ -297,6 +305,13 @@ public class TypeAssist {
                 throw new CodecException(
                         MessageFormat.format(CodecException.CodecError.UNSUPPORTED_TYPE.getMessage(), name));
         }
+    }
+
+    public <T> T getObject(Class<T> clazz) {
+        T object = (T) instance.get();
+        instance.remove();
+
+        return object;
     }
 
     public boolean hasElement() {

@@ -7,26 +7,27 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto is a binary serialization & deserialization tool written in Java. 
-Different from other serialization tools, FastProto allows developers to accurately control the serialization process 
-through annotations, including byte offset, bit offset, data types, endianness,  reverse addressing, data transformation formulas.
+FastProto is a protocolized binary serialization & deserialization tool written in Java, which allows developers to 
+customize binary format through annotations. It solves the problem of cross-language and cross-platform data sharing 
+of Java in a new form, especially suitable for the field of Internet of Things(IoT).
 
-FastProto solves the problem of cross-language and cross-platform data exchange of Java in a new way, especially suitable for the field of Internet of Things.
+[formula]: https://github.com/indunet/fastproto/wiki/Conversion-Formula
+[kafka]: https://github.com/indunet/fastproto/wiki/Work-with-Kafka
 
 ## *Features*
 
 * Binary serialization & deserialization
-* Control the serialization process through annotations
-* Support all Java primitive data types and their wrapper classes
+* Support [decoding formula & encoding formula][formula]
+* Customize binary format through annotations
 * Support unsigned data types such as uint8, uint16, uint32 and uint64
 * Custom endianness(big endian or little endian), datagram reverse addressing
 * Support datagram compress and decompress(gzip, deflate)
 * AutoType, automatically infer all Java primitive data types and their wrapper classes when using `@AutoType`
+* Built-in [Kafka serializer & deserializer][kafka]
 
 ## *Under Developing*
 
 * Cyclic Redundancy Check(CRC8, CRC16, CRC32)
-* Kafka serializer & deserializer
 * Netty decoder & encoder
 
 ## *Maven*
@@ -35,7 +36,7 @@ FastProto solves the problem of cross-language and cross-platform data exchange 
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>1.4.1</version>
+    <version>1.5.2</version>
 </dependency>
 ```
 
@@ -44,19 +45,19 @@ FastProto solves the problem of cross-language and cross-platform data exchange 
 Imagine such an application, there is a monitoring device collecting weather data in realtime and sends it to 
 the weather station server in the form of binary datagram, the datagram protocol is as follows:
 
-| Byte Offset | Bit Offset | Data Type(C/C++)   | Signal Name       | Unit |
-|:-----------:|:----------:|:--------------:|:-----------------:|:----:|
-| 0           |            | unsigned char  | device id         |      |
-| 1           |            |                | reserved          |      |
-| 2-9         |            | long long      | time              |  ms  |
-| 10-11       |            | unsigned short | humidity          |  %RH |
-| 12-13       |            | short          | temperature       |  ℃  | 
-| 14-17       |            | unsigned int   | pressure          |  Pa  |
-| 18          | 0          | bool           | temperature valid |      |
-| 18          | 1          | bool           | humidity valid    |      |
-| 18          | 2          | bool           | pressure valid    |      |
-| 18          | 3-7        |                | reserved          |      |
-| 19          |            |                | reserved          |      |
+| Byte Offset | Bit Offset | Data Type(C/C++)   | Signal Name       | Unit |  Formula  |
+|:-----------:|:----------:|:--------------:|:-----------------:|:----:|:---------:|
+| 0           |            | unsigned char  | device id         |      |           |
+| 1           |            |                | reserved          |      |           |
+| 2-9         |            | long long      | time              |  ms  |           |
+| 10-11       |            | unsigned short | humidity          |  %RH |           |
+| 12-13       |            | short          | temperature       |  ℃  |            |
+| 14-17       |            | unsigned int   | pressure          |  Pa  | p * 0.1   |
+| 18          | 0          | bool           | temperature valid |      |           |
+| 18          | 1          | bool           | humidity valid    |      |           |
+| 18          | 2          | bool           | pressure valid    |      |           |
+| 18          | 3-7        |                | reserved          |      |           |
+| 19          |            |                | reserved          |      |           |
 
 The binary datagram contains 8 signals of different data types, define the Java data object and annotate it with FastProto
 annotations according to the above datagram protocol.
@@ -103,6 +104,48 @@ method, the second parameter is the datagram size.
 byte[] datagram = FastProto.toByteArray(weather, 20);
 ```
 
+Perhaps you have noticed that the pressure signal in the protocol table corresponds to a conversion formula, which 
+needs to be multiplied by 0.1, that is very common in IoT communications. In order to help developers reduce intermediate 
+steps, FastProto supports specifing decoding formulas and encoding formulas.
+
+First define a decoding conversion formula, which must implement the `java.lang.function.Function`.
+
+```java
+public class PressureDecodeFormula implements Function<Long, Double> {
+    @Override
+    public Double apply(Long value) {
+        return value * 0.1;
+    }
+}
+```
+
+Modify the annotation and data type of the pressure field.
+
+```
+@UInteger32Type(value = 14, afterDecode = DecodeSpeedFormula.class)
+double pressure;
+```
+
+An encoding formula is needed if serialize the object, which also need to 
+implement the `java.lang.function.Function`.
+
+```java
+public class PressureEncodeFormula implements Function<Double, Long> {
+    @Override
+    public Long apply(Double value) {
+        return (int) (value * 10);
+    }
+}
+```
+
+Modify the annotation of the pressure field.
+
+```
+@UInteger32Type(value = 14, afterDecode = PressureDecodeFormula.class, beforeEncode = PressureEncodeFormula.class)
+double pressure;
+```
+
+
 # *FastProto Annotations*
 
 FastProto's protocol type adopts Java naming rules. In addition to Java primitive data types and their wrapper classes, 
@@ -112,23 +155,23 @@ infer by the field type. Thinking of cross-platform data transmission, unsigned 
 
 | Annotation      | Java               | C/C++          | Size        |   AutoType |
 |:---------------:|:------------------:|:--------------:|:-----------:|:-----------:|
-| `@BooleanType`    | Boolean / boolean  | bool           | 1 bit       |  <font color=green>√</font>  |    
-| `@CharacterType`  | Character / char   | --             | 2 bytes     |  <font color=green>√</font>  |    
-| `@ByteType`       | Byte / byte        | char           | 1 byte      |  <font color=green>√</font>  |    
-| `@ShortType`      | Short / short      | short          | 2 bytes     |  <font color=green>√</font>  |    
-| `@IntegerType`    | Integer / int      | int            | 4 bytes     |  <font color=green>√</font>  |    
-| `@LongType`       | Long / long        | long long      | 8 bytes     |  <font color=green>√</font>  |    
-| `@FloatType`      | Float / float      | float          | 4 bytes     |  <font color=green>√</font>  |    
-| `@DoubleType`     | Double / double    | double         | 8 bytes     |  <font color=green>√</font>  |    
-| `@Integer8Type`   | Integer / int      | char           | 1 byte      |  <font color=red>×</font>  |    
-| `@Integer16Type`  | Integer / int      | short          | 2 bytes     |  <font color=red>×</font>  |    
-| `@UInteger8Type`  | Integer / int      | unsigned char  | 1 byte      |  <font color=red>×</font>  |    
-| `@UInteger16Type` | Integer / int      | unsigned short | 2 bytes     |  <font color=red>×</font>  |    
-| `@UInteger32Type` | Long / long        | unsigned long  | 4 bytes     |  <font color=red>×</font>  |    
-| `@UInteger64Type` | BigInteger        | unsigned long long | 8 bytes     |  <font color=red>√</font>  |    
-| `@BinaryType`     | byte[]             | char[]         | N bytes     |  <font color=green>√</font>  |    
-| `@StringType`     | java.lang.String   | --             | N bytes     |  <font color=green>√</font>  |    
-| `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 bytes |  <font color=green>√</font>  |    
+| `@BooleanType`    | Boolean / boolean  | bool           | 1 bit       |  √ |    
+| `@CharacterType`  | Character / char   | --             | 2 bytes     |  √  |    
+| `@ByteType`       | Byte / byte        | char           | 1 byte      |  √  |    
+| `@ShortType`      | Short / short      | short          | 2 bytes     |  √  |    
+| `@IntegerType`    | Integer / int      | int            | 4 bytes     |  √ |    
+| `@LongType`       | Long / long        | long long      | 8 bytes     |  √ |    
+| `@FloatType`      | Float / float      | float          | 4 bytes     |  √  |    
+| `@DoubleType`     | Double / double    | double         | 8 bytes     |  √ |    
+| `@Integer8Type`   | Integer / int      | char           | 1 byte      |  ×  |    
+| `@Integer16Type`  | Integer / int      | short          | 2 bytes     |  × |    
+| `@UInteger8Type`  | Integer / int      | unsigned char  | 1 byte      |  ×  |    
+| `@UInteger16Type` | Integer / int      | unsigned short | 2 bytes     |  × |    
+| `@UInteger32Type` | Long / long        | unsigned long  | 4 bytes     |  × |    
+| `@UInteger64Type` | BigInteger        | unsigned long long | 8 bytes  |  √ |    
+| `@BinaryType`     | byte[]             | char[]         | N bytes     |  √  |    
+| `@StringType`     | java.lang.String   | --             | N bytes     |  √ |    
+| `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 bytes |  √  |    
 
 In addition to protocol type annotations, FastProto also provides some annotation assistance to help developers control 
 the serialization process more accurately.
@@ -139,6 +182,7 @@ the serialization process more accurately.
 | `@DecodeIgnore` | Field        | Ignore the field when decoding.       |
 | `@EncodeIgnore` | Field        | Ignore the field when encoding.       |
 | `@EnableCompress` | Class        | Compress or decompress datagram, default as gzip. |
+| `@ProtocolVersion` | Class     |  Add protocol version to datagram and validate when deserializing  |
 
 # *Performance Test*
 
@@ -160,7 +204,7 @@ The length of the test message is 128 bytes, and the test data object contains 4
 FastProto is released under the [Apache 2.0 license](license).
 
 ```
-Copyright 1999-2020 indunet.org group Holding Ltd.
+Copyright 2019-2021 indunet
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
