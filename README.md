@@ -11,8 +11,8 @@ FastProto is a protocolized binary serialization & deserialization tool written 
 customize binary format through annotations. It solves the problem of cross-language and cross-platform data sharing 
 of Java in a new form, especially suitable for the field of Internet of Things(IoT).
 
-[formula]: [https://github.com/indunet/fastproto/wiki/Conversion-Formula]
-[kafka]: [https://github.com/indunet/fastproto/wiki/Work-with-Kafka]
+[formula]: https://github.com/indunet/fastproto/wiki/Conversion-Formula
+[kafka]: https://github.com/indunet/fastproto/wiki/Work-with-Kafka
 
 ## *Features*
 
