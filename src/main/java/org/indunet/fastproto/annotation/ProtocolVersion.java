@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto;
+package org.indunet.fastproto.annotation;
 
-import org.indunet.fastproto.decoder.DecodeContext;
-import org.indunet.fastproto.iot.tesla.Tesla;
-import org.junit.jupiter.api.Test;
+import org.indunet.fastproto.ProtocolType;
 
-import java.util.List;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
  * @author Deng Ran
- * @see TypeAssist
- * @since 1.0.0
+ * @since 1.5.3
  */
-public class TypeAssistTest {
-    @Test
-    public void testOf() {
-        TypeAssist assist = TypeAssist.of(Tesla.class);
-        List<DecodeContext> contexts = assist.toDecodeContexts(new byte[100]);
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface ProtocolVersion {
+    int value();
 
-        assertNotNull(contexts);
-    }
+    int version();
+
+    ProtocolType protocolType() default ProtocolType.UINTEGER16;
 }
