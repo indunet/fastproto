@@ -11,16 +11,19 @@ FastProto is a protocolized binary serialization & deserialization tool written 
 customize binary format through annotations. It solves the problem of cross-language and cross-platform data sharing 
 of Java in a new form, especially suitable for the field of Internet of Things(IoT).
 
+[formula]: [https://github.com/indunet/fastproto/wiki/Conversion-Formula]
+[kafka]: [https://github.com/indunet/fastproto/wiki/Work-with-Kafka]
+
 ## *Features*
 
 * Binary serialization & deserialization
-* Control the serialization process through annotations
-* Support all Java primitive data types and their wrapper classes
+* Support [decoding formula & encoding formula][formula]
+* Customize binary format through annotations
 * Support unsigned data types such as uint8, uint16, uint32 and uint64
 * Custom endianness(big endian or little endian), datagram reverse addressing
 * Support datagram compress and decompress(gzip, deflate)
 * AutoType, automatically infer all Java primitive data types and their wrapper classes when using `@AutoType`
-* Kafka serializer & deserializer
+* Built-in [Kafka serializer & deserializer][kafka]
 
 ## *Under Developing*
 
@@ -119,7 +122,7 @@ public class PressureDecodeFormula implements Function<Long, Double> {
 Modify the annotation and data type of the pressure field.
 
 ```
-@UInteger32Type(value = 14, afterDecode = DecodeSpeedFormula.class, beforeEncode = EncodeSpeedFormula.class)
+@UInteger32Type(value = 14, afterDecode = DecodeSpeedFormula.class)
 double pressure;
 ```
 
@@ -135,7 +138,7 @@ public class PressureEncodeFormula implements Function<Double, Long> {
 }
 ```
 
-Modify the annotation and data type of the pressure field.
+Modify the annotation of the pressure field.
 
 ```
 @UInteger32Type(value = 14, afterDecode = PressureDecodeFormula.class, beforeEncode = PressureEncodeFormula.class)
