@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019-2021 indunet
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.indunet.fastproto;
 
 import lombok.NonNull;
@@ -8,6 +24,8 @@ import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.Decoders;
 import org.indunet.fastproto.encoder.EncodeContext;
 import org.indunet.fastproto.encoder.Encoders;
+import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodeException.DecodeError;
 
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,19 +56,25 @@ public class FastProto {
      * Convert binary datagram into object.
      *
      * @param datagram       binary message
-     * @param clazz          deserialized object
+     * @param protocolClass  deserialize object
      * @param enableCompress enable compress or not
      * @return object.
      */
-    public static <T> T parseFrom(@NonNull byte[] datagram, @NonNull Class<T> clazz, boolean enableCompress) {
-        if (enableCompress && clazz.isAnnotationPresent(EnableCompress.class)) {
-            val compress = clazz.getAnnotation(EnableCompress.class);
+    public static <T> T parseFrom(@NonNull byte[] datagram, @NonNull Class<T> protocolClass, boolean enableCompress) {
+        if (enableCompress && protocolClass.isAnnotationPresent(EnableCompress.class)) {
+            val compress = protocolClass.getAnnotation(EnableCompress.class);
             val compressor = CompressorFactory.create(compress);
 
             datagram = compressor.decompress(datagram);
         }
 
-        TypeAssist assist = assists.computeIfAbsent(clazz, c -> TypeAssist.of(c));
+        // Protocol version.
+        if (VersionAssist.validate(datagram, protocolClass) == false) {
+            throw new DecodeException(DecodeError.PROTOCOL_VERSION_NOT_MATCH);
+        }
+
+
+        TypeAssist assist = assists.computeIfAbsent(protocolClass, c -> TypeAssist.of(c));
         List<DecodeContext> contexts = assist.toDecodeContexts(datagram);
 
         contexts.parallelStream()
@@ -64,7 +88,7 @@ public class FastProto {
                     a.setValue(o, value);
                 });
 
-        return assist.getObject(clazz);
+        return assist.getObject(protocolClass);
     }
 
     /**
@@ -103,6 +127,9 @@ public class FastProto {
                     Consumer<EncodeContext> consumer = Encoders.getEncoder(c.getTypeAssist().getEncoderClass());
                     consumer.accept(c);
                 });
+
+        // Protocol version.
+        VersionAssist.encode(datagram, object.getClass());
 
         if (enableCompress && object.getClass().isAnnotationPresent(EnableCompress.class)) {
             val annotation = object.getClass().getAnnotation(EnableCompress.class);
