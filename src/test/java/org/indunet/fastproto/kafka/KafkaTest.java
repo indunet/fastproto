@@ -44,21 +44,21 @@ public class KafkaTest {
 
     @Test
     public void testKafka() {
-        Properties props = new Properties();
+        Properties producerConfig = new Properties();
+        producerConfig.put("bootstrap.servers", sharedKafkaTestResource.getKafkaConnectString());
+        producerConfig.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+        producerConfig.put("value.serializer", ProtoKafkaConfig.SERIALIZER_NAME_VALUE);
+        producerConfig.put(ProtoKafkaConfig.PROTOCOL_CLASS_KEY, Weather.class);
+        producerConfig.put(ProtoKafkaConfig.DATAGRAM_LENGTH_KEY, 26);
 
-        props.put("bootstrap.servers", sharedKafkaTestResource.getKafkaConnectString());
-        props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("value.serializer", ProtoKafkaConfig.SERIALIZER_NAME_VALUE);
+        Properties consumerConfig = new Properties();
+        consumerConfig.put("bootstrap.servers", sharedKafkaTestResource.getKafkaConnectString());
+        consumerConfig.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        consumerConfig.put("value.deserializer", ProtoKafkaConfig.DESERIALIZER_NAME_VALUE);
+        consumerConfig.put("group.id", "1");
+        consumerConfig.put(ProtoKafkaConfig.PROTOCOL_CLASS_KEY, Weather.class);
 
-        props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put("value.deserializer", ProtoKafkaConfig.DESERIALIZER_NAME_VALUE);
-        props.put("group.id", "1");
-
-        props.put(ProtoKafkaConfig.PROTOCOL_CLASS_KEY, Weather.class);
-        props.put(ProtoKafkaConfig.DATAGRAM_LENGTH_KEY, 26);
-
-        val producer = new KafkaProducer<String, Weather>(props);
-        val consumer = new KafkaConsumer<String, Weather>(props);
+        val producer = new KafkaProducer<String, Weather>(producerConfig);
         Weather weather = Weather.builder()
                 .id(101)
                 .time(new Timestamp(System.currentTimeMillis()))
@@ -84,8 +84,8 @@ public class KafkaTest {
         Thread thread = new Thread(task);
         thread.start();
 
+        val consumer = new KafkaConsumer<String, Weather>(consumerConfig);
         consumer.subscribe(Collections.singletonList("fastproto.weather"));
-
         ConsumerRecords<String, Weather> records = consumer.poll(Duration.ofSeconds(10));
         consumer.commitSync();
 
