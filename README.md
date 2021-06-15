@@ -91,7 +91,7 @@ public class Weather {
 ```
 Deserialize the binary datagram into Java data object through `FastProto::parseFrom()` method.
 
-```
+```java
 byte[] datagram = ...   // Datagram sent by monitoring device.
 
 Weather weather = FastProto.parseFrom(datagram, Weather.class);
@@ -100,7 +100,7 @@ Weather weather = FastProto.parseFrom(datagram, Weather.class);
 The serialization process is similar, serialize the Java data object into binary datagram through `FastProto::toByteArray()` 
 method, the second parameter is the datagram size.
 
-```
+```java
 byte[] datagram = FastProto.toByteArray(weather, 20);
 ```
 
@@ -121,7 +121,7 @@ public class PressureDecodeFormula implements Function<Long, Double> {
 
 Modify the annotation and data type of the pressure field.
 
-```
+```java
 @UInteger32Type(value = 14, afterDecode = DecodeSpeedFormula.class)
 double pressure;
 ```
@@ -140,11 +140,10 @@ public class PressureEncodeFormula implements Function<Double, Long> {
 
 Modify the annotation of the pressure field.
 
-```
+```java
 @UInteger32Type(value = 14, afterDecode = PressureDecodeFormula.class, beforeEncode = PressureEncodeFormula.class)
 double pressure;
 ```
-
 
 # *FastProto Annotations*
 
