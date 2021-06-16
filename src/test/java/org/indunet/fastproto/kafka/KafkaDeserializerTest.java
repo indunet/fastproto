@@ -89,7 +89,7 @@ public class KafkaDeserializerTest {
         props.forEach((key, value) -> map.put(key.toString(), value));
 
 
-        assertThrows(ProtoKafkaException.class,  () -> serializer.configure(map, false));
+        assertThrows(ProtoKafkaException.class, () -> serializer.configure(map, false));
 
     }
 }

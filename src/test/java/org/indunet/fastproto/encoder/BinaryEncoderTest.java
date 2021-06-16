@@ -45,10 +45,10 @@ public class BinaryEncoderTest {
 
     public static List<Arguments> testEncode1() {
         return Stream.of(
-                Arguments.arguments(new byte[4], 0, -1, new byte[] {1, 2, 3, 4}, new byte[] {1, 2, 3, 4}),
-                Arguments.arguments(new byte[6], 2, 3, new byte[] {1, 2, 3, 4}, new byte[] {0, 0, 1, 2, 3, 0}),
-                Arguments.arguments(new byte[8], 4, -1, new byte[] {1, 2, 3, 4}, new byte[] {0, 0, 0, 0, 1, 2, 3, 4}),
-                Arguments.arguments(new byte[8], -4, -1, new byte[] {1, 2, 3, 4}, new byte[] {0, 0, 0, 0, 1, 2, 3, 4})
+                Arguments.arguments(new byte[4], 0, -1, new byte[]{1, 2, 3, 4}, new byte[]{1, 2, 3, 4}),
+                Arguments.arguments(new byte[6], 2, 3, new byte[]{1, 2, 3, 4}, new byte[]{0, 0, 1, 2, 3, 0}),
+                Arguments.arguments(new byte[8], 4, -1, new byte[]{1, 2, 3, 4}, new byte[]{0, 0, 0, 0, 1, 2, 3, 4}),
+                Arguments.arguments(new byte[8], -4, -1, new byte[]{1, 2, 3, 4}, new byte[]{0, 0, 0, 0, 1, 2, 3, 4})
         ).collect(Collectors.toList());
     }
 

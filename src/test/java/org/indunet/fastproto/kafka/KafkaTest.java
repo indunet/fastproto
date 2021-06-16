@@ -23,7 +23,6 @@ import org.apache.kafka.clients.consumer.KafkaConsumer;
 import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.indunet.fastproto.iot.Weather;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.RegisterExtension;
 
@@ -32,7 +31,7 @@ import java.time.Duration;
 import java.util.Collections;
 import java.util.Properties;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Deng Ran
@@ -92,7 +91,6 @@ public class KafkaTest {
         if (!records.isEmpty()) {
             for (val r : records) {
                 assertEquals(r.value().toString(), weather.toString());
-                break;
             }
         }
 

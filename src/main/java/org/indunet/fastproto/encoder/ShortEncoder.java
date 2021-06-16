@@ -26,8 +26,8 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
  * Short type encoder.
  *
  * @author Deng Ran
- * @since 1.0.0
  * @see TypeEncoder
+ * @since 1.0.0
  */
 public class ShortEncoder implements TypeEncoder {
     @Override

@@ -25,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class IntegerDecoderTest {
     IntegerDecoder decoder = new IntegerDecoder();
-    private byte[] datagram = {0, 1, 0, 1, -1, -1, -1, -1};
+    private final byte[] datagram = {0, 1, 0, 1, -1, -1, -1, -1};
 
     @Test
     public void testDecode1() {

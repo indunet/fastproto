@@ -24,8 +24,8 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
  * Boolean type encoder.
  *
  * @author Deng Ran
- * @since 1.0.0
  * @see TypeEncoder,BooleanType
+ * @since 1.0.0
  */
 public class BooleanEncoder implements TypeEncoder {
     @Override

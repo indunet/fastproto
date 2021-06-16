@@ -26,7 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FloatDecoderTest {
     FloatDecoder decoder = new FloatDecoder();
-    float pi = 3.141f, e = 2.718f;
+    float pi = 3.141f;
+    float e = 2.718f;
 
     @Test
     public void testDecode1() {

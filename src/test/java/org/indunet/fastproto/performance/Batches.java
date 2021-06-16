@@ -16,8 +16,6 @@
 
 package org.indunet.fastproto.performance;
 
-import org.indunet.fastproto.annotation.type.IntegerType;
-
 /**
  * @author Deng Ran
  * @since 1.4.0

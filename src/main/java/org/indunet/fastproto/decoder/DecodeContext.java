@@ -24,7 +24,7 @@ import org.indunet.fastproto.TypeAssist;
 import java.lang.annotation.Annotation;
 
 /**
- *  The context of type decoder.
+ * The context of type decoder.
  *
  * @author Deng Ran
  * @since 1.0.0

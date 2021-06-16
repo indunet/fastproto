@@ -22,7 +22,6 @@ import org.indunet.fastproto.annotation.type.BooleanType;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
-import java.util.function.Consumer;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;

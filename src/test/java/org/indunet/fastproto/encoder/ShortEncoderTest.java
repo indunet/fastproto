@@ -35,10 +35,10 @@ public class ShortEncoderTest {
     public void testEncode1() {
         val datagram = new byte[4];
 
-        this.encoder.encode(datagram, 0, EndianPolicy.BIG, (short )0x0102);
-        this.encoder.encode(datagram, 2 - datagram.length, EndianPolicy.LITTLE, (short ) 0x0304);
+        this.encoder.encode(datagram, 0, EndianPolicy.BIG, (short) 0x0102);
+        this.encoder.encode(datagram, 2 - datagram.length, EndianPolicy.LITTLE, (short) 0x0304);
 
-        val cache = new byte[] {1, 2, 4, 3};
+        val cache = new byte[]{1, 2, 4, 3};
         assertArrayEquals(datagram, cache);
     }
 

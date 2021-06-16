@@ -16,7 +16,6 @@
 
 package org.indunet.fastproto;
 
-import lombok.val;
 import org.indunet.fastproto.annotation.Endian;
 import org.indunet.fastproto.annotation.ProtocolVersion;
 import org.indunet.fastproto.exception.DecodeException;
@@ -69,7 +68,7 @@ public class VersionAssist {
     }
 
     public static void encode(byte[] datagram, Class<?> protocolClass) {
-        if (protocolClass.isAnnotationPresent(ProtocolVersion.class) == false) {
+        if (!protocolClass.isAnnotationPresent(ProtocolVersion.class)) {
             return;
         }
 

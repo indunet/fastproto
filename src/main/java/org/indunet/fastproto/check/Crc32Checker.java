@@ -1,7 +1,5 @@
 package org.indunet.fastproto.check;
 
-import java.util.zip.Checksum;
-
 /**
  * @author Deng Ran
  * @since 1.6.0

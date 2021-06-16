@@ -26,7 +26,6 @@ import org.indunet.fastproto.exception.CodecException;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.function.Predicate;
 
 /**
  * @author Deng Ran
