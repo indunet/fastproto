@@ -38,22 +38,22 @@ public class ShortDecoder implements TypeDecoder<Short> {
     }
 
     public short decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {
-        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
-        if (byteOffset < 0) {
+        if (bo < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
-        } else if (byteOffset + ShortType.SIZE > datagram.length) {
+        } else if (bo + ShortType.SIZE > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         short value = 0;
 
         if (endian == EndianPolicy.LITTLE) {
-            value |= (datagram[byteOffset] & 0x00FF);
-            value |= (datagram[byteOffset + 1] << 8);
+            value |= (datagram[bo] & 0x00FF);
+            value |= (datagram[bo + 1] << 8);
         } else if (endian == EndianPolicy.BIG) {
-            value |= (datagram[byteOffset + 1] & 0x00FF);
-            value |= (datagram[byteOffset] << 8);
+            value |= (datagram[bo + 1] & 0x00FF);
+            value |= (datagram[bo] << 8);
         }
 
         return value;

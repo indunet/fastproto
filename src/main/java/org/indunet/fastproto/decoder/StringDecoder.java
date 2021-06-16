@@ -40,24 +40,24 @@ public class StringDecoder implements TypeDecoder<String> {
     }
 
     public String decode(@NonNull byte[] datagram, int byteOffset, int length, @NonNull Charset charset) {
-        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
-        if (byteOffset < 0) {
+        if (bo < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
         } else if (length < -1) {
             throw new DecodeException(DecodeError.ILLEGAL_PARAMETER);
-        } else if (length == -1 && byteOffset >= datagram.length) {
+        } else if (length == -1 && bo >= datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
-        } else if (length != -1 && byteOffset + length > datagram.length) {
+        } else if (length != -1 && bo + length > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         if (length == -1) {
             return new String(
-                    Arrays.copyOfRange(datagram, byteOffset, datagram.length - byteOffset), charset);
+                    Arrays.copyOfRange(datagram, bo, datagram.length - bo), charset);
         } else {
             return new String(
-                    Arrays.copyOfRange(datagram, byteOffset, byteOffset + length), charset);
+                    Arrays.copyOfRange(datagram, bo, bo + length), charset);
         }
     }
 }

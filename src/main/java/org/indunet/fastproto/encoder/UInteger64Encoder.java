@@ -41,11 +41,11 @@ public class UInteger64Encoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull EndianPolicy policy, BigInteger value) {
-        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
-        if (byteOffset < 0) {
+        if (bo < 0) {
             throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
-        } else if (byteOffset + LongType.SIZE > datagram.length) {
+        } else if (bo + LongType.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         } else if (value.compareTo(UInteger64Type.MAX_VALUE) > 0 || value.compareTo(UInteger64Type.MIN_VALUE) < 0) {
             throw new EncodeException(
@@ -60,25 +60,25 @@ public class UInteger64Encoder implements TypeEncoder {
                 .longValueExact();
 
         if (policy == EndianPolicy.BIG) {
-            datagram[byteOffset + 7] = (byte) (low & 0xFFL);
-            datagram[byteOffset + 6] = (byte) (low >> 8 & 0xFFL);
-            datagram[byteOffset + 5] = (byte) (low >> 16 & 0xFFL);
-            datagram[byteOffset + 4] = (byte) (low >> 24 & 0xFFL);
+            datagram[bo + 7] = (byte) (low & 0xFFL);
+            datagram[bo + 6] = (byte) (low >> 8 & 0xFFL);
+            datagram[bo + 5] = (byte) (low >> 16 & 0xFFL);
+            datagram[bo + 4] = (byte) (low >> 24 & 0xFFL);
 
-            datagram[byteOffset + 3] = (byte) (high & 0xFFL);
-            datagram[byteOffset + 2] = (byte) (high >> 8 & 0xFFL);
-            datagram[byteOffset + 1] = (byte) (high >> 16 & 0xFFL);
-            datagram[byteOffset] = (byte) (high >> 24 & 0xFFL);
+            datagram[bo + 3] = (byte) (high & 0xFFL);
+            datagram[bo + 2] = (byte) (high >> 8 & 0xFFL);
+            datagram[bo + 1] = (byte) (high >> 16 & 0xFFL);
+            datagram[bo] = (byte) (high >> 24 & 0xFFL);
         } else {
-            datagram[byteOffset] = (byte) (low & 0xFFL);
-            datagram[byteOffset + 1] = (byte) (low >> 8 & 0xFFL);
-            datagram[byteOffset + 2] = (byte) (low >> 16 & 0xFFL);
-            datagram[byteOffset + 3] = (byte) (low >> 24 & 0xFFL);
+            datagram[bo] = (byte) (low & 0xFFL);
+            datagram[bo + 1] = (byte) (low >> 8 & 0xFFL);
+            datagram[bo + 2] = (byte) (low >> 16 & 0xFFL);
+            datagram[bo + 3] = (byte) (low >> 24 & 0xFFL);
 
-            datagram[byteOffset + 4] = (byte) (high & 0xFFL);
-            datagram[byteOffset + 5] = (byte) (high >> 8 & 0xFFL);
-            datagram[byteOffset + 6] = (byte) (high >> 16 & 0xFFL);
-            datagram[byteOffset + 7] = (byte) (high >> 24 & 0xFFL);
+            datagram[bo + 4] = (byte) (high & 0xFFL);
+            datagram[bo + 5] = (byte) (high >> 8 & 0xFFL);
+            datagram[bo + 6] = (byte) (high >> 16 & 0xFFL);
+            datagram[bo + 7] = (byte) (high >> 24 & 0xFFL);
         }
     }
 }

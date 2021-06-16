@@ -38,26 +38,26 @@ public class BinaryDecoder implements TypeDecoder<byte[]> {
     }
 
     public byte[] decode(@NonNull final byte[] datagram, int byteOffset, int length) {
-        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
         // length = length >= 0 ? length : datagram.length + length;
 
-        if (byteOffset < 0) {
+        if (bo < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
         } else if (length < -1) {
             throw new DecodeException(DecodeError.ILLEGAL_PARAMETER);
-        } else if (length == -1 && byteOffset >= datagram.length) {
+        } else if (length == -1 && bo >= datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
-        } else if (length != -1 && byteOffset + length > datagram.length) {
+        } else if (length != -1 && bo + length > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         if (length == -1) {
-            length = datagram.length - byteOffset;
+            length = datagram.length - bo;
         }
 
         val bytes = new byte[length];
 
-        System.arraycopy(datagram, byteOffset, bytes, 0, length);
+        System.arraycopy(datagram, bo, bytes, 0, length);
         return bytes;
     }
 }

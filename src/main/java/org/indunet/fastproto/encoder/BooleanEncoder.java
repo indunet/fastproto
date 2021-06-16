@@ -37,20 +37,20 @@ public class BooleanEncoder implements TypeEncoder {
     }
 
     public void encode(byte[] datagram, int byteOffset, int bitOffset, boolean value) {
-        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
-        if (byteOffset < 0) {
+        if (bo < 0) {
             throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
-        } else if (byteOffset >= datagram.length) {
+        } else if (bo >= datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         } else if (bitOffset < BooleanType.MIN_BIT_OFFSET || bitOffset > BooleanType.MAX_BIT_OFFSET) {
             throw new EncodeException(EncodeError.ILLEGAL_BIT_OFFSET);
         }
 
         if (value) {
-            datagram[byteOffset] |= (0x01 << bitOffset);
+            datagram[bo] |= (0x01 << bitOffset);
         } else {
-            datagram[byteOffset] &= ~(0x01 << bitOffset);
+            datagram[bo] &= ~(0x01 << bitOffset);
         }
     }
 }

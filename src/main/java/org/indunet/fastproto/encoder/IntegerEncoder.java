@@ -39,24 +39,24 @@ public class IntegerEncoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull EndianPolicy policy, int value) {
-        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
-        if (byteOffset < 0) {
+        if (bo < 0) {
             throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
-        } else if (byteOffset + IntegerType.SIZE > datagram.length) {
+        } else if (bo + IntegerType.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         if (policy == EndianPolicy.LITTLE) {
-            datagram[byteOffset] = (byte) (value & 0xFF);
-            datagram[byteOffset + 1] = (byte) (value >> 8 & 0xFF);
-            datagram[byteOffset + 2] = (byte) (value >> 16 & 0xFF);
-            datagram[byteOffset + 3] = (byte) (value >> 24 & 0xFF);
+            datagram[bo] = (byte) (value & 0xFF);
+            datagram[bo + 1] = (byte) (value >> 8 & 0xFF);
+            datagram[bo + 2] = (byte) (value >> 16 & 0xFF);
+            datagram[bo + 3] = (byte) (value >> 24 & 0xFF);
         } else if (policy == EndianPolicy.BIG) {
-            datagram[byteOffset + 3] = (byte) (value & 0xFF);
-            datagram[byteOffset + 2] = (byte) (value >> 8 & 0xFF);
-            datagram[byteOffset + 1] = (byte) (value >> 16 & 0xFF);
-            datagram[byteOffset] = (byte) (value >> 24 & 0xFF);
+            datagram[bo + 3] = (byte) (value & 0xFF);
+            datagram[bo + 2] = (byte) (value >> 8 & 0xFF);
+            datagram[bo + 1] = (byte) (value >> 16 & 0xFF);
+            datagram[bo] = (byte) (value >> 24 & 0xFF);
         }
     }
 }

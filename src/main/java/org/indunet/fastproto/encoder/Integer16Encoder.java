@@ -42,11 +42,11 @@ public class Integer16Encoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull EndianPolicy policy, int value) {
-        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
-        if (byteOffset < 0) {
+        if (bo < 0) {
             throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
-        } else if (byteOffset + Integer16Type.SIZE > datagram.length) {
+        } else if (bo + Integer16Type.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         } else if (value > Integer16Type.MAX_VALUE || value < Integer16Type.MIN_VALUE) {
             throw new EncodeException(
@@ -54,11 +54,11 @@ public class Integer16Encoder implements TypeEncoder {
         }
 
         if (policy == EndianPolicy.BIG) {
-            datagram[byteOffset + 1] = (byte) (value & 0xFF);
-            datagram[byteOffset] = (byte) (value >> 8 & 0xFF);
+            datagram[bo + 1] = (byte) (value & 0xFF);
+            datagram[bo] = (byte) (value >> 8 & 0xFF);
         } else {
-            datagram[byteOffset] = (byte) (value & 0xFF);
-            datagram[byteOffset + 1] = (byte) (value >> 8 & 0xFF);
+            datagram[bo] = (byte) (value & 0xFF);
+            datagram[bo + 1] = (byte) (value >> 8 & 0xFF);
         }
     }
 }

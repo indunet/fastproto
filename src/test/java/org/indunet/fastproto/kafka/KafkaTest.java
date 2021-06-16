@@ -89,12 +89,10 @@ public class KafkaTest {
         ConsumerRecords<String, Weather> records = consumer.poll(Duration.ofSeconds(10));
         consumer.commitSync();
 
-        if (records.isEmpty()) {
-            assertTrue(false);
-        } else {
+        if (!records.isEmpty()) {
             for (val r : records) {
                 assertEquals(r.value().toString(), weather.toString());
-                return;
+                break;
             }
         }
 

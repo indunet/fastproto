@@ -41,36 +41,36 @@ public class UInteger64Decoder implements TypeDecoder<BigInteger> {
     }
 
     public BigInteger decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {
-        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
-        if (byteOffset < 0) {
+        if (bo < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
-        } else if (byteOffset + UInteger64Type.SIZE > datagram.length) {
+        } else if (bo + UInteger64Type.SIZE > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         long low = 0, high = 0;
 
         if (endian == EndianPolicy.LITTLE) {
-            low |= (datagram[byteOffset] & 0xFF);
-            low |= ((datagram[byteOffset + 1] & 0xFFL) << 8);
-            low |= ((datagram[byteOffset + 2] & 0xFFL) << 16);
-            low |= ((datagram[byteOffset + 3] & 0xFFL) << 24);
+            low |= (datagram[bo] & 0xFF);
+            low |= ((datagram[bo + 1] & 0xFFL) << 8);
+            low |= ((datagram[bo + 2] & 0xFFL) << 16);
+            low |= ((datagram[bo + 3] & 0xFFL) << 24);
 
-            high |= (datagram[byteOffset + 4] & 0xFFL);
-            high |= ((datagram[byteOffset + 5] & 0xFFL) << 8);
-            high |= ((datagram[byteOffset + 6] & 0xFFL) << 16);
-            high |= ((datagram[byteOffset + 7] & 0xFFL) << 24);
+            high |= (datagram[bo + 4] & 0xFFL);
+            high |= ((datagram[bo + 5] & 0xFFL) << 8);
+            high |= ((datagram[bo + 6] & 0xFFL) << 16);
+            high |= ((datagram[bo + 7] & 0xFFL) << 24);
         } else if (endian == EndianPolicy.BIG) {
-            low |= (datagram[byteOffset + 7] & 0xFF);
-            low |= ((datagram[byteOffset + 6] & 0xFFL) << 8);
-            low |= ((datagram[byteOffset + 5] & 0xFFL) << 16);
-            low |= ((datagram[byteOffset + 4] & 0xFFL) << 24);
+            low |= (datagram[bo + 7] & 0xFF);
+            low |= ((datagram[bo + 6] & 0xFFL) << 8);
+            low |= ((datagram[bo + 5] & 0xFFL) << 16);
+            low |= ((datagram[bo + 4] & 0xFFL) << 24);
 
-            high |= (datagram[byteOffset + 3] & 0xFFL);
-            high |= ((datagram[byteOffset + 2] & 0xFFL) << 8);
-            high |= ((datagram[byteOffset + 1] & 0xFFL) << 16);
-            high |= ((datagram[byteOffset] & 0xFFL) << 24);
+            high |= (datagram[bo + 3] & 0xFFL);
+            high |= ((datagram[bo + 2] & 0xFFL) << 8);
+            high |= ((datagram[bo + 1] & 0xFFL) << 16);
+            high |= ((datagram[bo] & 0xFFL) << 24);
         }
 
         return new BigInteger(String.valueOf(high))
