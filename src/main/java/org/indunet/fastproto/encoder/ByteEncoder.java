@@ -39,14 +39,14 @@ public class ByteEncoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, byte value) {
-        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
-        if (byteOffset < 0) {
+        if (bo < 0) {
             throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
-        } else if (byteOffset + ByteType.SIZE > datagram.length) {
+        } else if (bo + ByteType.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
-        datagram[byteOffset] = value;
+        datagram[bo] = value;
     }
 }

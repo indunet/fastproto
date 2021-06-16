@@ -49,24 +49,24 @@ public class TimestampDecoder implements TypeDecoder<Timestamp> {
     }
 
     public Timestamp decode(@NonNull final byte[] datagram, int byteOffset, @NonNull ProtocolType dataType, @NonNull EndianPolicy policy, @NonNull TimeUnit unit) {
-        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
-        if (byteOffset < 0) {
+        if (bo < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
         } else if (dataType == ProtocolType.LONG && unit == TimeUnit.MILLISECONDS) {
-            if (byteOffset + LongType.SIZE > datagram.length) {
+            if (bo + LongType.SIZE > datagram.length) {
                 throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
             }
 
-            val value = DecodeUtils.longType(datagram, byteOffset, policy);
+            val value = DecodeUtils.longType(datagram, bo, policy);
 
             return new Timestamp(value);
         } else if (dataType == ProtocolType.UINTEGER32 && unit == TimeUnit.SECONDS) {
-            if (byteOffset + UInteger32Type.SIZE > datagram.length) {
+            if (bo + UInteger32Type.SIZE > datagram.length) {
                 throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
             }
 
-            val value = DecodeUtils.uInteger32Type(datagram, byteOffset, policy);
+            val value = DecodeUtils.uInteger32Type(datagram, bo, policy);
 
             return new Timestamp(value * 1000);
         } else {

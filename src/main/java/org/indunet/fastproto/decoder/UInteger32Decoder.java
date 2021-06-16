@@ -39,26 +39,26 @@ public class UInteger32Decoder implements TypeDecoder<Long> {
     }
 
     public long decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy policy) {
-        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
-        if (byteOffset < 0) {
+        if (bo < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
-        } else if (byteOffset + UInteger32Type.SIZE > datagram.length) {
+        } else if (bo + UInteger32Type.SIZE > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         long value = 0;
 
         if (policy == EndianPolicy.LITTLE) {
-            value |= (datagram[byteOffset] & 0xFF);
-            value |= ((datagram[byteOffset + 1] & 0xFFL) << 8);
-            value |= ((datagram[byteOffset + 2] & 0xFFL) << 16);
-            value |= ((datagram[byteOffset + 3] & 0xFFL) << 24);
+            value |= (datagram[bo] & 0xFF);
+            value |= ((datagram[bo + 1] & 0xFFL) << 8);
+            value |= ((datagram[bo + 2] & 0xFFL) << 16);
+            value |= ((datagram[bo + 3] & 0xFFL) << 24);
         } else if (policy == EndianPolicy.BIG) {
-            value |= (datagram[byteOffset + 3] & 0xFF);
-            value |= ((datagram[byteOffset + 2] & 0xFFL) << 8);
-            value |= ((datagram[byteOffset + 1] & 0xFFL) << 16);
-            value |= ((datagram[byteOffset] & 0xFFL) << 24);
+            value |= (datagram[bo + 3] & 0xFF);
+            value |= ((datagram[bo + 2] & 0xFFL) << 8);
+            value |= ((datagram[bo + 1] & 0xFFL) << 16);
+            value |= ((datagram[bo] & 0xFFL) << 24);
         }
 
         return value;

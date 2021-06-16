@@ -37,14 +37,14 @@ public class ByteDecoder implements TypeDecoder<Byte> {
     }
 
     public byte decode(@NonNull final byte[] datagram, int byteOffset) {
-        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
-        if (byteOffset < 0) {
+        if (bo < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
-        } else if (byteOffset + ByteType.SIZE > datagram.length) {
+        } else if (bo + ByteType.SIZE > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
-        return datagram[byteOffset];
+        return datagram[bo];
     }
 }

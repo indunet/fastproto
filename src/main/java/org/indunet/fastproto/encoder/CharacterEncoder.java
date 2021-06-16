@@ -39,20 +39,20 @@ public class CharacterEncoder implements TypeEncoder {
     }
 
     public void encode(byte[] datagram, int byteOffset, EndianPolicy policy, char value) {
-        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
-        if (byteOffset < 0) {
+        if (bo < 0) {
             throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
-        } else if (byteOffset + CharacterType.SIZE > datagram.length) {
+        } else if (bo + CharacterType.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         if (policy == EndianPolicy.BIG) {
-            datagram[byteOffset] |= (value >> 8 & 0xFF);
-            datagram[byteOffset + 1] |= (value & 0xFF);
+            datagram[bo] |= (value >> 8 & 0xFF);
+            datagram[bo + 1] |= (value & 0xFF);
         } else {
-            datagram[byteOffset + 1] |= (value >> 8 & 0xFF);
-            datagram[byteOffset] |= (value & 0xFF);
+            datagram[bo + 1] |= (value >> 8 & 0xFF);
+            datagram[bo] |= (value & 0xFF);
         }
     }
 }

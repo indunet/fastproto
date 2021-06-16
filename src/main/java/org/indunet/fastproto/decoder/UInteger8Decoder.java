@@ -37,14 +37,14 @@ public class UInteger8Decoder implements TypeDecoder<Integer> {
     }
 
     public int decode(@NonNull final byte[] datagram, int byteOffset) {
-        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
-        if (byteOffset < 0) {
+        if (bo < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
-        } else if (byteOffset + UInteger8Type.SIZE > datagram.length) {
+        } else if (bo + UInteger8Type.SIZE > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
-        return datagram[byteOffset] & 0xFF;
+        return datagram[bo] & 0xFF;
     }
 }

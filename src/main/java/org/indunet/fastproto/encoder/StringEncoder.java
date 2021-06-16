@@ -41,9 +41,9 @@ public class StringEncoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, int length, @NonNull Charset set, @NonNull String value) {
-        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
-        if (byteOffset < 0) {
+        if (bo < 0) {
             throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
         } else if (length < -1) {
             throw new EncodeException(EncodeError.ILLEGAL_PARAMETER);
@@ -51,16 +51,16 @@ public class StringEncoder implements TypeEncoder {
 
         val bytes = value.getBytes(set);
 
-        if (length == -1 && byteOffset + bytes.length > datagram.length ) {
+        if (length == -1 && bo + bytes.length > datagram.length ) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
-        } else if (length != -1 && byteOffset + length > datagram.length) {
+        } else if (length != -1 && bo + length > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         if (length == -1) {
-            System.arraycopy(bytes, 0, datagram, byteOffset, bytes.length);
+            System.arraycopy(bytes, 0, datagram, bo, bytes.length);
         } else {
-            System.arraycopy(bytes, 0, datagram, byteOffset, length);
+            System.arraycopy(bytes, 0, datagram, bo, length);
         }
     }
 }

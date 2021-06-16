@@ -39,17 +39,17 @@ public class Integer8Encoder implements TypeEncoder {
     }
 
     public void encode(byte[] datagram, int byteOffset, int value) {
-        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
-        if (byteOffset < 0) {
+        if (bo < 0) {
             throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
-        } else if (byteOffset + Integer8Type.SIZE > datagram.length) {
+        } else if (bo + Integer8Type.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         } else if (value > Integer8Type.MAX_VALUE || value < Integer8Type.MIN_VALUE) {
             throw new EncodeException(
                     MessageFormat.format(EncodeError.EXCEEDED_TYPE_SIZE_LIMIT.getMessage(), Integer8Type.class.getName()));
         }
 
-        datagram[byteOffset] = (byte) value;
+        datagram[bo] = (byte) value;
     }
 }

@@ -37,16 +37,16 @@ public class BooleanDecoder implements TypeDecoder<Boolean> {
     }
 
     public boolean decode(@NonNull final byte[] datagram, int byteOffset, int bitOffset) {
-        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
-        if (byteOffset < 0) {
+        if (bo < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
         } else if (bitOffset > BooleanType.MAX_BIT_OFFSET || bitOffset < BooleanType.MIN_BIT_OFFSET) {
             throw new DecodeException(DecodeError.ILLEGAL_BIT_OFFSET);
-        } else if (byteOffset >= datagram.length) {
+        } else if (bo >= datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         } else {
-            return (datagram[byteOffset] & (0x01 << bitOffset)) != 0;
+            return (datagram[bo] & (0x01 << bitOffset)) != 0;
         }
     }
 }

@@ -42,17 +42,17 @@ public class UInteger8Encoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, int value) {
-        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
-        if (byteOffset < 0) {
+        if (bo < 0) {
             throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
-        } else if (byteOffset + UInteger8Type.SIZE > datagram.length) {
+        } else if (bo + UInteger8Type.SIZE > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         } else if (value > UInteger8Type.MAX_VALUE || value < UInteger8Type.MIN_VALUE) {
             throw new EncodeException(
                     MessageFormat.format(EncodeError.EXCEEDED_TYPE_SIZE_LIMIT.getMessage(), UInteger8Type.class.getName()));
         }
 
-        datagram[byteOffset] = (byte) value;
+        datagram[bo] = (byte) value;
     }
 }

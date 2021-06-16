@@ -39,20 +39,20 @@ public class CharacterDecoder implements TypeDecoder<Character> {
     }
 
     public Character decode(final byte[] datagram, int byteOffset, @NonNull EndianPolicy policy) {
-        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
-        if (byteOffset < 0) {
+        if (bo < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
-        } else if (byteOffset + CharacterType.SIZE > datagram.length) {
+        } else if (bo + CharacterType.SIZE > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         int value = 0;
 
         if (policy == EndianPolicy.BIG) {
-            value = (datagram[byteOffset] & 0xFF) * 256 + (datagram[byteOffset + 1] & 0xFF);
+            value = (datagram[bo] & 0xFF) * 256 + (datagram[bo + 1] & 0xFF);
         } else {
-            value = (datagram[byteOffset + 1] & 0xFF) * 256 + (datagram[byteOffset] & 0xFF);
+            value = (datagram[bo + 1] & 0xFF) * 256 + (datagram[bo] & 0xFF);
         }
 
         return (char) value;

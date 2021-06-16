@@ -1,9 +1,10 @@
 ![fastproto](logo.png "fastproto")
 
-# *What is FastProto?*
+# *What is FastProto*
 
 [![Build Status](https://travis-ci.com/indunet/fastproto.svg?branch=master)](https://travis-ci.com/indunet/fastproto)
 [![codecov](https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU)](https://codecov.io/gh/indunet/fastproto)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/ed904d7aacd142f08b5cd50b16b1d74b)](https://www.codacy.com/gh/indunet/fastproto/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=indunet/fastproto&amp;utm_campaign=Badge_Grade)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -11,19 +12,16 @@ FastProto is a protocolized binary serialization & deserialization tool written 
 customize binary format through annotations. It solves the problem of cross-language and cross-platform data sharing 
 of Java in a new form, especially suitable for the field of Internet of Things(IoT).
 
-[formula]: https://github.com/indunet/fastproto/wiki/Conversion-Formula
-[kafka]: https://github.com/indunet/fastproto/wiki/Work-with-Kafka
-
 ## *Features*
 
-* Binary serialization & deserialization
-* Support [decoding formula & encoding formula][formula]
-* Customize binary format through annotations
-* Support unsigned data types such as uint8, uint16, uint32 and uint64
-* Custom endianness(big endian or little endian), datagram reverse addressing
-* Support datagram compress and decompress(gzip, deflate)
-* AutoType, automatically infer all Java primitive data types and their wrapper classes when using `@AutoType`
-* Built-in [Kafka serializer & deserializer][kafka]
+*  Binary serialization & deserialization
+*  Support [decoding formula & encoding formula][formula]
+*  Customize binary format through annotations
+*  Support unsigned data types such as uint8, uint16, uint32 and uint64
+*  Custom endianness(big endian or little endian), datagram reverse addressing
+*  Support datagram compress and decompress(gzip, deflate)
+*  AutoType, automatically infer all Java primitive data types and their wrapper classes when using `@AutoType`
+*  Built-in [Kafka serializer & deserializer][kafka]
 
 ## *Under Developing*
 
@@ -185,9 +183,9 @@ the serialization process more accurately.
 
 # *Performance Test*
 
-* Windows 10
-* JDK 1.8.0
-* AMD Ryzen 5 3500U, 2.1GHz, 8 cores
+*  Windows 10
+*  JDK 1.8.0
+*  AMD Ryzen 5 3500U, 2.1GHz, 8 cores
 
 The length of the test message is 128 bytes, and the test data object contains 48 fields(24 Boolean, 16 Integer, 8 Double). 
 **FastProto can serialize 3000 objects or deserialize 1800 datagram within 1 second.**
@@ -195,8 +193,8 @@ The length of the test message is 128 bytes, and the test data object contains 4
 
 # *Build Requirements*
 
-* Java 1.8+
-* Maven 3.5+
+*  Java 1.8+
+*  Maven 3.5+
 
 # *License*
 
@@ -217,3 +215,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
+
+[formula]: https://github.com/indunet/fastproto/wiki/Conversion-Formula
+[kafka]: https://github.com/indunet/fastproto/wiki/Work-with-Kafka

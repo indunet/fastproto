@@ -47,22 +47,22 @@ public class TimestampEncoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull ProtocolType dataType, @NonNull EndianPolicy policy, @NonNull TimeUnit unit, @NonNull Timestamp value) {
-        byteOffset = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
-        if (byteOffset < 0) {
+        if (bo < 0) {
             throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
         } else if (dataType == ProtocolType.LONG && unit == TimeUnit.MILLISECONDS) {
-            if (byteOffset + LongType.SIZE > datagram.length) {
+            if (bo + LongType.SIZE > datagram.length) {
                 throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
             }
 
-            EncodeUtils.longType(datagram, byteOffset, policy, value.getTime());
+            EncodeUtils.longType(datagram, bo, policy, value.getTime());
         } else if (dataType == ProtocolType.UINTEGER32 && unit == TimeUnit.SECONDS) {
-            if (byteOffset + UInteger32Type.SIZE > datagram.length) {
+            if (bo + UInteger32Type.SIZE > datagram.length) {
                 throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
             }
 
-            EncodeUtils.integerType(datagram, byteOffset, policy, (int) (value.getTime() / 1000));
+            EncodeUtils.integerType(datagram, bo, policy, (int) (value.getTime() / 1000));
         } else {
             throw new EncodeException(EncodeError.ILLEGAL_TIMESTAMP_PARAMETERS);
         }
