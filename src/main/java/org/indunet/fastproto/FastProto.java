@@ -69,7 +69,7 @@ public class FastProto {
         }
 
         // Protocol version.
-        if (VersionAssist.validate(datagram, protocolClass) == false) {
+        if (!VersionAssist.validate(datagram, protocolClass)) {
             throw new DecodeException(DecodeError.PROTOCOL_VERSION_NOT_MATCH);
         }
 

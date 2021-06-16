@@ -42,8 +42,7 @@ public class VersionAssist {
 
         ProtocolVersion versionAnnotation = protocolClass.getAnnotation(ProtocolVersion.class);
 
-        val i = decode(datagram, protocolClass);
-        return versionAnnotation.version() == i;
+        return versionAnnotation.version() == decode(datagram, protocolClass);
     }
 
     public static int decode(byte[] datagram, Class<?> protocolClass) {
