@@ -76,18 +76,7 @@ public class KafkaDeserializerTest {
         props.put("value.deserializer", ProtoKafkaConfig.DESERIALIZER_NAME_VALUE);
 
         val map = new HashMap<String, Object>();
-        Weather weather = Weather.builder()
-                .id(101)
-                .time(new Timestamp(System.currentTimeMillis()))
-                .humidity(85)
-                .temperature(-15)
-                .pressure(13)
-                .humidityValid(true)
-                .temperatureValid(true)
-                .pressureValid(true)
-                .build();
         props.forEach((key, value) -> map.put(key.toString(), value));
-
 
         assertThrows(ProtoKafkaException.class, () -> serializer.configure(map, false));
 

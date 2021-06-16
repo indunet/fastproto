@@ -1,6 +1,6 @@
 ![fastproto](logo.png "fastproto")
 
-# *What is FastProto*
+# *FastProto*
 
 [![Build Status](https://travis-ci.com/indunet/fastproto.svg?branch=master)](https://travis-ci.com/indunet/fastproto)
 [![codecov](https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU)](https://codecov.io/gh/indunet/fastproto)
@@ -14,19 +14,19 @@ of Java in a new form, especially suitable for the field of Internet of Things(I
 
 ## *Features*
 
-* Binary serialization & deserialization   
-* Support [decoding formula & encoding formula][formula]   
-* Customize binary format through annotations  
-* Support unsigned data types such as uint8, uint16, uint32 and uint64 
-* Custom endianness(big endian or little endian), datagram reverse addressing  
-* Support datagram compress and decompress(gzip, deflate)  
-* AutoType, automatically infer all Java primitive data types and their wrapper classes when using `@AutoType` 
-* Built-in [Kafka serializer & deserializer][kafka]
+  * Binary serialization & deserialization   
+  * Support [decoding formula & encoding formula][formula]   
+  * Customize binary format through annotations  
+  * Support unsigned data types such as uint8, uint16, uint32 and uint64 
+  * Custom endianness(big endian or little endian), datagram reverse addressing  
+  * Support datagram compress and decompress(gzip, deflate)  
+  * AutoType, automatically infer all Java primitive data types and their wrapper classes when using `@AutoType` 
+  * Built-in [Kafka serializer & deserializer][kafka]
 
 ## *Under Developing*
 
-* Cyclic Redundancy Check(CRC8, CRC16, CRC32)   
-* Netty decoder & encoder   
+  * Cyclic Redundancy Check(CRC8, CRC16, CRC32)   
+  * Netty decoder & encoder   
 
 ## *Maven*
 
@@ -38,7 +38,7 @@ of Java in a new form, especially suitable for the field of Internet of Things(I
 </dependency>
 ```
 
-# *Quick Start*
+## *Quick Start*
 
 Imagine such an application, there is a monitoring device collecting weather data in realtime and sends it to 
 the weather station server in the form of binary datagram, the datagram protocol is as follows:
@@ -143,7 +143,7 @@ Modify the annotation of the pressure field.
 double pressure;
 ```
 
-# *FastProto Annotations*
+## *FastProto Annotations*
 
 FastProto's protocol type adopts Java naming rules. In addition to Java primitive data types and their wrapper classes, 
 it also supports Timestamp, String and byte array. The above types can be replaced by `@AutoType`. FastProto automatically 
@@ -181,22 +181,22 @@ the serialization process more accurately.
 | `@EnableCompress` | Class        | Compress or decompress datagram, default as gzip. |
 | `@ProtocolVersion` | Class     |  Add protocol version to datagram and validate when deserializing  |
 
-# *Performance Test*
+## *Performance Test*
 
-* Windows 10   
-* JDK 1.8.0    
-* AMD Ryzen 5 3500U, 2.1GHz, 8 cores   
+  * Windows 10   
+  * JDK 1.8.0    
+  * AMD Ryzen 5 3500U, 2.1GHz, 8 cores   
 
 The length of the test message is 128 bytes, and the test data object contains 48 fields(24 Boolean, 16 Integer, 8 Double). 
 **FastProto can serialize 3000 objects or deserialize 1800 datagram within 1 second.**
 
 
-# *Build Requirements*
+## *Build Requirements*
 
-* Java 1.8+  
-* Maven 3.5+    
+  * Java 1.8+  
+  * Maven 3.5+    
 
-# *License*
+## *License*
 
 FastProto is released under the [Apache 2.0 license](license).
 
