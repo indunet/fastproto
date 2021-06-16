@@ -2,6 +2,7 @@
 
 # *What is FastProto?*
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/39b037451abb440ba713a50be06afaf6)](https://app.codacy.com/gh/indunet/fastproto?utm_source=github.com&utm_medium=referral&utm_content=indunet/fastproto&utm_campaign=Badge_Grade_Settings)
 [![Build Status](https://travis-ci.com/indunet/fastproto.svg?branch=master)](https://travis-ci.com/indunet/fastproto)
 [![codecov](https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU)](https://codecov.io/gh/indunet/fastproto)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
