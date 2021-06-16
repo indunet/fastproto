@@ -34,7 +34,8 @@ public class FLoatEncoderTest {
     @Test
     public void testEncode1() {
         byte[] datagram = new byte[4];
-        float pi = 3.141f, e = 2.718f;
+        float pi = 3.141f;
+        float e = 2.718f;
 
         encoder.encode(datagram, 0, EndianPolicy.LITTLE, pi);
         assertArrayEquals(datagram, BinaryUtils.valueOf(pi));
