@@ -16,8 +16,8 @@
 
 package org.indunet.fastproto.encoder;
 
-import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
@@ -25,9 +25,9 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.sql.Timestamp;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
-import java.sql.Timestamp;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -58,7 +58,7 @@ public class TimestampEncoderTest {
                         EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, new Timestamp(current), BinaryUtils.valueOf(current)),
                 Arguments.arguments(new byte[4], 0, ProtocolType.UINTEGER32,
                         EndianPolicy.LITTLE, TimeUnit.SECONDS, new Timestamp(current), BinaryUtils.uint32of(current / 1000))
-            ).collect(Collectors.toList());
+        ).collect(Collectors.toList());
     }
 
     @Test

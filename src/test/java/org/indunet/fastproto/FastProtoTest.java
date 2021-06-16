@@ -164,7 +164,7 @@ public class FastProtoTest {
         Everything everything = Everything.builder()
                 .aBoolean(true)
                 .aByte((byte) -12)
-                .aByteArray(new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
+                .aByteArray(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
                 .aCharacter('A')
                 .aDouble(3.14)
                 .aFloat(0.618f)

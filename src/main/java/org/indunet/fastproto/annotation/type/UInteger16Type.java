@@ -33,8 +33,8 @@ import java.util.function.Function;
  * Integer type, corresponding to Java Integer/int.
  *
  * @author Deng Ran
- * @since 1.2.0
  * @see TypeFlag
+ * @since 1.2.0
  */
 @TypeFlag
 @Decoder(UInteger16Decoder.class)

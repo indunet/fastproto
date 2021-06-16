@@ -42,9 +42,9 @@ public class LongDecoderTest {
 
     public static List<Arguments> testDecode1() {
         return Stream.of(
-                Arguments.arguments(new byte[] {-1, -1, -1, -1, -1, -1, -1, -1}, EndianPolicy.LITTLE, -1L),
-                Arguments.arguments(new byte[] {0, 0, 0, 0, 1, 0, 0, 1}, EndianPolicy.LITTLE, (long) Math.pow(256, 4) + (long) Math.pow(256, 7)),
-                Arguments.arguments(new byte[] {0, 0, 0, 0, 1, 0, 0, 1}, EndianPolicy.BIG, (long) Math.pow(256, 3) + 1)
+                Arguments.arguments(new byte[]{-1, -1, -1, -1, -1, -1, -1, -1}, EndianPolicy.LITTLE, -1L),
+                Arguments.arguments(new byte[]{0, 0, 0, 0, 1, 0, 0, 1}, EndianPolicy.LITTLE, (long) Math.pow(256, 4) + (long) Math.pow(256, 7)),
+                Arguments.arguments(new byte[]{0, 0, 0, 0, 1, 0, 0, 1}, EndianPolicy.BIG, (long) Math.pow(256, 3) + 1)
         ).collect(Collectors.toList());
     }
 

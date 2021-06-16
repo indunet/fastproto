@@ -19,7 +19,8 @@ package org.indunet.fastproto;
 import org.indunet.fastproto.exception.CodecException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Deng Ran

@@ -26,8 +26,8 @@ import org.indunet.fastproto.exception.EncodeException.EncodeError;
  * Integer type encoder.
  *
  * @author Deng Ran
- * @since 1.0.0
  * @see TypeEncoder,IntegerType
+ * @since 1.0.0
  */
 public class IntegerEncoder implements TypeEncoder {
     @Override

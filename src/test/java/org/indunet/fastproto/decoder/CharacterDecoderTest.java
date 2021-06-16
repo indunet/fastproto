@@ -38,7 +38,7 @@ public class CharacterDecoderTest {
 
         assertEquals('a', (char) decoder.decode(datagram, 0, EndianPolicy.LITTLE));
         assertEquals('A', (char) decoder.decode(datagram, 2, EndianPolicy.LITTLE));
-        assertEquals('A', (char) decoder.decode(datagram,  2 - datagram.length, EndianPolicy.LITTLE));
+        assertEquals('A', (char) decoder.decode(datagram, 2 - datagram.length, EndianPolicy.LITTLE));
     }
 
     @Test

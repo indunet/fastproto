@@ -28,7 +28,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Deng Ran
@@ -46,9 +47,9 @@ class UInteger64DecoderTest {
 
     public static List<Arguments> testDecode1() {
         return Stream.of(
-                Arguments.arguments(new byte[] {0, 0, 0, 0, 1, 0, 0, 0}, EndianPolicy.LITTLE, new BigInteger(String.valueOf((long) Math.pow(256, 4)))),
-                Arguments.arguments(new byte[] {0, 0, 0, 0, 1, 0, 0, 1}, EndianPolicy.LITTLE, new BigInteger(String.valueOf((long) Math.pow(256, 4) + (long) Math.pow(256, 7)))),
-                Arguments.arguments(new byte[] {0, 0, 0, 0, 1, 0, 1, 1}, EndianPolicy.BIG, new BigInteger(String.valueOf((long) Math.pow(256, 3) + 1 + 256)))
+                Arguments.arguments(new byte[]{0, 0, 0, 0, 1, 0, 0, 0}, EndianPolicy.LITTLE, new BigInteger(String.valueOf((long) Math.pow(256, 4)))),
+                Arguments.arguments(new byte[]{0, 0, 0, 0, 1, 0, 0, 1}, EndianPolicy.LITTLE, new BigInteger(String.valueOf((long) Math.pow(256, 4) + (long) Math.pow(256, 7)))),
+                Arguments.arguments(new byte[]{0, 0, 0, 0, 1, 0, 1, 1}, EndianPolicy.BIG, new BigInteger(String.valueOf((long) Math.pow(256, 3) + 1 + 256)))
         ).collect(Collectors.toList());
     }
 

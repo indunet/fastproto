@@ -19,13 +19,11 @@ package org.indunet.fastproto.decoder;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.type.LongType;
 import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.annotation.type.UInteger64Type;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.DecodeException.DecodeError;
 
-import java.math.BigDecimal;
 import java.math.BigInteger;
 
 /**

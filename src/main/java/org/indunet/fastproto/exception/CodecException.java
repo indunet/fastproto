@@ -44,7 +44,7 @@ public class CodecException extends RuntimeException {
 
     @AllArgsConstructor
     @Getter
-    public static enum CodecError {
+    public enum CodecError {
         INVALID_ENDIAN_POLICY("Invalid endian policy."),
         INVALID_COMPRESS_POLICY("Invalid compress policy."),
         ANNOTATION_FIELD_NOT_MATCH("Annotation {0} and field {1} doesn't match."),

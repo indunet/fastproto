@@ -56,7 +56,7 @@ public class TimestampDecoderTest {
                 Arguments.arguments(BinaryUtils.valueOf(current), 0, ProtocolType.LONG, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, new Timestamp(current)),
                 Arguments.arguments(BinaryUtils.uint32of(current / 1000), 0, ProtocolType.UINTEGER32, EndianPolicy.LITTLE, TimeUnit.SECONDS, new Timestamp(current / 1000 * 1000)),
                 Arguments.arguments(BinaryUtils.uint32of(current / 1000), -4, ProtocolType.UINTEGER32, EndianPolicy.LITTLE, TimeUnit.SECONDS, new Timestamp(current / 1000 * 1000))
-            ).collect(Collectors.toList());
+        ).collect(Collectors.toList());
     }
 
     @Test

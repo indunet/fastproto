@@ -17,13 +17,13 @@
 package org.indunet.fastproto.compress;
 
 import lombok.val;
-import org.indunet.fastproto.compress.GzipCompressor;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Deng Ran

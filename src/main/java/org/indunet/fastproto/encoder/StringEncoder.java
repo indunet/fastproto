@@ -51,7 +51,7 @@ public class StringEncoder implements TypeEncoder {
 
         val bytes = value.getBytes(set);
 
-        if (length == -1 && bo + bytes.length > datagram.length ) {
+        if (length == -1 && bo + bytes.length > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
         } else if (length != -1 && bo + length > datagram.length) {
             throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);

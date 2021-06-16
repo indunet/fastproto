@@ -19,7 +19,8 @@ package org.indunet.fastproto.encoder;
 import org.indunet.fastproto.exception.EncodeException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Deng Ran

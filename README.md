@@ -14,19 +14,19 @@ of Java in a new form, especially suitable for the field of Internet of Things(I
 
 ## *Features*
 
-*  Binary serialization & deserialization
-*  Support [decoding formula & encoding formula][formula]
-*  Customize binary format through annotations
-*  Support unsigned data types such as uint8, uint16, uint32 and uint64
-*  Custom endianness(big endian or little endian), datagram reverse addressing
-*  Support datagram compress and decompress(gzip, deflate)
-*  AutoType, automatically infer all Java primitive data types and their wrapper classes when using `@AutoType`
-*  Built-in [Kafka serializer & deserializer][kafka]
+* Binary serialization & deserialization   
+* Support [decoding formula & encoding formula][formula]   
+* Customize binary format through annotations  
+* Support unsigned data types such as uint8, uint16, uint32 and uint64 
+* Custom endianness(big endian or little endian), datagram reverse addressing  
+* Support datagram compress and decompress(gzip, deflate)  
+* AutoType, automatically infer all Java primitive data types and their wrapper classes when using `@AutoType` 
+* Built-in [Kafka serializer & deserializer][kafka]
 
 ## *Under Developing*
 
-* Cyclic Redundancy Check(CRC8, CRC16, CRC32)
-* Netty decoder & encoder
+* Cyclic Redundancy Check(CRC8, CRC16, CRC32)   
+* Netty decoder & encoder   
 
 ## *Maven*
 
@@ -183,9 +183,9 @@ the serialization process more accurately.
 
 # *Performance Test*
 
-*  Windows 10
-*  JDK 1.8.0
-*  AMD Ryzen 5 3500U, 2.1GHz, 8 cores
+* Windows 10   
+* JDK 1.8.0    
+* AMD Ryzen 5 3500U, 2.1GHz, 8 cores   
 
 The length of the test message is 128 bytes, and the test data object contains 48 fields(24 Boolean, 16 Integer, 8 Double). 
 **FastProto can serialize 3000 objects or deserialize 1800 datagram within 1 second.**
@@ -193,8 +193,8 @@ The length of the test message is 128 bytes, and the test data object contains 4
 
 # *Build Requirements*
 
-*  Java 1.8+
-*  Maven 3.5+
+* Java 1.8+  
+* Maven 3.5+    
 
 # *License*
 

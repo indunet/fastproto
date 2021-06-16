@@ -4,7 +4,6 @@ import org.indunet.fastproto.annotation.type.UInteger64Type;
 import org.indunet.fastproto.iot.Everything;
 import org.indunet.fastproto.util.EncodeUtils;
 import org.junit.jupiter.api.Test;
-import sun.misc.Version;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
@@ -21,7 +20,7 @@ public class VersionAssistTest {
     Everything everything = Everything.builder()
             .aBoolean(true)
             .aByte((byte) -12)
-            .aByteArray(new byte[] {1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
+            .aByteArray(new byte[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
             .aCharacter('A')
             .aDouble(3.14)
             .aFloat(0.618f)
