@@ -190,7 +190,6 @@ the serialization process more accurately.
 The length of the test message is 128 bytes, and the test data object contains 48 fields(24 Boolean, 16 Integer, 8 Double). 
 **FastProto can serialize 3000 objects or deserialize 1800 datagram within 1 second.**
 
-
 ## *Build Requirements*
 
 *   Java 1.8+  

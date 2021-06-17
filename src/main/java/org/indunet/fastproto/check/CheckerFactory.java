@@ -14,29 +14,21 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.annotation;
+package org.indunet.fastproto.check;
 
-import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.ProtocolType;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
+import org.indunet.fastproto.annotation.CheckSum;
 
 /**
  * @author Deng Ran
- * @since 1.5.3
+ * @since 1.6.0
  */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface ProtocolVersion {
-    int value();
-
-    int version();
-
-    ProtocolType protocolType() default ProtocolType.UINTEGER16;
-
-    EndianPolicy[] endianPolicy() default {};
+public class CheckerFactory {
+    public static Checker create(CheckSum checkSum) {
+        switch (checkSum.value()) {
+            case CRC32:
+                return Crc32Checker.getInstance();
+            default:
+                return Crc32Checker.getInstance();
+        }
+    }
 }

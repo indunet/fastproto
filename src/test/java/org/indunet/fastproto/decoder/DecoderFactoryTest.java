@@ -30,14 +30,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @author Deng Ran
  * @version 1.0
  */
-public class DecodersTest {
+public class DecoderFactoryTest {
     @Test
     public void testGetDecoder1() {
         val clazz = Optional.of(BooleanType.class)
                 .map(c -> c.getAnnotation(Decoder.class))
                 .map(Decoder::value)
                 .get();
-        val func = Decoders.getDecoder(clazz);
+        val func = DecoderFactory.getDecoder(clazz);
 
         assertNotNull(func);
     }
@@ -48,14 +48,14 @@ public class DecodersTest {
                 .map(c -> c.getAnnotation(Decoder.class))
                 .map(Decoder::value)
                 .get();
-        val func = Decoders.getDecoder(clazz, Formula.class);
+        val func = DecoderFactory.getDecoder(clazz, Formula.class);
 
         assertNotNull(func);
     }
 
     @Test
     public void testGetFormula() {
-        val func = Decoders.getFormula(Formula.class);
+        val func = DecoderFactory.getFormula(Formula.class);
 
         assertNotNull(func);
     }

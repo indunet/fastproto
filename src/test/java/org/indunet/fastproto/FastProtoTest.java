@@ -18,6 +18,7 @@ package org.indunet.fastproto;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.type.UInteger64Type;
+import org.indunet.fastproto.check.Crc32Checker;
 import org.indunet.fastproto.compress.DeflateCompressor;
 import org.indunet.fastproto.iot.Everything;
 import org.indunet.fastproto.iot.Weather;
@@ -90,7 +91,7 @@ public class FastProtoTest {
 
     @Test
     public void testWeather1() {
-        byte[] datagram = new byte[26];
+        byte[] datagram = new byte[30];
         Weather metrics = Weather.builder()
                 .id(101)
                 .time(new Timestamp(System.currentTimeMillis()))
@@ -111,19 +112,20 @@ public class FastProtoTest {
         EncodeUtils.type(datagram, 18, 0, metrics.isHumidityValid());
         EncodeUtils.type(datagram, 18, 1, metrics.isTemperatureValid());
         EncodeUtils.type(datagram, 18, 2, metrics.isPressureValid());
+        EncodeUtils.uInteger32Type(datagram, 26, EndianPolicy.BIG, Crc32Checker.getInstance().getValue(datagram, 0, -4));
 
         // Test decode.
         assertEquals(
                 FastProto.parseFrom(datagram, Weather.class, false).toString(), metrics.toString());
 
         // Test encode.
-        byte[] cache = FastProto.toByteArray(metrics, 26, false);
+        byte[] cache = FastProto.toByteArray(metrics, 30, false);
         assertArrayEquals(cache, datagram);
     }
 
     @Test
     public void testWeather2() {
-        byte[] datagram = new byte[26];
+        byte[] datagram = new byte[30];
         Weather weather = Weather.builder()
                 .id(101)
                 .time(new Timestamp(System.currentTimeMillis()))
@@ -145,6 +147,7 @@ public class FastProtoTest {
         EncodeUtils.type(datagram, 18, 0, weather.isHumidityValid());
         EncodeUtils.type(datagram, 18, 1, weather.isTemperatureValid());
         EncodeUtils.type(datagram, 18, 2, weather.isPressureValid());
+        EncodeUtils.uInteger32Type(datagram, 26, EndianPolicy.BIG, Crc32Checker.getInstance().getValue(datagram, 0, -4));
 
         // Compress the datagram.
         datagram = compressor.compress(datagram);
@@ -154,7 +157,7 @@ public class FastProtoTest {
                 FastProto.parseFrom(datagram, Weather.class).toString(), weather.toString());
 
         // Test encode.
-        byte[] cache = FastProto.toByteArray(weather, 26);
+        byte[] cache = FastProto.toByteArray(weather, 30);
         assertArrayEquals(cache, datagram);
     }
 
@@ -211,7 +214,6 @@ public class FastProtoTest {
         // Test encode.
         byte[] cache = FastProto.toByteArray(everything, 80, false);
         assertArrayEquals(cache, datagram);
-
 
         // Test with gzip
         byte[] compressed = FastProto.toByteArray(everything, 80);
