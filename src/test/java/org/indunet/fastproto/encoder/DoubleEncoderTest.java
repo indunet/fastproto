@@ -34,7 +34,8 @@ public class DoubleEncoderTest {
     @Test
     public void testEncode1() {
         byte[] datagram = new byte[8];
-        double pi = 3.141, e = 2.718;
+        double pi = 3.141;
+        double e = 2.718;
 
         encoder.encode(datagram, 0, EndianPolicy.LITTLE, e);
         assertArrayEquals(datagram, BinaryUtils.valueOf(e));

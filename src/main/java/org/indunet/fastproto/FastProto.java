@@ -18,12 +18,15 @@ package org.indunet.fastproto;
 
 import lombok.NonNull;
 import lombok.val;
+import org.indunet.fastproto.annotation.CheckSum;
 import org.indunet.fastproto.annotation.EnableCompress;
+import org.indunet.fastproto.check.Checker;
+import org.indunet.fastproto.check.CheckerFactory;
 import org.indunet.fastproto.compress.CompressorFactory;
 import org.indunet.fastproto.decoder.DecodeContext;
-import org.indunet.fastproto.decoder.Decoders;
+import org.indunet.fastproto.decoder.DecoderFactory;
 import org.indunet.fastproto.encoder.EncodeContext;
-import org.indunet.fastproto.encoder.Encoders;
+import org.indunet.fastproto.encoder.EncoderFactory;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.DecodeException.DecodeError;
 
@@ -68,11 +71,19 @@ public class FastProto {
             datagram = compressor.decompress(datagram);
         }
 
+        // Check sum.
+        if (protocolClass.isAnnotationPresent(CheckSum.class)) {
+            Checker checker = CheckerFactory.create(protocolClass.getAnnotation(CheckSum.class));
+
+            if (!checker.validate(datagram, protocolClass)) {
+                throw new DecodeException(DecodeError.ILLEGAL_CHECK_SUM);
+            }
+        }
+
         // Protocol version.
         if (!VersionAssist.validate(datagram, protocolClass)) {
             throw new DecodeException(DecodeError.PROTOCOL_VERSION_NOT_MATCH);
         }
-
 
         TypeAssist assist = assists.computeIfAbsent(protocolClass, c -> TypeAssist.of(c));
         List<DecodeContext> contexts = assist.toDecodeContexts(datagram);
@@ -80,7 +91,7 @@ public class FastProto {
         contexts.parallelStream()
                 .forEach(c -> {
                     TypeAssist a = c.getTypeAssist();
-                    Function<DecodeContext, ?> func = Decoders.getDecoder(
+                    Function<DecodeContext, ?> func = DecoderFactory.getDecoder(
                             a.getDecoderClass(),
                             a.getDecodeFormula());
                     Object value = func.apply(c);
@@ -119,17 +130,25 @@ public class FastProto {
         contexts.stream()
                 .forEach(c -> {
                     if (c.getTypeAssist().getEncodeFormula() != null) {
-                        Object o = Encoders.getFormula(c.getTypeAssist().getEncodeFormula())
+                        Object o = EncoderFactory.getFormula(c.getTypeAssist().getEncodeFormula())
                                 .apply(c.getValue());
                         c.setValue(o);
                     }
 
-                    Consumer<EncodeContext> consumer = Encoders.getEncoder(c.getTypeAssist().getEncoderClass());
+                    Consumer<EncodeContext> consumer = EncoderFactory.getEncoder(c.getTypeAssist().getEncoderClass());
                     consumer.accept(c);
                 });
 
         // Protocol version.
         VersionAssist.encode(datagram, object.getClass());
+
+        // Check sum.
+        if (object.getClass().isAnnotationPresent(CheckSum.class)) {
+            CheckSum checkSum = object.getClass().getAnnotation(CheckSum.class);
+            Checker checker = CheckerFactory.create(checkSum);
+
+            checker.setValue(datagram, object.getClass());
+        }
 
         if (enableCompress && object.getClass().isAnnotationPresent(EnableCompress.class)) {
             val annotation = object.getClass().getAnnotation(EnableCompress.class);

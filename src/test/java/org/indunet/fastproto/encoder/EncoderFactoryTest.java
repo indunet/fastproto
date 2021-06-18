@@ -30,21 +30,21 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @author Deng Ran
  * @since 1.0.0
  */
-public class EncodersTest {
+public class EncoderFactoryTest {
     @Test
     public void testGetEncoder() {
         val clazz = Optional.of(BooleanType.class)
                 .map(c -> c.getAnnotation(Encoder.class))
                 .map(Encoder::value)
                 .get();
-        val consumer = Encoders.getEncoder(clazz);
+        val consumer = EncoderFactory.getEncoder(clazz);
 
         assertNotNull(consumer);
     }
 
     @Test
     public void testGetFormula() {
-        Function func = Encoders.getFormula(Formula.class);
+        Function func = EncoderFactory.getFormula(Formula.class);
 
         assertNotNull(func);
     }

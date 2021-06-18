@@ -61,7 +61,8 @@ public class DecodeException extends CodecException {
         FAIL_ASSIGN_VALUE("Fail assigning value for field {0}"),
         FAIL_DECOMPRESS_DATAGRAM("Fail decompressing datagram with {0}"),
         PROTOCOL_VERSION_NOT_MATCH("Protocol version and datagram version doesn't match."),
-        ILLEGAL_PROTOCOL_VERSION_TYPE("Illegal protocol version type");
+        ILLEGAL_PROTOCOL_VERSION_TYPE("Illegal protocol version type"),
+        ILLEGAL_CHECK_SUM("Illegal check sum");
 
         String message;
     }

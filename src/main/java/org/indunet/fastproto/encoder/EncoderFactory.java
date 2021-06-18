@@ -28,7 +28,7 @@ import java.util.function.Function;
  * @author Deng Ran
  * @since 1.0.0
  */
-public class Encoders {
+public class EncoderFactory {
     protected static ConcurrentHashMap<Class<? extends TypeEncoder>, TypeEncoder> encoders = new ConcurrentHashMap<>();
     protected static ConcurrentHashMap<Class<? extends Function>, Function> formulas = new ConcurrentHashMap<>();
 
