@@ -16,14 +16,9 @@
 
 package org.indunet.fastproto.check;
 
-import com.sun.xml.internal.ws.util.xml.CDATA;
 import lombok.Builder;
 import lombok.val;
-import org.apache.kafka.common.utils.Crc32C;
-import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.CheckSum;
-import org.indunet.fastproto.annotation.type.FloatType;
-import org.indunet.fastproto.annotation.type.UInteger16Type;
 import org.indunet.fastproto.util.EncodeUtils;
 import org.junit.jupiter.api.Test;
 
@@ -31,7 +26,7 @@ import java.util.Random;
 import java.util.stream.IntStream;
 import java.util.zip.CRC32;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Deng Ran

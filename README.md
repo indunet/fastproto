@@ -12,15 +12,6 @@ FastProto is a protocolized binary serialization & deserialization tool written 
 customize binary format through annotations. It solves the problem of cross-language and cross-platform data sharing 
 of Java in a new form, especially suitable for the field of Internet of Things(IoT).
 
-## Compared with ProtoBuf
-
-Compared with ProtoBuff, FastProto does not have any obvious advantages, it can only be said that FastProto and 
-ProtoBuf solve the same problem in different ways. It is recommended to use FastProto in the following scenarios:
-
-1. Due to network bandwidth and traffic limitations, smaller serialization results are required
-2. Unable to unify technical routes between systems, especially for embedded systems
-3. Due to debugging requirements, the serialized result must be human readable
-
 ## *Features*
 
 *   Binary serialization & deserialization   
@@ -31,6 +22,15 @@ ProtoBuf solve the same problem in different ways. It is recommended to use Fast
 *   Support datagram compress and decompress(gzip, deflate)  
 *   Support version verification and checksum verification(crc32)
 *   Built-in [Kafka serializer & deserializer][kafka]
+
+## Compared with ProtoBuf
+
+Compared with ProtoBuff, FastProto does not have any obvious advantages, it can only be said that FastProto and
+ProtoBuf solve the same problem in different ways. It is recommended to use FastProto in the following scenarios:
+
+1. Due to network bandwidth and traffic limitations, smaller serialization results are required
+2. Unable to unify technical routes between systems, especially for embedded systems
+3. Due to debugging requirements, the serialized result must be human readable
 
 ## *Under Developing*
 

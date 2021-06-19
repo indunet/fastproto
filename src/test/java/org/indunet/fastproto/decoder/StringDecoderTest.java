@@ -54,8 +54,11 @@ public class StringDecoderTest {
 
     @Test
     public void testDecode2() {
+        assertThrows(NullPointerException.class, () -> this.decoder.decode(null));
+        assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 2, 1,StandardCharsets.UTF_8));
+
         assertThrows(DecodeException.class, () -> this.decoder.decode("ABCabc".getBytes(), -1, 10, StandardCharsets.UTF_8));
-        assertThrows(DecodeException.class, () -> this.decoder.decode("ABCabc".getBytes(), 0, -2, StandardCharsets.UTF_8));
+        assertThrows(DecodeException.class, () -> this.decoder.decode("ABCabc".getBytes(), 5, -2, StandardCharsets.UTF_8));
         assertThrows(DecodeException.class, () -> this.decoder.decode("ABCabc".getBytes(), 0, 10, StandardCharsets.UTF_8));
         assertThrows(DecodeException.class, () -> this.decoder.decode("ABCabc".getBytes(), 10, -1, StandardCharsets.UTF_8));
     }
