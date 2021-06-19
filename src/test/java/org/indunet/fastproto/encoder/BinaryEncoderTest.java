@@ -60,9 +60,9 @@ public class BinaryEncoderTest {
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null, 0, -1, new byte[8]));
         assertThrows(NullPointerException.class, () -> this.encoder.encode(datagram, 0, -1, null));
 
-        assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, -2, -1, new byte[8]));
+        assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, -2, -7, new byte[8]));
+        assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, -11, -7, new byte[8]));
         assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, 10, -1, new byte[8]));
-        assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, 0, -2, new byte[8]));
-        assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, 8, -1, new byte[8]));
+        assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, 0, 11, new byte[8]));
     }
 }

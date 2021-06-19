@@ -17,6 +17,7 @@
 package org.indunet.fastproto.decoder;
 
 import lombok.NonNull;
+import lombok.val;
 import org.indunet.fastproto.annotation.type.StringType;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.DecodeException.DecodeError;
@@ -41,23 +42,21 @@ public class StringDecoder implements TypeDecoder<String> {
 
     public String decode(@NonNull byte[] datagram, int byteOffset, int length, @NonNull Charset charset) {
         int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int l = length >= 0 ? length : datagram.length + length - bo + 1;
 
         if (bo < 0) {
             throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
-        } else if (length < -1) {
+        } else if (bo > datagram.length) {
+            throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
+        } else if (l <= 0) {
             throw new DecodeException(DecodeError.ILLEGAL_PARAMETER);
-        } else if (length == -1 && bo >= datagram.length) {
-            throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
-        } else if (length != -1 && bo + length > datagram.length) {
+        } else if (bo + l > datagram.length) {
             throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
-        if (length == -1) {
-            return new String(
-                    Arrays.copyOfRange(datagram, bo, datagram.length - bo), charset);
-        } else {
-            return new String(
-                    Arrays.copyOfRange(datagram, bo, bo + length), charset);
-        }
+        val bytes = new byte[l];
+        System.arraycopy(datagram, bo, bytes, 0, l);
+
+        return new String(bytes, charset);
     }
 }

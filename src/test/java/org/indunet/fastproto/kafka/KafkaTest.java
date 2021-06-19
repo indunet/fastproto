@@ -69,6 +69,7 @@ public class KafkaTest {
                 .pressureValid(true)
                 .build();
         val record = new ProducerRecord<String, Weather>("fastproto.weather", weather);
+
         Runnable task = () -> {
             while (true) {
                 producer.send(record);

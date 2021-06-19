@@ -62,7 +62,6 @@ public class StringEncoderTest {
 
 
         assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, -1, 2, StandardCharsets.UTF_8, "ABC"));
-        assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, 0, -2, StandardCharsets.UTF_8, "ABC"));
         assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, 10, -1, StandardCharsets.UTF_8, "ABC"));
         assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, 2, 10, StandardCharsets.UTF_8, "ABC"));
     }
