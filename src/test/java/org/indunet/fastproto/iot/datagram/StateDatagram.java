@@ -39,39 +39,39 @@ import static org.indunet.fastproto.iot.datagram.DatagramProtocol.*;
 public class StateDatagram {
     @UInteger8Type(VEHICLE_MODEL_NUMBER_OFFSET)
     Integer vehicleModelNumber;
-//    Long vehicleModelId;
+    Long vehicleModelId;
 
     @UInteger8Type(SERIAL_NUMBER_OFFSET)
     Integer serialNumber;
 
     @UInteger8Type(PROTOCOL_VERSION_OFFSET)
     Integer protocolVersion;
-//    Long datagramProtocolId;
+    Long datagramProtocolId;
 
     @TimestampType(value = EVENT_TIME_OFFSET, protocolType = ProtocolType.UINTEGER32, unit = TimeUnit.SECONDS)
     Timestamp eventTime;
-////    Timestamp receiveTime;
+    Timestamp receiveTime;
 
     @UInteger16Type(VEHICLE_NUMBER_OFFSET)
     Integer vehicleNumber;
-////    Long vehicleId;
-////    String vehicleCode;
+    Long vehicleId;
+    String vehicleCode;
 
     @UInteger16Type(DATAGRAM_TYPE_NUMBER_OFFSET)
     Integer datagramTypeNumber;
 
     @UInteger16Type(DATAGRAM_NUMBER_OFFSET)
     Integer datagramNumber;
-//    Long datagramId;
+    Long datagramId;
 
     @UInteger16Type(SECURITY_CODE_OFFSET)
     Integer securityCode;
 
     @UInteger16Type(CRC16_CODE_OFFSET)
     Integer crc16Code;
-    //
+
     @BinaryType(value = 0, length = -1)
     byte[] bytes;
 
-     CheckCode checkCode;
+    CheckCode checkCode;
 }

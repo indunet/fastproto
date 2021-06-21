@@ -6,7 +6,7 @@
 
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>1.6.2</version>
+    <version>1.6.3</version>
     <packaging>jar</packaging>
     <name>FastProto</name>
     <description>FastProto is a protocolized binary serialization &amp; deserialization tool written in Java, which allows developers to customize binary format through annotations.</description>

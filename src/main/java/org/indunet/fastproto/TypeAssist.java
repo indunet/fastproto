@@ -89,6 +89,7 @@ public class TypeAssist {
                         && !f.isAnnotationPresent(EncodeIgnore.class))
                 .filter(isType.negate())
                 .filter(f -> !f.isEnumConstant())  // Stack overflow
+                .filter(f -> !Modifier.isFinal(f.getModifiers()))
                 .map(f -> {
                     f.setAccessible(true);
                     Class<?> c = f.getType();

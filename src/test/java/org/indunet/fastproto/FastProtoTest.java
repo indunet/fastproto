@@ -16,6 +16,7 @@
 
 package org.indunet.fastproto;
 
+import lombok.SneakyThrows;
 import lombok.val;
 import org.indunet.fastproto.annotation.type.UInteger64Type;
 import org.indunet.fastproto.check.Crc32Checker;
@@ -29,8 +30,11 @@ import org.indunet.fastproto.iot.tesla.Tesla;
 import org.indunet.fastproto.encoder.EncodeUtils;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Modifier;
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -233,7 +237,12 @@ public class FastProtoTest {
         assertEquals(motor.toString(), FastProto.parseFrom(datagram, Motor.class).toString());
     }
 
+    public static class Member {
+
+    }
+
     @Test
+    @SneakyThrows
     public void testStateDatagram() {
         byte[] datagram = new byte[600];
 
