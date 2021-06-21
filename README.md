@@ -28,9 +28,10 @@ of Java in a new form, especially suitable for the field of Internet of Things(I
 Compared with ProtoBuff, FastProto does not have any obvious advantages, it can only be said that FastProto and
 ProtoBuf solve the same problem in different ways. It is recommended to use FastProto in the following scenarios:
 
-1. Due to network bandwidth and traffic limitations, smaller serialization results are required
-2. Unable to unify technical routes between systems, especially for embedded systems
-3. Due to debugging requirements, the serialized result must be human readable
+*   Due to network bandwidth and traffic limitations, smaller serialization results are required 
+*   Unable to unify technical routes between systems, especially for embedded systems
+*   Due to debugging requirements, the serialized result must be human readable
+*   Read & write binary format files
 
 ## *Under Developing*
 

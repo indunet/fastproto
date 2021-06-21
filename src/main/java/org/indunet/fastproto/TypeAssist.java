@@ -24,6 +24,7 @@ import org.indunet.fastproto.decoder.TypeDecoder;
 import org.indunet.fastproto.encoder.EncodeContext;
 import org.indunet.fastproto.encoder.TypeEncoder;
 import org.indunet.fastproto.exception.CodecException;
+import org.indunet.fastproto.exception.CodecException.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.DecodeException.DecodeError;
 import org.indunet.fastproto.exception.EncodeException;
@@ -36,6 +37,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.OptionalInt;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -70,6 +72,7 @@ public class TypeAssist {
     Class<? extends Function> encodeFormula;
     Function<DecodeContext, ?> decoder;
     Consumer<?> encoder;
+    Integer minLength = 0;  // Used to store minimum length of datagram.
 
     protected TypeAssist() {
 
@@ -129,6 +132,7 @@ public class TypeAssist {
                 .decodeIgnore(decodeIgnore)
                 .encodeIgnore(encodeIgnore)
                 .elementType(ElementType.TYPE)
+                .minLength(0)
                 .build();
 
         List<TypeAssist> elements = Stream.concat(fieldStream, typeStream)
@@ -137,6 +141,56 @@ public class TypeAssist {
         assist.setElements(elements);
 
         return assist;
+    }
+
+    public static Integer getMinLength(Annotation typeAnnotation) {
+        if (typeAnnotation == null) {
+            return null;
+        }
+
+        int minLength = 0;
+
+        try {
+            int value = (Integer) typeAnnotation
+                    .getClass()
+                    .getMethod("value")
+                    .invoke(typeAnnotation);
+
+            if (value >= 0) {
+                minLength += value;
+            } else {
+                return -1;
+            }
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+
+        }
+
+        try {
+            int size = typeAnnotation
+                        .getClass()
+                        .getField("SIZE")
+                        .getInt(null);
+            minLength += size;
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+
+        }
+
+        try {
+            int length = (Integer) typeAnnotation
+                        .getClass()
+                        .getMethod("length")
+                        .invoke(typeAnnotation);
+
+            if (length >= 0) {
+                minLength += length;
+            } else {
+                return -1;
+            }
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+
+        }
+
+        return minLength;
     }
 
     protected static Class<? extends Annotation> getTypeAnnotationClass(@NonNull Field field) {
@@ -280,7 +334,27 @@ public class TypeAssist {
                 .decodeIgnore(decodeIgnore)
                 .encodeIgnore(encodeIgnore)
                 .elementType(ElementType.FIELD)
+                .minLength(getMinLength(getProxyTypeAnnotation(field)))     // From proxy type annotation.
                 .build();
+    }
+
+    public Integer getMaxLength() {
+        Integer length = this.minLength;
+
+        if (this.elements == null) {
+            return length;
+        } else if (this.elements.stream()
+                .mapToInt(TypeAssist::getMaxLength)
+                .anyMatch(l -> l < 0)) {
+            throw new EncodeException(EncodeError.UNABLE_INFER_LENGTH);
+        }
+
+        int max = this.elements.stream()
+                .mapToInt(TypeAssist::getMaxLength)
+                .max()
+                .getAsInt();
+
+        return length >= max ? length : max;
     }
 
     public static Type wrapperClass(String name) {
