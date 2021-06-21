@@ -22,6 +22,7 @@ import org.indunet.fastproto.check.Crc32Checker;
 import org.indunet.fastproto.compress.DeflateCompressor;
 import org.indunet.fastproto.iot.Everything;
 import org.indunet.fastproto.iot.Weather;
+import org.indunet.fastproto.iot.datagram.StateDatagram;
 import org.indunet.fastproto.iot.tesla.Battery;
 import org.indunet.fastproto.iot.tesla.Motor;
 import org.indunet.fastproto.iot.tesla.Tesla;
@@ -32,8 +33,7 @@ import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Deng Ran
@@ -231,5 +231,13 @@ public class FastProtoTest {
         byte[] datagram = FastProto.toByteArray(motor);
         assertEquals(44, datagram.length);
         assertEquals(motor.toString(), FastProto.parseFrom(datagram, Motor.class).toString());
+    }
+
+    @Test
+    public void testStateDatagram() {
+        byte[] datagram = new byte[600];
+
+        StateDatagram stateDatagram = FastProto.parseFrom(datagram, StateDatagram.class);
+        assertNotNull(stateDatagram);
     }
 }
