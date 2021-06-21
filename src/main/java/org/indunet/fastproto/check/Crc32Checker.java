@@ -20,13 +20,11 @@ import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.CheckSum;
 import org.indunet.fastproto.annotation.Endian;
-import org.indunet.fastproto.annotation.type.UInteger16Type;
 import org.indunet.fastproto.annotation.type.UInteger32Type;
-import org.indunet.fastproto.annotation.type.UInteger8Type;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.DecodeException.DecodeError;
-import org.indunet.fastproto.util.DecodeUtils;
-import org.indunet.fastproto.util.EncodeUtils;
+import org.indunet.fastproto.decoder.DecodeUtils;
+import org.indunet.fastproto.encoder.EncodeUtils;
 
 import java.util.zip.CRC32;
 

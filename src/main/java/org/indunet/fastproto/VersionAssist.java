@@ -25,8 +25,8 @@ import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.DecodeException.DecodeError;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.exception.EncodeException.EncodeError;
-import org.indunet.fastproto.util.DecodeUtils;
-import org.indunet.fastproto.util.EncodeUtils;
+import org.indunet.fastproto.decoder.DecodeUtils;
+import org.indunet.fastproto.encoder.EncodeUtils;
 
 import java.util.Optional;
 

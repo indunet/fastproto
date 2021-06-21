@@ -25,7 +25,7 @@ import org.indunet.fastproto.iot.Weather;
 import org.indunet.fastproto.iot.tesla.Battery;
 import org.indunet.fastproto.iot.tesla.Motor;
 import org.indunet.fastproto.iot.tesla.Tesla;
-import org.indunet.fastproto.util.EncodeUtils;
+import org.indunet.fastproto.encoder.EncodeUtils;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
