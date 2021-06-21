@@ -34,6 +34,10 @@ public class CodecException extends RuntimeException {
         this(error.getMessage());
     }
 
+    public CodecException(CodecError error, Throwable cause) {
+        this(error.getMessage(), cause);
+    }
+
     public CodecException(String message) {
         super(message);
     }
@@ -48,7 +52,8 @@ public class CodecException extends RuntimeException {
         INVALID_ENDIAN_POLICY("Invalid endian policy."),
         INVALID_COMPRESS_POLICY("Invalid compress policy."),
         ANNOTATION_FIELD_NOT_MATCH("Annotation {0} and field {1} doesn't match."),
-        UNSUPPORTED_TYPE("Unsupported type {0}");
+        UNSUPPORTED_TYPE("Unsupported type {0}"),
+        UNABLE_RESOLVE_PROTOCOL_CLASS("Unable to resolve the protocol class");
 
         String message;
     }

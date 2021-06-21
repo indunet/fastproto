@@ -22,6 +22,7 @@ import org.indunet.fastproto.annotation.CheckSum;
 import org.indunet.fastproto.annotation.EnableCompress;
 import org.indunet.fastproto.check.Checker;
 import org.indunet.fastproto.check.CheckerFactory;
+import org.indunet.fastproto.check.CheckerUtils;
 import org.indunet.fastproto.compress.CompressorFactory;
 import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.DecoderFactory;
@@ -30,6 +31,7 @@ import org.indunet.fastproto.encoder.EncoderFactory;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.DecodeException.DecodeError;
 
+import java.lang.annotation.Annotation;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -100,6 +102,32 @@ public class FastProto {
                 });
 
         return assist.getObject(protocolClass);
+    }
+
+    /**
+     * Convert object into binary datagram.
+     *
+     * @param object serialized object
+     * @return binary datagram.
+     */
+    public static byte[] toByteArray(@NonNull Object object) {
+        return toByteArray(object, true);
+    }
+
+    /**
+     * Convert object into binary datagram.
+     *
+     * @param object serialized object
+     * @param enableCompress enable compress
+     * @return binary datagram.
+     */
+    public static byte[] toByteArray(@NonNull Object object, boolean enableCompress) {
+        TypeAssist assist = assists.computeIfAbsent(object.getClass(), c -> TypeAssist.of(c));
+        int length = assist.getMaxLength();
+        length += CheckerUtils.getSize(object.getClass());
+        length += VersionAssist.getSize(object.getClass());
+
+        return toByteArray(object, length, enableCompress);
     }
 
     /**

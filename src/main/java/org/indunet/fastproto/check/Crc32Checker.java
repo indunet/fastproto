@@ -20,6 +20,9 @@ import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.CheckSum;
 import org.indunet.fastproto.annotation.Endian;
+import org.indunet.fastproto.annotation.type.UInteger16Type;
+import org.indunet.fastproto.annotation.type.UInteger32Type;
+import org.indunet.fastproto.annotation.type.UInteger8Type;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.DecodeException.DecodeError;
 import org.indunet.fastproto.util.DecodeUtils;
@@ -106,6 +109,11 @@ public class Crc32Checker implements Checker {
         }
 
         this.setValue(datagram, byteOffset, length, policy);
+    }
+
+    @Override
+    public int getSize() {
+        return UInteger32Type.SIZE;
     }
 
     public void setValue(byte[] datagram, int byteOffset, int length, EndianPolicy policy) {

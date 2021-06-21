@@ -18,6 +18,9 @@ package org.indunet.fastproto;
 
 import org.indunet.fastproto.annotation.Endian;
 import org.indunet.fastproto.annotation.ProtocolVersion;
+import org.indunet.fastproto.annotation.type.IntegerType;
+import org.indunet.fastproto.annotation.type.UInteger16Type;
+import org.indunet.fastproto.annotation.type.UInteger8Type;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.DecodeException.DecodeError;
 import org.indunet.fastproto.exception.EncodeException;
@@ -62,6 +65,24 @@ public class VersionAssist {
                 return DecodeUtils.uInteger16Type(datagram, byteOffset, policy);
             case INTEGER:
                 return DecodeUtils.integerType(datagram, byteOffset, policy);
+            default:
+                throw new DecodeException(DecodeError.ILLEGAL_PROTOCOL_VERSION_TYPE);
+        }
+    }
+
+    public static int getSize(Class<?> protocolClass) {
+        if (!protocolClass.isAnnotationPresent(ProtocolVersion.class)) {
+            return 0;
+        }
+
+        ProtocolVersion versionAnnotation = protocolClass.getAnnotation(ProtocolVersion.class);
+        switch (versionAnnotation.protocolType()) {
+            case UINTEGER8:
+                return UInteger8Type.SIZE;
+            case UINTEGER16:
+                return UInteger16Type.SIZE;
+            case INTEGER:
+                return IntegerType.SIZE;
             default:
                 throw new DecodeException(DecodeError.ILLEGAL_PROTOCOL_VERSION_TYPE);
         }

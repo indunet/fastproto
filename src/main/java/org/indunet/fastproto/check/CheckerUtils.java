@@ -16,12 +16,20 @@
 
 package org.indunet.fastproto.check;
 
+import org.indunet.fastproto.annotation.CheckSum;
+
 /**
  * @author Deng Ran
- * @since 1.6.0
+ * @since 1.6.2
  */
-public interface Checker {
-    boolean validate(byte[] datagram, Class<?> protocolClass);
-    void setValue(byte[] datagram, Class<?> protocolClass);
-    int getSize();
+public class CheckerUtils {
+    public static int getSize(Class<?> protocolCLass) {
+        if (protocolCLass.isAnnotationPresent(CheckSum.class)) {
+            return CheckerFactory
+                    .create(protocolCLass.getAnnotation(CheckSum.class))
+                    .getSize();
+        } else {
+            return 0;
+        }
+    }
 }

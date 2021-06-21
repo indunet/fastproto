@@ -125,7 +125,7 @@ public class FastProtoTest {
 
     @Test
     public void testWeather2() {
-        byte[] datagram = new byte[30];
+        byte[] datagram = new byte[23];
         Weather weather = Weather.builder()
                 .id(101)
                 .time(new Timestamp(System.currentTimeMillis()))
@@ -147,7 +147,7 @@ public class FastProtoTest {
         EncodeUtils.type(datagram, 18, 0, weather.isHumidityValid());
         EncodeUtils.type(datagram, 18, 1, weather.isTemperatureValid());
         EncodeUtils.type(datagram, 18, 2, weather.isPressureValid());
-        EncodeUtils.uInteger32Type(datagram, 26, EndianPolicy.BIG, Crc32Checker.getInstance().getValue(datagram, 0, -4));
+        EncodeUtils.uInteger32Type(datagram, 19, EndianPolicy.BIG, Crc32Checker.getInstance().getValue(datagram, 0, -4));
 
         // Compress the datagram.
         datagram = compressor.compress(datagram);
@@ -157,7 +157,7 @@ public class FastProtoTest {
                 FastProto.parseFrom(datagram, Weather.class).toString(), weather.toString());
 
         // Test encode.
-        byte[] cache = FastProto.toByteArray(weather, 30);
+        byte[] cache = FastProto.toByteArray(weather);
         assertArrayEquals(cache, datagram);
     }
 
@@ -212,11 +212,24 @@ public class FastProtoTest {
         assertEquals(FastProto.parseFrom(datagram, Everything.class, false).toString(), everything.toString());
 
         // Test encode.
-        byte[] cache = FastProto.toByteArray(everything, 80, false);
+        byte[] cache = FastProto.toByteArray(everything, false);
         assertArrayEquals(cache, datagram);
 
         // Test with gzip
         byte[] compressed = FastProto.toByteArray(everything, 80);
         assertEquals(FastProto.parseFrom(compressed, Everything.class).toString(), everything.toString());
+    }
+
+    @Test
+    public void testMotor() {
+        Motor motor = Motor.builder()
+                .temperature(26.6f)
+                .current(12)
+                .voltage((short) 24)
+                .build();
+
+        byte[] datagram = FastProto.toByteArray(motor);
+        assertEquals(44, datagram.length);
+        assertEquals(motor.toString(), FastProto.parseFrom(datagram, Motor.class).toString());
     }
 }
