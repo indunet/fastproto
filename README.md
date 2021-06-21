@@ -44,7 +44,7 @@ ProtoBuf solve the same problem in different ways. It is recommended to use Fast
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>1.5.2</version>
+    <version>1.6.2</version>
 </dependency>
 ```
 

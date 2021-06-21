@@ -24,7 +24,6 @@ import org.indunet.fastproto.annotation.type.TimestampType;
 import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.exception.EncodeException.EncodeError;
-import org.indunet.fastproto.util.EncodeUtils;
 
 import java.sql.Timestamp;
 import java.util.concurrent.TimeUnit;
