@@ -18,66 +18,58 @@ package org.indunet.fastproto.benchmark;
 
 import lombok.val;
 import org.indunet.fastproto.FastProto;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.openjdk.jmh.annotations.Scope;
-import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.*;
+import org.openjdk.jmh.runner.Runner;
+import org.openjdk.jmh.runner.RunnerException;
+import org.openjdk.jmh.runner.options.Options;
+import org.openjdk.jmh.runner.options.OptionsBuilder;
 
-import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.IntStream;
 
 /**
  * @author Deng Ran
  * @since 1.4.0
  */
-// @State(Scope.Benchmark)
+@State(Scope.Benchmark)
 public class FastProtoBenchmark {
-    protected static final int DECODE_NUM = 10;     // 1800 per second
-    protected static final int ENCODE_NUM = 10;     // 3000 per second
+    byte[] datagram;
+    Sample sample;
 
-    @ParameterizedTest
-    @MethodSource
-    public void testDecode(byte[] datagram) {
-        FastProto.parseFrom(datagram, Batches.class);
+    public static void main(String[] args) throws RunnerException {
+        Options opt = new OptionsBuilder()
+                .include(FastProtoBenchmark.class.getSimpleName())
+                .forks(1)
+                .warmupIterations(3)
+                .measurementIterations(10)
+                .build();
+        new Runner(opt).run();
     }
 
-    public static List<Arguments> testDecode() {
+    @Benchmark
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public void parseFrom() {
+        FastProto.parseFrom(datagram, Sample.class);
+    }
+
+    @Benchmark
+    @OutputTimeUnit(TimeUnit.MILLISECONDS)
+    public void toByteArray() {
+        byte[] datagram = FastProto.toByteArray(sample, 128);
+    }
+
+    @Setup
+    public void setup() {
         val random = new Random(System.currentTimeMillis());
+        byte[] tmp = new byte[128];
 
-        return IntStream.range(0, DECODE_NUM)
-                .mapToObj(__ -> {
-                    byte[] d = new byte[128];
+        IntStream.range(0, tmp.length)
+                .forEach(i -> {
+                    tmp[i] = (byte) random.nextInt();
+                });
 
-                    IntStream.range(0, d.length)
-                            .forEach(i -> d[i] = (byte) random.nextInt());
-
-                    return d;
-                }).map(Arguments::arguments)
-                .collect(Collectors.toList());
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    public void testEncode(Batches batches) {
-        byte[] datagram = FastProto.toByteArray(batches, 128);
-    }
-
-    public static List<Arguments> testEncode() {
-        val random = new Random(System.currentTimeMillis());
-
-        return IntStream.range(0, ENCODE_NUM)
-                .mapToObj(__ -> {
-                    byte[] d = new byte[128];
-
-                    IntStream.range(0, d.length)
-                            .forEach(i -> d[i] = (byte) random.nextInt());
-
-                    return d;
-                }).map(d -> FastProto.parseFrom(d, Batches.class))
-                .map(Arguments::arguments)
-                .collect(Collectors.toList());
+        this.datagram = tmp;
+        this.sample = FastProto.parseFrom(this.datagram, Sample.class);
     }
 }
