@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.performance;
+package org.indunet.fastproto.benchmark;
 
 /**
  * @author Deng Ran
