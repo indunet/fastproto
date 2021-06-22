@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.performance;
+package org.indunet.fastproto.benchmark;
 
 import lombok.val;
 import org.indunet.fastproto.FastProto;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
+import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.State;
 
 import java.util.List;
 import java.util.Random;
@@ -31,7 +33,8 @@ import java.util.stream.IntStream;
  * @author Deng Ran
  * @since 1.4.0
  */
-public class BatchTest {
+// @State(Scope.Benchmark)
+public class FastProtoBenchmark {
     protected static final int DECODE_NUM = 10;     // 1800 per second
     protected static final int ENCODE_NUM = 10;     // 3000 per second
 

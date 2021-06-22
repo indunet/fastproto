@@ -9,5 +9,5 @@ org.indunet.fastproto.iot
 org.indunet.fastproto.iot.formula
 org.indunet.fastproto.iot.tesla
 org.indunet.fastproto.iot.tesla.formula
-org.indunet.fastproto.performance
+org.indunet.fastproto.benchmark
 org.indunet.fastproto.util

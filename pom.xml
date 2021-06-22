@@ -148,6 +148,8 @@
         <lombok.version>1.18.16</lombok.version>
         <kafka.version>2.6.0</kafka.version>
         <kafka.junit5>3.2.2</kafka.junit5>
+        <jmh-core>1.3.2</jmh-core>
+        <jmh-generator-annprocess>1.3.2</jmh-generator-annprocess>
     </properties>
 
     <dependencies>
@@ -184,6 +186,20 @@
             <groupId>com.salesforce.kafka.test</groupId>
             <artifactId>kafka-junit5</artifactId>
             <version>${kafka.junit5}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-core</artifactId>
+            <version>${jmh-core}</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.openjdk.jmh</groupId>
+            <artifactId>jmh-generator-annprocess</artifactId>
+            <version>${jmh-generator-annprocess}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
