@@ -16,24 +16,28 @@
 
 package org.indunet.fastproto;
 
+import lombok.SneakyThrows;
 import lombok.val;
 import org.indunet.fastproto.annotation.type.UInteger64Type;
 import org.indunet.fastproto.check.Crc32Checker;
 import org.indunet.fastproto.compress.DeflateCompressor;
 import org.indunet.fastproto.iot.Everything;
 import org.indunet.fastproto.iot.Weather;
+import org.indunet.fastproto.iot.datagram.StateDatagram;
 import org.indunet.fastproto.iot.tesla.Battery;
 import org.indunet.fastproto.iot.tesla.Motor;
 import org.indunet.fastproto.iot.tesla.Tesla;
 import org.indunet.fastproto.encoder.EncodeUtils;
 import org.junit.jupiter.api.Test;
 
+import java.lang.reflect.Modifier;
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Deng Ran
@@ -231,5 +235,18 @@ public class FastProtoTest {
         byte[] datagram = FastProto.toByteArray(motor);
         assertEquals(44, datagram.length);
         assertEquals(motor.toString(), FastProto.parseFrom(datagram, Motor.class).toString());
+    }
+
+    public static class Member {
+
+    }
+
+    @Test
+    @SneakyThrows
+    public void testStateDatagram() {
+        byte[] datagram = new byte[600];
+
+        StateDatagram stateDatagram = FastProto.parseFrom(datagram, StateDatagram.class);
+        assertNotNull(stateDatagram);
     }
 }
