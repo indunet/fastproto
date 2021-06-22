@@ -189,14 +189,16 @@ the binary format.
 | `@EnableCompress` | Class        | Compress or decompress datagram, default as gzip. |
 | `@ProtocolVersion` | Class     |  Add protocol version to datagram and validate when deserializing  |
 
-## *Performance Test*
+## *Benchmark*
 
-*   Windows 10   
-*   JDK 1.8.0    
-*   AMD Ryzen 5 3500U, 2.1GHz, 8 cores   
+*   macOS with m1 8 cores   
+*   openjdk 1.8.0_292
+*   datagram of 128 bytes and nested protocol class of 48 fields 
 
-The binary datagram is 128 bytes, and the test data object contains 48 fields(24 Boolean, 16 Integer, 8 Double). 
-**FastProto can serialize 3000 objects or deserialize 1800 datagram within 1 second.**
+|Benchmark |    Mode  | Samples  |  Score  |   Error   |   Units   |
+|:--------:|:--------:|:--------:|:-------:|:---------:|:---------:|
+| `FastProto::parseFrom` |  throughput   |   10  |   115.2 | ± 1.6    |  ops/ms   |
+| `FastProto::toByteArray` | throughput  |   10  |   285.7 | ± 1.5    |  ops/ms   |
 
 ## *Build Requirements*
 
