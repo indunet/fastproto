@@ -25,6 +25,8 @@ import org.indunet.fastproto.annotation.CheckSum;
 public class CheckerFactory {
     public static Checker create(CheckSum checkSum) {
         switch (checkSum.value()) {
+            case CRC8:
+                return Crc8Checker.getInstance();
             case CRC32:
                 return Crc32Checker.getInstance();
             default:
