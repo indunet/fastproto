@@ -16,12 +16,21 @@
 
 package org.indunet.fastproto.check;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * @author Deng Ran
  * @since 1.6.0
  */
+@AllArgsConstructor
+@Getter
 public enum CheckPolicy {
-    CRC8(),
-    CRC16(),
-    CRC32()
+    CRC8(0xD5),
+    CRC8_CCITT(0x8D),
+    CRC16(0xA001),
+    CRC16_CCITT(0x8408),
+    CRC32(0);
+
+    int poly;
 }

@@ -60,7 +60,8 @@ public class Crc16Checker implements Checker {
         }
 
         val checkSum = protocolClass.getAnnotation(CheckSum.class);
-        int byteOffset = checkSum.byteOffset();
+        int byteOffset = checkSum.value();
+        int start = checkSum.start();
         int length = checkSum.length();
         EndianPolicy policy;
 
@@ -72,11 +73,8 @@ public class Crc16Checker implements Checker {
             policy = EndianPolicy.LITTLE;
         }
 
-        int actual = this.getValue(datagram, byteOffset, length, policy);
-
-        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
-        int l = length >= 0 ? length : datagram.length + length - bo;
-        int expected = DecodeUtils.uInteger16Type(datagram, bo + l, policy);
+        int actual = this.getValue(datagram, start, length);
+        int expected = DecodeUtils.uInteger16Type(datagram, byteOffset, policy);
 
         return actual == expected;
     }
@@ -88,7 +86,8 @@ public class Crc16Checker implements Checker {
         }
 
         val checkSum = protocolClass.getAnnotation(CheckSum.class);
-        int byteOffset = checkSum.byteOffset();
+        int byteOffset = checkSum.value();
+        int start = checkSum.start();
         int length = checkSum.length();
         EndianPolicy policy;
 
@@ -100,7 +99,7 @@ public class Crc16Checker implements Checker {
             policy = EndianPolicy.LITTLE;
         }
 
-        this.setValue(datagram, byteOffset, length, policy);
+        this.setValue(datagram, byteOffset, start, length, policy);
     }
 
     @Override
@@ -108,7 +107,7 @@ public class Crc16Checker implements Checker {
         return UInteger16Type.SIZE;
     }
 
-    public int getValue(byte[] datagram, int byteOffset, int length, EndianPolicy policy) {
+    public int getValue(byte[] datagram, int byteOffset, int length) {
         int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
         int l = length >= 0 ? length : datagram.length + length - bo;
 
@@ -138,11 +137,9 @@ public class Crc16Checker implements Checker {
         return crc16;
     }
 
-    public void setValue(byte[] datagram, int byteOffset, int length, EndianPolicy policy) {
-        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
-        int l = length >= 0 ? length : datagram.length + length - bo;
-        int value = this.getValue(datagram, byteOffset, length, policy);
+    public void setValue(byte[] datagram, int byteOffset, int start, int length, EndianPolicy policy) {
+        int value = this.getValue(datagram, start, length);
 
-        EncodeUtils.uInteger16Type(datagram, bo + l, policy, value);
+        EncodeUtils.uInteger16Type(datagram, byteOffset, policy, value);
     }
 }

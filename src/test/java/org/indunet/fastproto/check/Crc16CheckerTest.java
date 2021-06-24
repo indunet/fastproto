@@ -43,7 +43,7 @@ class Crc16CheckerTest {
 
         IntStream.range(0, 10)
                 .forEach(i -> datagram[i] = (byte) random.nextInt());
-        int value = checker.getValue(datagram, 0, 8, EndianPolicy.BIG);
+        int value = checker.getValue(datagram, 0, 8);
 
         String tmp = CRC16Util.getCRC(Arrays.copyOfRange(datagram, 0, 8));
         int x = Integer.parseInt(tmp, 16);
@@ -52,7 +52,7 @@ class Crc16CheckerTest {
         assertTrue(checker.validate(datagram, TestObject.class));
     }
 
-    @CheckSum(value = CheckPolicy.CRC16, byteOffset = 0, length = -2, endianPolicy = EndianPolicy.BIG)
+    @CheckSum(checkPolicy = CheckPolicy.CRC16, start = 0, length = -2, endianPolicy = EndianPolicy.BIG)
     public static class TestObject {
 
     }
