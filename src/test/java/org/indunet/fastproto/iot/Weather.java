@@ -38,7 +38,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @EnableCompress(value = CompressPolicy.DEFLATE, level = 2)
-@CheckSum(value = CheckPolicy.CRC32, byteOffset = 0, length = -4, endianPolicy = EndianPolicy.BIG)
+@CheckSum(value = -4, start = 0, length = -4, checkPolicy = CheckPolicy.CRC32, endianPolicy = EndianPolicy.BIG)
 public class Weather {
     @UInteger8Type(0)
     int id;

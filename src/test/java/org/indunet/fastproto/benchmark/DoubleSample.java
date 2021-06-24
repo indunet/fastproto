@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.performance;
+package org.indunet.fastproto.benchmark;
 
 import org.indunet.fastproto.annotation.type.DoubleType;
 
@@ -22,7 +22,7 @@ import org.indunet.fastproto.annotation.type.DoubleType;
  * @author Deng Ran
  * @since 1.4.0
  */
-public class DoubleBatch {
+public class DoubleSample {
     protected static final int BYTE_OFFET = 64;
 
     @DoubleType(value = BYTE_OFFET)

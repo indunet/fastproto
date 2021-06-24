@@ -16,7 +16,6 @@
 
 package org.indunet.fastproto.check;
 
-import lombok.Builder;
 import lombok.val;
 import org.indunet.fastproto.annotation.CheckSum;
 import org.indunet.fastproto.encoder.EncodeUtils;
@@ -24,36 +23,50 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Random;
 import java.util.stream.IntStream;
-import java.util.zip.CRC32;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Deng Ran
- * @since 1.6.0
+ * @since 1.6.3
  */
-class Crc32CheckerTest {
-    Crc32Checker checker = Crc32Checker.getInstance();
+public class Crc8CheckerTest {
 
     @Test
-    public void testValidate() {
+    public void testCrc8() {
+        Crc8Checker checker = Crc8Checker.getInstance();
         val datagram = new byte[10];
         val random = new Random(System.currentTimeMillis());
 
         IntStream.range(0, 10)
                 .forEach(i -> datagram[i] = (byte) random.nextInt());
-        CRC32 crc32 = new CRC32();
+        int value = checker.getValue(datagram, 0, 9);
+        EncodeUtils.uInteger8Type(datagram, 9, value);
 
-        crc32.update(datagram, 0, 6);
-        long value = crc32.getValue();
-        EncodeUtils.uInteger32Type(datagram, 6, value);
-
-        assertTrue(checker.validate(datagram, TestObject.class));
+        assertTrue(checker.validate(datagram, TestObject1.class));
     }
 
-    @CheckSum(value = -4, start = 0, length = -4, checkPolicy = CheckPolicy.CRC32)
-    @Builder
-    public static class TestObject {
+    @CheckSum(value = -1, start = 0, length = -1, checkPolicy = CheckPolicy.CRC8)
+    public static class TestObject1 {
+
+    }
+
+    @Test
+    public void testCrc8Ccitt() {
+        val checker = Crc8Checker.getInstance(CheckPolicy.CRC8_CCITT.getPoly());
+        val datagram = new byte[10];
+        val random = new Random(System.currentTimeMillis());
+
+        IntStream.range(0, 10)
+                .forEach(i -> datagram[i] = (byte) random.nextInt());
+        int value = checker.getValue(datagram, 0, 9);
+        EncodeUtils.uInteger8Type(datagram, 9, value);
+
+        assertTrue(checker.validate(datagram, TestObject2.class));
+    }
+
+    @CheckSum(value = -1, start = 0, length = -1, checkPolicy = CheckPolicy.CRC8_CCITT)
+    public static class TestObject2 {
 
     }
 }

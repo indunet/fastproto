@@ -20,24 +20,37 @@ import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.CheckSum;
 import org.indunet.fastproto.annotation.Endian;
-import org.indunet.fastproto.annotation.type.UInteger32Type;
-import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.DecodeException.DecodeError;
+import org.indunet.fastproto.annotation.type.UInteger16Type;
 import org.indunet.fastproto.decoder.DecodeUtils;
 import org.indunet.fastproto.encoder.EncodeUtils;
+import org.indunet.fastproto.exception.DecodeException;
 
-import java.util.zip.CRC32;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * @author Deng Ran
- * @see Checker
- * @since 1.6.0
+ * @since 1.6.3
  */
-public class Crc32Checker implements Checker {
-    protected final static Crc32Checker checker = new Crc32Checker();
+public class Crc16Checker implements Checker {
+    protected final static int defaultPoly = 0xA001;
+    protected int poly;
+    protected final static Map<Integer, Crc16Checker> checkers = new ConcurrentHashMap<>();
 
-    public static Crc32Checker getInstance() {
-        return checker;
+    protected Crc16Checker(int poly) {
+        this.poly = poly;
+    }
+
+    public static Crc16Checker getInstance() {
+        return checkers.computeIfAbsent(defaultPoly, p -> new Crc16Checker(p));
+    }
+
+    public static synchronized Crc16Checker getInstance(int poly) {
+        if (poly == 0) {
+            return getInstance();
+        } else {
+            return checkers.computeIfAbsent(poly, p -> new Crc16Checker(p));
+        }
     }
 
     @Override
@@ -47,9 +60,9 @@ public class Crc32Checker implements Checker {
         }
 
         val checkSum = protocolClass.getAnnotation(CheckSum.class);
-        int byteOffset = checkSum.start();
+        int byteOffset = checkSum.value();
+        int start = checkSum.start();
         int length = checkSum.length();
-
         EndianPolicy policy;
 
         if (checkSum.endianPolicy().length != 0) {
@@ -60,31 +73,10 @@ public class Crc32Checker implements Checker {
             policy = EndianPolicy.LITTLE;
         }
 
-        long actual = this.getValue(datagram, byteOffset, length);
-
-        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
-        int l = length >= 0 ? length : datagram.length + length - bo;
-        long expected = DecodeUtils.uInteger32Type(datagram, bo + l, policy);
+        int actual = this.getValue(datagram, start, length);
+        int expected = DecodeUtils.uInteger16Type(datagram, byteOffset, policy);
 
         return actual == expected;
-    }
-
-    public long getValue(byte[] datagram, int start, int length) {
-        int s = start >= 0 ? start : datagram.length + start;
-        int l = length >= 0 ? length : datagram.length + length - s;
-
-        if (s < 0) {
-            throw new DecodeException(DecodeException.DecodeError.ILLEGAL_BYTE_OFFSET);
-        } else if (l < 0) {
-            throw new DecodeException(DecodeError.ILLEGAL_PARAMETER);
-        } else if (s + length > datagram.length) {
-            throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
-        }
-
-        CRC32 crc32 = new CRC32();
-        crc32.update(datagram, s, l);
-
-        return crc32.getValue();
     }
 
     @Override
@@ -112,12 +104,42 @@ public class Crc32Checker implements Checker {
 
     @Override
     public int getSize() {
-        return UInteger32Type.SIZE;
+        return UInteger16Type.SIZE;
+    }
+
+    public int getValue(byte[] datagram, int byteOffset, int length) {
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int l = length >= 0 ? length : datagram.length + length - bo;
+
+        if (bo < 0) {
+            throw new DecodeException(DecodeException.DecodeError.ILLEGAL_BYTE_OFFSET);
+        } else if (l < 0) {
+            throw new DecodeException(DecodeException.DecodeError.ILLEGAL_PARAMETER);
+        } else if (bo + length > datagram.length) {
+            throw new DecodeException(DecodeException.DecodeError.EXCEEDED_DATAGRAM_SIZE);
+        }
+
+        int crc16 = 0xFFFF;
+
+        for (int i = 0; i < l; i++) {
+            crc16 ^= ((int) datagram[bo + i] & 0xFF);
+
+            for (int j = 0; j < 8; j++) {
+                if ((crc16 & 0x0001) == 1) {
+                    crc16 >>= 1;
+                    crc16 ^= poly;
+                } else {
+                    crc16 >>= 1;
+                }
+            }
+        }
+
+        return crc16;
     }
 
     public void setValue(byte[] datagram, int byteOffset, int start, int length, EndianPolicy policy) {
-        long value = this.getValue(datagram, start, length);
+        int value = this.getValue(datagram, start, length);
 
-        EncodeUtils.uInteger32Type(datagram, byteOffset, policy, value);
+        EncodeUtils.uInteger16Type(datagram, byteOffset, policy, value);
     }
 }

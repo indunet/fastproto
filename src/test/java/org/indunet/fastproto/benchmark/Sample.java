@@ -14,17 +14,14 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.performance;
+package org.indunet.fastproto.benchmark;
 
 /**
  * @author Deng Ran
  * @since 1.4.0
  */
-public class Batches {
-//    @IntegerType(0)
-//    int id;
-
-    BooleanBatch booleanBatch;
-    IntegerBatch integerBatch;
-    DoubleBatch doubleBatch;
+public class Sample {
+    BooleanSample booleanSample;
+    IntegerSample integerSample;
+    DoubleSample doubleBatch;
 }

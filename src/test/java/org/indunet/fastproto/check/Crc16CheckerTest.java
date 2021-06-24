@@ -16,24 +16,25 @@
 
 package org.indunet.fastproto.check;
 
-import lombok.Builder;
 import lombok.val;
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.CheckSum;
 import org.indunet.fastproto.encoder.EncodeUtils;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;
-import java.util.zip.CRC32;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Deng Ran
- * @since 1.6.0
+ * @since 1.6.3
  */
-class Crc32CheckerTest {
-    Crc32Checker checker = Crc32Checker.getInstance();
+class Crc16CheckerTest {
+    Crc16Checker checker = Crc16Checker.getInstance();
 
     @Test
     public void testValidate() {
@@ -42,17 +43,16 @@ class Crc32CheckerTest {
 
         IntStream.range(0, 10)
                 .forEach(i -> datagram[i] = (byte) random.nextInt());
-        CRC32 crc32 = new CRC32();
+        int value = checker.getValue(datagram, 0, 8);
 
-        crc32.update(datagram, 0, 6);
-        long value = crc32.getValue();
-        EncodeUtils.uInteger32Type(datagram, 6, value);
-
+        String tmp = CRC16Util.getCRC(Arrays.copyOfRange(datagram, 0, 8));
+        int x = Integer.parseInt(tmp, 16);
+        EncodeUtils.uInteger16Type(datagram, 8, EndianPolicy.BIG, value);
+        assertEquals(value, x);
         assertTrue(checker.validate(datagram, TestObject.class));
     }
 
-    @CheckSum(value = -4, start = 0, length = -4, checkPolicy = CheckPolicy.CRC32)
-    @Builder
+    @CheckSum(checkPolicy = CheckPolicy.CRC16, start = 0, length = -2, endianPolicy = EndianPolicy.BIG)
     public static class TestObject {
 
     }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.performance;
+package org.indunet.fastproto.benchmark;
 
 import org.indunet.fastproto.annotation.type.IntegerType;
 
@@ -22,7 +22,7 @@ import org.indunet.fastproto.annotation.type.IntegerType;
  * @author Deng Ran
  * @since 1.4.0
  */
-public class IntegerBatch {
+public class IntegerSample {
     protected static final int BYTE_OFFET = 4;
 
     @IntegerType(value = BYTE_OFFET)

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.performance;
+package org.indunet.fastproto.benchmark;
 
 import org.indunet.fastproto.annotation.type.BooleanType;
 
@@ -22,7 +22,7 @@ import org.indunet.fastproto.annotation.type.BooleanType;
  * @author Deng Ran
  * @since 1.4.0
  */
-public class BooleanBatch {
+public class BooleanSample {
     protected static final int BYTE_OFFET = 0;
 
     @BooleanType(value = BYTE_OFFET, bitOffset = 0)
