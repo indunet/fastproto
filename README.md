@@ -9,7 +9,7 @@
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 FastProto is a protocolized binary serialization & deserialization tool written in Java, which allows developers to 
-customize binary format through annotations. It solves the problem of cross-language and cross-platform data sharing 
+customize binary format through annotations. It solves the problem of cross-language and cross-platform data exchange 
 of Java in a new form, especially suitable for the field of Internet of Things(IoT).
 
 ## *Features*
@@ -18,14 +18,13 @@ of Java in a new form, especially suitable for the field of Internet of Things(I
 *   Customize binary format through annotations.    
 *   Support [decoding formula & encoding formula][formula]   
 *   Support unsigned data types such as uint8, uint16, uint32 and uint64 
-*   Customize endianness(big endian or little endian)
-*   Support datagram compress and decompress(gzip, deflate)  
-*   Support version verification and checksum verification(crc32)
+*   Support data [compress and decompress(gzip, deflate)][compression]  
+*   Support [protocol version verification][version]
+*   Support [data integrity check][integrity]
 *   Built-in [Kafka serializer & deserializer][kafka]
 
 ## *Under Developing*
 
-*   Cyclic Redundancy Check(crc8 & crc16)   
 *   Netty decoder & encoder  
 
 ## Compared with ProtoBuf
@@ -192,7 +191,7 @@ the binary format.
 
 ## *Benchmark*
 
-*   macOS with m1 8 cores 16gb
+*   macOS, m1 8 cores, 16gb
 *   openjdk 1.8.0_292
 *   datagram of 128 bytes and nested protocol class of 48 fields 
 
@@ -228,3 +227,6 @@ limitations under the License.
 
 [formula]: https://github.com/indunet/fastproto/wiki/Conversion-Formula
 [kafka]: https://github.com/indunet/fastproto/wiki/Work-with-Kafka
+[integrity]: https://github.com/indunet/fastproto/wiki/Data-Integrity-Check
+[version]: https://github.com/indunet/fastproto/wiki/Protocol-Version
+[compression]: https://github.com/indunet/fastproto/wiki/Compression
