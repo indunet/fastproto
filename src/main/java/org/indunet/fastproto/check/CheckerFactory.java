@@ -16,6 +16,7 @@
 
 package org.indunet.fastproto.check;
 
+import lombok.NonNull;
 import org.indunet.fastproto.annotation.CheckSum;
 
 /**
@@ -23,14 +24,19 @@ import org.indunet.fastproto.annotation.CheckSum;
  * @since 1.6.0
  */
 public class CheckerFactory {
-    public static Checker create(CheckSum checkSum) {
+    public static Checker create(@NonNull CheckSum checkSum) {
+        CheckPolicy policy = checkSum.value();
+        int poly = checkSum.poly();
+
         switch (checkSum.value()) {
             case CRC8:
-                return Crc8Checker.getInstance();
+                return Crc8Checker.getInstance(poly);
+            case CRC16:
+                return Crc16Checker.getInstance(poly);
             case CRC32:
                 return Crc32Checker.getInstance();
-            default:
-                return Crc32Checker.getInstance();
         }
+
+        return Crc16Checker.getInstance();
     }
 }

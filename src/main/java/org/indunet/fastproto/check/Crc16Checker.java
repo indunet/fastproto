@@ -16,10 +16,11 @@
 
 package org.indunet.fastproto.check;
 
-import lombok.Getter;
 import lombok.val;
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.CheckSum;
-import org.indunet.fastproto.annotation.type.UInteger8Type;
+import org.indunet.fastproto.annotation.Endian;
+import org.indunet.fastproto.annotation.type.UInteger16Type;
 import org.indunet.fastproto.decoder.DecodeUtils;
 import org.indunet.fastproto.encoder.EncodeUtils;
 import org.indunet.fastproto.exception.DecodeException;
@@ -31,25 +32,24 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Deng Ran
  * @since 1.6.3
  */
-@Getter
-public class Crc8Checker implements Checker {
-    protected static final Map<Integer, Crc8Checker> checkers = new ConcurrentHashMap<>();
-    protected static final int defaultPoly = 0xD5;
+public class Crc16Checker implements Checker {
+    protected final static int defaultPoly = 0xA001;
     protected int poly;
+    protected final static Map<Integer, Crc16Checker> checkers = new ConcurrentHashMap<>();
 
-    protected Crc8Checker(int poly) {
+    protected Crc16Checker(int poly) {
         this.poly = poly;
     }
 
-    public static Crc8Checker getInstance() {
-        return checkers.computeIfAbsent(defaultPoly, p -> new Crc8Checker(p));
+    public static Crc16Checker getInstance() {
+        return checkers.computeIfAbsent(defaultPoly, p -> new Crc16Checker(p));
     }
 
-    public static synchronized Crc8Checker getInstance(int poly) {
+    public static synchronized Crc16Checker getInstance(int poly) {
         if (poly == 0) {
             return getInstance();
         } else {
-            return checkers.computeIfAbsent(poly, p -> new Crc8Checker(poly));
+            return checkers.computeIfAbsent(poly, p -> new Crc16Checker(p));
         }
     }
 
@@ -62,12 +62,21 @@ public class Crc8Checker implements Checker {
         val checkSum = protocolClass.getAnnotation(CheckSum.class);
         int byteOffset = checkSum.byteOffset();
         int length = checkSum.length();
+        EndianPolicy policy;
 
-        int actual = this.getValue(datagram, byteOffset, length);
+        if (checkSum.endianPolicy().length != 0) {
+            policy = checkSum.endianPolicy()[0];
+        } else if (protocolClass.isAnnotationPresent(Endian.class)) {
+            policy = protocolClass.getAnnotation(Endian.class).value();
+        } else {
+            policy = EndianPolicy.LITTLE;
+        }
+
+        int actual = this.getValue(datagram, byteOffset, length, policy);
 
         int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
         int l = length >= 0 ? length : datagram.length + length - bo;
-        int expected = DecodeUtils.uInteger8Type(datagram, bo + l);
+        int expected = DecodeUtils.uInteger16Type(datagram, bo + l, policy);
 
         return actual == expected;
     }
@@ -81,24 +90,25 @@ public class Crc8Checker implements Checker {
         val checkSum = protocolClass.getAnnotation(CheckSum.class);
         int byteOffset = checkSum.byteOffset();
         int length = checkSum.length();
+        EndianPolicy policy;
 
-        this.setValue(datagram, byteOffset, length);
+        if (checkSum.endianPolicy().length != 0) {
+            policy = checkSum.endianPolicy()[0];
+        } else if (protocolClass.isAnnotationPresent(Endian.class)) {
+            policy = protocolClass.getAnnotation(Endian.class).value();
+        } else {
+            policy = EndianPolicy.LITTLE;
+        }
+
+        this.setValue(datagram, byteOffset, length, policy);
     }
 
     @Override
     public int getSize() {
-        return UInteger8Type.SIZE;
+        return UInteger16Type.SIZE;
     }
 
-    public void setValue(byte[] datagram, int byteOffset, int length) {
-        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
-        int l = length >= 0 ? length : datagram.length + length - bo;
-        int value = this.getValue(datagram, byteOffset, length);
-
-        EncodeUtils.uInteger8Type(datagram, bo + l, value);
-    }
-
-    public int getValue(byte[] datagram, int byteOffset, int length) {
+    public int getValue(byte[] datagram, int byteOffset, int length, EndianPolicy policy) {
         int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
         int l = length >= 0 ? length : datagram.length + length - bo;
 
@@ -110,21 +120,29 @@ public class Crc8Checker implements Checker {
             throw new DecodeException(DecodeException.DecodeError.EXCEEDED_DATAGRAM_SIZE);
         }
 
-        byte crc8 = 0;
+        int crc16 = 0xFFFF;
 
-        for (int i = 0; i < l; i ++) {
-            crc8 ^= datagram[bo + i];
+        for (int i = 0; i < l; i++) {
+            crc16 ^= ((int) datagram[bo + i] & 0xFF);
 
-            for (int j = 0; j < 8; j ++) {
-                if ((crc8 & 0x80) != 0) {
-                    crc8 <<= 1;
-                    crc8 ^= poly;
+            for (int j = 0; j < 8; j++) {
+                if ((crc16 & 0x0001) == 1) {
+                    crc16 >>= 1;
+                    crc16 ^= poly;
                 } else {
-                    crc8 <<= 1;
+                    crc16 >>= 1;
                 }
             }
         }
 
-        return crc8 & 0xFF;
+        return crc16;
+    }
+
+    public void setValue(byte[] datagram, int byteOffset, int length, EndianPolicy policy) {
+        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int l = length >= 0 ? length : datagram.length + length - bo;
+        int value = this.getValue(datagram, byteOffset, length, policy);
+
+        EncodeUtils.uInteger16Type(datagram, bo + l, policy, value);
     }
 }

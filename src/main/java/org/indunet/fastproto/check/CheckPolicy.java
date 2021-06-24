@@ -22,5 +22,6 @@ package org.indunet.fastproto.check;
  */
 public enum CheckPolicy {
     CRC8(),
+    CRC16(),
     CRC32()
 }
