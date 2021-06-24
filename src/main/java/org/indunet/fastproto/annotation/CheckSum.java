@@ -21,5 +21,7 @@ public @interface CheckSum {
 
     int length() default -1;
 
+    int poly() default 0;
+
     EndianPolicy[] endianPolicy() default {};
 }

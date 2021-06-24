@@ -14,29 +14,29 @@ of Java in a new form, especially suitable for the field of Internet of Things(I
 
 ## *Features*
 
-*   Binary serialization & deserialization   
+*   Protocolized binary serialization & deserialization
+*   Customize binary format through annotations.    
 *   Support [decoding formula & encoding formula][formula]   
-*   Customize binary format through annotations and support reverse addressing    
 *   Support unsigned data types such as uint8, uint16, uint32 and uint64 
 *   Customize endianness(big endian or little endian)
 *   Support datagram compress and decompress(gzip, deflate)  
 *   Support version verification and checksum verification(crc32)
 *   Built-in [Kafka serializer & deserializer][kafka]
 
+## *Under Developing*
+
+*   Cyclic Redundancy Check(crc8 & crc16)   
+*   Netty decoder & encoder  
+
 ## Compared with ProtoBuf
 
 Compared with ProtoBuff, FastProto does not have any obvious advantages, it can only be said that FastProto and
 ProtoBuf solve the same problem in different ways. It is recommended to use FastProto in the following scenarios:
 
-*   Due to network bandwidth and traffic limitations, smaller serialization results are required 
+*   Due to network bandwidth and traffic limitations, smaller serialization results are required
 *   Unable to unify technical routes between systems, especially for embedded systems
 *   Due to debugging requirements, the serialized result must be human readable
 *   Read & write binary format files
-
-## *Under Developing*
-
-*   Cyclic Redundancy Check(crc8 & crc16)   
-*   Netty decoder & encoder  
 
 ## *Maven*
 
@@ -140,7 +140,7 @@ An encoding formula is needed if need to perform serialization, which also need 
 public class PressureEncodeFormula implements Function<Double, Long> {
     @Override
     public Long apply(Double value) {
-        return (int) (value * 10);
+        return (long) (value * 10);
     }
 }
 ```
@@ -188,10 +188,11 @@ the binary format.
 | `@EncodeIgnore` | Field        | Ignore the field when encoding.       |
 | `@EnableCompress` | Class        | Compress or decompress datagram, default as gzip. |
 | `@ProtocolVersion` | Class     |  Add protocol version to datagram and validate when deserializing  |
+| `@CheckSum`      |  Class      |  Data integrity check               |
 
 ## *Benchmark*
 
-*   macOS with m1 8 cores   
+*   macOS with m1 8 cores 16gb
 *   openjdk 1.8.0_292
 *   datagram of 128 bytes and nested protocol class of 48 fields 
 

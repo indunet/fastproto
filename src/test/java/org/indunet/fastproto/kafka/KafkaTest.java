@@ -81,6 +81,7 @@ public class KafkaTest {
                 }
             }
         };
+
         Thread thread = new Thread(task);
         thread.start();
 
