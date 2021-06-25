@@ -58,7 +58,8 @@ public class EncodeException extends CodecException {
         ILLEGAL_TIMESTAMP_PARAMETERS("Illgeal timestamp parameters."),
         FAIL_COMPRESS_DATAGRAM("Fail compressing datagram with {0}"),
         ILLEGAL_PROTOCOL_VERSION_TYPE("Illegal protocol version type"),
-        UNABLE_INFER_LENGTH("Unable to infer the datagram length in reverse addressing mode.");
+        UNABLE_INFER_LENGTH("Unable to infer the datagram length in reverse addressing mode."),
+        FAIL_ENCODING_FIELD("Fail encoding field of {0}");
 
         String message;
     }

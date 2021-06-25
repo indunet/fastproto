@@ -41,7 +41,7 @@ public class DecodeException extends CodecException {
     }
 
     public DecodeException(String message, Throwable cause) {
-        super(message);
+        super(message, cause);
     }
 
     @AllArgsConstructor
@@ -62,7 +62,8 @@ public class DecodeException extends CodecException {
         FAIL_DECOMPRESS_DATAGRAM("Fail decompressing datagram with {0}"),
         PROTOCOL_VERSION_NOT_MATCH("Protocol version and datagram version doesn't match."),
         ILLEGAL_PROTOCOL_VERSION_TYPE("Illegal protocol version type"),
-        ILLEGAL_CHECK_SUM("Illegal check sum");
+        ILLEGAL_CHECK_SUM("Illegal check sum"),
+        FAIL_DECODING_FILED("Fail decoding filed of {0}");
 
         String message;
     }

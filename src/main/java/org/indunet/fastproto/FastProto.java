@@ -30,8 +30,9 @@ import org.indunet.fastproto.encoder.EncodeContext;
 import org.indunet.fastproto.encoder.EncoderFactory;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.DecodeException.DecodeError;
+import org.indunet.fastproto.exception.EncodeException;
 
-import java.lang.annotation.Annotation;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -96,9 +97,14 @@ public class FastProto {
                     Function<DecodeContext, ?> func = DecoderFactory.getDecoder(
                             a.getDecoderClass(),
                             a.getDecodeFormula());
-                    Object value = func.apply(c);
-                    Object o = c.getObject();
-                    a.setValue(o, value);
+                    try {
+                        Object value = func.apply(c);
+                        Object o = c.getObject();
+                        a.setValue(o, value);
+                    } catch (DecodeException e) {
+                        throw new DecodeException(MessageFormat.format(
+                                DecodeError.FAIL_DECODING_FILED.getMessage(), a.getField().toString()), e);
+                    }
                 });
 
         return assist.getObject(protocolClass);
@@ -157,14 +163,22 @@ public class FastProto {
 
         contexts.stream()
                 .forEach(c -> {
-                    if (c.getTypeAssist().getEncodeFormula() != null) {
-                        Object o = EncoderFactory.getFormula(c.getTypeAssist().getEncodeFormula())
-                                .apply(c.getValue());
-                        c.setValue(o);
-                    }
+                    TypeAssist a = c.getTypeAssist();
 
-                    Consumer<EncodeContext> consumer = EncoderFactory.getEncoder(c.getTypeAssist().getEncoderClass());
-                    consumer.accept(c);
+                    try {
+                        if (a.getEncodeFormula() != null) {
+                            Object o = EncoderFactory.getFormula(c.getTypeAssist().getEncodeFormula())
+                                    .apply(c.getValue());
+                            c.setValue(o);
+                        }
+
+                        Consumer<EncodeContext> consumer = EncoderFactory.getEncoder(c.getTypeAssist().getEncoderClass());
+                        consumer.accept(c);
+                    } catch (EncodeException e) {
+                        throw new EncodeException(MessageFormat.format(
+                                EncodeException.EncodeError.FAIL_ENCODING_FIELD.getMessage(),
+                                    a.getField().toString()), e);
+                    }
                 });
 
         // Protocol version.
