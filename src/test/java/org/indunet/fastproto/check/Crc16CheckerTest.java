@@ -18,6 +18,7 @@ package org.indunet.fastproto.check;
 
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.CheckSum;
 import org.indunet.fastproto.encoder.EncodeUtils;
 import org.junit.jupiter.api.Test;
@@ -26,8 +27,7 @@ import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Deng Ran
@@ -55,5 +55,13 @@ class Crc16CheckerTest {
     @CheckSum(value = CheckPolicy.CRC16, byteOffset = 0, length = -2, endianPolicy = EndianPolicy.BIG)
     public static class TestObject {
 
+    }
+
+    @Test
+    public void testToByteArray() {
+        val testObject = new TestObject();
+        val datagram = FastProto.toByteArray(testObject, 30);
+
+        assertNotNull(datagram);
     }
 }
