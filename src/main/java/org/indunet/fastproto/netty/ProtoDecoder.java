@@ -20,9 +20,10 @@ import com.sun.istack.internal.NotNull;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import lombok.val;
+import org.indunet.fastproto.FastProto;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Netty decoder.
@@ -32,24 +33,22 @@ import java.util.Optional;
  */
 public class ProtoDecoder extends ByteToMessageDecoder {
     Class<?> protocolClass;
-    Optional<Integer> length;
 
     public ProtoDecoder(@NotNull Class<?> protocolClass) {
         this.protocolClass = protocolClass;
-        this.length = Optional.empty();
-    }
-
-    public ProtoDecoder(@NotNull Class<?> protocolClass, int length) {
-        if (length <= 0) {
-            throw new ProtoNettyException();
-        }
-
-        this.protocolClass = protocolClass;
-        this.length = Optional.empty();
     }
 
     @Override
     protected void decode(ChannelHandlerContext context, ByteBuf byteBuf, List<Object> list) throws Exception {
-        // HttpRequestDecoder
+        if (byteBuf.readableBytes() <= 0) {
+            return;
+        }
+
+        val datagram = new byte[4];
+        val bf = byteBuf.readBytes(4);
+        bf.getBytes(bf.readerIndex(), datagram);
+        Object object = FastProto.parseFrom(datagram, this.protocolClass);
+
+        list.add(object);
     }
 }

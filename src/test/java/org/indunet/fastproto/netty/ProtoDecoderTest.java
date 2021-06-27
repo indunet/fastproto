@@ -17,10 +17,10 @@
 package org.indunet.fastproto.netty;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
 import lombok.val;
-import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.iot.Weather;
+import org.indunet.fastproto.iot.Sensor;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -31,19 +31,22 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Deng Ran
  * @since 1.7.0
  */
-public class ProtoEncoderTest {
+public class ProtoDecoderTest {
     @Test
-    public void testEncode() {
-        Weather weather = Weather.newInstance();
-        EmbeddedChannel channel = new EmbeddedChannel(new ProtoEncoder(30));
-        assertTrue(channel.writeOutbound(weather));
-        assertTrue(channel.finish());
+    public void testDecode() {
+        Sensor sensor = new Sensor(23, 86);
+        ByteBuf buf = Unpooled.buffer();
+        buf.writeShort(sensor.getTemperature());
+        buf.writeShort(sensor.getHumidity());
 
-        ByteBuf buf = channel.readOutbound();
-        val cache = new byte[34];
-        buf.getBytes(buf.readerIndex(), cache);
-        val expected = FastProto.toByteArray(weather, 30);
-        assertArrayEquals(expected, cache);
-        assertNull(channel.readOutbound());
+        EmbeddedChannel channel = new EmbeddedChannel(new ProtoDecoder(Sensor.class));
+        assertTrue(channel.writeInbound(10010));
+        assertTrue(channel.writeInbound(buf));
+
+        assertTrue(channel.finish());
+        val bytes = channel.readInbound();
+        val x = channel.readInbound();
+
+        System.out.println("");
     }
 }

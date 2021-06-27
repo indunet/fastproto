@@ -50,9 +50,9 @@ public class ProtoEncoder extends MessageToByteEncoder<Object> {
         byte[] bytes;
 
         if (this.length.isPresent()) {
-             bytes = FastProto.toByteArray(object);
+            bytes = FastProto.toByteArray(object, this.length.get());
         } else {
-             bytes = FastProto.toByteArray(object);
+            bytes = FastProto.toByteArray(object);
         }
 
         byteBuf.writeBytes(bytes);
