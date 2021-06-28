@@ -202,6 +202,13 @@
             <version>${jmh-generator-annprocess}</version>
             <scope>test</scope>
         </dependency>
+
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.1.65.Final</version>
+            <optional>true</optional>
+        </dependency>
     </dependencies>
 
     <build>

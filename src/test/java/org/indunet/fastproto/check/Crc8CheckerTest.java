@@ -17,6 +17,7 @@
 package org.indunet.fastproto.check;
 
 import lombok.val;
+import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.CheckSum;
 import org.indunet.fastproto.encoder.EncodeUtils;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Random;
 import java.util.stream.IntStream;
 
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
@@ -68,5 +70,13 @@ public class Crc8CheckerTest {
     @CheckSum(value = -1, start = 0, length = -1, checkPolicy = CheckPolicy.CRC8_CCITT)
     public static class TestObject2 {
 
+    }
+
+    @Test
+    public void testtoByteArray() {
+        val testObject = new TestObject();
+        byte[] datagram = FastProto.toByteArray(testObject, 30);
+
+        assertNotNull(datagram);
     }
 }

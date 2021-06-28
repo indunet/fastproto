@@ -14,35 +14,24 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.exception;
+package org.indunet.fastproto.iot;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.indunet.fastproto.annotation.type.Integer16Type;
+import org.indunet.fastproto.annotation.type.UInteger16Type;
 
 /**
- * Decode exception.
- *
  * @author Deng Ran
- * @see CodecException
- * @since 1.0.0
+ * @since 1.7.4
  */
-public class DecodeException extends CodecException {
-    public DecodeException() {
-
-    }
-
-    public DecodeException(CodecError error) {
-        this(error.getMessage());
-    }
-
-    public DecodeException(String message) {
-        super(message);
-    }
-
-    public DecodeException(CodecError error, Throwable cause) {
-        this(error.getMessage(), cause);
-    }
-
-    public DecodeException(String message, Throwable cause) {
-        super(message, cause);
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Sensor {
+    @Integer16Type(0)
+    int temperature;
+    @UInteger16Type(2)
+    int humidity;
 }

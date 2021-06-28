@@ -63,4 +63,17 @@ public class Weather {
 
     @BooleanType(value = 18, bitOffset = 2)
     boolean pressureValid;
+
+    public static Weather newInstance() {
+        return Weather.builder()
+                .id(101)
+                .time(new Timestamp(System.currentTimeMillis()))
+                .humidity(85)
+                .temperature(-15)
+                .pressure(13)
+                .humidityValid(true)
+                .temperatureValid(true)
+                .pressureValid(true)
+                .build();
+    }
 }

@@ -45,5 +45,4 @@ public class EncodeException extends CodecException {
 
     public EncodeException(String message, Throwable cause) {
         super(message, cause);
-    }
 }
