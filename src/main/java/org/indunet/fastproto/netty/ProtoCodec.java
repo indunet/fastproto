@@ -19,6 +19,7 @@ package org.indunet.fastproto.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
+import lombok.val;
 import org.indunet.fastproto.FastProto;
 
 import java.util.List;
@@ -49,6 +50,15 @@ public class ProtoCodec extends ByteToMessageCodec {
 
     @Override
     protected void decode(ChannelHandlerContext context, ByteBuf byteBuf, List list) throws Exception {
+        if (byteBuf.readableBytes() <= 0) {
+            return;
+        }
 
+        val datagram = new byte[4];
+        val bf = byteBuf.readBytes(4);
+        bf.getBytes(bf.readerIndex(), datagram);
+        Object object = FastProto.parseFrom(datagram, this.protocolClass);
+
+        list.add(object);
     }
 }

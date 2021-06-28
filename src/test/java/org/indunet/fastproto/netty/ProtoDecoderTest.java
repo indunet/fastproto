@@ -19,11 +19,11 @@ package org.indunet.fastproto.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
-import lombok.val;
 import org.indunet.fastproto.iot.Sensor;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Netty decoder.
@@ -36,17 +36,14 @@ public class ProtoDecoderTest {
     public void testDecode() {
         Sensor sensor = new Sensor(23, 86);
         ByteBuf buf = Unpooled.buffer();
-        buf.writeShort(sensor.getTemperature());
-        buf.writeShort(sensor.getHumidity());
+        buf.writeShortLE(sensor.getTemperature());
+        buf.writeShortLE(sensor.getHumidity());
 
         EmbeddedChannel channel = new EmbeddedChannel(new ProtoDecoder(Sensor.class));
-        assertTrue(channel.writeInbound(10010));
+
         assertTrue(channel.writeInbound(buf));
-
         assertTrue(channel.finish());
-        val bytes = channel.readInbound();
-        val x = channel.readInbound();
 
-        System.out.println("");
+        assertEquals(sensor.toString(), ((Sensor) channel.readInbound()).toString());
     }
 }

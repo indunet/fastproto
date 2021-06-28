@@ -20,6 +20,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToByteEncoder;
 import org.indunet.fastproto.FastProto;
+import org.indunet.fastproto.netty.ProtoNettyException.ProtoNettyError;
 
 import java.util.Optional;
 
@@ -40,9 +41,8 @@ public class ProtoEncoder extends MessageToByteEncoder<Object> {
         if (length > 0) {
             this.length = Optional.of(length);
         } else {
-            throw new ProtoNettyException();
+            throw new ProtoNettyException(ProtoNettyError.ILLEAL_LENGTH);
         }
-
     }
 
     @Override

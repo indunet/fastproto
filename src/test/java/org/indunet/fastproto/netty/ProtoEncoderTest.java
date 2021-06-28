@@ -36,14 +36,15 @@ public class ProtoEncoderTest {
     public void testEncode() {
         Weather weather = Weather.newInstance();
         EmbeddedChannel channel = new EmbeddedChannel(new ProtoEncoder(30));
+
         assertTrue(channel.writeOutbound(weather));
         assertTrue(channel.finish());
 
         ByteBuf buf = channel.readOutbound();
         val cache = new byte[34];
         buf.getBytes(buf.readerIndex(), cache);
+
         val expected = FastProto.toByteArray(weather, 30);
         assertArrayEquals(expected, cache);
-        assertNull(channel.readOutbound());
     }
 }

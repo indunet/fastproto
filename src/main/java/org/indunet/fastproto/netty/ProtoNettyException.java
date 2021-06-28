@@ -16,6 +16,9 @@
 
 package org.indunet.fastproto.netty;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * FastProto netty exception.
  *
@@ -23,8 +26,27 @@ package org.indunet.fastproto.netty;
  * @since 1.7.0
  */
 public class ProtoNettyException extends RuntimeException {
+    public ProtoNettyException(ProtoNettyError error) {
+        this(error.getMessage());
+    }
 
+    public ProtoNettyException(ProtoNettyError error, Throwable cause) {
+        this(error.getMessage(), cause);
+    }
+
+    public ProtoNettyException(String message) {
+        super(message);
+    }
+
+    public ProtoNettyException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    @AllArgsConstructor
+    @Getter
     public enum ProtoNettyError {
+        ILLEAL_LENGTH("Illegal length");
 
+        String message;
     }
 }
