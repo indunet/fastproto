@@ -22,8 +22,9 @@ import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.LongType;
 import org.indunet.fastproto.annotation.type.TimestampType;
 import org.indunet.fastproto.annotation.type.UInteger32Type;
+import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.EncodeException.EncodeError;
+import org.indunet.fastproto.exception.SpaceNotEnoughException;
 
 import java.sql.Timestamp;
 import java.util.concurrent.TimeUnit;
@@ -49,21 +50,21 @@ public class TimestampEncoder implements TypeEncoder {
         int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
         if (bo < 0) {
-            throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
+            throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (dataType == ProtocolType.LONG && unit == TimeUnit.MILLISECONDS) {
             if (bo + LongType.SIZE > datagram.length) {
-                throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
+                throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 
             EncodeUtils.longType(datagram, bo, policy, value.getTime());
         } else if (dataType == ProtocolType.UINTEGER32 && unit == TimeUnit.SECONDS) {
             if (bo + UInteger32Type.SIZE > datagram.length) {
-                throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
+                throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 
             EncodeUtils.integerType(datagram, bo, policy, (int) (value.getTime() / 1000));
         } else {
-            throw new EncodeException(EncodeError.ILLEGAL_TIMESTAMP_PARAMETERS);
+            throw new EncodeException(CodecError.ILLEGAL_TIMESTAMP_PARAMETERS);
         }
     }
 }

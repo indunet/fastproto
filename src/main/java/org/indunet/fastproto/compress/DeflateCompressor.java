@@ -19,10 +19,9 @@ package org.indunet.fastproto.compress;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.val;
+import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
-import org.indunet.fastproto.exception.CodecException.CodecError;
-import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.DecodeException.DecodeError;
+import org.indunet.fastproto.exception.CompressException;
 
 import java.io.ByteArrayOutputStream;
 import java.text.MessageFormat;
@@ -105,8 +104,8 @@ public class DeflateCompressor implements Compressor {
                 out.write(buffer, 0, n);
             }
         } catch (DataFormatException e) {
-            throw new DecodeException(MessageFormat.format(
-                    DecodeError.FAIL_DECOMPRESS_DATAGRAM.getMessage(), this.getClass().getName()), e);
+            throw new CompressException(MessageFormat.format(
+                    CodecError.FAIL_DECOMPRESS_DATAGRAM.getMessage(), this.getClass().getName()), e);
         } finally {
             inflater.end();
             out.close();

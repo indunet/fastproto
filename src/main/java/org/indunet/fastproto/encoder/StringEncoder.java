@@ -19,8 +19,9 @@ package org.indunet.fastproto.encoder;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.annotation.type.StringType;
+import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.EncodeException.EncodeError;
+import org.indunet.fastproto.exception.SpaceNotEnoughException;
 
 import java.nio.charset.Charset;
 
@@ -45,11 +46,11 @@ public class StringEncoder implements TypeEncoder {
         int l = length >= 0 ? length : datagram.length + length - bo + 1;
 
         if (bo < 0) {
-            throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
+            throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (l <= 0) {
-            throw new EncodeException(EncodeError.ILLEGAL_PARAMETER);
+            throw new EncodeException(CodecError.ILLEGAL_PARAMETER);
         } else if (bo + l > datagram.length) {
-            throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
+            throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         val bytes = value.getBytes(set);

@@ -15,11 +15,13 @@ import java.lang.annotation.Target;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CheckSum {
-    CheckPolicy value() default CheckPolicy.CRC32;
+    int value() default -2;
 
-    int byteOffset() default 0;
+    int start() default 0;
 
-    int length() default -1;
+    int length() default -2;
+
+    CheckPolicy checkPolicy() default CheckPolicy.CRC16;
 
     int poly() default 0;
 

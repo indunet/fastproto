@@ -23,7 +23,9 @@ import org.indunet.fastproto.annotation.Endian;
 import org.indunet.fastproto.annotation.type.UInteger16Type;
 import org.indunet.fastproto.decoder.DecodeUtils;
 import org.indunet.fastproto.encoder.EncodeUtils;
+import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.OutOfBoundsException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,8 +36,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Crc16Checker implements Checker {
     protected final static int defaultPoly = 0xA001;
-    protected int poly;
     protected final static Map<Integer, Crc16Checker> checkers = new ConcurrentHashMap<>();
+    protected int poly;
 
     protected Crc16Checker(int poly) {
         this.poly = poly;
@@ -60,7 +62,8 @@ public class Crc16Checker implements Checker {
         }
 
         val checkSum = protocolClass.getAnnotation(CheckSum.class);
-        int byteOffset = checkSum.byteOffset();
+        int byteOffset = checkSum.value();
+        int start = checkSum.start();
         int length = checkSum.length();
         EndianPolicy policy;
 
@@ -72,11 +75,8 @@ public class Crc16Checker implements Checker {
             policy = EndianPolicy.LITTLE;
         }
 
-        int actual = this.getValue(datagram, byteOffset, length, policy);
-
-        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
-        int l = length >= 0 ? length : datagram.length + length - bo;
-        int expected = DecodeUtils.uInteger16Type(datagram, bo + l, policy);
+        int actual = this.getValue(datagram, start, length);
+        int expected = DecodeUtils.uInteger16Type(datagram, byteOffset, policy);
 
         return actual == expected;
     }
@@ -88,7 +88,8 @@ public class Crc16Checker implements Checker {
         }
 
         val checkSum = protocolClass.getAnnotation(CheckSum.class);
-        int byteOffset = checkSum.byteOffset();
+        int byteOffset = checkSum.value();
+        int start = checkSum.start();
         int length = checkSum.length();
         EndianPolicy policy;
 
@@ -100,7 +101,7 @@ public class Crc16Checker implements Checker {
             policy = EndianPolicy.LITTLE;
         }
 
-        this.setValue(datagram, byteOffset, length, policy);
+        this.setValue(datagram, byteOffset, start, length, policy);
     }
 
     @Override
@@ -108,16 +109,16 @@ public class Crc16Checker implements Checker {
         return UInteger16Type.SIZE;
     }
 
-    public int getValue(byte[] datagram, int byteOffset, int length, EndianPolicy policy) {
+    public int getValue(byte[] datagram, int byteOffset, int length) {
         int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
         int l = length >= 0 ? length : datagram.length + length - bo;
 
         if (bo < 0) {
-            throw new DecodeException(DecodeException.DecodeError.ILLEGAL_BYTE_OFFSET);
+            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (l < 0) {
-            throw new DecodeException(DecodeException.DecodeError.ILLEGAL_PARAMETER);
+            throw new DecodeException(CodecError.ILLEGAL_PARAMETER);
         } else if (bo + length > datagram.length) {
-            throw new DecodeException(DecodeException.DecodeError.EXCEEDED_DATAGRAM_SIZE);
+            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         int crc16 = 0xFFFF;
@@ -138,11 +139,9 @@ public class Crc16Checker implements Checker {
         return crc16;
     }
 
-    public void setValue(byte[] datagram, int byteOffset, int length, EndianPolicy policy) {
-        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
-        int l = length >= 0 ? length : datagram.length + length - bo;
-        int value = this.getValue(datagram, byteOffset, length, policy);
+    public void setValue(byte[] datagram, int byteOffset, int start, int length, EndianPolicy policy) {
+        int value = this.getValue(datagram, start, length);
 
-        EncodeUtils.uInteger16Type(datagram, bo + l, policy, value);
+        EncodeUtils.uInteger16Type(datagram, byteOffset, policy, value);
     }
 }

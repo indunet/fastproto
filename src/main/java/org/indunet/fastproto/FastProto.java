@@ -28,11 +28,10 @@ import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.DecoderFactory;
 import org.indunet.fastproto.encoder.EncodeContext;
 import org.indunet.fastproto.encoder.EncoderFactory;
-import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.DecodeException.DecodeError;
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.CheckSumException;
+import org.indunet.fastproto.exception.CodecError;
+import org.indunet.fastproto.exception.ProtocolVersionException;
 
-import java.text.MessageFormat;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -79,13 +78,13 @@ public class FastProto {
             Checker checker = CheckerFactory.create(protocolClass.getAnnotation(CheckSum.class));
 
             if (!checker.validate(datagram, protocolClass)) {
-                throw new DecodeException(DecodeError.ILLEGAL_CHECK_SUM);
+                throw new CheckSumException(CodecError.ILLEGAL_CHECK_SUM);
             }
         }
 
         // Protocol version.
         if (!VersionAssist.validate(datagram, protocolClass)) {
-            throw new DecodeException(DecodeError.PROTOCOL_VERSION_NOT_MATCH);
+            throw new ProtocolVersionException(CodecError.PROTOCOL_VERSION_NOT_MATCH);
         }
 
         TypeAssist assist = assists.computeIfAbsent(protocolClass, c -> TypeAssist.of(c));
@@ -123,7 +122,7 @@ public class FastProto {
     /**
      * Convert object into binary datagram.
      *
-     * @param object serialized object
+     * @param object         serialized object
      * @param enableCompress enable compress
      * @return binary datagram.
      */

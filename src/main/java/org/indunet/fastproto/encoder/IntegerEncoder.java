@@ -19,8 +19,9 @@ package org.indunet.fastproto.encoder;
 import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.IntegerType;
+import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.EncodeException.EncodeError;
+import org.indunet.fastproto.exception.SpaceNotEnoughException;
 
 /**
  * Integer type encoder.
@@ -42,9 +43,9 @@ public class IntegerEncoder implements TypeEncoder {
         int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
         if (bo < 0) {
-            throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
+            throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (bo + IntegerType.SIZE > datagram.length) {
-            throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
+            throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         if (policy == EndianPolicy.LITTLE) {

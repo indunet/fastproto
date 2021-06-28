@@ -18,8 +18,8 @@ package org.indunet.fastproto.compress;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.indunet.fastproto.exception.CodecException;
-import org.indunet.fastproto.exception.CodecException.CodecError;
+import org.indunet.fastproto.exception.CodecError;
+import org.indunet.fastproto.exception.CompressException;
 
 import java.util.Arrays;
 
@@ -40,6 +40,6 @@ public enum CompressPolicy {
         return Arrays.stream(CompressPolicy.values())
                 .filter(p -> p.getName().equals(name))
                 .findFirst()
-                .orElseThrow(() -> new CodecException(CodecError.INVALID_COMPRESS_POLICY));
+                .orElseThrow(() -> new CompressException(CodecError.INVALID_COMPRESS_POLICY));
     }
 }

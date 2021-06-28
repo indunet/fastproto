@@ -21,8 +21,10 @@ import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.LongType;
 import org.indunet.fastproto.annotation.type.UInteger64Type;
+import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.EncodeException.EncodeError;
+import org.indunet.fastproto.exception.IllegalValueException;
+import org.indunet.fastproto.exception.SpaceNotEnoughException;
 
 import java.math.BigInteger;
 import java.text.MessageFormat;
@@ -44,12 +46,12 @@ public class UInteger64Encoder implements TypeEncoder {
         int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
         if (bo < 0) {
-            throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
+            throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (bo + LongType.SIZE > datagram.length) {
-            throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
+            throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         } else if (value.compareTo(UInteger64Type.MAX_VALUE) > 0 || value.compareTo(UInteger64Type.MIN_VALUE) < 0) {
-            throw new EncodeException(
-                    MessageFormat.format(EncodeError.EXCEEDED_TYPE_SIZE_LIMIT.getMessage(), UInteger64Type.class.getName()));
+            throw new IllegalValueException(
+                    MessageFormat.format(CodecError.EXCEEDED_TYPE_SIZE_LIMIT.getMessage(), UInteger64Type.class.getName()));
         }
 
         long low = value

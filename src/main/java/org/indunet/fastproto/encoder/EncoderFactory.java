@@ -16,8 +16,8 @@
 
 package org.indunet.fastproto.encoder;
 
+import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.EncodeException.EncodeError;
 
 import java.text.MessageFormat;
 import java.util.concurrent.ConcurrentHashMap;
@@ -39,7 +39,7 @@ public class EncoderFactory {
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
                 throw new EncodeException(
-                        MessageFormat.format(EncodeError.FAIL_INITIALIZING_ENCODER.getMessage(), c.getName()), e);
+                        MessageFormat.format(CodecError.FAIL_INITIALIZING_ENCODER.getMessage(), c.getName()), e);
             }
         })::encode;
     }
@@ -51,7 +51,7 @@ public class EncoderFactory {
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
                 throw new EncodeException(
-                        MessageFormat.format(EncodeError.FAIL_INITIALIZING_ENCODE_FORMULA.getMessage(), c.getName()), e);
+                        MessageFormat.format(CodecError.FAIL_INITIALIZING_ENCODE_FORMULA.getMessage(), c.getName()), e);
             }
         });
     }

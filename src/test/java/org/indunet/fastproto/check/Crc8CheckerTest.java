@@ -16,7 +16,6 @@
 
 package org.indunet.fastproto.check;
 
-import lombok.Builder;
 import lombok.val;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.CheckSum;
@@ -34,10 +33,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @since 1.6.3
  */
 public class Crc8CheckerTest {
-    Crc8Checker checker = Crc8Checker.getInstance();
 
     @Test
-    public void testValidate() {
+    public void testCrc8() {
+        Crc8Checker checker = Crc8Checker.getInstance();
         val datagram = new byte[10];
         val random = new Random(System.currentTimeMillis());
 
@@ -46,12 +45,30 @@ public class Crc8CheckerTest {
         int value = checker.getValue(datagram, 0, 9);
         EncodeUtils.uInteger8Type(datagram, 9, value);
 
-        assertTrue(checker.validate(datagram, TestObject.class));
+        assertTrue(checker.validate(datagram, TestObject1.class));
     }
 
-    @CheckSum(value = CheckPolicy.CRC8, byteOffset = 0, length = -1)
-    @Builder
-    public static class TestObject {
+    @CheckSum(value = -1, start = 0, length = -1, checkPolicy = CheckPolicy.CRC8)
+    public static class TestObject1 {
+
+    }
+
+    @Test
+    public void testCrc8Ccitt() {
+        val checker = Crc8Checker.getInstance(CheckPolicy.CRC8_CCITT.getPoly());
+        val datagram = new byte[10];
+        val random = new Random(System.currentTimeMillis());
+
+        IntStream.range(0, 10)
+                .forEach(i -> datagram[i] = (byte) random.nextInt());
+        int value = checker.getValue(datagram, 0, 9);
+        EncodeUtils.uInteger8Type(datagram, 9, value);
+
+        assertTrue(checker.validate(datagram, TestObject2.class));
+    }
+
+    @CheckSum(value = -1, start = 0, length = -1, checkPolicy = CheckPolicy.CRC8_CCITT)
+    public static class TestObject2 {
 
     }
 

@@ -21,10 +21,11 @@ import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.CheckSum;
 import org.indunet.fastproto.annotation.Endian;
 import org.indunet.fastproto.annotation.type.UInteger32Type;
-import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.DecodeException.DecodeError;
 import org.indunet.fastproto.decoder.DecodeUtils;
 import org.indunet.fastproto.encoder.EncodeUtils;
+import org.indunet.fastproto.exception.CodecError;
+import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.OutOfBoundsException;
 
 import java.util.zip.CRC32;
 
@@ -47,7 +48,7 @@ public class Crc32Checker implements Checker {
         }
 
         val checkSum = protocolClass.getAnnotation(CheckSum.class);
-        int byteOffset = checkSum.byteOffset();
+        int byteOffset = checkSum.start();
         int length = checkSum.length();
 
         EndianPolicy policy;
@@ -69,20 +70,20 @@ public class Crc32Checker implements Checker {
         return actual == expected;
     }
 
-    public long getValue(byte[] datagram, int byteOffset, int length) {
-        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
-        int l = length >= 0 ? length : datagram.length + length - bo;
+    public long getValue(byte[] datagram, int start, int length) {
+        int s = start >= 0 ? start : datagram.length + start;
+        int l = length >= 0 ? length : datagram.length + length - s;
 
-        if (bo < 0) {
-            throw new DecodeException(DecodeException.DecodeError.ILLEGAL_BYTE_OFFSET);
+        if (s < 0) {
+            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (l < 0) {
-            throw new DecodeException(DecodeError.ILLEGAL_PARAMETER);
-        } else if (bo + length > datagram.length) {
-            throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
+            throw new DecodeException(CodecError.ILLEGAL_PARAMETER);
+        } else if (s + length > datagram.length) {
+            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         CRC32 crc32 = new CRC32();
-        crc32.update(datagram, bo, l);
+        crc32.update(datagram, s, l);
 
         return crc32.getValue();
     }
@@ -94,7 +95,8 @@ public class Crc32Checker implements Checker {
         }
 
         val checkSum = protocolClass.getAnnotation(CheckSum.class);
-        int byteOffset = checkSum.byteOffset();
+        int byteOffset = checkSum.value();
+        int start = checkSum.start();
         int length = checkSum.length();
         EndianPolicy policy;
 
@@ -106,7 +108,7 @@ public class Crc32Checker implements Checker {
             policy = EndianPolicy.LITTLE;
         }
 
-        this.setValue(datagram, byteOffset, length, policy);
+        this.setValue(datagram, byteOffset, start, length, policy);
     }
 
     @Override
@@ -114,11 +116,9 @@ public class Crc32Checker implements Checker {
         return UInteger32Type.SIZE;
     }
 
-    public void setValue(byte[] datagram, int byteOffset, int length, EndianPolicy policy) {
-        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
-        int l = length >= 0 ? length : datagram.length + length - bo;
-        long value = this.getValue(datagram, byteOffset, length);
+    public void setValue(byte[] datagram, int byteOffset, int start, int length, EndianPolicy policy) {
+        long value = this.getValue(datagram, start, length);
 
-        EncodeUtils.uInteger32Type(datagram, bo + l, policy, value);
+        EncodeUtils.uInteger32Type(datagram, byteOffset, policy, value);
     }
 }

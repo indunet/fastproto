@@ -21,8 +21,9 @@ import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.annotation.type.UInteger64Type;
+import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.DecodeException.DecodeError;
+import org.indunet.fastproto.exception.OutOfBoundsException;
 
 import java.math.BigInteger;
 
@@ -42,9 +43,9 @@ public class UInteger64Decoder implements TypeDecoder<BigInteger> {
         int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
         if (bo < 0) {
-            throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
+            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (bo + UInteger64Type.SIZE > datagram.length) {
-            throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
+            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         long low = 0, high = 0;

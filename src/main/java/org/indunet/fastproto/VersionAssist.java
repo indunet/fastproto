@@ -21,12 +21,10 @@ import org.indunet.fastproto.annotation.ProtocolVersion;
 import org.indunet.fastproto.annotation.type.IntegerType;
 import org.indunet.fastproto.annotation.type.UInteger16Type;
 import org.indunet.fastproto.annotation.type.UInteger8Type;
-import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.DecodeException.DecodeError;
-import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.EncodeException.EncodeError;
 import org.indunet.fastproto.decoder.DecodeUtils;
 import org.indunet.fastproto.encoder.EncodeUtils;
+import org.indunet.fastproto.exception.CodecError;
+import org.indunet.fastproto.exception.ProtocolVersionException;
 
 import java.util.Optional;
 
@@ -66,7 +64,7 @@ public class VersionAssist {
             case INTEGER:
                 return DecodeUtils.integerType(datagram, byteOffset, policy);
             default:
-                throw new DecodeException(DecodeError.ILLEGAL_PROTOCOL_VERSION_TYPE);
+                throw new ProtocolVersionException(CodecError.ILLEGAL_PROTOCOL_VERSION_TYPE);
         }
     }
 
@@ -84,7 +82,7 @@ public class VersionAssist {
             case INTEGER:
                 return IntegerType.SIZE;
             default:
-                throw new DecodeException(DecodeError.ILLEGAL_PROTOCOL_VERSION_TYPE);
+                throw new ProtocolVersionException(CodecError.ILLEGAL_PROTOCOL_VERSION_TYPE);
         }
     }
 
@@ -111,7 +109,7 @@ public class VersionAssist {
                 EncodeUtils.integerType(datagram, byteOffset, policy, version);
                 break;
             default:
-                throw new EncodeException(EncodeError.ILLEGAL_PROTOCOL_VERSION_TYPE);
+                throw new ProtocolVersionException(CodecError.ILLEGAL_PROTOCOL_VERSION_TYPE);
         }
     }
 }

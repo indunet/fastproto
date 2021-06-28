@@ -17,8 +17,9 @@
 package org.indunet.fastproto.compress;
 
 import org.indunet.fastproto.annotation.EnableCompress;
+import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
-import org.indunet.fastproto.exception.CodecException.CodecError;
+import org.indunet.fastproto.exception.CompressException;
 
 /**
  * Create compressor by CompressPolicy.
@@ -35,7 +36,7 @@ public class CompressorFactory {
             case DEFLATE:
                 return DeflateCompressor.getInstance(annotation.level());
             default:
-                throw new CodecException(CodecError.INVALID_COMPRESS_POLICY);
+                throw new CompressException(CodecError.INVALID_COMPRESS_POLICY);
         }
     }
 }

@@ -16,33 +16,28 @@
 
 package org.indunet.fastproto.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 /**
- * Decode exception.
- *
- * @author Deng Ran
- * @see CodecException
+ * @author Chance
  * @since 1.0.0
  */
-public class DecodeException extends CodecException {
-    public DecodeException() {
+public class DecodeFormulaException extends DecodeException {
+    public DecodeFormulaException() {
 
     }
 
-    public DecodeException(CodecError error) {
+    public DecodeFormulaException(CodecError error) {
         this(error.getMessage());
     }
 
-    public DecodeException(String message) {
+    public DecodeFormulaException(String message) {
         super(message);
     }
 
-    public DecodeException(CodecError error, Throwable cause) {
+    public DecodeFormulaException(CodecError error, Throwable cause) {
         this(error.getMessage(), cause);
     }
 
-    public DecodeException(String message, Throwable cause) {
+    public DecodeFormulaException(String message, Throwable cause) {
         super(message, cause);
+    }
 }

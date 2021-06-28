@@ -23,12 +23,7 @@ import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.TypeDecoder;
 import org.indunet.fastproto.encoder.EncodeContext;
 import org.indunet.fastproto.encoder.TypeEncoder;
-import org.indunet.fastproto.exception.CodecException;
-import org.indunet.fastproto.exception.CodecException.CodecError;
-import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.DecodeException.DecodeError;
-import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.EncodeException.EncodeError;
+import org.indunet.fastproto.exception.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -264,9 +259,9 @@ public class TypeAssist {
                         .map(o -> (Class<? extends Function>) o)
                         .orElse(null);
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
-                throw new DecodeException(
+                throw new DecodeFormulaException(
                         MessageFormat.format(
-                                DecodeError.FAIL_GETTING_DECODE_FORMULA.getMessage(), typeAnnotation.annotationType().getName(), field.getName()), e);
+                                CodecError.FAIL_GETTING_DECODE_FORMULA.getMessage(), typeAnnotation.annotationType().getName(), field.getName()), e);
             }
         };
 
@@ -283,7 +278,7 @@ public class TypeAssist {
                         .filter(t -> t == field.getType())
                         .findAny()
                         .orElseThrow(() -> new CodecException(MessageFormat.format(
-                                CodecException.CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
+                                CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
             }
 
             // Validate decoder return type.
@@ -299,8 +294,8 @@ public class TypeAssist {
                                 return t == field.getType();
                             }
                         }).findAny()
-                        .orElseThrow(() -> new CodecException(MessageFormat.format(
-                                CodecException.CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
+                        .orElseThrow(() -> new DecodeFormulaException(MessageFormat.format(
+                                CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
             }
 
             // Validate encoder parameter type.
@@ -316,12 +311,12 @@ public class TypeAssist {
                                 return t == field.getType();
                             }
                         }).findAny()
-                        .orElseThrow(() -> new CodecException(MessageFormat.format(
-                                CodecException.CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
+                        .orElseThrow(() -> new EncodeFormulaException(MessageFormat.format(
+                                CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
             }
         } catch (IllegalAccessException | NoSuchFieldException e) {
             throw new CodecException(MessageFormat.format(
-                    CodecException.CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName()), e);
+                    CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName()), e);
         }
 
         return TypeAssist.builder()
@@ -348,7 +343,7 @@ public class TypeAssist {
         } else if (this.elements.stream()
                 .mapToInt(TypeAssist::getMaxLength)
                 .anyMatch(l -> l < 0)) {
-            throw new EncodeException(EncodeError.UNABLE_INFER_LENGTH);
+            throw new AddressingException(CodecError.UNABLE_INFER_LENGTH);
         }
 
         int max = this.elements.stream()
@@ -379,7 +374,7 @@ public class TypeAssist {
                 return Double.class;
             default:
                 throw new CodecException(
-                        MessageFormat.format(CodecException.CodecError.UNSUPPORTED_TYPE.getMessage(), name));
+                        MessageFormat.format(CodecError.UNSUPPORTED_TYPE.getMessage(), name));
         }
     }
 
@@ -399,7 +394,7 @@ public class TypeAssist {
             this.field.set(object, value);
         } catch (IllegalAccessException e) {
             throw new DecodeException(
-                    MessageFormat.format(DecodeError.FAIL_ASSIGN_VALUE.getMessage(), this.field.getName()), e);
+                    MessageFormat.format(CodecError.FAIL_ASSIGN_VALUE.getMessage(), this.field.getName()), e);
         }
     }
 
@@ -440,7 +435,7 @@ public class TypeAssist {
         } catch (InstantiationException | IllegalAccessException e) {
             e.printStackTrace();
             throw new DecodeException(
-                    MessageFormat.format(DecodeError.FAIL_INITIALIZING_DECODE_OBJECT.getMessage(), this.clazz.getName()), e);
+                    MessageFormat.format(CodecError.FAIL_INITIALIZING_DECODE_OBJECT.getMessage(), this.clazz.getName()), e);
         }
     }
 
@@ -458,7 +453,7 @@ public class TypeAssist {
         } catch (IllegalAccessException e) {
             e.printStackTrace();
             throw new EncodeException(
-                    MessageFormat.format(EncodeError.FAIL_GETTING_FIELD_VALUE.getMessage(), this.field.getName()), e);
+                    MessageFormat.format(CodecError.FAIL_GETTING_FIELD_VALUE.getMessage(), this.field.getName()), e);
         }
     }
 
@@ -479,7 +474,7 @@ public class TypeAssist {
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                         throw new DecodeException(
-                                MessageFormat.format(EncodeError.FAIL_GETTING_FIELD_VALUE.getMessage(), this.clazz.getName()), e);
+                                MessageFormat.format(CodecError.FAIL_GETTING_FIELD_VALUE.getMessage(), this.clazz.getName()), e);
                     }
                 });
 

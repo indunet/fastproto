@@ -51,7 +51,7 @@ class Crc32CheckerTest {
         assertTrue(checker.validate(datagram, TestObject.class));
     }
 
-    @CheckSum(value = CheckPolicy.CRC32, byteOffset = 0, length = -4)
+    @CheckSum(value = -4, start = 0, length = -4, checkPolicy = CheckPolicy.CRC32)
     @Builder
     public static class TestObject {
 

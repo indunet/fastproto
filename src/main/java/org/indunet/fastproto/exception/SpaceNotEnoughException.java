@@ -16,33 +16,28 @@
 
 package org.indunet.fastproto.exception;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 /**
- * Decode exception.
- *
  * @author Deng Ran
- * @see CodecException
- * @since 1.0.0
+ * @since 1.6.5
  */
-public class DecodeException extends CodecException {
-    public DecodeException() {
+public class SpaceNotEnoughException extends EncodeException {
+    public SpaceNotEnoughException() {
 
     }
 
-    public DecodeException(CodecError error) {
+    public SpaceNotEnoughException(CodecError error) {
         this(error.getMessage());
     }
 
-    public DecodeException(String message) {
+    public SpaceNotEnoughException(String message) {
         super(message);
     }
 
-    public DecodeException(CodecError error, Throwable cause) {
+    public SpaceNotEnoughException(CodecError error, Throwable cause) {
         this(error.getMessage(), cause);
     }
 
-    public DecodeException(String message, Throwable cause) {
+    public SpaceNotEnoughException(String message, Throwable cause) {
         super(message, cause);
+    }
 }
