@@ -16,10 +16,10 @@
 
 package org.indunet.fastproto.netty;
 
-import com.sun.istack.internal.NotNull;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageDecoder;
+import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.FastProto;
 
@@ -34,7 +34,7 @@ import java.util.List;
 public class ProtoDecoder extends ByteToMessageDecoder {
     Class<?> protocolClass;
 
-    public ProtoDecoder(@NotNull Class<?> protocolClass) {
+    public ProtoDecoder(@NonNull Class<?> protocolClass) {
         this.protocolClass = protocolClass;
     }
 
