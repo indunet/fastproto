@@ -20,6 +20,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.embedded.EmbeddedChannel;
 import lombok.val;
 import org.indunet.fastproto.FastProto;
+import org.indunet.fastproto.iot.Sensor;
 import org.indunet.fastproto.iot.Weather;
 import org.junit.jupiter.api.Test;
 
@@ -34,17 +35,17 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ProtoEncoderTest {
     @Test
     public void testEncode() {
-        Weather weather = Weather.newInstance();
+        Sensor sensor = new Sensor();
         EmbeddedChannel channel = new EmbeddedChannel(new ProtoEncoder(30));
 
-        assertTrue(channel.writeOutbound(weather));
+        assertTrue(channel.writeOutbound(sensor));
         assertTrue(channel.finish());
 
         ByteBuf buf = channel.readOutbound();
-        val cache = new byte[34];
+        val cache = new byte[4];
         buf.getBytes(buf.readerIndex(), cache);
 
-        val expected = FastProto.toByteArray(weather, 30);
+        val expected = FastProto.toByteArray(sensor, 4);
         assertArrayEquals(expected, cache);
     }
 }

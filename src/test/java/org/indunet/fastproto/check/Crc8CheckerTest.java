@@ -64,11 +64,11 @@ public class Crc8CheckerTest {
         int value = checker.getValue(datagram, 0, 9);
         EncodeUtils.uInteger8Type(datagram, 9, value);
 
-        assertTrue(checker.validate(datagram, TestObject2.class));
+        assertTrue(checker.validate(datagram, TestObject.class));
     }
 
     @CheckSum(value = -1, start = 0, length = -1, checkPolicy = CheckPolicy.CRC8_CCITT)
-    public static class TestObject2 {
+    public static class TestObject {
 
     }
 

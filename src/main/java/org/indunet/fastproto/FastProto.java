@@ -28,10 +28,9 @@ import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.DecoderFactory;
 import org.indunet.fastproto.encoder.EncodeContext;
 import org.indunet.fastproto.encoder.EncoderFactory;
-import org.indunet.fastproto.exception.CheckSumException;
-import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.ProtocolVersionException;
+import org.indunet.fastproto.exception.*;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
@@ -102,7 +101,7 @@ public class FastProto {
                         a.setValue(o, value);
                     } catch (DecodeException e) {
                         throw new DecodeException(MessageFormat.format(
-                                DecodeError.FAIL_DECODING_FILED.getMessage(), a.getField().toString()), e);
+                                CodecError.FAIL_DECODING_FIELD.getMessage(), a.getField().toString()), e);
                     }
                 });
 
@@ -175,7 +174,7 @@ public class FastProto {
                         consumer.accept(c);
                     } catch (EncodeException e) {
                         throw new EncodeException(MessageFormat.format(
-                                EncodeException.EncodeError.FAIL_ENCODING_FIELD.getMessage(),
+                                CodecError.FAIL_ENCODING_FIELD.getMessage(),
                                     a.getField().toString()), e);
                     }
                 });

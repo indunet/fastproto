@@ -45,4 +45,5 @@ public class DecodeException extends CodecException {
 
     public DecodeException(String message, Throwable cause) {
         super(message, cause);
+    }
 }

@@ -53,7 +53,9 @@ public enum CodecError {
     FAIL_INITIALIZING_ENCODE_FORMULA("Fail initilizing encode formula of {0}."),
     FAIL_GETTING_FIELD_VALUE("Unable to get the value of filed {0}."),
     FAIL_COMPRESS_DATAGRAM("Fail compressing datagram with {0}"),
-    UNABLE_INFER_LENGTH("Unable to infer the datagram length in reverse addressing mode.");
+    UNABLE_INFER_LENGTH("Unable to infer the datagram length in reverse addressing mode."),
+    FAIL_DECODING_FIELD("Fail decoding field of {0}"),
+    FAIL_ENCODING_FIELD("Fail encoding file of {0}");
 
     String message;
 }
