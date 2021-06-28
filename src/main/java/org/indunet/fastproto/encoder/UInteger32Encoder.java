@@ -19,8 +19,10 @@ package org.indunet.fastproto.encoder;
 import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.UInteger32Type;
+import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.EncodeException.EncodeError;
+import org.indunet.fastproto.exception.IllegalValueException;
+import org.indunet.fastproto.exception.SpaceNotEnoughException;
 
 import java.text.MessageFormat;
 
@@ -45,12 +47,12 @@ public class UInteger32Encoder implements TypeEncoder {
         int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
         if (bo < 0) {
-            throw new EncodeException(EncodeError.ILLEGAL_BYTE_OFFSET);
+            throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (bo + UInteger32Type.SIZE > datagram.length) {
-            throw new EncodeException(EncodeError.EXCEEDED_DATAGRAM_SIZE);
+            throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         } else if (value > UInteger32Type.MAX_VALUE || value < UInteger32Type.MIN_VALUE) {
-            throw new EncodeException(
-                    MessageFormat.format(EncodeError.EXCEEDED_TYPE_SIZE_LIMIT.getMessage(), UInteger32Type.class.getName()));
+            throw new IllegalValueException(
+                    MessageFormat.format(CodecError.EXCEEDED_TYPE_SIZE_LIMIT.getMessage(), UInteger32Type.class.getName()));
         }
 
         if (policy == EndianPolicy.BIG) {

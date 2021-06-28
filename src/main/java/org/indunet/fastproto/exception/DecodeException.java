@@ -27,43 +27,23 @@ import lombok.Getter;
  * @since 1.0.0
  */
 public class DecodeException extends CodecException {
+    public DecodeException() {
 
-    public DecodeException(DecodeError error) {
-        this(error.getMessage());
     }
 
-    public DecodeException(DecodeError error, Throwable cause) {
-        this(error.getMessage(), cause);
+    public DecodeException(CodecError error) {
+        this(error.getMessage());
     }
 
     public DecodeException(String message) {
         super(message);
     }
 
-    public DecodeException(String message, Throwable cause) {
-        super(message);
+    public DecodeException(CodecError error, Throwable cause) {
+        this(error.getMessage(), cause);
     }
 
-    @AllArgsConstructor
-    @Getter
-    public enum DecodeError {
-        NO_VALID_DECODER_FOUND("No valid decoder found for {0}."),
-        EXCEEDED_DATAGRAM_SIZE("Exceeded datagram size."),
-        ILLEGAL_BIT_OFFSET("Illegal bit offset, must be in [0, 7]."),
-        ILLEGAL_BYTE_OFFSET("Illegal byte offset, must be larger than or equal to 0."),
-        ILLEGAL_PARAMETER("Illegal parameter."),
-        FAIL_INITIALIZING_DECODER("Fail initializing decoder {0}."),
-        FAIL_GETTING_DECODE_FORMULA("Fail getting decode formula of annotation {0} on field {1}"),
-        FAIL_INITIALIZING_DECODE_FORMULA("Fail initializing decode formula {0}."),
-        FAIL_INITIALIZING_DECODE_OBJECT("Fail initializing decode object {0}"),
-        NOT_FOUND_DECODER("Decoder for data type {0} cannot be found."),
-        ILLEGAL_TIMESTAMP_PARAMETERS("Illgeal timestamp parameters."),
-        FAIL_ASSIGN_VALUE("Fail assigning value for field {0}"),
-        FAIL_DECOMPRESS_DATAGRAM("Fail decompressing datagram with {0}"),
-        PROTOCOL_VERSION_NOT_MATCH("Protocol version and datagram version doesn't match."),
-        ILLEGAL_PROTOCOL_VERSION_TYPE("Illegal protocol version type"),
-        ILLEGAL_CHECK_SUM("Illegal check sum");
-
-        String message;
+    public DecodeException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

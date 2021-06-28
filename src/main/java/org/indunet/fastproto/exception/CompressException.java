@@ -17,29 +17,27 @@
 package org.indunet.fastproto.exception;
 
 /**
- * Codec exception.
- *
  * @author Deng Ran
- * @since 1.0.0
+ * @since 1.7.0
  */
-public class CodecException extends RuntimeException {
-    public CodecException() {
+public class CompressException extends CodecException {
+    public CompressException() {
         super();
     }
 
-    public CodecException(CodecError error) {
+    public CompressException(CodecError error) {
         this(error.getMessage());
     }
 
-    public CodecException(String message) {
+    public CompressException(String message) {
         super(message);
     }
 
-    public CodecException(CodecError error, Throwable cause) {
+    public CompressException(CodecError error, Throwable cause) {
         this(error.getMessage(), cause);
     }
 
-    public CodecException(String message, Throwable cause) {
+    public CompressException(String message, Throwable cause) {
         super(message, cause);
     }
 }

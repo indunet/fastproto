@@ -17,29 +17,27 @@
 package org.indunet.fastproto.exception;
 
 /**
- * Codec exception.
- *
  * @author Deng Ran
- * @since 1.0.0
+ * @since 1.6.5
  */
-public class CodecException extends RuntimeException {
-    public CodecException() {
+public class CheckSumException extends CodecException {
+    public CheckSumException() {
         super();
     }
 
-    public CodecException(CodecError error) {
+    public CheckSumException(CodecError error) {
         this(error.getMessage());
     }
 
-    public CodecException(String message) {
+    public CheckSumException(String message) {
         super(message);
     }
 
-    public CodecException(CodecError error, Throwable cause) {
+    public CheckSumException(CodecError error, Throwable cause) {
         this(error.getMessage(), cause);
     }
 
-    public CodecException(String message, Throwable cause) {
+    public CheckSumException(String message, Throwable cause) {
         super(message, cause);
     }
 }

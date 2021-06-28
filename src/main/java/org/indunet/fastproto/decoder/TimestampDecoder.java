@@ -23,8 +23,9 @@ import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.LongType;
 import org.indunet.fastproto.annotation.type.TimestampType;
 import org.indunet.fastproto.annotation.type.UInteger32Type;
+import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.DecodeException.DecodeError;
+import org.indunet.fastproto.exception.OutOfBoundsException;
 
 import java.sql.Timestamp;
 import java.util.concurrent.TimeUnit;
@@ -51,10 +52,10 @@ public class TimestampDecoder implements TypeDecoder<Timestamp> {
         int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
 
         if (bo < 0) {
-            throw new DecodeException(DecodeError.ILLEGAL_BYTE_OFFSET);
+            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (dataType == ProtocolType.LONG && unit == TimeUnit.MILLISECONDS) {
             if (bo + LongType.SIZE > datagram.length) {
-                throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
+                throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 
             val value = DecodeUtils.longType(datagram, bo, policy);
@@ -62,14 +63,14 @@ public class TimestampDecoder implements TypeDecoder<Timestamp> {
             return new Timestamp(value);
         } else if (dataType == ProtocolType.UINTEGER32 && unit == TimeUnit.SECONDS) {
             if (bo + UInteger32Type.SIZE > datagram.length) {
-                throw new DecodeException(DecodeError.EXCEEDED_DATAGRAM_SIZE);
+                throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 
             val value = DecodeUtils.uInteger32Type(datagram, bo, policy);
 
             return new Timestamp(value * 1000);
         } else {
-            throw new DecodeException(DecodeError.ILLEGAL_TIMESTAMP_PARAMETERS);
+            throw new DecodeException(CodecError.ILLEGAL_TIMESTAMP_PARAMETERS);
         }
     }
 }

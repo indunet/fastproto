@@ -18,8 +18,8 @@ package org.indunet.fastproto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
-import org.indunet.fastproto.exception.CodecException.CodecError;
 
 import java.util.Arrays;
 

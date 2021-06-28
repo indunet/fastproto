@@ -17,7 +17,6 @@
 package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.encoder.*;
 
 import java.math.BigInteger;
 import java.nio.charset.Charset;

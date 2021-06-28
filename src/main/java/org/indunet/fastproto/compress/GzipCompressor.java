@@ -19,10 +19,9 @@ package org.indunet.fastproto.compress;
 import lombok.NonNull;
 import lombok.val;
 import lombok.var;
+import org.indunet.fastproto.exception.CodecError;
+import org.indunet.fastproto.exception.CompressException;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.DecodeException.DecodeError;
-import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.EncodeException.EncodeError;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -61,8 +60,8 @@ public class GzipCompressor implements Compressor {
         try (val gzip = new GZIPOutputStream(out)) {
             gzip.write(bytes);
         } catch (IOException e) {
-            throw new EncodeException(
-                    MessageFormat.format(EncodeError.FAIL_COMPRESS_DATAGRAM.getMessage(), this.getClass().getName()), e);
+            throw new CompressException(
+                    MessageFormat.format(CodecError.FAIL_COMPRESS_DATAGRAM.getMessage(), this.getClass().getName()), e);
         }
 
         return out.toByteArray();
@@ -87,7 +86,7 @@ public class GzipCompressor implements Compressor {
             }
         } catch (IOException e) {
             throw new DecodeException(
-                    MessageFormat.format(DecodeError.FAIL_DECOMPRESS_DATAGRAM.getMessage(), this.getClass().getName()), e);
+                    MessageFormat.format(CodecError.FAIL_DECOMPRESS_DATAGRAM.getMessage(), this.getClass().getName()), e);
         }
 
         return out.toByteArray();

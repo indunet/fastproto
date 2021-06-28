@@ -23,7 +23,9 @@ import org.indunet.fastproto.annotation.Endian;
 import org.indunet.fastproto.annotation.type.UInteger16Type;
 import org.indunet.fastproto.decoder.DecodeUtils;
 import org.indunet.fastproto.encoder.EncodeUtils;
+import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.OutOfBoundsException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -34,8 +36,8 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Crc16Checker implements Checker {
     protected final static int defaultPoly = 0xA001;
-    protected int poly;
     protected final static Map<Integer, Crc16Checker> checkers = new ConcurrentHashMap<>();
+    protected int poly;
 
     protected Crc16Checker(int poly) {
         this.poly = poly;
@@ -112,11 +114,11 @@ public class Crc16Checker implements Checker {
         int l = length >= 0 ? length : datagram.length + length - bo;
 
         if (bo < 0) {
-            throw new DecodeException(DecodeException.DecodeError.ILLEGAL_BYTE_OFFSET);
+            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (l < 0) {
-            throw new DecodeException(DecodeException.DecodeError.ILLEGAL_PARAMETER);
+            throw new DecodeException(CodecError.ILLEGAL_PARAMETER);
         } else if (bo + length > datagram.length) {
-            throw new DecodeException(DecodeException.DecodeError.EXCEEDED_DATAGRAM_SIZE);
+            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         int crc16 = 0xFFFF;

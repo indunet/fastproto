@@ -22,7 +22,9 @@ import org.indunet.fastproto.annotation.CheckSum;
 import org.indunet.fastproto.annotation.type.UInteger8Type;
 import org.indunet.fastproto.decoder.DecodeUtils;
 import org.indunet.fastproto.encoder.EncodeUtils;
+import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.OutOfBoundsException;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -100,11 +102,11 @@ public class Crc8Checker implements Checker {
         int l = length >= 0 ? length : datagram.length + length - s;
 
         if (s < 0) {
-            throw new DecodeException(DecodeException.DecodeError.ILLEGAL_BYTE_OFFSET);
+            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (l < 0) {
-            throw new DecodeException(DecodeException.DecodeError.ILLEGAL_PARAMETER);
+            throw new DecodeException(CodecError.ILLEGAL_PARAMETER);
         } else if (s + length > datagram.length) {
-            throw new DecodeException(DecodeException.DecodeError.EXCEEDED_DATAGRAM_SIZE);
+            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         byte crc8 = 0;
