@@ -21,7 +21,7 @@ import lombok.Data;
 import org.indunet.fastproto.TypeAssist;
 
 /**
- * Codec Context;
+ * Codec Context.
  *
  * @author Deng Ran
  * @since 1.7.0

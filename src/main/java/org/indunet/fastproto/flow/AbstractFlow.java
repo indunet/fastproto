@@ -17,7 +17,7 @@
 package org.indunet.fastproto.flow;
 
 /**
- * Endian policy.
+ * Abstract flow.
  *
  * @author Deng Ran
  * @since 1.7.0
