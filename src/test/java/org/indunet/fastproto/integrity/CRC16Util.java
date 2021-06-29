@@ -1,4 +1,4 @@
-package org.indunet.fastproto.check;
+package org.indunet.fastproto.integrity;
 
 public class CRC16Util {
 

@@ -19,7 +19,7 @@ package org.indunet.fastproto;
 import lombok.SneakyThrows;
 import lombok.val;
 import org.indunet.fastproto.annotation.type.UInteger64Type;
-import org.indunet.fastproto.check.Crc32Checker;
+import org.indunet.fastproto.integrity.Crc32Checker;
 import org.indunet.fastproto.compress.DeflateCompressor;
 import org.indunet.fastproto.encoder.EncodeUtils;
 import org.indunet.fastproto.iot.Everything;
@@ -117,7 +117,7 @@ public class FastProtoTest {
 
         // Test decode.
         assertEquals(
-                FastProto.parseFrom(datagram, Weather.class, false).toString(), metrics.toString());
+                FastProto.parseFrom(datagram, Weather.class, CodecFeature.IGNORE_ENABLE_COMPRESS).toString(), metrics.toString());
 
         // Test encode.
         byte[] cache = FastProto.toByteArray(metrics, 30, false);
@@ -156,6 +156,8 @@ public class FastProtoTest {
         // Test decode.
         assertEquals(
                 FastProto.parseFrom(datagram, Weather.class).toString(), weather.toString());
+        assertEquals(
+                FastProto.parseFrom(datagram, Weather.class, CodecFeature.DEFAULT).toString(), weather.toString());
 
         // Test encode.
         byte[] cache = FastProto.toByteArray(weather);
@@ -210,10 +212,10 @@ public class FastProtoTest {
         EncodeUtils.uInteger8Type(datagram, 66, (int) (everything.getSpeed() * 10));
 
         // Test decode.
-        assertEquals(FastProto.parseFrom(datagram, Everything.class, false).toString(), everything.toString());
+        assertEquals(FastProto.parseFrom(datagram, Everything.class, CodecFeature.IGNORE_ENABLE_COMPRESS).toString(), everything.toString());
 
         // Test encode.
-        byte[] cache = FastProto.toByteArray(everything, false);
+        byte[] cache = FastProto.toByteArray(everything, -1, CodecFeature.IGNORE_ENABLE_COMPRESS);
         assertArrayEquals(cache, datagram);
 
         // Test with gzip
@@ -232,10 +234,6 @@ public class FastProtoTest {
         byte[] datagram = FastProto.toByteArray(motor);
         assertEquals(44, datagram.length);
         assertEquals(motor.toString(), FastProto.parseFrom(datagram, Motor.class).toString());
-    }
-
-    public static class Member {
-
     }
 
     @Test

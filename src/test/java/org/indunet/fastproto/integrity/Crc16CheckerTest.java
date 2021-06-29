@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.check;
+package org.indunet.fastproto.integrity;
 
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.annotation.CheckSum;
+import org.indunet.fastproto.annotation.DataIntegrity;
 import org.indunet.fastproto.encoder.EncodeUtils;
 import org.junit.jupiter.api.Test;
 
@@ -52,7 +52,7 @@ class Crc16CheckerTest {
         assertTrue(checker.validate(datagram, TestObject.class));
     }
 
-    @CheckSum(checkPolicy = CheckPolicy.CRC16, start = 0, length = -2, endianPolicy = EndianPolicy.BIG)
+    @DataIntegrity(checkPolicy = CheckPolicy.CRC16, start = 0, length = -2, endianPolicy = EndianPolicy.BIG)
     public static class TestObject {
 
     }

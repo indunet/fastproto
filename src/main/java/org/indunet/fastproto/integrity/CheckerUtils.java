@@ -14,9 +14,9 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.check;
+package org.indunet.fastproto.integrity;
 
-import org.indunet.fastproto.annotation.CheckSum;
+import org.indunet.fastproto.annotation.DataIntegrity;
 
 /**
  * @author Deng Ran
@@ -24,9 +24,9 @@ import org.indunet.fastproto.annotation.CheckSum;
  */
 public class CheckerUtils {
     public static int getSize(Class<?> protocolCLass) {
-        if (protocolCLass.isAnnotationPresent(CheckSum.class)) {
+        if (protocolCLass.isAnnotationPresent(DataIntegrity.class)) {
             return CheckerFactory
-                    .create(protocolCLass.getAnnotation(CheckSum.class))
+                    .create(protocolCLass.getAnnotation(DataIntegrity.class))
                     .getSize();
         } else {
             return 0;

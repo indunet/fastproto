@@ -1,7 +1,7 @@
 package org.indunet.fastproto.annotation;
 
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.check.CheckPolicy;
+import org.indunet.fastproto.integrity.CheckPolicy;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CheckSum {
+public @interface DataIntegrity {
     int value() default -2;
 
     int start() default 0;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.check;
+package org.indunet.fastproto.integrity;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

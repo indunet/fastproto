@@ -14,14 +14,24 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.check;
+package org.indunet.fastproto.flow;
+
+import lombok.Builder;
+import lombok.Data;
+import org.indunet.fastproto.TypeAssist;
 
 /**
+ * Codec Context;
+ *
  * @author Deng Ran
- * @since 1.6.0
+ * @since 1.7.0
  */
-public interface Checker {
-    boolean validate(byte[] datagram, Class<?> protocolClass);
-    void setValue(byte[] datagram, Class<?> protocolClass);
-    int getSize();
+@Data
+@Builder
+public class CodecContext {
+    byte[] datagram;
+    TypeAssist typeAssist;
+    Object object;
+    Class<?> protocolClass;
+    int codecFeature;
 }

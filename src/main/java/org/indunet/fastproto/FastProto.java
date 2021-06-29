@@ -18,17 +18,18 @@ package org.indunet.fastproto;
 
 import lombok.NonNull;
 import lombok.val;
-import org.indunet.fastproto.annotation.CheckSum;
+import org.indunet.fastproto.annotation.DataIntegrity;
 import org.indunet.fastproto.annotation.EnableCompress;
-import org.indunet.fastproto.check.Checker;
-import org.indunet.fastproto.check.CheckerFactory;
-import org.indunet.fastproto.check.CheckerUtils;
 import org.indunet.fastproto.compress.CompressorFactory;
 import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.DecoderFactory;
 import org.indunet.fastproto.encoder.EncodeContext;
 import org.indunet.fastproto.encoder.EncoderFactory;
 import org.indunet.fastproto.exception.*;
+import org.indunet.fastproto.flow.CodecContext;
+import org.indunet.fastproto.flow.FlowFactory;
+import org.indunet.fastproto.integrity.Checker;
+import org.indunet.fastproto.integrity.CheckerFactory;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -53,7 +54,7 @@ public class FastProto {
      * @return deserialize object instance
      */
     public static <T> T parseFrom(@NonNull byte[] datagram, @NonNull Class<T> clazz) {
-        return parseFrom(datagram, clazz, true);
+        return parseFrom(datagram, clazz, CodecFeature.DEFAULT);
     }
 
     /**
@@ -64,6 +65,7 @@ public class FastProto {
      * @param enableCompress enable compress or not
      * @return object.
      */
+    @Deprecated
     public static <T> T parseFrom(@NonNull byte[] datagram, @NonNull Class<T> protocolClass, boolean enableCompress) {
         if (enableCompress && protocolClass.isAnnotationPresent(EnableCompress.class)) {
             val compress = protocolClass.getAnnotation(EnableCompress.class);
@@ -73,8 +75,8 @@ public class FastProto {
         }
 
         // Check sum.
-        if (protocolClass.isAnnotationPresent(CheckSum.class)) {
-            Checker checker = CheckerFactory.create(protocolClass.getAnnotation(CheckSum.class));
+        if (protocolClass.isAnnotationPresent(DataIntegrity.class)) {
+            Checker checker = CheckerFactory.create(protocolClass.getAnnotation(DataIntegrity.class));
 
             if (!checker.validate(datagram, protocolClass)) {
                 throw new CheckSumException(CodecError.ILLEGAL_CHECK_SUM);
@@ -108,6 +110,20 @@ public class FastProto {
         return assist.getObject(protocolClass);
     }
 
+    public static <T> T parseFrom(@NonNull byte[] datagram, @NonNull Class<T> protocolClass, int codecFeature) {
+        TypeAssist assist = assists.computeIfAbsent(protocolClass, c -> TypeAssist.of(c));
+        CodecContext context = CodecContext.builder()
+                .datagram(datagram)
+                .protocolClass(protocolClass)
+                .codecFeature(codecFeature)
+                .typeAssist(assist)
+                .build();
+        FlowFactory.createDecode(codecFeature)
+                .process(context);
+
+        return (T) context.getObject();
+    }
+
     /**
      * Convert object into binary datagram.
      *
@@ -115,7 +131,7 @@ public class FastProto {
      * @return binary datagram.
      */
     public static byte[] toByteArray(@NonNull Object object) {
-        return toByteArray(object, true);
+        return toByteArray(object, -1, CodecFeature.DEFAULT);
     }
 
     /**
@@ -125,13 +141,20 @@ public class FastProto {
      * @param enableCompress enable compress
      * @return binary datagram.
      */
+    @Deprecated
     public static byte[] toByteArray(@NonNull Object object, boolean enableCompress) {
-        TypeAssist assist = assists.computeIfAbsent(object.getClass(), c -> TypeAssist.of(c));
-        int length = assist.getMaxLength();
-        length += CheckerUtils.getSize(object.getClass());
-        length += VersionAssist.getSize(object.getClass());
+//        TypeAssist assist = assists.computeIfAbsent(object.getClass(), c -> TypeAssist.of(c));
+//        int length = assist.getMaxLength();
+//        length += CheckerUtils.getSize(object.getClass());
+//        length += VersionAssist.getSize(object.getClass());
+//
+//        return toByteArray(object, length, enableCompress);
 
-        return toByteArray(object, length, enableCompress);
+        if (enableCompress) {
+            return toByteArray(object, -1, CodecFeature.IGNORE_ENABLE_COMPRESS);
+        } else {
+            return toByteArray(object, -1, CodecFeature.DEFAULT);
+        }
     }
 
     /**
@@ -142,7 +165,7 @@ public class FastProto {
      * @return binary datagram.
      */
     public static byte[] toByteArray(@NonNull Object object, int length) {
-        return toByteArray(object, length, true);
+        return toByteArray(object, length, CodecFeature.DEFAULT);
     }
 
     /**
@@ -153,6 +176,7 @@ public class FastProto {
      * @param enableCompress enable compress or not
      * @return binary datagram.
      */
+    @Deprecated
     public static byte[] toByteArray(@NonNull Object object, int length, boolean enableCompress) {
         byte[] datagram = new byte[length];
 
@@ -183,8 +207,8 @@ public class FastProto {
         VersionAssist.encode(datagram, object.getClass());
 
         // Check sum.
-        if (object.getClass().isAnnotationPresent(CheckSum.class)) {
-            CheckSum checkSum = object.getClass().getAnnotation(CheckSum.class);
+        if (object.getClass().isAnnotationPresent(DataIntegrity.class)) {
+            DataIntegrity checkSum = object.getClass().getAnnotation(DataIntegrity.class);
             Checker checker = CheckerFactory.create(checkSum);
 
             checker.setValue(datagram, object.getClass());
@@ -198,5 +222,29 @@ public class FastProto {
         } else {
             return datagram;
         }
+    }
+
+    public static byte[] toByteArray(@NonNull Object object, int length, int codecFeature) {
+        TypeAssist assist = assists.computeIfAbsent(object.getClass(), c -> TypeAssist.of(c));
+        CodecContext.CodecContextBuilder builder = CodecContext.builder()
+                .object(object)
+                .protocolClass(object.getClass())
+                .codecFeature(codecFeature)
+                .typeAssist(assist);
+        CodecContext context;
+
+        if (length == -1) {
+            context = builder.build();
+            FlowFactory.createEncode(codecFeature)
+                    .process(context);
+        } else {
+            context = builder
+                    .datagram(new byte[length])
+                    .build();
+            FlowFactory.createEncode(codecFeature | CodecFeature.NON_INFER_LENGTH)
+                    .process(context);
+        }
+
+        return context.getDatagram();
     }
 }

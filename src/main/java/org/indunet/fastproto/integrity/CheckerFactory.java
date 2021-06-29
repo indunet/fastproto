@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.check;
+package org.indunet.fastproto.integrity;
 
 import lombok.NonNull;
-import org.indunet.fastproto.annotation.CheckSum;
+import org.indunet.fastproto.annotation.DataIntegrity;
 
 /**
  * @author Deng Ran
  * @since 1.6.0
  */
 public class CheckerFactory {
-    public static Checker create(@NonNull CheckSum checkSum) {
+    public static Checker create(@NonNull DataIntegrity checkSum) {
         CheckPolicy policy = checkSum.checkPolicy();
         int poly = checkSum.poly();
 
