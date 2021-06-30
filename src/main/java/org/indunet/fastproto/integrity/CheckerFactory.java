@@ -17,14 +17,14 @@
 package org.indunet.fastproto.integrity;
 
 import lombok.NonNull;
-import org.indunet.fastproto.annotation.DataIntegrity;
+import org.indunet.fastproto.annotation.Checksum;
 
 /**
  * @author Deng Ran
  * @since 1.6.0
  */
 public class CheckerFactory {
-    public static Checker create(@NonNull DataIntegrity checkSum) {
+    public static Checker create(@NonNull Checksum checkSum) {
         CheckPolicy policy = checkSum.checkPolicy();
         int poly = checkSum.poly();
 

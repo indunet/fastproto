@@ -17,7 +17,7 @@
 package org.indunet.fastproto.flow.decode;
 
 import lombok.val;
-import org.indunet.fastproto.annotation.DataIntegrity;
+import org.indunet.fastproto.annotation.Checksum;
 import org.indunet.fastproto.exception.CheckSumException;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.flow.AbstractFlow;
@@ -39,8 +39,8 @@ public class VerifyChecksumFlow extends AbstractFlow<CodecContext> {
         val protocolClass = context.getProtocolClass();
         val datagram = context.getDatagram();
 
-        if (protocolClass.isAnnotationPresent(DataIntegrity.class)) {
-            Checker checker = CheckerFactory.create(protocolClass.getAnnotation(DataIntegrity.class));
+        if (protocolClass.isAnnotationPresent(Checksum.class)) {
+            Checker checker = CheckerFactory.create(protocolClass.getAnnotation(Checksum.class));
 
             if (!checker.validate(datagram, protocolClass)) {
                 throw new CheckSumException(CodecError.ILLEGAL_CHECK_SUM);

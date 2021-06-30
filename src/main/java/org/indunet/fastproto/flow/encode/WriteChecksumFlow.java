@@ -17,7 +17,7 @@
 package org.indunet.fastproto.flow.encode;
 
 import lombok.val;
-import org.indunet.fastproto.annotation.DataIntegrity;
+import org.indunet.fastproto.annotation.Checksum;
 import org.indunet.fastproto.flow.AbstractFlow;
 import org.indunet.fastproto.flow.CodecContext;
 import org.indunet.fastproto.integrity.Checker;
@@ -38,8 +38,8 @@ public class WriteChecksumFlow extends AbstractFlow<CodecContext> {
         val datagram = context.getDatagram();
 
         // Check sum.
-        if (object.getClass().isAnnotationPresent(DataIntegrity.class)) {
-            DataIntegrity checkSum = object.getClass().getAnnotation(DataIntegrity.class);
+        if (object.getClass().isAnnotationPresent(Checksum.class)) {
+            Checksum checkSum = object.getClass().getAnnotation(Checksum.class);
             Checker checker = CheckerFactory.create(checkSum);
 
             checker.setValue(datagram, object.getClass());

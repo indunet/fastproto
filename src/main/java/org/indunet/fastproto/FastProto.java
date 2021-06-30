@@ -18,7 +18,7 @@ package org.indunet.fastproto;
 
 import lombok.NonNull;
 import lombok.val;
-import org.indunet.fastproto.annotation.DataIntegrity;
+import org.indunet.fastproto.annotation.Checksum;
 import org.indunet.fastproto.annotation.EnableCompress;
 import org.indunet.fastproto.compress.CompressorFactory;
 import org.indunet.fastproto.decoder.DecodeContext;
@@ -33,7 +33,6 @@ import org.indunet.fastproto.integrity.CheckerFactory;
 
 import java.text.MessageFormat;
 import java.util.List;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -44,8 +43,6 @@ import java.util.function.Function;
  * @since 1.0.0
  */
 public class FastProto {
-    protected static ConcurrentHashMap<Class<?>, TypeAssist> assists = new ConcurrentHashMap<>();
-
     /**
      * Convert binary message into object.
      *
@@ -75,8 +72,8 @@ public class FastProto {
         }
 
         // Check sum.
-        if (protocolClass.isAnnotationPresent(DataIntegrity.class)) {
-            Checker checker = CheckerFactory.create(protocolClass.getAnnotation(DataIntegrity.class));
+        if (protocolClass.isAnnotationPresent(Checksum.class)) {
+            Checker checker = CheckerFactory.create(protocolClass.getAnnotation(Checksum.class));
 
             if (!checker.validate(datagram, protocolClass)) {
                 throw new CheckSumException(CodecError.ILLEGAL_CHECK_SUM);
@@ -88,7 +85,7 @@ public class FastProto {
             throw new ProtocolVersionException(CodecError.PROTOCOL_VERSION_NOT_MATCH);
         }
 
-        TypeAssist assist = assists.computeIfAbsent(protocolClass, c -> TypeAssist.of(c));
+        TypeAssist assist = TypeAssist.byClass(protocolClass);
         List<DecodeContext> contexts = assist.toDecodeContexts(datagram);
 
         contexts.parallelStream()
@@ -111,14 +108,14 @@ public class FastProto {
     }
 
     public static <T> T parseFrom(@NonNull byte[] datagram, @NonNull Class<T> protocolClass, int codecFeature) {
-        TypeAssist assist = assists.computeIfAbsent(protocolClass, c -> TypeAssist.of(c));
+        TypeAssist assist = TypeAssist.byClass(protocolClass);
         CodecContext context = CodecContext.builder()
                 .datagram(datagram)
                 .protocolClass(protocolClass)
                 .codecFeature(codecFeature)
                 .typeAssist(assist)
                 .build();
-        FlowFactory.createDecode(codecFeature)
+        FlowFactory.createDecode(assist.getCodecFeature() | codecFeature)
                 .process(context);
 
         return (T) context.getObject();
@@ -143,7 +140,7 @@ public class FastProto {
      */
     @Deprecated
     public static byte[] toByteArray(@NonNull Object object, boolean enableCompress) {
-//        TypeAssist assist = assists.computeIfAbsent(object.getClass(), c -> TypeAssist.of(c));
+//        TypeAssist assist = assists.computeIfAbsent(object.getClass(), c -> TypeAssist.head(c));
 //        int length = assist.getMaxLength();
 //        length += CheckerUtils.getSize(object.getClass());
 //        length += VersionAssist.getSize(object.getClass());
@@ -180,7 +177,7 @@ public class FastProto {
     public static byte[] toByteArray(@NonNull Object object, int length, boolean enableCompress) {
         byte[] datagram = new byte[length];
 
-        TypeAssist assist = assists.computeIfAbsent(object.getClass(), c -> TypeAssist.of(c));
+        TypeAssist assist = TypeAssist.byClass(object.getClass());
         List<EncodeContext> contexts = assist.toEncodeContexts(object, datagram);
 
         contexts.stream()
@@ -207,8 +204,8 @@ public class FastProto {
         VersionAssist.encode(datagram, object.getClass());
 
         // Check sum.
-        if (object.getClass().isAnnotationPresent(DataIntegrity.class)) {
-            DataIntegrity checkSum = object.getClass().getAnnotation(DataIntegrity.class);
+        if (object.getClass().isAnnotationPresent(Checksum.class)) {
+            Checksum checkSum = object.getClass().getAnnotation(Checksum.class);
             Checker checker = CheckerFactory.create(checkSum);
 
             checker.setValue(datagram, object.getClass());
@@ -225,7 +222,7 @@ public class FastProto {
     }
 
     public static byte[] toByteArray(@NonNull Object object, int length, int codecFeature) {
-        TypeAssist assist = assists.computeIfAbsent(object.getClass(), c -> TypeAssist.of(c));
+        TypeAssist assist = TypeAssist.byClass(object.getClass());
         CodecContext.CodecContextBuilder builder = CodecContext.builder()
                 .object(object)
                 .protocolClass(object.getClass())
@@ -235,7 +232,7 @@ public class FastProto {
 
         if (length == -1) {
             context = builder.build();
-            FlowFactory.createEncode(codecFeature)
+            FlowFactory.createEncode(assist.getCodecFeature() | codecFeature)
                     .process(context);
         } else {
             context = builder

@@ -18,7 +18,7 @@ package org.indunet.fastproto.integrity;
 
 import lombok.val;
 import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.annotation.DataIntegrity;
+import org.indunet.fastproto.annotation.Checksum;
 import org.indunet.fastproto.encoder.EncodeUtils;
 import org.junit.jupiter.api.Test;
 
@@ -48,7 +48,7 @@ public class Crc8CheckerTest {
         assertTrue(checker.validate(datagram, TestObject1.class));
     }
 
-    @DataIntegrity(value = -1, start = 0, length = -1, checkPolicy = CheckPolicy.CRC8)
+    @Checksum(value = -1, start = 0, length = -1, checkPolicy = CheckPolicy.CRC8)
     public static class TestObject1 {
 
     }
@@ -67,7 +67,7 @@ public class Crc8CheckerTest {
         assertTrue(checker.validate(datagram, TestObject.class));
     }
 
-    @DataIntegrity(value = -1, start = 0, length = -1, checkPolicy = CheckPolicy.CRC8_CCITT)
+    @Checksum(value = -1, start = 0, length = -1, checkPolicy = CheckPolicy.CRC8_CCITT)
     public static class TestObject {
 
     }

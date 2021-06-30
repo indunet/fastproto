@@ -18,7 +18,7 @@ package org.indunet.fastproto.integrity;
 
 import lombok.Builder;
 import lombok.val;
-import org.indunet.fastproto.annotation.DataIntegrity;
+import org.indunet.fastproto.annotation.Checksum;
 import org.indunet.fastproto.encoder.EncodeUtils;
 import org.junit.jupiter.api.Test;
 
@@ -51,7 +51,7 @@ class Crc32CheckerTest {
         assertTrue(checker.validate(datagram, TestObject.class));
     }
 
-    @DataIntegrity(value = -4, start = 0, length = -4, checkPolicy = CheckPolicy.CRC32)
+    @Checksum(value = -4, start = 0, length = -4, checkPolicy = CheckPolicy.CRC32)
     @Builder
     public static class TestObject {
 

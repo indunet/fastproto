@@ -19,7 +19,7 @@ package org.indunet.fastproto.integrity;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.annotation.DataIntegrity;
+import org.indunet.fastproto.annotation.Checksum;
 import org.indunet.fastproto.encoder.EncodeUtils;
 import org.junit.jupiter.api.Test;
 
@@ -52,7 +52,7 @@ class Crc16CheckerTest {
         assertTrue(checker.validate(datagram, TestObject.class));
     }
 
-    @DataIntegrity(checkPolicy = CheckPolicy.CRC16, start = 0, length = -2, endianPolicy = EndianPolicy.BIG)
+    @Checksum(checkPolicy = CheckPolicy.CRC16, start = 0, length = -2, endianPolicy = EndianPolicy.BIG)
     public static class TestObject {
 
     }

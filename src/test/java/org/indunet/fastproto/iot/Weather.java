@@ -21,7 +21,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.DataIntegrity;
+import org.indunet.fastproto.annotation.Checksum;
 import org.indunet.fastproto.annotation.EnableCompress;
 import org.indunet.fastproto.annotation.type.*;
 import org.indunet.fastproto.integrity.CheckPolicy;
@@ -38,7 +38,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @EnableCompress(value = CompressPolicy.DEFLATE, level = 2)
-@DataIntegrity(value = -4, start = 0, length = -4, checkPolicy = CheckPolicy.CRC32, endianPolicy = EndianPolicy.BIG)
+@Checksum(value = -4, start = 0, length = -4, checkPolicy = CheckPolicy.CRC32, endianPolicy = EndianPolicy.BIG)
 public class Weather {
     @UInteger8Type(0)
     int id;

@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.integrity;
 
-import org.indunet.fastproto.annotation.DataIntegrity;
+import org.indunet.fastproto.annotation.Checksum;
 
 /**
  * @author Deng Ran
@@ -24,9 +24,9 @@ import org.indunet.fastproto.annotation.DataIntegrity;
  */
 public class CheckerUtils {
     public static int getSize(Class<?> protocolCLass) {
-        if (protocolCLass.isAnnotationPresent(DataIntegrity.class)) {
+        if (protocolCLass.isAnnotationPresent(Checksum.class)) {
             return CheckerFactory
-                    .create(protocolCLass.getAnnotation(DataIntegrity.class))
+                    .create(protocolCLass.getAnnotation(Checksum.class))
                     .getSize();
         } else {
             return 0;
