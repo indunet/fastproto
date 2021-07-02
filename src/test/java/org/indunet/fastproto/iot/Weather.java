@@ -24,7 +24,7 @@ import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.Checksum;
 import org.indunet.fastproto.annotation.EnableCompress;
 import org.indunet.fastproto.annotation.type.*;
-import org.indunet.fastproto.integrity.CheckPolicy;
+import org.indunet.fastproto.checksum.CheckPolicy;
 import org.indunet.fastproto.compress.CompressPolicy;
 
 import java.sql.Timestamp;
@@ -38,7 +38,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @EnableCompress(value = CompressPolicy.DEFLATE, level = 2)
-@Checksum(value = -4, start = 0, length = -4, checkPolicy = CheckPolicy.CRC32, endianPolicy = EndianPolicy.BIG)
+@Checksum(value = -4, start = 0, length = -5, checkPolicy = CheckPolicy.CRC32, endianPolicy = EndianPolicy.BIG)
 public class Weather {
     @UInteger8Type(0)
     int id;

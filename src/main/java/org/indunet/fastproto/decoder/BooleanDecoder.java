@@ -21,6 +21,7 @@ import org.indunet.fastproto.annotation.type.BooleanType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
+import org.indunet.fastproto.util.ReverseUtils;
 
 /**
  * Boolean type decoder.
@@ -38,7 +39,7 @@ public class BooleanDecoder implements TypeDecoder<Boolean> {
     }
 
     public boolean decode(@NonNull final byte[] datagram, int byteOffset, int bitOffset) {
-        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
 
         if (bo < 0) {
             throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);

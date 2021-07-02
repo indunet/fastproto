@@ -22,6 +22,7 @@ import org.indunet.fastproto.annotation.type.FloatType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
+import org.indunet.fastproto.util.ReverseUtils;
 
 /**
  * Float type decoder.
@@ -39,7 +40,7 @@ public class FloatDecoder implements TypeDecoder<Float> {
     }
 
     public float decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {
-        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
 
         if (bo < 0) {
             throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);

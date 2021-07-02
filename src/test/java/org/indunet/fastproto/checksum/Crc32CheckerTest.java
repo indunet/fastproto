@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.integrity;
+package org.indunet.fastproto.checksum;
 
 import lombok.Builder;
 import lombok.val;
@@ -51,7 +51,7 @@ class Crc32CheckerTest {
         assertTrue(checker.validate(datagram, TestObject.class));
     }
 
-    @Checksum(value = -4, start = 0, length = -4, checkPolicy = CheckPolicy.CRC32)
+    @Checksum(value = -4, start = 0, length = -5, checkPolicy = CheckPolicy.CRC32)
     @Builder
     public static class TestObject {
 

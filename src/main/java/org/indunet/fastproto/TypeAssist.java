@@ -82,10 +82,10 @@ public class TypeAssist {
     }
 
     public static TypeAssist byClass(Class<?> protocolClass) {
-        return typeAssists.computeIfAbsent(protocolClass, c -> TypeAssist.create(c));
+        return typeAssists.computeIfAbsent(protocolClass, c -> TypeAssist.get(c));
     }
 
-    public static TypeAssist create(@NonNull Class<?> protocolClass) {
+    public static TypeAssist get(@NonNull Class<?> protocolClass) {
         TypeAssist assist = of(protocolClass);
 
         assist.setOpEnableCompress(Optional.of(protocolClass)

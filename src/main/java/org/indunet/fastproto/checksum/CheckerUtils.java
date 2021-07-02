@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.integrity;
+package org.indunet.fastproto.checksum;
 
 import org.indunet.fastproto.annotation.Checksum;
 

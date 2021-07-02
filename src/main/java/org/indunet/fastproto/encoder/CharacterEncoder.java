@@ -21,6 +21,7 @@ import org.indunet.fastproto.annotation.type.CharacterType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.exception.SpaceNotEnoughException;
+import org.indunet.fastproto.util.ReverseUtils;
 
 /**
  * Character type encoder.
@@ -40,7 +41,7 @@ public class CharacterEncoder implements TypeEncoder {
     }
 
     public void encode(byte[] datagram, int byteOffset, EndianPolicy policy, char value) {
-        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
 
         if (bo < 0) {
             throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);

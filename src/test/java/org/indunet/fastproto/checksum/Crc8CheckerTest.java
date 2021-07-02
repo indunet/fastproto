@@ -14,53 +14,68 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.integrity;
+package org.indunet.fastproto.checksum;
 
 import lombok.val;
-import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.Checksum;
 import org.indunet.fastproto.encoder.EncodeUtils;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * @author Deng Ran
  * @since 1.6.3
  */
-class Crc16CheckerTest {
-    Crc16Checker checker = Crc16Checker.getInstance();
+public class Crc8CheckerTest {
 
     @Test
-    public void testValidate() {
+    public void testCrc8() {
+        Crc8Checker checker = Crc8Checker.getInstance();
         val datagram = new byte[10];
         val random = new Random(System.currentTimeMillis());
 
         IntStream.range(0, 10)
                 .forEach(i -> datagram[i] = (byte) random.nextInt());
-        int value = checker.getValue(datagram, 0, 8);
+        int value = checker.getValue(datagram, 0, 9);
+        EncodeUtils.uInteger8Type(datagram, 9, value);
 
-        String tmp = CRC16Util.getCRC(Arrays.copyOfRange(datagram, 0, 8));
-        int x = Integer.parseInt(tmp, 16);
-        EncodeUtils.uInteger16Type(datagram, 8, EndianPolicy.BIG, value);
-        assertEquals(value, x);
+        assertTrue(checker.validate(datagram, TestObject1.class));
+    }
+
+    @Checksum(value = -1, start = 0, length = -2, checkPolicy = CheckPolicy.CRC8)
+    public static class TestObject1 {
+
+    }
+
+    @Test
+    public void testCrc8Ccitt() {
+        val checker = Crc8Checker.getInstance(CheckPolicy.CRC8_CCITT.getPoly());
+        val datagram = new byte[10];
+        val random = new Random(System.currentTimeMillis());
+
+        IntStream.range(0, 10)
+                .forEach(i -> datagram[i] = (byte) random.nextInt());
+        int value = checker.getValue(datagram, 0, 9);
+        EncodeUtils.uInteger8Type(datagram, 9, value);
+
         assertTrue(checker.validate(datagram, TestObject.class));
     }
 
-    @Checksum(checkPolicy = CheckPolicy.CRC16, start = 0, length = -2, endianPolicy = EndianPolicy.BIG)
+    @Checksum(value = -1, start = 0, length = -1, checkPolicy = CheckPolicy.CRC8_CCITT)
     public static class TestObject {
 
     }
 
     @Test
-    public void testToByteArray() {
+    public void testtoByteArray() {
         val testObject = new TestObject();
-        val datagram = FastProto.toByteArray(testObject, 30);
+        byte[] datagram = FastProto.toByteArray(testObject, 30);
 
         assertNotNull(datagram);
     }

@@ -16,8 +16,7 @@
 
 package org.indunet.fastproto.flow.encode;
 
-import lombok.val;
-import org.indunet.fastproto.VersionAssist;
+import org.indunet.fastproto.ProtocolVersionAssist;
 import org.indunet.fastproto.flow.AbstractFlow;
 import org.indunet.fastproto.flow.CodecContext;
 
@@ -32,10 +31,7 @@ public class WriteProtocolVersionFlow extends AbstractFlow<CodecContext> {
 
     @Override
     public void process(CodecContext context) {
-        val datagram = context.getDatagram();
-        val protocolClass = context.getProtocolClass();
-
-        VersionAssist.encode(datagram, protocolClass);
+        ProtocolVersionAssist.encode(context.getDatagram(), context.getTypeAssist());
 
         this.nextFlow(context);
     }

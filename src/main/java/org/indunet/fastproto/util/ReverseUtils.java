@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.annotation;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.util.function.Function;
+package org.indunet.fastproto.util;
 
 /**
+ * Reverse address.
+ *
  * @author Deng Ran
- * @see Decoder
- * @since 1.0.0
+ * @since 2.0.0
  */
-@Deprecated
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface DecodeFormula {
-    Class<? extends Function> value();
+public class ReverseUtils {
+    public static int byteOffset(int datagramLength, int byteOffset) {
+        return byteOffset >= 0 ? byteOffset : datagramLength + byteOffset;
+
+    }
+
+    public static int length(int datagramLength, int byteOffset, int length) {
+        int bo = byteOffset(datagramLength, byteOffset);
+
+        return length >= 0 ? length : datagramLength + length - bo + 1;
+    }
 }

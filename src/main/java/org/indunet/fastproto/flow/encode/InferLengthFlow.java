@@ -17,10 +17,10 @@
 package org.indunet.fastproto.flow.encode;
 
 import lombok.val;
-import org.indunet.fastproto.VersionAssist;
+import org.indunet.fastproto.ProtocolVersionAssist;
 import org.indunet.fastproto.flow.AbstractFlow;
 import org.indunet.fastproto.flow.CodecContext;
-import org.indunet.fastproto.integrity.CheckerUtils;
+import org.indunet.fastproto.checksum.CheckerUtils;
 
 /**
  * Infer length flow.
@@ -36,7 +36,7 @@ public class InferLengthFlow extends AbstractFlow<CodecContext> {
         val assist = context.getTypeAssist();
         int length = assist.getMaxLength();
         length += CheckerUtils.getSize(context.getProtocolClass());
-        length += VersionAssist.getSize(context.getProtocolClass());
+        length += ProtocolVersionAssist.size(assist);
 
         context.setDatagram(new byte[length]);
         this.nextFlow(context);

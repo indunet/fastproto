@@ -19,7 +19,7 @@ package org.indunet.fastproto;
 import lombok.SneakyThrows;
 import lombok.val;
 import org.indunet.fastproto.annotation.type.UInteger64Type;
-import org.indunet.fastproto.integrity.Crc32Checker;
+import org.indunet.fastproto.checksum.Crc32Checker;
 import org.indunet.fastproto.compress.DeflateCompressor;
 import org.indunet.fastproto.encoder.EncodeUtils;
 import org.indunet.fastproto.iot.Everything;
@@ -113,14 +113,14 @@ public class FastProtoTest {
         EncodeUtils.type(datagram, 18, 0, metrics.isHumidityValid());
         EncodeUtils.type(datagram, 18, 1, metrics.isTemperatureValid());
         EncodeUtils.type(datagram, 18, 2, metrics.isPressureValid());
-        EncodeUtils.uInteger32Type(datagram, 26, EndianPolicy.BIG, Crc32Checker.getInstance().getValue(datagram, 0, -4));
+        EncodeUtils.uInteger32Type(datagram, 26, EndianPolicy.BIG, Crc32Checker.getInstance().getValue(datagram, 0, -5));
 
         // Test decode.
         assertEquals(
                 FastProto.parseFrom(datagram, Weather.class, CodecFeature.IGNORE_ENABLE_COMPRESS).toString(), metrics.toString());
 
         // Test encode.
-        byte[] cache = FastProto.toByteArray(metrics, 30, false);
+        byte[] cache = FastProto.toByteArray(metrics, 30, CodecFeature.IGNORE_ENABLE_COMPRESS);
         assertArrayEquals(cache, datagram);
     }
 
@@ -148,7 +148,7 @@ public class FastProtoTest {
         EncodeUtils.type(datagram, 18, 0, weather.isHumidityValid());
         EncodeUtils.type(datagram, 18, 1, weather.isTemperatureValid());
         EncodeUtils.type(datagram, 18, 2, weather.isPressureValid());
-        EncodeUtils.uInteger32Type(datagram, 19, EndianPolicy.BIG, Crc32Checker.getInstance().getValue(datagram, 0, -4));
+        EncodeUtils.uInteger32Type(datagram, 19, EndianPolicy.BIG, Crc32Checker.getInstance().getValue(datagram, 0, -5));
 
         // Compress the datagram.
         datagram = compressor.compress(datagram);

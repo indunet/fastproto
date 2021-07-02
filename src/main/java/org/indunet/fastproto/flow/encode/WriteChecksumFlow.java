@@ -20,8 +20,8 @@ import lombok.val;
 import org.indunet.fastproto.annotation.Checksum;
 import org.indunet.fastproto.flow.AbstractFlow;
 import org.indunet.fastproto.flow.CodecContext;
-import org.indunet.fastproto.integrity.Checker;
-import org.indunet.fastproto.integrity.CheckerFactory;
+import org.indunet.fastproto.checksum.Checker;
+import org.indunet.fastproto.checksum.CheckerFactory;
 
 /**
  * Write checksum flow.

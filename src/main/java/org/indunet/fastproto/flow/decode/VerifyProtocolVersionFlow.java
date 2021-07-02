@@ -17,8 +17,7 @@
 package org.indunet.fastproto.flow.decode;
 
 import lombok.NonNull;
-import lombok.val;
-import org.indunet.fastproto.VersionAssist;
+import org.indunet.fastproto.ProtocolVersionAssist;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.ProtocolVersionException;
 import org.indunet.fastproto.flow.AbstractFlow;
@@ -35,10 +34,7 @@ public class VerifyProtocolVersionFlow extends AbstractFlow<CodecContext> {
 
     @Override
     public void process(@NonNull CodecContext context) {
-        val datagram = context.getDatagram();
-        val protocolClass = context.getProtocolClass();
-
-        if (!VersionAssist.validate(datagram, protocolClass)) {
+        if (!ProtocolVersionAssist.validate(context.getDatagram(), context.getTypeAssist())) {
             throw new ProtocolVersionException(CodecError.PROTOCOL_VERSION_NOT_MATCH);
         } else {
             this.nextFlow(context);

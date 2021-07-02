@@ -22,6 +22,7 @@ import org.indunet.fastproto.annotation.type.BinaryType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.exception.SpaceNotEnoughException;
+import org.indunet.fastproto.util.ReverseUtils;
 
 /**
  * Binary type encoder.
@@ -40,8 +41,8 @@ public class BinaryEncoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, int length, @NonNull byte[] bytes) {
-        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
-        int l = length >= 0 ? length : datagram.length + length - bo + 1;
+        int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
+        int l = ReverseUtils.length(datagram.length, byteOffset, length);
 
         if (bo < 0) {
             throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);

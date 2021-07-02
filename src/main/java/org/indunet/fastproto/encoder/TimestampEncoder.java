@@ -25,6 +25,7 @@ import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.exception.SpaceNotEnoughException;
+import org.indunet.fastproto.util.ReverseUtils;
 
 import java.sql.Timestamp;
 import java.util.concurrent.TimeUnit;
@@ -47,7 +48,7 @@ public class TimestampEncoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull ProtocolType dataType, @NonNull EndianPolicy policy, @NonNull TimeUnit unit, @NonNull Timestamp value) {
-        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
 
         if (bo < 0) {
             throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);

@@ -1,7 +1,7 @@
 package org.indunet.fastproto.annotation;
 
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.integrity.CheckPolicy;
+import org.indunet.fastproto.checksum.CheckPolicy;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -19,7 +19,7 @@ public @interface Checksum {
 
     int start() default 0;
 
-    int length() default -2;
+    int length() default -3;
 
     CheckPolicy checkPolicy() default CheckPolicy.CRC16;
 

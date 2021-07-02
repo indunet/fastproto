@@ -23,6 +23,7 @@ import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.exception.IllegalValueException;
 import org.indunet.fastproto.exception.SpaceNotEnoughException;
+import org.indunet.fastproto.util.ReverseUtils;
 
 import java.text.MessageFormat;
 
@@ -44,7 +45,7 @@ public class UInteger32Encoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull EndianPolicy policy, long value) {
-        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
+        int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
 
         if (bo < 0) {
             throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);

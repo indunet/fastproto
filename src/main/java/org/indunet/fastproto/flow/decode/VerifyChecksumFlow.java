@@ -22,8 +22,8 @@ import org.indunet.fastproto.exception.CheckSumException;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.flow.AbstractFlow;
 import org.indunet.fastproto.flow.CodecContext;
-import org.indunet.fastproto.integrity.Checker;
-import org.indunet.fastproto.integrity.CheckerFactory;
+import org.indunet.fastproto.checksum.Checker;
+import org.indunet.fastproto.checksum.CheckerFactory;
 
 /**
  * verify checksum flow.

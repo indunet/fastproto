@@ -14,17 +14,19 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.integrity;
+package org.indunet.fastproto.checksum;
 
-import lombok.Getter;
 import lombok.val;
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.Checksum;
-import org.indunet.fastproto.annotation.type.UInteger8Type;
+import org.indunet.fastproto.annotation.Endian;
+import org.indunet.fastproto.annotation.type.UInteger16Type;
 import org.indunet.fastproto.decoder.DecodeUtils;
 import org.indunet.fastproto.encoder.EncodeUtils;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
+import org.indunet.fastproto.util.ReverseUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -33,25 +35,24 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author Deng Ran
  * @since 1.6.3
  */
-@Getter
-public class Crc8Checker implements Checker {
-    protected static final Map<Integer, Crc8Checker> checkers = new ConcurrentHashMap<>();
-    protected static final int defaultPoly = 0xD5;
+public class Crc16Checker implements Checker {
+    protected final static int defaultPoly = 0xA001;
+    protected final static Map<Integer, Crc16Checker> checkers = new ConcurrentHashMap<>();
     protected int poly;
 
-    protected Crc8Checker(int poly) {
+    protected Crc16Checker(int poly) {
         this.poly = poly;
     }
 
-    public static Crc8Checker getInstance() {
-        return checkers.computeIfAbsent(defaultPoly, p -> new Crc8Checker(p));
+    public static Crc16Checker getInstance() {
+        return checkers.computeIfAbsent(defaultPoly, p -> new Crc16Checker(p));
     }
 
-    public synchronized static Crc8Checker getInstance(int poly) {
+    public static synchronized Crc16Checker getInstance(int poly) {
         if (poly == 0) {
             return getInstance();
         } else {
-            return checkers.computeIfAbsent(poly, p -> new Crc8Checker(poly));
+            return checkers.computeIfAbsent(poly, p -> new Crc16Checker(p));
         }
     }
 
@@ -65,9 +66,18 @@ public class Crc8Checker implements Checker {
         int byteOffset = checkSum.value();
         int start = checkSum.start();
         int length = checkSum.length();
+        EndianPolicy policy;
+
+        if (checkSum.endianPolicy().length != 0) {
+            policy = checkSum.endianPolicy()[0];
+        } else if (protocolClass.isAnnotationPresent(Endian.class)) {
+            policy = protocolClass.getAnnotation(Endian.class).value();
+        } else {
+            policy = EndianPolicy.LITTLE;
+        }
 
         int actual = this.getValue(datagram, start, length);
-        int expected = DecodeUtils.uInteger8Type(datagram, byteOffset);
+        int expected = DecodeUtils.uInteger16Type(datagram, byteOffset, policy);
 
         return actual == expected;
     }
@@ -82,48 +92,57 @@ public class Crc8Checker implements Checker {
         int byteOffset = checkSum.value();
         int start = checkSum.start();
         int length = checkSum.length();
+        EndianPolicy policy;
 
-        this.setValue(datagram, start, byteOffset, length);
+        if (checkSum.endianPolicy().length != 0) {
+            policy = checkSum.endianPolicy()[0];
+        } else if (protocolClass.isAnnotationPresent(Endian.class)) {
+            policy = protocolClass.getAnnotation(Endian.class).value();
+        } else {
+            policy = EndianPolicy.LITTLE;
+        }
+
+        this.setValue(datagram, byteOffset, start, length, policy);
     }
 
     @Override
     public int getSize() {
-        return UInteger8Type.SIZE;
-    }
-
-    public void setValue(byte[] datagram, int byteOffset, int start, int length) {
-        int value = this.getValue(datagram, start, length);
-
-        EncodeUtils.uInteger8Type(datagram, byteOffset, value);
+        return UInteger16Type.SIZE;
     }
 
     public int getValue(byte[] datagram, int start, int length) {
-        int s = start >= 0 ? start : datagram.length + start;
-        int l = length >= 0 ? length : datagram.length + length - s;
+        int s = ReverseUtils.byteOffset(datagram.length, start);
+        int l = ReverseUtils.length(datagram.length, start, length);
 
         if (s < 0) {
             throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (l < 0) {
+        } else if (l <= 0) {
             throw new DecodeException(CodecError.ILLEGAL_PARAMETER);
         } else if (s + length > datagram.length) {
             throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
 
-        byte crc8 = 0;
+        int crc16 = 0xFFFF;
 
-        for (int i = 0; i < l; i ++) {
-            crc8 ^= datagram[s + i];
+        for (int i = 0; i < l; i++) {
+            crc16 ^= ((int) datagram[s + i] & 0xFF);
 
-            for (int j = 0; j < 8; j ++) {
-                if ((crc8 & 0x80) != 0) {
-                    crc8 <<= 1;
-                    crc8 ^= poly;
+            for (int j = 0; j < 8; j++) {
+                if ((crc16 & 0x0001) == 1) {
+                    crc16 >>= 1;
+                    crc16 ^= poly;
                 } else {
-                    crc8 <<= 1;
+                    crc16 >>= 1;
                 }
             }
         }
 
-        return crc8 & 0xFF;
+        return crc16;
+    }
+
+    public void setValue(byte[] datagram, int byteOffset, int start, int length, EndianPolicy policy) {
+        int value = this.getValue(datagram, start, length);
+
+        EncodeUtils.uInteger16Type(datagram, byteOffset, policy, value);
     }
 }
