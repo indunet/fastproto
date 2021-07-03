@@ -18,7 +18,7 @@ package org.indunet.fastproto;
 
 import lombok.NonNull;
 import lombok.val;
-import org.indunet.fastproto.annotation.ProtocolVersion;
+import org.indunet.fastproto.annotation.EnableProtocolVersion;
 import org.indunet.fastproto.annotation.type.IntegerType;
 import org.indunet.fastproto.annotation.type.UInteger16Type;
 import org.indunet.fastproto.annotation.type.UInteger8Type;
@@ -39,11 +39,11 @@ public class ProtocolVersionAssist {
             return true;
         }
 
-        ProtocolVersion protocolVersion = assist
+        EnableProtocolVersion enableProtocolVersion = assist
                 .getOpProtocolVersion()
                 .get();
 
-        return protocolVersion.version() == decode(datagram, assist);
+        return enableProtocolVersion.version() == decode(datagram, assist);
     }
 
     public static int decode(@NonNull byte[] datagram, @NonNull TypeAssist assist) {
@@ -51,13 +51,13 @@ public class ProtocolVersionAssist {
             return -1;
         }
 
-        ProtocolVersion protocolVersion = assist
+        EnableProtocolVersion enableProtocolVersion = assist
                 .getOpProtocolVersion()
                 .get();
         EndianPolicy policy = endianPolicy(assist);
-        int byteOffset = protocolVersion.value();
+        int byteOffset = enableProtocolVersion.value();
 
-        switch (protocolVersion.protocolType()) {
+        switch (enableProtocolVersion.protocolType()) {
             case UINTEGER8:
                 return DecodeUtils.uInteger8Type(datagram, byteOffset);
             case UINTEGER16:
@@ -74,7 +74,7 @@ public class ProtocolVersionAssist {
             return;
         }
 
-        ProtocolVersion versionAnnotation = assist
+        EnableProtocolVersion versionAnnotation = assist
                 .getOpProtocolVersion()
                 .get();
         EndianPolicy policy = endianPolicy(assist);
@@ -97,12 +97,12 @@ public class ProtocolVersionAssist {
     }
 
     public static EndianPolicy endianPolicy(@NonNull TypeAssist assist) {
-        ProtocolVersion protocolVersion = assist
+        EnableProtocolVersion enableProtocolVersion = assist
                 .getOpProtocolVersion()
                 .get();
 
-        if (protocolVersion.endianPolicy().length > 0) {
-            return protocolVersion.endianPolicy()[0];
+        if (enableProtocolVersion.endianPolicy().length > 0) {
+            return enableProtocolVersion.endianPolicy()[0];
         } else {
             return assist.getEndianPolicy();
         }

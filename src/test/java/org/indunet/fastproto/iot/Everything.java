@@ -21,7 +21,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.indunet.fastproto.annotation.EnableCompress;
-import org.indunet.fastproto.annotation.ProtocolVersion;
+import org.indunet.fastproto.annotation.EnableProtocolVersion;
 import org.indunet.fastproto.annotation.type.*;
 import org.indunet.fastproto.compress.CompressPolicy;
 import org.indunet.fastproto.iot.formula.DecodeSpeedFormula;
@@ -39,7 +39,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @EnableCompress(CompressPolicy.GZIP)
-@ProtocolVersion(value = 78, version = 17)
+@EnableProtocolVersion(value = 78, version = 17)
 public class Everything {
     @BooleanType(value = 0, bitOffset = 1)
     Boolean aBoolean;

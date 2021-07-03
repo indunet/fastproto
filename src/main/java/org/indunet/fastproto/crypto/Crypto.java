@@ -14,22 +14,15 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.checksum;
-
-import org.indunet.fastproto.annotation.EnableChecksum;
+package org.indunet.fastproto.crypto;
 
 /**
+ * Crypto.
+ *
  * @author Deng Ran
- * @since 1.6.2
+ * @since 2.0.0
  */
-public class CheckerUtils {
-    public static int getSize(Class<?> protocolCLass) {
-        if (protocolCLass.isAnnotationPresent(EnableChecksum.class)) {
-            return CheckerFactory
-                    .create(protocolCLass.getAnnotation(EnableChecksum.class))
-                    .getSize();
-        } else {
-            return 0;
-        }
-    }
+public interface Crypto {
+    byte[] encrypt(byte[] key, byte[] bytes);
+    byte[] decrypt(byte[] key, byte[] bytes);
 }

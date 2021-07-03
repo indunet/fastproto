@@ -18,7 +18,7 @@ package org.indunet.fastproto.checksum;
 
 import lombok.Getter;
 import lombok.val;
-import org.indunet.fastproto.annotation.Checksum;
+import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.annotation.type.UInteger8Type;
 import org.indunet.fastproto.decoder.DecodeUtils;
 import org.indunet.fastproto.encoder.EncodeUtils;
@@ -58,11 +58,11 @@ public class Crc8Checker implements Checker {
 
     @Override
     public boolean validate(byte[] datagram, Class<?> protocolClass) {
-        if (!protocolClass.isAnnotationPresent(Checksum.class)) {
+        if (!protocolClass.isAnnotationPresent(EnableChecksum.class)) {
             return true;
         }
 
-        val checkSum = protocolClass.getAnnotation(Checksum.class);
+        val checkSum = protocolClass.getAnnotation(EnableChecksum.class);
         int byteOffset = checkSum.value();
         int start = checkSum.start();
         int length = checkSum.length();
@@ -75,11 +75,11 @@ public class Crc8Checker implements Checker {
 
     @Override
     public void setValue(byte[] datagram, Class<?> protocolClass) {
-        if (!protocolClass.isAnnotationPresent(Checksum.class)) {
+        if (!protocolClass.isAnnotationPresent(EnableChecksum.class)) {
             return;
         }
 
-        val checkSum = protocolClass.getAnnotation(Checksum.class);
+        val checkSum = protocolClass.getAnnotation(EnableChecksum.class);
         int byteOffset = checkSum.value();
         int start = checkSum.start();
         int length = checkSum.length();

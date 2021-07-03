@@ -18,7 +18,7 @@ package org.indunet.fastproto.checksum;
 
 import lombok.val;
 import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.annotation.Checksum;
+import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.encoder.EncodeUtils;
 import org.junit.jupiter.api.Test;
 
@@ -48,7 +48,7 @@ public class Crc8CheckerTest {
         assertTrue(checker.validate(datagram, TestObject1.class));
     }
 
-    @Checksum(value = -1, start = 0, length = -2, checkPolicy = CheckPolicy.CRC8)
+    @EnableChecksum(value = -1, start = 0, length = -2, checkPolicy = CheckPolicy.CRC8)
     public static class TestObject1 {
 
     }
@@ -67,7 +67,7 @@ public class Crc8CheckerTest {
         assertTrue(checker.validate(datagram, TestObject.class));
     }
 
-    @Checksum(value = -1, start = 0, length = -1, checkPolicy = CheckPolicy.CRC8_CCITT)
+    @EnableChecksum(value = -1, start = 0, length = -1, checkPolicy = CheckPolicy.CRC8_CCITT)
     public static class TestObject {
 
     }

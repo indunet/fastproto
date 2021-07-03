@@ -72,8 +72,8 @@ public class TypeAssist {
     Integer minLength = 0;  // Used to store minimum length of datagram.
 
     Optional<EnableCompress> opEnableCompress;
-    Optional<ProtocolVersion> opProtocolVersion;
-    Optional<Checksum> opChecksum;
+    Optional<EnableProtocolVersion> opProtocolVersion;
+    Optional<EnableChecksum> opChecksum;
 
     int codecFeature;
 
@@ -91,9 +91,9 @@ public class TypeAssist {
         assist.setOpEnableCompress(Optional.of(protocolClass)
                 .map(c -> c.getAnnotation(EnableCompress.class)));
         assist.setOpProtocolVersion(Optional.of(protocolClass)
-                .map(c -> c.getAnnotation(ProtocolVersion.class)));
+                .map(c -> c.getAnnotation(EnableProtocolVersion.class)));
         assist.setOpChecksum(Optional.of(protocolClass)
-                .map(c -> c.getAnnotation(Checksum.class)));
+                .map(c -> c.getAnnotation(EnableChecksum.class)));
         assist.setCodecFeature(CodecFeature.valueOf(assist));
 
         return assist;

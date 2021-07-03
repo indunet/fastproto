@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.checksum;
+package org.indunet.fastproto.crypto;
 
-import org.indunet.fastproto.annotation.EnableChecksum;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
+ * Crypto Policy.
+ *
  * @author Deng Ran
- * @since 1.6.2
+ * @since 2.0.0
  */
-public class CheckerUtils {
-    public static int getSize(Class<?> protocolCLass) {
-        if (protocolCLass.isAnnotationPresent(EnableChecksum.class)) {
-            return CheckerFactory
-                    .create(protocolCLass.getAnnotation(EnableChecksum.class))
-                    .getSize();
-        } else {
-            return 0;
-        }
-    }
+@AllArgsConstructor
+@Getter
+public enum CryptoPolicy {
+    AES(0x01, "aes");
+
+    int code;
+    String name;
 }

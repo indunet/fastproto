@@ -18,7 +18,7 @@ package org.indunet.fastproto.checksum;
 
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.Checksum;
+import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.annotation.Endian;
 import org.indunet.fastproto.annotation.type.UInteger16Type;
 import org.indunet.fastproto.decoder.DecodeUtils;
@@ -58,11 +58,11 @@ public class Crc16Checker implements Checker {
 
     @Override
     public boolean validate(byte[] datagram, Class<?> protocolClass) {
-        if (!protocolClass.isAnnotationPresent(Checksum.class)) {
+        if (!protocolClass.isAnnotationPresent(EnableChecksum.class)) {
             return true;
         }
 
-        val checkSum = protocolClass.getAnnotation(Checksum.class);
+        val checkSum = protocolClass.getAnnotation(EnableChecksum.class);
         int byteOffset = checkSum.value();
         int start = checkSum.start();
         int length = checkSum.length();
@@ -84,11 +84,11 @@ public class Crc16Checker implements Checker {
 
     @Override
     public void setValue(byte[] datagram, Class<?> protocolClass) {
-        if (!protocolClass.isAnnotationPresent(Checksum.class)) {
+        if (!protocolClass.isAnnotationPresent(EnableChecksum.class)) {
             return;
         }
 
-        val checkSum = protocolClass.getAnnotation(Checksum.class);
+        val checkSum = protocolClass.getAnnotation(EnableChecksum.class);
         int byteOffset = checkSum.value();
         int start = checkSum.start();
         int length = checkSum.length();

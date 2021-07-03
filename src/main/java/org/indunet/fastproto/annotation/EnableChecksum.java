@@ -14,7 +14,7 @@ import java.lang.annotation.Target;
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Checksum {
+public @interface EnableChecksum {
     int value() default -2;
 
     int start() default 0;
