@@ -17,12 +17,10 @@
 package org.indunet.fastproto;
 
 import org.indunet.fastproto.flow.decode.DecompressFlow;
+import org.indunet.fastproto.flow.decode.DecryptFlow;
 import org.indunet.fastproto.flow.decode.VerifyChecksumFlow;
 import org.indunet.fastproto.flow.decode.VerifyProtocolVersionFlow;
-import org.indunet.fastproto.flow.encode.CompressFlow;
-import org.indunet.fastproto.flow.encode.InferLengthFlow;
-import org.indunet.fastproto.flow.encode.WriteChecksumFlow;
-import org.indunet.fastproto.flow.encode.WriteProtocolVersionFlow;
+import org.indunet.fastproto.flow.encode.*;
 
 /**
  * Codec Feature.
@@ -36,6 +34,7 @@ public final class CodecFeature {
     public static final int IGNORE_PROTOCOL_VERSION = VerifyProtocolVersionFlow.FLOW_CODE | WriteProtocolVersionFlow.FLOW_CODE;
     public static final int IGNORE_CHECKSUM = VerifyChecksumFlow.FLOW_CODE | WriteChecksumFlow.FLOW_CODE;
     public static final int NON_INFER_LENGTH = InferLengthFlow.FLOW_CODE;
+    public static final int IGNORE_CRYPTO = EncryptFlow.FLOW_CODE | DecryptFlow.FLOW_CODE;
 
     public static int valueOf(TypeAssist assist) {
         int codecFeature = 0;
