@@ -16,11 +16,11 @@
 
 package org.indunet.fastproto;
 
-import org.indunet.fastproto.flow.decode.DecompressFlow;
-import org.indunet.fastproto.flow.decode.DecryptFlow;
-import org.indunet.fastproto.flow.decode.VerifyChecksumFlow;
-import org.indunet.fastproto.flow.decode.VerifyProtocolVersionFlow;
-import org.indunet.fastproto.flow.encode.*;
+import org.indunet.fastproto.pipeline.decode.DecompressFlow;
+import org.indunet.fastproto.pipeline.decode.DecryptFlow;
+import org.indunet.fastproto.pipeline.decode.VerifyChecksumFlow;
+import org.indunet.fastproto.pipeline.decode.VerifyProtocolVersionFlow;
+import org.indunet.fastproto.pipeline.encode.*;
 
 /**
  * Codec Feature.
@@ -30,25 +30,25 @@ import org.indunet.fastproto.flow.encode.*;
  */
 public final class CodecFeature {
     public static final int DEFAULT = 0;
-    public static final int IGNORE_ENABLE_COMPRESS = CompressFlow.FLOW_CODE | DecompressFlow.FLOW_CODE;
-    public static final int IGNORE_PROTOCOL_VERSION = VerifyProtocolVersionFlow.FLOW_CODE | WriteProtocolVersionFlow.FLOW_CODE;
-    public static final int IGNORE_CHECKSUM = VerifyChecksumFlow.FLOW_CODE | WriteChecksumFlow.FLOW_CODE;
+    public static final int DISABLE_COMPRESS = CompressFlow.FLOW_CODE | DecompressFlow.FLOW_CODE;
+    public static final int DISABLE_PROTOCOL_VERSION = VerifyProtocolVersionFlow.FLOW_CODE | WriteProtocolVersionFlow.FLOW_CODE;
+    public static final int DISABLE_CHECKSUM = VerifyChecksumFlow.FLOW_CODE | WriteChecksumFlow.FLOW_CODE;
     public static final int NON_INFER_LENGTH = InferLengthFlow.FLOW_CODE;
-    public static final int IGNORE_CRYPTO = EncryptFlow.FLOW_CODE | DecryptFlow.FLOW_CODE;
+    public static final int DISABLE_CRYPTO = EncryptFlow.FLOW_CODE | DecryptFlow.FLOW_CODE;
 
     public static int valueOf(TypeAssist assist) {
         int codecFeature = 0;
 
         if (!assist.getOpEnableCompress().isPresent()) {
-            codecFeature |= IGNORE_ENABLE_COMPRESS;
+            codecFeature |= DISABLE_COMPRESS;
         }
 
         if (!assist.getOpChecksum().isPresent()) {
-            codecFeature |= IGNORE_CHECKSUM;
+            codecFeature |= DISABLE_CHECKSUM;
         }
 
         if (!assist.getOpProtocolVersion().isPresent()) {
-            codecFeature |= IGNORE_PROTOCOL_VERSION;
+            codecFeature |= DISABLE_PROTOCOL_VERSION;
         }
 
         return codecFeature;

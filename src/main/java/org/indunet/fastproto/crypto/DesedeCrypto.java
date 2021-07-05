@@ -20,54 +20,59 @@ import lombok.val;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CryptoException;
 
-import javax.crypto.*;
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * AES Crypto which must be 16 bytes key.
+ * Crypto.
  *
  * @author Deng Ran
  * @since 2.0.0
  */
-public class AesCrypto implements Crypto {
-    protected static final String NAME = "AES";
-    protected static final int KEY_LENGTH = 16;
-    protected static AesCrypto crypto = new AesCrypto();
+public class DesedeCrypto implements Crypto {
+    protected static final String NAME = "DESede";
+    protected static final int KEY_LENGTH = 128;
+    protected static DesedeCrypto crypto = new DesedeCrypto();
 
-    protected AesCrypto() {
+    protected DesedeCrypto() {
 
     }
 
-    public static AesCrypto getInstance() {
+    public static DesedeCrypto getInstance() {
         return crypto;
     }
 
+    @Override
     public byte[] encrypt(byte[] key, byte[] datagram) {
         try {
-            Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            SecretKey keySpec = new SecretKeySpec(generateKey(key, KEY_LENGTH), NAME);
+            val cipher = Cipher.getInstance("DESede");
+            val secretKey = new SecretKeySpec(generateKey(key, KEY_LENGTH), NAME);
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey);
 
-            cipher.init(Cipher.ENCRYPT_MODE, keySpec);
             return cipher.doFinal(datagram);
         } catch (NoSuchPaddingException | IllegalBlockSizeException
-                    | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
+                | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
             throw new CryptoException(CodecError.FAIL_ENCRYPTING, e);
         }
+
     }
 
+    @Override
     public byte[] decrypt(byte[] key, byte[] datagram) {
         try {
-            val cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
-            SecretKey keySpec = new SecretKeySpec(generateKey(key, KEY_LENGTH), NAME);
-            cipher.init(Cipher.DECRYPT_MODE, keySpec);
+            val cipher = Cipher.getInstance("DESede");
+            val secretKey = new SecretKeySpec(generateKey(key, KEY_LENGTH), NAME);
+            cipher.init(Cipher.DECRYPT_MODE, secretKey);
+
             return cipher.doFinal(datagram);
         } catch (NoSuchPaddingException | IllegalBlockSizeException
                 | NoSuchAlgorithmException | BadPaddingException | InvalidKeyException e) {
             throw new CryptoException(CodecError.FAIL_DECRYPTING, e);
         }
     }
-
-
 }

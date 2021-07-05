@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.flow.encode;
+package org.indunet.fastproto.pipeline.encode;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.EnableChecksum;
-import org.indunet.fastproto.flow.AbstractFlow;
-import org.indunet.fastproto.flow.CodecContext;
+import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.CodecContext;
 import org.indunet.fastproto.checksum.Checker;
 import org.indunet.fastproto.checksum.CheckerFactory;
 

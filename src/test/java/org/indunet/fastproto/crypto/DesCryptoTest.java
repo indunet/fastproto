@@ -1,3 +1,4 @@
+
 /*
  * Copyright 2019-2021 indunet
  *
@@ -26,12 +27,12 @@ import java.util.stream.IntStream;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 
 /**
- * AES crypto.
+ * DES crypto.
  *
  * @author Deng Ran
  * @since 2.0.0
  */
-public class AesCryptoTest {
+public class DesCryptoTest {
     @Test
     public void test() {
         byte[] bytes = new byte[100];
@@ -40,7 +41,7 @@ public class AesCryptoTest {
         IntStream.range(0, 100)
                 .forEach(i -> bytes[i] = (byte) random.nextInt());
         val key = "123456".getBytes(StandardCharsets.UTF_8);
-        val crypto = AesCrypto.getInstance();
+        val crypto = DesCrypto.getInstance();
         val after = crypto.encrypt(key, bytes);
 
         assertArrayEquals(bytes, crypto.decrypt(key, after));

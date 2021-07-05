@@ -17,8 +17,8 @@
 package org.indunet.fastproto;
 
 import lombok.NonNull;
-import org.indunet.fastproto.flow.CodecContext;
-import org.indunet.fastproto.flow.FlowFactory;
+import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.pipeline.FlowFactory;
 
 /**
  * FastProto API.
@@ -79,7 +79,7 @@ public class FastProto {
 //        return toByteArray(object, length, enableCompress);
 
         if (enableCompress) {
-            return toByteArray(object, -1, CodecFeature.IGNORE_ENABLE_COMPRESS);
+            return toByteArray(object, -1, CodecFeature.DISABLE_COMPRESS);
         } else {
             return toByteArray(object, -1, CodecFeature.DEFAULT);
         }

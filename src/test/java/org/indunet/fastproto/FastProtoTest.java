@@ -117,10 +117,10 @@ public class FastProtoTest {
 
         // Test decode.
         assertEquals(
-                FastProto.parseFrom(datagram, Weather.class, CodecFeature.IGNORE_ENABLE_COMPRESS).toString(), metrics.toString());
+                FastProto.parseFrom(datagram, Weather.class, CodecFeature.DISABLE_COMPRESS).toString(), metrics.toString());
 
         // Test encode.
-        byte[] cache = FastProto.toByteArray(metrics, 30, CodecFeature.IGNORE_ENABLE_COMPRESS);
+        byte[] cache = FastProto.toByteArray(metrics, 30, CodecFeature.DISABLE_COMPRESS);
         assertArrayEquals(cache, datagram);
     }
 
@@ -177,13 +177,13 @@ public class FastProtoTest {
                 .aInteger(102)
                 .aInteger8(32)
                 .aInteger16(13)
-                .aLong(-50000l)
+                .aLong(-50000L)
                 .aShort((short) 12)
                 .aString("abcABC")
                 .aTimestamp(new Timestamp(System.currentTimeMillis()))
                 .aUInteger8(8)
                 .aUInteger16(16)
-                .aUInteger32(32l)
+                .aUInteger32(32L)
                 .speed(10.1f)
                 .aUInteger64(new BigInteger(String.valueOf(UInteger64Type.MAX_VALUE)))
                 .build();
@@ -212,10 +212,10 @@ public class FastProtoTest {
         EncodeUtils.uInteger8Type(datagram, 66, (int) (everything.getSpeed() * 10));
 
         // Test decode.
-        assertEquals(FastProto.parseFrom(datagram, Everything.class, CodecFeature.IGNORE_ENABLE_COMPRESS).toString(), everything.toString());
+        assertEquals(FastProto.parseFrom(datagram, Everything.class, CodecFeature.DISABLE_COMPRESS).toString(), everything.toString());
 
         // Test encode.
-        byte[] cache = FastProto.toByteArray(everything, -1, CodecFeature.IGNORE_ENABLE_COMPRESS);
+        byte[] cache = FastProto.toByteArray(everything, -1, CodecFeature.DISABLE_COMPRESS);
         assertArrayEquals(cache, datagram);
 
         // Test with gzip

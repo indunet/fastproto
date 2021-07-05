@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.flow.encode;
+package org.indunet.fastproto.pipeline.encode;
 
 import lombok.val;
 import org.indunet.fastproto.CodecFeature;
 import org.indunet.fastproto.annotation.EnableCompress;
 import org.indunet.fastproto.compress.CompressorFactory;
-import org.indunet.fastproto.flow.AbstractFlow;
-import org.indunet.fastproto.flow.CodecContext;
+import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.CodecContext;
 
 /**
  * Compress flow.
@@ -35,7 +35,7 @@ public class CompressFlow extends AbstractFlow<CodecContext> {
     @Override
     public void process(CodecContext context) {
         boolean enableCompress =
-                    (context.getCodecFeature() & CodecFeature.IGNORE_ENABLE_COMPRESS) == 0;
+                    (context.getCodecFeature() & CodecFeature.DISABLE_COMPRESS) == 0;
         Class<?> protocolClass = context.getProtocolClass();
         byte[] datagram = context.getDatagram();
 

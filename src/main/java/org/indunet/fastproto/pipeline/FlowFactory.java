@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.flow;
+package org.indunet.fastproto.pipeline;
 
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.flow.decode.DecodeFlow;
-import org.indunet.fastproto.flow.decode.DecompressFlow;
-import org.indunet.fastproto.flow.decode.VerifyChecksumFlow;
-import org.indunet.fastproto.flow.decode.VerifyProtocolVersionFlow;
-import org.indunet.fastproto.flow.encode.*;
+import org.indunet.fastproto.pipeline.decode.DecodeFlow;
+import org.indunet.fastproto.pipeline.decode.DecompressFlow;
+import org.indunet.fastproto.pipeline.decode.VerifyChecksumFlow;
+import org.indunet.fastproto.pipeline.decode.VerifyProtocolVersionFlow;
+import org.indunet.fastproto.pipeline.encode.*;
 
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;

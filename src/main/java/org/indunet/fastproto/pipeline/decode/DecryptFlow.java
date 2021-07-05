@@ -14,24 +14,28 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.flow;
+package org.indunet.fastproto.pipeline.decode;
 
-import lombok.Builder;
-import lombok.Data;
-import org.indunet.fastproto.TypeAssist;
+
+import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.CodecContext;
 
 /**
- * Codec Context.
+ * Decrypt flow.
  *
  * @author Deng Ran
- * @since 1.7.0
+ * @since 2.0.0
  */
-@Data
-@Builder
-public class CodecContext {
-    byte[] datagram;
-    TypeAssist typeAssist;
-    Object object;
-    Class<?> protocolClass;
-    int codecFeature;
+public class DecryptFlow extends AbstractFlow<CodecContext> {
+    public static final int FLOW_CODE = 0x0010;
+
+    @Override
+    public void process(CodecContext context) {
+
+    }
+
+    @Override
+    public int getFlowCode() {
+        return FLOW_CODE;
+    }
 }

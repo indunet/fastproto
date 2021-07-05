@@ -14,30 +14,34 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.flow.encode;
-
-import org.indunet.fastproto.ProtocolVersionAssist;
-import org.indunet.fastproto.flow.AbstractFlow;
-import org.indunet.fastproto.flow.CodecContext;
+package org.indunet.fastproto.pipeline;
 
 /**
- * Write protocol version flow.
+ * Abstract flow.
  *
  * @author Deng Ran
  * @since 1.7.0
  */
-public class WriteProtocolVersionFlow extends AbstractFlow<CodecContext> {
-    public static final int FLOW_CODE = 0x0400;
+public abstract class AbstractFlow<T> {
+    AbstractFlow<T> next = null;
 
-    @Override
-    public void process(CodecContext context) {
-        ProtocolVersionAssist.encode(context.getDatagram(), context.getTypeAssist());
+    public abstract void process(T context);
 
-        this.nextFlow(context);
+    AbstractFlow<T> setNext(AbstractFlow<T> next) {
+        this.next = next;
+
+        return this.next;
     }
 
-    @Override
-    public int getFlowCode() {
-        return FLOW_CODE;
+    public void nextFlow(T context) {
+        if (next != null) {
+            this.next.process(context);
+        }
     }
+
+    public void end() {
+        this.next = null;
+    }
+
+    public abstract int getFlowCode();
 }

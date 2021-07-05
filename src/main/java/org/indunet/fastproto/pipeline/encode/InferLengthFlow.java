@@ -14,23 +14,32 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.flow.encode;
+package org.indunet.fastproto.pipeline.encode;
 
-import org.indunet.fastproto.flow.AbstractFlow;
-import org.indunet.fastproto.flow.CodecContext;
+import lombok.val;
+import org.indunet.fastproto.ProtocolVersionAssist;
+import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.checksum.CheckerUtils;
 
 /**
- * Encrypt flow.
+ * Infer length flow.
  *
  * @author Deng Ran
- * @since 2.0.0
+ * @since 1.7.0
  */
-public class EncryptFlow extends AbstractFlow<CodecContext> {
-    public static final int FLOW_CODE = 0x2000;
+public class InferLengthFlow extends AbstractFlow<CodecContext> {
+    public static final int FLOW_CODE = 0x0100;
 
     @Override
     public void process(CodecContext context) {
+        val assist = context.getTypeAssist();
+        int length = assist.getMaxLength();
+        length += CheckerUtils.getSize(context.getProtocolClass());
+        length += ProtocolVersionAssist.size(assist);
 
+        context.setDatagram(new byte[length]);
+        this.nextFlow(context);
     }
 
     @Override

@@ -28,7 +28,8 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum CryptoPolicy {
-    AES(0x01, "aes");
+    DES(0x01, "des"),
+    AES(0x02, "aes");
 
     int code;
     String name;
