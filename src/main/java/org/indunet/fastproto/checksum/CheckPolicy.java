@@ -14,22 +14,23 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.annotation;
+package org.indunet.fastproto.checksum;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.util.function.Function;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * @author Deng Ran
- * @see Encoder
- * @since 1.0.0
+ * @since 1.6.0
  */
-@Deprecated
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface EncodeFormula {
-    Class<? extends Function> value();
+@AllArgsConstructor
+@Getter
+public enum CheckPolicy {
+    CRC8(0xD5),
+    CRC8_CCITT(0x8D),
+    CRC16(0xA001),
+    CRC16_CCITT(0x8408),
+    CRC32(0);
+
+    int poly;
 }

@@ -14,22 +14,22 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.annotation;
+package org.indunet.fastproto.checksum;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-import java.util.function.Function;
+import org.indunet.fastproto.annotation.EnableChecksum;
 
 /**
  * @author Deng Ran
- * @see Decoder
- * @since 1.0.0
+ * @since 1.6.2
  */
-@Deprecated
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface DecodeFormula {
-    Class<? extends Function> value();
+public class CheckerUtils {
+    public static int getSize(Class<?> protocolCLass) {
+        if (protocolCLass.isAnnotationPresent(EnableChecksum.class)) {
+            return CheckerFactory
+                    .create(protocolCLass.getAnnotation(EnableChecksum.class))
+                    .getSize();
+        } else {
+            return 0;
+        }
+    }
 }

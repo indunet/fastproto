@@ -24,6 +24,7 @@ import org.indunet.fastproto.decoder.TypeDecoder;
 import org.indunet.fastproto.encoder.EncodeContext;
 import org.indunet.fastproto.encoder.TypeEncoder;
 import org.indunet.fastproto.exception.*;
+import org.indunet.fastproto.util.TypeUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -32,7 +33,7 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
-import java.util.OptionalInt;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Predicate;
@@ -50,6 +51,7 @@ import java.util.stream.Stream;
 @Builder
 @AllArgsConstructor
 public class TypeAssist {
+    protected static ConcurrentHashMap<Class<?>, TypeAssist> typeAssists = new ConcurrentHashMap<>();
     protected final static ThreadLocal<Object> instance = new ThreadLocal<>();
 
     TypeAssist parent;
@@ -69,8 +71,42 @@ public class TypeAssist {
     Consumer<?> encoder;
     Integer minLength = 0;  // Used to store minimum length of datagram.
 
+    Optional<EnableCrypto> opEnableCrypto;
+    Optional<byte[]> opKey;
+
+    Optional<EnableCompress> opEnableCompress;
+    Optional<EnableProtocolVersion> opProtocolVersion;
+    Optional<EnableChecksum> opChecksum;
+
+    int codecFeature;
+
     protected TypeAssist() {
 
+    }
+
+    public static TypeAssist byClass(Class<?> protocolClass) {
+        return typeAssists.computeIfAbsent(protocolClass, c -> TypeAssist.get(c));
+    }
+
+    public static TypeAssist get(@NonNull Class<?> protocolClass) {
+        TypeAssist assist = of(protocolClass);
+
+        assist.setOpEnableCrypto(Optional.of(protocolClass)
+                .map(c -> c.getAnnotation(EnableCrypto.class)));
+        // TODO, from method.
+        assist.setOpKey(assist.getOpEnableCrypto()
+                .map(EnableCrypto::key)
+                .map(String::getBytes));
+
+        assist.setOpEnableCompress(Optional.of(protocolClass)
+                .map(c -> c.getAnnotation(EnableCompress.class)));
+        assist.setOpProtocolVersion(Optional.of(protocolClass)
+                .map(c -> c.getAnnotation(EnableProtocolVersion.class)));
+        assist.setOpChecksum(Optional.of(protocolClass)
+                .map(c -> c.getAnnotation(EnableChecksum.class)));
+        assist.setCodecFeature(CodecFeature.valueOf(assist));
+
+        return assist;
     }
 
     public static TypeAssist of(Class<?> clazz) {
@@ -289,7 +325,7 @@ public class TypeAssist {
                         .map(a -> a[1])
                         .filter(t -> {
                             if (field.getType().isPrimitive()) {
-                                return t == wrapperClass(field.getType().getName());
+                                return t == TypeUtils.getWrapperClass(field.getType().getName());
                             } else {
                                 return t == field.getType();
                             }
@@ -306,7 +342,7 @@ public class TypeAssist {
                         .map(a -> a[0])
                         .filter(t -> {
                             if (field.getType().isPrimitive()) {
-                                return t == wrapperClass(field.getType().getName());
+                                return t == TypeUtils.getWrapperClass(field.getType().getName());
                             } else {
                                 return t == field.getType();
                             }
@@ -352,30 +388,6 @@ public class TypeAssist {
                 .getAsInt();
 
         return length >= max ? length : max;
-    }
-
-    public static Type wrapperClass(String name) {
-        switch (name) {
-            case "boolean":
-                return Boolean.class;
-            case "byte":
-                return Byte.class;
-            case "char":
-                return Character.class;
-            case "short":
-                return Short.class;
-            case "int":
-                return Integer.class;
-            case "long":
-                return Long.class;
-            case "float":
-                return Float.class;
-            case "double":
-                return Double.class;
-            default:
-                throw new CodecException(
-                        MessageFormat.format(CodecError.UNSUPPORTED_TYPE.getMessage(), name));
-        }
     }
 
     public <T> T getObject(Class<T> clazz) {

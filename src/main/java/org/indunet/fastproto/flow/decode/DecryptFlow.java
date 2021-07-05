@@ -14,22 +14,28 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.check;
+package org.indunet.fastproto.flow.decode;
 
-import org.indunet.fastproto.annotation.CheckSum;
+
+import org.indunet.fastproto.flow.AbstractFlow;
+import org.indunet.fastproto.flow.CodecContext;
 
 /**
+ * Decrypt flow.
+ *
  * @author Deng Ran
- * @since 1.6.2
+ * @since 2.0.0
  */
-public class CheckerUtils {
-    public static int getSize(Class<?> protocolCLass) {
-        if (protocolCLass.isAnnotationPresent(CheckSum.class)) {
-            return CheckerFactory
-                    .create(protocolCLass.getAnnotation(CheckSum.class))
-                    .getSize();
-        } else {
-            return 0;
-        }
+public class DecryptFlow extends AbstractFlow<CodecContext> {
+    public static final int FLOW_CODE = 0x0010;
+
+    @Override
+    public void process(CodecContext context) {
+
+    }
+
+    @Override
+    public int getFlowCode() {
+        return FLOW_CODE;
     }
 }

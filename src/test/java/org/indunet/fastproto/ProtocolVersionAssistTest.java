@@ -15,7 +15,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Deng Ran
  * @since 1.5.3
  */
-public class VersionAssistTest {
+public class ProtocolVersionAssistTest {
     byte[] datagram = new byte[80];
     Everything everything = Everything.builder()
             .aBoolean(true)
@@ -38,7 +38,7 @@ public class VersionAssistTest {
             .aUInteger64(new BigInteger(String.valueOf(UInteger64Type.MAX_VALUE)))
             .build();
 
-    public VersionAssistTest() {
+    public ProtocolVersionAssistTest() {
         // Init datagram.
         EncodeUtils.type(datagram, 0, 1, everything.getABoolean());
         EncodeUtils.type(datagram, 1, everything.getAByte());
@@ -62,18 +62,21 @@ public class VersionAssistTest {
 
     @Test
     public void testValidate() {
-        assertTrue(VersionAssist.validate(datagram, Everything.class));
+        TypeAssist assist = TypeAssist.get(Everything.class);
+        assertTrue(ProtocolVersionAssist.validate(datagram, assist));
     }
 
     @Test
     public void testDecode() {
-        assertEquals(17, VersionAssist.decode(datagram, Everything.class));
+        TypeAssist assist = TypeAssist.get(Everything.class);
+        assertEquals(17, ProtocolVersionAssist.decode(datagram, assist));
     }
 
     @Test
     public void testEncode() {
         byte[] datagram = new byte[80];
-        VersionAssist.encode(datagram, Everything.class);
+        TypeAssist assist = TypeAssist.get(Everything.class);
+        ProtocolVersionAssist.encode(datagram, assist);
 
         assertEquals(17, datagram[78]);
     }

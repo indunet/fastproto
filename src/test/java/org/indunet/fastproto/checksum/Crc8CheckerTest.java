@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.check;
+package org.indunet.fastproto.checksum;
 
 import lombok.val;
 import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.annotation.CheckSum;
+import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.encoder.EncodeUtils;
 import org.junit.jupiter.api.Test;
 
@@ -48,7 +48,7 @@ public class Crc8CheckerTest {
         assertTrue(checker.validate(datagram, TestObject1.class));
     }
 
-    @CheckSum(value = -1, start = 0, length = -1, checkPolicy = CheckPolicy.CRC8)
+    @EnableChecksum(value = -1, start = 0, length = -2, checkPolicy = CheckPolicy.CRC8)
     public static class TestObject1 {
 
     }
@@ -64,10 +64,10 @@ public class Crc8CheckerTest {
         int value = checker.getValue(datagram, 0, 9);
         EncodeUtils.uInteger8Type(datagram, 9, value);
 
-        assertTrue(checker.validate(datagram, TestObject.class));
+        assertTrue(checker.validate(datagram, TestObject1.class));
     }
 
-    @CheckSum(value = -1, start = 0, length = -1, checkPolicy = CheckPolicy.CRC8_CCITT)
+    @EnableChecksum(value = -1, start = 0, length = -1, checkPolicy = CheckPolicy.CRC8_CCITT)
     public static class TestObject {
 
     }

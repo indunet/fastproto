@@ -14,23 +14,15 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.check;
-
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+package org.indunet.fastproto.crypto;
 
 /**
+ * Crypto.
+ *
  * @author Deng Ran
- * @since 1.6.0
+ * @since 2.0.0
  */
-@AllArgsConstructor
-@Getter
-public enum CheckPolicy {
-    CRC8(0xD5),
-    CRC8_CCITT(0x8D),
-    CRC16(0xA001),
-    CRC16_CCITT(0x8408),
-    CRC32(0);
-
-    int poly;
+public interface Crypto {
+    byte[] encrypt(byte[] key, byte[] bytes);
+    byte[] decrypt(byte[] key, byte[] bytes);
 }

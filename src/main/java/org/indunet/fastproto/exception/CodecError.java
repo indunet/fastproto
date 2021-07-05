@@ -55,7 +55,9 @@ public enum CodecError {
     FAIL_COMPRESS_DATAGRAM("Fail compressing datagram with {0}"),
     UNABLE_INFER_LENGTH("Unable to infer the datagram length in reverse addressing mode."),
     FAIL_DECODING_FIELD("Fail decoding field of {0}"),
-    FAIL_ENCODING_FIELD("Fail encoding file of {0}");
+    FAIL_ENCODING_FIELD("Fail encoding file of {0}"),
+    FAIL_CREATING_DECODE_FLOW("Fail creating decode flow."),
+    FAIL_CREATING_ENCODE_FLOW("Fail creating encode flow.");
 
     String message;
 }

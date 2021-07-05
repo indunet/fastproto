@@ -22,6 +22,7 @@ import org.indunet.fastproto.annotation.type.BinaryType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
+import org.indunet.fastproto.util.ReverseUtils;
 
 /**
  * Binary type decoder.
@@ -39,8 +40,8 @@ public class BinaryDecoder implements TypeDecoder<byte[]> {
     }
 
     public byte[] decode(@NonNull final byte[] datagram, int byteOffset, int length) {
-        int bo = byteOffset >= 0 ? byteOffset : datagram.length + byteOffset;
-        int l = length >= 0 ? length : datagram.length + length - bo + 1;
+        int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
+        int l = ReverseUtils.length(datagram.length, byteOffset, length);
 
         if (bo < 0) {
             throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);

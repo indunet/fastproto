@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.check;
+package org.indunet.fastproto.checksum;
 
 import lombok.Builder;
 import lombok.val;
-import org.indunet.fastproto.annotation.CheckSum;
+import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.encoder.EncodeUtils;
 import org.junit.jupiter.api.Test;
 
@@ -51,7 +51,7 @@ class Crc32CheckerTest {
         assertTrue(checker.validate(datagram, TestObject.class));
     }
 
-    @CheckSum(value = -4, start = 0, length = -4, checkPolicy = CheckPolicy.CRC32)
+    @EnableChecksum(value = -4, start = 0, length = -5, checkPolicy = CheckPolicy.CRC32)
     @Builder
     public static class TestObject {
 

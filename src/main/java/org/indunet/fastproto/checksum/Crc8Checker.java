@@ -14,17 +14,18 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.check;
+package org.indunet.fastproto.checksum;
 
 import lombok.Getter;
 import lombok.val;
-import org.indunet.fastproto.annotation.CheckSum;
+import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.annotation.type.UInteger8Type;
 import org.indunet.fastproto.decoder.DecodeUtils;
 import org.indunet.fastproto.encoder.EncodeUtils;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
+import org.indunet.fastproto.util.ReverseUtils;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -57,11 +58,11 @@ public class Crc8Checker implements Checker {
 
     @Override
     public boolean validate(byte[] datagram, Class<?> protocolClass) {
-        if (!protocolClass.isAnnotationPresent(CheckSum.class)) {
+        if (!protocolClass.isAnnotationPresent(EnableChecksum.class)) {
             return true;
         }
 
-        val checkSum = protocolClass.getAnnotation(CheckSum.class);
+        val checkSum = protocolClass.getAnnotation(EnableChecksum.class);
         int byteOffset = checkSum.value();
         int start = checkSum.start();
         int length = checkSum.length();
@@ -74,11 +75,11 @@ public class Crc8Checker implements Checker {
 
     @Override
     public void setValue(byte[] datagram, Class<?> protocolClass) {
-        if (!protocolClass.isAnnotationPresent(CheckSum.class)) {
+        if (!protocolClass.isAnnotationPresent(EnableChecksum.class)) {
             return;
         }
 
-        val checkSum = protocolClass.getAnnotation(CheckSum.class);
+        val checkSum = protocolClass.getAnnotation(EnableChecksum.class);
         int byteOffset = checkSum.value();
         int start = checkSum.start();
         int length = checkSum.length();
@@ -98,12 +99,12 @@ public class Crc8Checker implements Checker {
     }
 
     public int getValue(byte[] datagram, int start, int length) {
-        int s = start >= 0 ? start : datagram.length + start;
-        int l = length >= 0 ? length : datagram.length + length - s;
+        int s = ReverseUtils.byteOffset(datagram.length, start);
+        int l = ReverseUtils.length(datagram.length, start, length);
 
         if (s < 0) {
             throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (l < 0) {
+        } else if (l <= 0) {
             throw new DecodeException(CodecError.ILLEGAL_PARAMETER);
         } else if (s + length > datagram.length) {
             throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
