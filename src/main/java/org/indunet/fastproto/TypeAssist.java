@@ -71,6 +71,9 @@ public class TypeAssist {
     Consumer<?> encoder;
     Integer minLength = 0;  // Used to store minimum length of datagram.
 
+    Optional<EnableCrypto> opEnableCrypto;
+    Optional<byte[]> opKey;
+
     Optional<EnableCompress> opEnableCompress;
     Optional<EnableProtocolVersion> opProtocolVersion;
     Optional<EnableChecksum> opChecksum;
@@ -87,6 +90,13 @@ public class TypeAssist {
 
     public static TypeAssist get(@NonNull Class<?> protocolClass) {
         TypeAssist assist = of(protocolClass);
+
+        assist.setOpEnableCrypto(Optional.of(protocolClass)
+                .map(c -> c.getAnnotation(EnableCrypto.class)));
+        // TODO, from method.
+        assist.setOpKey(assist.getOpEnableCrypto()
+                .map(EnableCrypto::key)
+                .map(String::getBytes));
 
         assist.setOpEnableCompress(Optional.of(protocolClass)
                 .map(c -> c.getAnnotation(EnableCompress.class)));

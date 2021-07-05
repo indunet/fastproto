@@ -17,7 +17,7 @@
 package org.indunet.fastproto.crypto;
 
 /**
- * Crypto Policy.
+ * Crypto Factory.
  *
  * @author Deng Ran
  * @since 2.0.0

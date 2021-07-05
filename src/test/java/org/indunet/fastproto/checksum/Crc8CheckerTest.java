@@ -64,7 +64,7 @@ public class Crc8CheckerTest {
         int value = checker.getValue(datagram, 0, 9);
         EncodeUtils.uInteger8Type(datagram, 9, value);
 
-        assertTrue(checker.validate(datagram, TestObject.class));
+        assertTrue(checker.validate(datagram, TestObject1.class));
     }
 
     @EnableChecksum(value = -1, start = 0, length = -1, checkPolicy = CheckPolicy.CRC8_CCITT)

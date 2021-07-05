@@ -22,12 +22,22 @@ import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * AES Crypto.
+ * AES Crypto which must be 16 bytes key.
  *
  * @author Deng Ran
  * @since 2.0.0
  */
 public class AesCrypto implements Crypto {
+    protected static AesCrypto crypto = new AesCrypto();
+
+    protected AesCrypto() {
+
+    }
+
+    public static AesCrypto getInstance() {
+        return crypto;
+    }
+
     public byte[] encrypt(byte[] key, byte[] datagram) {
         Cipher cipher = null;
         try {
