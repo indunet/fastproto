@@ -62,6 +62,5 @@ public class ProtoSerializerTest {
         deserializer.configure(map, false);
 
         assertEquals(deserializer.deserialize("device0", FastProto.toByteArray(weather, 26)), weather);
-
     }
 }

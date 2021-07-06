@@ -16,10 +16,7 @@
 
 package org.indunet.fastproto.crypto;
 
-import lombok.NonNull;
-import lombok.val;
-import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.CryptoException;
+import org.indunet.fastproto.annotation.EnableCrypto;
 
 /**
  * Crypto.
@@ -31,15 +28,7 @@ public interface Crypto {
     byte[] encrypt(byte[] key, byte[] datagram);
     byte[] decrypt(byte[] key, byte[] datagram);
 
-    default byte[] generateKey(@NonNull byte[] userKey, int length) {
-        if (userKey.length == 0) {
-            throw new CryptoException(CodecError.INVALID_CRYPTO_KEY);
-        }
-
-        val key = new byte[length];
-
-        System.arraycopy(userKey, 0, key, 0, Math.min(userKey.length, length));
-
-        return key;
+    static Crypto getInstance(EnableCrypto enableCrypto) {
+        return StandardCrypto.getInstance(enableCrypto.cryptoPolicy());
     }
 }

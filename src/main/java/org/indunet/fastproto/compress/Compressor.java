@@ -16,6 +16,10 @@
 
 package org.indunet.fastproto.compress;
 
+import org.indunet.fastproto.annotation.EnableCompress;
+import org.indunet.fastproto.exception.CodecError;
+import org.indunet.fastproto.exception.CompressException;
+
 /**
  * @author Deng Ran
  * @since 1.3.0
@@ -24,4 +28,15 @@ public interface Compressor {
     byte[] compress(byte[] bytes);
 
     byte[] decompress(byte[] bytes);
+
+    static Compressor getInstance(EnableCompress enableCompress) {
+        switch (enableCompress.value()) {
+            case GZIP:
+                return GzipCompressor.getInstance();
+            case DEFLATE:
+                return DeflateCompressor.getInstance(enableCompress.level());
+            default:
+                throw new CompressException(CodecError.INVALID_COMPRESS_POLICY);
+        }
+    }
 }

@@ -28,9 +28,10 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public enum CryptoPolicy {
-    DES(0x01, "des"),
-    AES(0x02, "aes");
+    DES_ECB_PKCS5PADDING(0x01, "DES/ECB/PKCS5Padding", 8),
+    AES_ECB_PKCS5PADDING(0x02, "AES/ECB/PKCS5Padding", 16);
 
     int code;
-    String name;
+    String transformation;
+    int keyLength;
 }

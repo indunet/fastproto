@@ -18,10 +18,9 @@ package org.indunet.fastproto.pipeline.encode;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.EnableChecksum;
+import org.indunet.fastproto.checksum.Checker;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
-import org.indunet.fastproto.checksum.Checker;
-import org.indunet.fastproto.checksum.CheckerFactory;
 
 /**
  * Write checksum flow.
@@ -40,7 +39,7 @@ public class WriteChecksumFlow extends AbstractFlow<CodecContext> {
         // Check sum.
         if (object.getClass().isAnnotationPresent(EnableChecksum.class)) {
             EnableChecksum checkSum = object.getClass().getAnnotation(EnableChecksum.class);
-            Checker checker = CheckerFactory.create(checkSum);
+            Checker checker = Checker.getInstance(checkSum);
 
             checker.setValue(datagram, object.getClass());
         }

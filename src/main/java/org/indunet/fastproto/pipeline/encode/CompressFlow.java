@@ -19,7 +19,7 @@ package org.indunet.fastproto.pipeline.encode;
 import lombok.val;
 import org.indunet.fastproto.CodecFeature;
 import org.indunet.fastproto.annotation.EnableCompress;
-import org.indunet.fastproto.compress.CompressorFactory;
+import org.indunet.fastproto.compress.Compressor;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
 
@@ -41,7 +41,7 @@ public class CompressFlow extends AbstractFlow<CodecContext> {
 
         if (enableCompress && protocolClass.isAnnotationPresent(EnableCompress.class)) {
             val annotation = protocolClass.getAnnotation(EnableCompress.class);
-            val compressor = CompressorFactory.create(annotation);
+            val compressor = Compressor.getInstance(annotation);
 
             context.setDatagram(compressor.compress(datagram));
         }

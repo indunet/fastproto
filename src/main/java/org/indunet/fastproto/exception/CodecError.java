@@ -59,8 +59,9 @@ public enum CodecError {
     FAIL_CREATING_DECODE_FLOW("Fail creating decode flow."),
     FAIL_CREATING_ENCODE_FLOW("Fail creating encode flow."),
     INVALID_CRYPTO_KEY("Invalid crypto key."),
-    FAIL_ENCRYPTING("Fail encrypting"),
-    FAIL_DECRYPTING("Fail decrypting");
+    FAIL_ENCRYPTING("Fail encrypting."),
+    FAIL_DECRYPTING("Fail decrypting."),
+    NO_KEY_SUPPLIED("No key supplied.");
 
     String message;
 }

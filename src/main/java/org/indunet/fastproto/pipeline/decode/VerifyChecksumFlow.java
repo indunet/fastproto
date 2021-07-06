@@ -18,12 +18,11 @@ package org.indunet.fastproto.pipeline.decode;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.EnableChecksum;
+import org.indunet.fastproto.checksum.Checker;
 import org.indunet.fastproto.exception.CheckSumException;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
-import org.indunet.fastproto.checksum.Checker;
-import org.indunet.fastproto.checksum.CheckerFactory;
 
 /**
  * verify checksum flow.
@@ -40,7 +39,8 @@ public class VerifyChecksumFlow extends AbstractFlow<CodecContext> {
         val datagram = context.getDatagram();
 
         if (protocolClass.isAnnotationPresent(EnableChecksum.class)) {
-            Checker checker = CheckerFactory.create(protocolClass.getAnnotation(EnableChecksum.class));
+            Checker checker = Checker
+                    .getInstance(protocolClass.getAnnotation(EnableChecksum.class));
 
             if (!checker.validate(datagram, protocolClass)) {
                 throw new CheckSumException(CodecError.ILLEGAL_CHECK_SUM);

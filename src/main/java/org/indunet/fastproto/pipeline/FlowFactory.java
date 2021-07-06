@@ -18,10 +18,7 @@ package org.indunet.fastproto.pipeline;
 
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.pipeline.decode.DecodeFlow;
-import org.indunet.fastproto.pipeline.decode.DecompressFlow;
-import org.indunet.fastproto.pipeline.decode.VerifyChecksumFlow;
-import org.indunet.fastproto.pipeline.decode.VerifyProtocolVersionFlow;
+import org.indunet.fastproto.pipeline.decode.*;
 import org.indunet.fastproto.pipeline.encode.*;
 
 import java.util.Arrays;
@@ -36,6 +33,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class FlowFactory {
     protected static Class<? extends AbstractFlow>[] decodeFlowClasses = new Class[] {
+            DecryptFlow.class,
             DecompressFlow.class,
             VerifyChecksumFlow.class,
             VerifyProtocolVersionFlow.class,
@@ -45,7 +43,8 @@ public class FlowFactory {
             EncodeFlow.class,
             WriteProtocolVersionFlow.class,
             WriteChecksumFlow.class,
-            CompressFlow.class
+            CompressFlow.class,
+            EncryptFlow.class
     };
     protected static ConcurrentMap<Integer, AbstractFlow> decodeFlows = new ConcurrentHashMap<>();
     protected static ConcurrentMap<Integer, AbstractFlow> encodeFlows = new ConcurrentHashMap<>();

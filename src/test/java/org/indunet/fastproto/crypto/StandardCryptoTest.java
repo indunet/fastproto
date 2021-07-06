@@ -31,16 +31,30 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  * @author Deng Ran
  * @since 2.0.0
  */
-public class AesCryptoTest {
+public class StandardCryptoTest {
     @Test
-    public void test() {
+    public void testDes() {
         byte[] bytes = new byte[100];
         val random = new Random(System.currentTimeMillis());
 
         IntStream.range(0, 100)
                 .forEach(i -> bytes[i] = (byte) random.nextInt());
         val key = "123456".getBytes(StandardCharsets.UTF_8);
-        val crypto = AesCrypto.getInstance();
+        val crypto = StandardCrypto.getInstance(CryptoPolicy.DES_ECB_PKCS5PADDING);
+        val after = crypto.encrypt(key, bytes);
+
+        assertArrayEquals(bytes, crypto.decrypt(key, after));
+    }
+
+    @Test
+    public void testAes() {
+        byte[] bytes = new byte[100];
+        val random = new Random(System.currentTimeMillis());
+
+        IntStream.range(0, 100)
+                .forEach(i -> bytes[i] = (byte) random.nextInt());
+        val key = "123456".getBytes(StandardCharsets.UTF_8);
+        val crypto = StandardCrypto.getInstance(CryptoPolicy.AES_ECB_PKCS5PADDING);
         val after = crypto.encrypt(key, bytes);
 
         assertArrayEquals(bytes, crypto.decrypt(key, after));

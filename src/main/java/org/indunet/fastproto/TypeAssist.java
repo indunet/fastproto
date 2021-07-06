@@ -91,12 +91,26 @@ public class TypeAssist {
     public static TypeAssist get(@NonNull Class<?> protocolClass) {
         TypeAssist assist = of(protocolClass);
 
-        assist.setOpEnableCrypto(Optional.of(protocolClass)
-                .map(c -> c.getAnnotation(EnableCrypto.class)));
-        // TODO, from method.
-        assist.setOpKey(assist.getOpEnableCrypto()
-                .map(EnableCrypto::key)
-                .map(String::getBytes));
+        // Crypto policy and key.
+        val opEnableCrypto = Optional.of(protocolClass)
+                .map(c -> c.getAnnotation(EnableCrypto.class));
+
+        if (opEnableCrypto.isPresent()) {
+            assist.setOpEnableCrypto(opEnableCrypto);
+
+//            if (!opEnableCrypto
+//                    .get()
+//                    .key()
+//                    .isEmpty()) {
+//                assist.setOpKey(opEnableCrypto
+//                        .get()
+//                        .key());
+//            }
+
+            assist.setOpKey(assist.getOpEnableCrypto()
+                    .map(EnableCrypto::key)
+                    .map(String::getBytes));
+        }
 
         assist.setOpEnableCompress(Optional.of(protocolClass)
                 .map(c -> c.getAnnotation(EnableCompress.class)));

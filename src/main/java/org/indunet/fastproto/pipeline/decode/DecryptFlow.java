@@ -17,6 +17,8 @@
 package org.indunet.fastproto.pipeline.decode;
 
 
+import lombok.val;
+import org.indunet.fastproto.crypto.Crypto;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
 
@@ -31,7 +33,21 @@ public class DecryptFlow extends AbstractFlow<CodecContext> {
 
     @Override
     public void process(CodecContext context) {
+        val assist = context.getTypeAssist();
 
+        if (!assist.getOpEnableCrypto().isPresent()) {
+            return;
+        }
+
+        val datagram = context.getDatagram();
+        val crypto = Crypto.getInstance(assist
+                .getOpEnableCrypto()
+                .get());
+        val key = assist
+                .getOpKey()
+                .get();
+
+        context.setDatagram(crypto.decrypt(key, datagram));
     }
 
     @Override
