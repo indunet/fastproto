@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.flow;
+package org.indunet.fastproto.pipeline;
 
 import lombok.Builder;
 import lombok.Data;
@@ -33,5 +33,5 @@ public class CodecContext {
     TypeAssist typeAssist;
     Object object;
     Class<?> protocolClass;
-    int codecFeature;
+    long codecFeature;
 }

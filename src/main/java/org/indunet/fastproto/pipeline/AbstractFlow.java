@@ -14,27 +14,34 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.flow.encode;
-
-import org.indunet.fastproto.flow.AbstractFlow;
-import org.indunet.fastproto.flow.CodecContext;
+package org.indunet.fastproto.pipeline;
 
 /**
- * Encrypt flow.
+ * Abstract flow.
  *
  * @author Deng Ran
- * @since 2.0.0
+ * @since 1.7.0
  */
-public class EncryptFlow extends AbstractFlow<CodecContext> {
-    public static final int FLOW_CODE = 0x2000;
+public abstract class AbstractFlow<T> {
+    AbstractFlow<T> next = null;
 
-    @Override
-    public void process(CodecContext context) {
+    public abstract void process(T context);
 
+    AbstractFlow<T> setNext(AbstractFlow<T> next) {
+        this.next = next;
+
+        return this.next;
     }
 
-    @Override
-    public int getFlowCode() {
-        return FLOW_CODE;
+    public void nextFlow(T context) {
+        if (next != null) {
+            this.next.process(context);
+        }
     }
+
+    public void end() {
+        this.next = null;
+    }
+
+    public abstract long getFlowCode();
 }

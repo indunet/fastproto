@@ -14,16 +14,15 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.flow.decode;
+package org.indunet.fastproto.pipeline.decode;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.EnableChecksum;
+import org.indunet.fastproto.checksum.Checker;
 import org.indunet.fastproto.exception.CheckSumException;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.flow.AbstractFlow;
-import org.indunet.fastproto.flow.CodecContext;
-import org.indunet.fastproto.checksum.Checker;
-import org.indunet.fastproto.checksum.CheckerFactory;
+import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.CodecContext;
 
 /**
  * verify checksum flow.
@@ -32,7 +31,7 @@ import org.indunet.fastproto.checksum.CheckerFactory;
  * @since 1.7.0
  */
 public class VerifyChecksumFlow extends AbstractFlow<CodecContext> {
-    public static final int FLOW_CODE = 0x0002;
+    public static final long FLOW_CODE = 0x0002;
 
     @Override
     public void process(CodecContext context) {
@@ -40,7 +39,8 @@ public class VerifyChecksumFlow extends AbstractFlow<CodecContext> {
         val datagram = context.getDatagram();
 
         if (protocolClass.isAnnotationPresent(EnableChecksum.class)) {
-            Checker checker = CheckerFactory.create(protocolClass.getAnnotation(EnableChecksum.class));
+            Checker checker = Checker
+                    .getInstance(protocolClass.getAnnotation(EnableChecksum.class));
 
             if (!checker.validate(datagram, protocolClass)) {
                 throw new CheckSumException(CodecError.ILLEGAL_CHECK_SUM);
@@ -51,7 +51,7 @@ public class VerifyChecksumFlow extends AbstractFlow<CodecContext> {
     }
 
     @Override
-    public int getFlowCode() {
+    public long getFlowCode() {
         return FLOW_CODE;
     }
 }

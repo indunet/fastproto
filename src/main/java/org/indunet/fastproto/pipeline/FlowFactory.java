@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.flow;
+package org.indunet.fastproto.pipeline;
 
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.flow.decode.DecodeFlow;
-import org.indunet.fastproto.flow.decode.DecompressFlow;
-import org.indunet.fastproto.flow.decode.VerifyChecksumFlow;
-import org.indunet.fastproto.flow.decode.VerifyProtocolVersionFlow;
-import org.indunet.fastproto.flow.encode.*;
+import org.indunet.fastproto.pipeline.decode.*;
+import org.indunet.fastproto.pipeline.encode.*;
 
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,6 +33,7 @@ import java.util.concurrent.ConcurrentMap;
  */
 public class FlowFactory {
     protected static Class<? extends AbstractFlow>[] decodeFlowClasses = new Class[] {
+            DecryptFlow.class,
             DecompressFlow.class,
             VerifyChecksumFlow.class,
             VerifyProtocolVersionFlow.class,
@@ -45,20 +43,21 @@ public class FlowFactory {
             EncodeFlow.class,
             WriteProtocolVersionFlow.class,
             WriteChecksumFlow.class,
-            CompressFlow.class
+            CompressFlow.class,
+            EncryptFlow.class
     };
-    protected static ConcurrentMap<Integer, AbstractFlow> decodeFlows = new ConcurrentHashMap<>();
-    protected static ConcurrentMap<Integer, AbstractFlow> encodeFlows = new ConcurrentHashMap<>();
+    protected static ConcurrentMap<Long, AbstractFlow> decodeFlows = new ConcurrentHashMap<>();
+    protected static ConcurrentMap<Long, AbstractFlow> encodeFlows = new ConcurrentHashMap<>();
 
-    public static AbstractFlow<CodecContext> createDecode(int codecFeature) {
+    public static AbstractFlow<CodecContext> createDecode(long codecFeature) {
         return decodeFlows.computeIfAbsent(codecFeature, __ -> create(decodeFlowClasses, codecFeature));
     }
 
-    public static AbstractFlow<CodecContext> createEncode(int codecFeature) {
+    public static AbstractFlow<CodecContext> createEncode(long codecFeature) {
         return encodeFlows.computeIfAbsent(codecFeature, __ -> create(encodeFlowClasses, codecFeature));
     }
 
-    protected static AbstractFlow create(Class<? extends AbstractFlow>[] flowClasses, int codecFeature) {
+    protected static AbstractFlow create(Class<? extends AbstractFlow>[] flowClasses, long codecFeature) {
         AbstractFlow[] array = Arrays.stream(flowClasses)
                 .map(c -> {
                     try {

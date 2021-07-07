@@ -14,36 +14,45 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.flow.encode;
+package org.indunet.fastproto.pipeline.decode;
+
 
 import lombok.val;
-import org.indunet.fastproto.ProtocolVersionAssist;
-import org.indunet.fastproto.flow.AbstractFlow;
-import org.indunet.fastproto.flow.CodecContext;
-import org.indunet.fastproto.checksum.CheckerUtils;
+import org.indunet.fastproto.crypto.Crypto;
+import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.CodecContext;
 
 /**
- * Infer length flow.
+ * Decrypt flow.
  *
  * @author Deng Ran
- * @since 1.7.0
+ * @since 2.0.0
  */
-public class InferLengthFlow extends AbstractFlow<CodecContext> {
-    public static final int FLOW_CODE = 0x0100;
+public class DecryptFlow extends AbstractFlow<CodecContext> {
+    public static final long FLOW_CODE = 0x0010;
 
     @Override
     public void process(CodecContext context) {
         val assist = context.getTypeAssist();
-        int length = assist.getMaxLength();
-        length += CheckerUtils.getSize(context.getProtocolClass());
-        length += ProtocolVersionAssist.size(assist);
 
-        context.setDatagram(new byte[length]);
+        if (!assist.getOpEnableCrypto().isPresent()) {
+            return;
+        }
+
+        val datagram = context.getDatagram();
+        val crypto = Crypto.getInstance(assist
+                .getOpEnableCrypto()
+                .get());
+        val key = assist
+                .getOpKey()
+                .get();
+
+        context.setDatagram(crypto.decrypt(key, datagram));
         this.nextFlow(context);
     }
 
     @Override
-    public int getFlowCode() {
+    public long getFlowCode() {
         return FLOW_CODE;
     }
 }

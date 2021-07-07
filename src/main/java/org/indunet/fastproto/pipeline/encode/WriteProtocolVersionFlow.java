@@ -14,28 +14,30 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.flow.decode;
+package org.indunet.fastproto.pipeline.encode;
 
-
-import org.indunet.fastproto.flow.AbstractFlow;
-import org.indunet.fastproto.flow.CodecContext;
+import org.indunet.fastproto.ProtocolVersionAssist;
+import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.CodecContext;
 
 /**
- * Decrypt flow.
+ * Write protocol version flow.
  *
  * @author Deng Ran
- * @since 2.0.0
+ * @since 1.7.0
  */
-public class DecryptFlow extends AbstractFlow<CodecContext> {
-    public static final int FLOW_CODE = 0x0010;
+public class WriteProtocolVersionFlow extends AbstractFlow<CodecContext> {
+    public static final long FLOW_CODE = 0x0400;
 
     @Override
     public void process(CodecContext context) {
+        ProtocolVersionAssist.encode(context.getDatagram(), context.getTypeAssist());
 
+        this.nextFlow(context);
     }
 
     @Override
-    public int getFlowCode() {
+    public long getFlowCode() {
         return FLOW_CODE;
     }
 }

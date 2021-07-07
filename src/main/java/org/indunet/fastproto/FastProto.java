@@ -17,8 +17,9 @@
 package org.indunet.fastproto;
 
 import lombok.NonNull;
-import org.indunet.fastproto.flow.CodecContext;
-import org.indunet.fastproto.flow.FlowFactory;
+import lombok.val;
+import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.pipeline.FlowFactory;
 
 /**
  * FastProto API.
@@ -31,16 +32,25 @@ public class FastProto {
      * Convert binary message into object.
      *
      * @param datagram binary message
-     * @param clazz    deserialized object
+     * @param protocolClass    deserialized object
      * @return deserialize object instance
      */
-    public static <T> T parseFrom(@NonNull byte[] datagram, @NonNull Class<T> clazz) {
-        return parseFrom(datagram, clazz, CodecFeature.DEFAULT);
+    public static <T> T parseFrom(@NonNull byte[] datagram, @NonNull Class<T> protocolClass) {
+        return parseFrom(datagram, protocolClass, CodecFeature.DEFAULT);
     }
 
-    public static <T> T parseFrom(@NonNull byte[] datagram, @NonNull Class<T> protocolClass, int codecFeature) {
-        TypeAssist assist = TypeAssist.byClass(protocolClass);
-        CodecContext context = CodecContext.builder()
+    /**
+     * Convert binary message into object.
+     *
+     * @param datagram binary message
+     * @param protocolClass    deserialized object
+     * @param codecFeatures codec feature code
+     * @return deserialize object instance
+     */
+    public static <T> T parseFrom(@NonNull byte[] datagram, @NonNull Class<T> protocolClass, long... codecFeatures) {
+        val assist = TypeAssist.byClass(protocolClass);
+        val codecFeature = CodecFeature.of(codecFeatures);
+        val context = CodecContext.builder()
                 .datagram(datagram)
                 .protocolClass(protocolClass)
                 .codecFeature(codecFeature)
@@ -59,30 +69,7 @@ public class FastProto {
      * @return binary datagram.
      */
     public static byte[] toByteArray(@NonNull Object object) {
-        return toByteArray(object, -1, CodecFeature.DEFAULT);
-    }
-
-    /**
-     * Convert object into binary datagram.
-     *
-     * @param object         serialized object
-     * @param enableCompress enable compress
-     * @return binary datagram.
-     */
-    @Deprecated
-    public static byte[] toByteArray(@NonNull Object object, boolean enableCompress) {
-//        TypeAssist assist = assists.computeIfAbsent(object.getClass(), c -> TypeAssist.head(c));
-//        int length = assist.getMaxLength();
-//        length += CheckerUtils.getSize(object.getClass());
-//        length += VersionAssist.getSize(object.getClass());
-//
-//        return toByteArray(object, length, enableCompress);
-
-        if (enableCompress) {
-            return toByteArray(object, -1, CodecFeature.IGNORE_ENABLE_COMPRESS);
-        } else {
-            return toByteArray(object, -1, CodecFeature.DEFAULT);
-        }
+        return toByteArray(object, CodecFeature.DEFAULT);
     }
 
     /**
@@ -96,26 +83,35 @@ public class FastProto {
         return toByteArray(object, length, CodecFeature.DEFAULT);
     }
 
-    public static byte[] toByteArray(@NonNull Object object, int length, int codecFeature) {
-        TypeAssist assist = TypeAssist.byClass(object.getClass());
-        CodecContext.CodecContextBuilder builder = CodecContext.builder()
+    public static byte[] toByteArray(@NonNull Object object, long... codecFeatures) {
+        val assist = TypeAssist.byClass(object.getClass());
+        val codecFeature = CodecFeature.of(codecFeatures);
+        val context = CodecContext.builder()
                 .object(object)
                 .protocolClass(object.getClass())
                 .codecFeature(codecFeature)
-                .typeAssist(assist);
-        CodecContext context;
+                .typeAssist(assist)
+                .build();
 
-        if (length == -1) {
-            context = builder.build();
-            FlowFactory.createEncode(assist.getCodecFeature() | codecFeature)
-                    .process(context);
-        } else {
-            context = builder
-                    .datagram(new byte[length])
-                    .build();
-            FlowFactory.createEncode(codecFeature | CodecFeature.NON_INFER_LENGTH)
-                    .process(context);
-        }
+        FlowFactory.createEncode(assist.getCodecFeature() | codecFeature)
+                .process(context);
+
+        return context.getDatagram();
+    }
+
+    public static byte[] toByteArray(@NonNull Object object, int length, long... codecFeatures) {
+        val assist = TypeAssist.byClass(object.getClass());
+        val codecFeature = CodecFeature.of(codecFeatures);
+        val context = CodecContext.builder()
+                .object(object)
+                .protocolClass(object.getClass())
+                .codecFeature(codecFeature)
+                .datagram(new byte[length])
+                .typeAssist(assist)
+                .build();
+
+        FlowFactory.createEncode(assist.getCodecFeature() | CodecFeature.NON_INFER_LENGTH | codecFeature)
+                .process(context);
 
         return context.getDatagram();
     }

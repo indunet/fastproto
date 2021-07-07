@@ -21,6 +21,8 @@ import lombok.val;
 import org.indunet.fastproto.annotation.type.UInteger64Type;
 import org.indunet.fastproto.checksum.Crc32Checker;
 import org.indunet.fastproto.compress.DeflateCompressor;
+import org.indunet.fastproto.crypto.Crypto;
+import org.indunet.fastproto.crypto.CryptoPolicy;
 import org.indunet.fastproto.encoder.EncodeUtils;
 import org.indunet.fastproto.iot.Everything;
 import org.indunet.fastproto.iot.Weather;
@@ -31,6 +33,7 @@ import org.indunet.fastproto.iot.tesla.Tesla;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
+import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.util.stream.IntStream;
 
@@ -117,10 +120,10 @@ public class FastProtoTest {
 
         // Test decode.
         assertEquals(
-                FastProto.parseFrom(datagram, Weather.class, CodecFeature.IGNORE_ENABLE_COMPRESS).toString(), metrics.toString());
+                FastProto.parseFrom(datagram, Weather.class, CodecFeature.DISABLE_COMPRESS).toString(), metrics.toString());
 
         // Test encode.
-        byte[] cache = FastProto.toByteArray(metrics, 30, CodecFeature.IGNORE_ENABLE_COMPRESS);
+        byte[] cache = FastProto.toByteArray(metrics, 30, CodecFeature.DISABLE_COMPRESS);
         assertArrayEquals(cache, datagram);
     }
 
@@ -177,13 +180,13 @@ public class FastProtoTest {
                 .aInteger(102)
                 .aInteger8(32)
                 .aInteger16(13)
-                .aLong(-50000l)
+                .aLong(-50000L)
                 .aShort((short) 12)
                 .aString("abcABC")
                 .aTimestamp(new Timestamp(System.currentTimeMillis()))
                 .aUInteger8(8)
                 .aUInteger16(16)
-                .aUInteger32(32l)
+                .aUInteger32(32L)
                 .speed(10.1f)
                 .aUInteger64(new BigInteger(String.valueOf(UInteger64Type.MAX_VALUE)))
                 .build();
@@ -211,16 +214,19 @@ public class FastProtoTest {
         // There is a formula.
         EncodeUtils.uInteger8Type(datagram, 66, (int) (everything.getSpeed() * 10));
 
+        val crypto = Crypto.getInstance(CryptoPolicy.AES_ECB_PKCS5PADDING);
+        val afterEncrypted = crypto.encrypt("330926".getBytes(StandardCharsets.UTF_8), datagram);
+
         // Test decode.
-        assertEquals(FastProto.parseFrom(datagram, Everything.class, CodecFeature.IGNORE_ENABLE_COMPRESS).toString(), everything.toString());
+        assertEquals(FastProto.parseFrom(afterEncrypted, Everything.class, CodecFeature.DISABLE_COMPRESS).toString(), everything.toString());
 
         // Test encode.
-        byte[] cache = FastProto.toByteArray(everything, -1, CodecFeature.IGNORE_ENABLE_COMPRESS);
-        assertArrayEquals(cache, datagram);
+        byte[] cache = FastProto.toByteArray(everything, CodecFeature.DISABLE_COMPRESS);
+        assertArrayEquals(cache, afterEncrypted);
 
         // Test with gzip
-        byte[] compressed = FastProto.toByteArray(everything, 80);
-        assertEquals(FastProto.parseFrom(compressed, Everything.class).toString(), everything.toString());
+        byte[] compressed = FastProto.toByteArray(everything, 80, CodecFeature.DISABLE_CRYPTO);
+        assertEquals(FastProto.parseFrom(compressed, Everything.class, CodecFeature.DISABLE_CRYPTO).toString(), everything.toString());
     }
 
     @Test

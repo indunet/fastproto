@@ -1,5 +1,7 @@
 ![fastproto](logo.png "fastproto")
 
+English | [中文](README-zh.md)
+
 # *FastProto*
 
 [![Build Status](https://travis-ci.com/indunet/fastproto.svg?branch=master)](https://travis-ci.com/indunet/fastproto)
@@ -8,24 +10,24 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto is a protocolized binary serialization & deserialization tool written in Java, which allows developers to 
-customize binary format through annotations. It solves the problem of cross-language and cross-platform data exchange 
+FastProto is a protocolized binary serialization & deserialization tool written in Java, which allows developers to
+customize binary format through annotations. It solves the problem of cross-language and cross-platform data exchange
 of Java in a new form, especially suitable for the field of Internet of Things(IoT).
 
 ## *Features*
 
 *   Protocolized binary serialization & deserialization
-*   Customize binary format through annotations.    
-*   Support [decoding formula & encoding formula][formula]   
-*   Support unsigned data types such as uint8, uint16, uint32 and uint64 
-*   Support data [compress and decompress(gzip, deflate)][compression]  
+*   Customize binary format through annotations.
+*   Support [decoding formula & encoding formula][formula]
+*   Support unsigned data types such as uint8, uint16, uint32 and uint64
+*   Support data [compress and decompress(gzip, deflate)][compression]
 *   Support [protocol version verification][version]
 *   Support [data integrity check][integrity]
 *   Built-in [Kafka serializer & deserializer][kafka]
 
 ## *Under Developing*
 
-*   Netty decoder & encoder  
+*   Netty decoder & encoder
 
 ## Compared with ProtoBuf
 
@@ -49,7 +51,7 @@ ProtoBuf solve the same problem in different ways. It is recommended to use Fast
 
 ## *Quick Start*
 
-Imagine such an application, there is a monitoring device collecting weather data in realtime and sends to 
+Imagine such an application, there is a monitoring device collecting weather data in realtime and sends to
 the weather station server in binary format. The datagram protocol is as follows:
 
 | Byte Offset | Bit Offset | Data Type(C/C++)   | Signal Name       | Unit |  Formula  |
@@ -105,14 +107,14 @@ Weather weather = FastProto.parseFrom(datagram, Weather.class);
 ```
 
 Serialize the Java data object into binary datagram through `FastProto::toByteArray()` method, the second parameter is
- the datagram size.
+the datagram size.
 
 ```java
 byte[] datagram = FastProto.toByteArray(weather, 20);
 ```
 
-Perhaps you have noticed that the pressure signal in the protocol table corresponds to a conversion formula, which 
-needs to be multiplied by 0.1. In order to help developers reduce intermediate steps, FastProto supports customizing 
+Perhaps you have noticed that the pressure signal in the protocol table corresponds to a conversion formula, which
+needs to be multiplied by 0.1. In order to help developers reduce intermediate steps, FastProto supports customizing
 conversion formula.
 
 Define a decoding conversion formula, which must implement `java.lang.function.Function`
@@ -153,9 +155,9 @@ double pressure;
 
 ## *FastProto Annotations*
 
-In addition to Java primitive data types and their wrapper classes, FastProto also supports Timestamp, String and byte array, 
-all above type annotations can be replaced by `@AutoType`. Taking into account cross-language data sharing, unsigned types, 
-int8, int16 are also introduced. 
+In addition to Java primitive data types and their wrapper classes, FastProto also supports Timestamp, String and byte array,
+all above type annotations can be replaced by `@AutoType`. Taking into account cross-language data sharing, unsigned types,
+int8, int16 are also introduced.
 
 | Annotation      | Java               | C/C++          | Size        |   AutoType |
 |:---------------:|:------------------:|:--------------:|:-----------:|:-----------:|
@@ -177,7 +179,7 @@ int8, int16 are also introduced.
 | `@StringType`     | java.lang.String   | --             | N bytes     |  √ |    
 | `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 bytes |  √  |    
 
-In addition to data type annotations, FastProto also provides other annotations to help developers Help users customize 
+In addition to data type annotations, FastProto also provides other annotations to help developers Help users customize
 the binary format.
 
 | Annotation    | Scope        | Description                           |
@@ -193,7 +195,7 @@ the binary format.
 
 *   macOS, m1 8 cores, 16gb
 *   openjdk 1.8.0_292
-*   datagram of 128 bytes and nested protocol class of 48 fields 
+*   datagram of 128 bytes and nested protocol class of 48 fields
 
 |Benchmark |    Mode  | Samples  |  Score  |   Error   |   Units   |
 |:--------:|:--------:|:--------:|:-------:|:---------:|:---------:|
@@ -202,8 +204,8 @@ the binary format.
 
 ## *Build Requirements*
 
-*   Java 1.8+  
-*   Maven 3.5+    
+*   Java 1.8+
+*   Maven 3.5+
 
 ## *License*
 

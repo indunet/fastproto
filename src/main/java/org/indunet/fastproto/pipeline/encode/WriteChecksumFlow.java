@@ -14,14 +14,13 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.flow.encode;
+package org.indunet.fastproto.pipeline.encode;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.EnableChecksum;
-import org.indunet.fastproto.flow.AbstractFlow;
-import org.indunet.fastproto.flow.CodecContext;
 import org.indunet.fastproto.checksum.Checker;
-import org.indunet.fastproto.checksum.CheckerFactory;
+import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.CodecContext;
 
 /**
  * Write checksum flow.
@@ -30,7 +29,7 @@ import org.indunet.fastproto.checksum.CheckerFactory;
  * @since 1.7.0
  */
 public class WriteChecksumFlow extends AbstractFlow<CodecContext> {
-    public static final int FLOW_CODE = 0x0800;
+    public static final long FLOW_CODE = 0x0800;
 
     @Override
     public void process(CodecContext context) {
@@ -40,7 +39,7 @@ public class WriteChecksumFlow extends AbstractFlow<CodecContext> {
         // Check sum.
         if (object.getClass().isAnnotationPresent(EnableChecksum.class)) {
             EnableChecksum checkSum = object.getClass().getAnnotation(EnableChecksum.class);
-            Checker checker = CheckerFactory.create(checkSum);
+            Checker checker = Checker.getInstance(checkSum);
 
             checker.setValue(datagram, object.getClass());
         }
@@ -49,7 +48,7 @@ public class WriteChecksumFlow extends AbstractFlow<CodecContext> {
     }
 
     @Override
-    public int getFlowCode() {
+    public long getFlowCode() {
         return FLOW_CODE;
     }
 }

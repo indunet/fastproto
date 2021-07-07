@@ -14,35 +14,36 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.flow.decode;
+package org.indunet.fastproto.pipeline.encode;
 
-import lombok.NonNull;
+import lombok.val;
 import org.indunet.fastproto.ProtocolVersionAssist;
-import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.ProtocolVersionException;
-import org.indunet.fastproto.flow.AbstractFlow;
-import org.indunet.fastproto.flow.CodecContext;
+import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.checksum.CheckerUtils;
 
 /**
- * Verify protocol version flow.
+ * Infer length flow.
  *
  * @author Deng Ran
  * @since 1.7.0
  */
-public class VerifyProtocolVersionFlow extends AbstractFlow<CodecContext> {
-    public static final int FLOW_CODE = 0x0004;
+public class InferLengthFlow extends AbstractFlow<CodecContext> {
+    public static final long FLOW_CODE = 0x0100;
 
     @Override
-    public void process(@NonNull CodecContext context) {
-        if (!ProtocolVersionAssist.validate(context.getDatagram(), context.getTypeAssist())) {
-            throw new ProtocolVersionException(CodecError.PROTOCOL_VERSION_NOT_MATCH);
-        } else {
-            this.nextFlow(context);
-        }
+    public void process(CodecContext context) {
+        val assist = context.getTypeAssist();
+        int length = assist.getMaxLength();
+        length += CheckerUtils.getSize(context.getProtocolClass());
+        length += ProtocolVersionAssist.size(assist);
+
+        context.setDatagram(new byte[length]);
+        this.nextFlow(context);
     }
 
     @Override
-    public int getFlowCode() {
+    public long getFlowCode() {
         return FLOW_CODE;
     }
 }

@@ -16,6 +16,8 @@
 
 package org.indunet.fastproto.crypto;
 
+import org.indunet.fastproto.annotation.EnableCrypto;
+
 /**
  * Crypto.
  *
@@ -23,6 +25,14 @@ package org.indunet.fastproto.crypto;
  * @since 2.0.0
  */
 public interface Crypto {
-    byte[] encrypt(byte[] key, byte[] bytes);
-    byte[] decrypt(byte[] key, byte[] bytes);
+    byte[] encrypt(byte[] key, byte[] datagram);
+    byte[] decrypt(byte[] key, byte[] datagram);
+
+    static Crypto getInstance(EnableCrypto enableCrypto) {
+        return getInstance(enableCrypto.cryptoPolicy());
+    }
+
+    static Crypto getInstance(CryptoPolicy policy) {
+        return StandardCrypto.getInstance(policy);
+    }
 }

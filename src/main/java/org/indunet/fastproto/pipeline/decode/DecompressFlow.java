@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.flow.decode;
+package org.indunet.fastproto.pipeline.decode;
 
 import lombok.val;
 import org.indunet.fastproto.CodecFeature;
 import org.indunet.fastproto.annotation.EnableCompress;
-import org.indunet.fastproto.compress.CompressorFactory;
-import org.indunet.fastproto.flow.AbstractFlow;
-import org.indunet.fastproto.flow.CodecContext;
+import org.indunet.fastproto.compress.Compressor;
+import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.CodecContext;
 
 /**
  * Decompress flow.
@@ -30,18 +30,18 @@ import org.indunet.fastproto.flow.CodecContext;
  * @since 1.7.0
  */
 public class DecompressFlow extends AbstractFlow<CodecContext> {
-    public static final int FLOW_CODE = 0x0001;
+    public static final long FLOW_CODE = 0x0001;
 
     @Override
     public void process(CodecContext context) {
         boolean enableCompress =
-                (context.getCodecFeature() & CodecFeature.IGNORE_ENABLE_COMPRESS) == 0;
+                (context.getCodecFeature() & CodecFeature.DISABLE_COMPRESS) == 0;
         Class<?> protocolClass = context.getProtocolClass();
         byte[] datagram = context.getDatagram();
 
         if (enableCompress && protocolClass.isAnnotationPresent(EnableCompress.class)) {
-            val compress = protocolClass.getAnnotation(EnableCompress.class);
-            val compressor = CompressorFactory.create(compress);
+            val annotation = protocolClass.getAnnotation(EnableCompress.class);
+            val compressor = Compressor.getInstance(annotation);
 
             context.setDatagram(compressor.decompress(datagram));
         }
@@ -49,7 +49,7 @@ public class DecompressFlow extends AbstractFlow<CodecContext> {
         this.nextFlow(context);
     }
 
-    public int getFlowCode() {
+    public long getFlowCode() {
         return FLOW_CODE;
     }
 }

@@ -16,6 +16,9 @@
 
 package org.indunet.fastproto.checksum;
 
+import lombok.NonNull;
+import org.indunet.fastproto.annotation.EnableChecksum;
+
 /**
  * @author Deng Ran
  * @since 1.6.0
@@ -24,4 +27,24 @@ public interface Checker {
     boolean validate(byte[] datagram, Class<?> protocolClass);
     void setValue(byte[] datagram, Class<?> protocolClass);
     int getSize();
+
+    static Checker getInstance(@NonNull EnableChecksum checkSum) {
+        CheckPolicy policy = checkSum.checkPolicy();
+        int poly = checkSum.poly();
+
+        switch (policy) {
+            case CRC8:
+                return Crc8Checker.getInstance(poly);
+            case CRC8_CCITT:
+                return Crc8Checker.getInstance(policy.getPoly());
+            case CRC16:
+                return Crc16Checker.getInstance(poly);
+            case CRC16_CCITT:
+                return Crc16Checker.getInstance(policy.getPoly());
+            case CRC32:
+                return Crc32Checker.getInstance();
+        }
+
+        return Crc16Checker.getInstance();
+    }
 }

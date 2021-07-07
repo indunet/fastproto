@@ -25,8 +25,8 @@ import org.indunet.fastproto.annotation.EnableChecksum;
 public class CheckerUtils {
     public static int getSize(Class<?> protocolCLass) {
         if (protocolCLass.isAnnotationPresent(EnableChecksum.class)) {
-            return CheckerFactory
-                    .create(protocolCLass.getAnnotation(EnableChecksum.class))
+            return Checker
+                    .getInstance(protocolCLass.getAnnotation(EnableChecksum.class))
                     .getSize();
         } else {
             return 0;
