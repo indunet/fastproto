@@ -78,7 +78,7 @@ public class TypeAssist {
     Optional<EnableProtocolVersion> opProtocolVersion;
     Optional<EnableChecksum> opChecksum;
 
-    int codecFeature;
+    long codecFeature;
 
     protected TypeAssist() {
 
@@ -95,21 +95,33 @@ public class TypeAssist {
         val opEnableCrypto = Optional.of(protocolClass)
                 .map(c -> c.getAnnotation(EnableCrypto.class));
 
+        assist.setOpEnableCrypto(opEnableCrypto);
+
         if (opEnableCrypto.isPresent()) {
             assist.setOpEnableCrypto(opEnableCrypto);
 
-//            if (!opEnableCrypto
-//                    .get()
-//                    .key()
-//                    .isEmpty()) {
-//                assist.setOpKey(opEnableCrypto
-//                        .get()
-//                        .key());
-//            }
+            if (!opEnableCrypto.get()
+                    .key().isEmpty()) {
+                assist.setOpKey(opEnableCrypto
+                        .map(EnableCrypto::key)
+                        .map(String::getBytes));
+            } else if (opEnableCrypto.get()
+                        .keySupplier().length != 0) {
+                assist.setOpKey(opEnableCrypto.map(EnableCrypto::keySupplier)
+                        .map(a -> {
+                            try {
+                                val c = a[0];
 
-            assist.setOpKey(assist.getOpEnableCrypto()
-                    .map(EnableCrypto::key)
-                    .map(String::getBytes));
+                                return c.newInstance()
+                                        .get();
+                            } catch (InstantiationException | IllegalAccessException  e) {
+                                throw new CryptoException(CodecError.INVALID_CRYPTO_KEY_SUPPLIER, e);
+                            }
+                        })
+                );
+            } else {
+                throw new CryptoException(CodecError.NO_CRYPTO_KEY);
+            }
         }
 
         assist.setOpEnableCompress(Optional.of(protocolClass)
@@ -118,7 +130,7 @@ public class TypeAssist {
                 .map(c -> c.getAnnotation(EnableProtocolVersion.class)));
         assist.setOpChecksum(Optional.of(protocolClass)
                 .map(c -> c.getAnnotation(EnableChecksum.class)));
-        assist.setCodecFeature(CodecFeature.valueOf(assist));
+        assist.setCodecFeature(CodecFeature.of(assist));
 
         return assist;
     }

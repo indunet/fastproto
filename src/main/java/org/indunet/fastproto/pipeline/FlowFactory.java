@@ -46,18 +46,18 @@ public class FlowFactory {
             CompressFlow.class,
             EncryptFlow.class
     };
-    protected static ConcurrentMap<Integer, AbstractFlow> decodeFlows = new ConcurrentHashMap<>();
-    protected static ConcurrentMap<Integer, AbstractFlow> encodeFlows = new ConcurrentHashMap<>();
+    protected static ConcurrentMap<Long, AbstractFlow> decodeFlows = new ConcurrentHashMap<>();
+    protected static ConcurrentMap<Long, AbstractFlow> encodeFlows = new ConcurrentHashMap<>();
 
-    public static AbstractFlow<CodecContext> createDecode(int codecFeature) {
+    public static AbstractFlow<CodecContext> createDecode(long codecFeature) {
         return decodeFlows.computeIfAbsent(codecFeature, __ -> create(decodeFlowClasses, codecFeature));
     }
 
-    public static AbstractFlow<CodecContext> createEncode(int codecFeature) {
+    public static AbstractFlow<CodecContext> createEncode(long codecFeature) {
         return encodeFlows.computeIfAbsent(codecFeature, __ -> create(encodeFlowClasses, codecFeature));
     }
 
-    protected static AbstractFlow create(Class<? extends AbstractFlow>[] flowClasses, int codecFeature) {
+    protected static AbstractFlow create(Class<? extends AbstractFlow>[] flowClasses, long codecFeature) {
         AbstractFlow[] array = Arrays.stream(flowClasses)
                 .map(c -> {
                     try {

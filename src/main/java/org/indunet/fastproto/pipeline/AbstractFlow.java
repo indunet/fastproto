@@ -43,5 +43,5 @@ public abstract class AbstractFlow<T> {
         this.next = null;
     }
 
-    public abstract int getFlowCode();
+    public abstract long getFlowCode();
 }

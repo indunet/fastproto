@@ -36,7 +36,7 @@ import java.util.function.Consumer;
  * @since 1.7.0
  */
 public class EncodeFlow extends AbstractFlow<CodecContext> {
-    public static final int FLOW_CODE = 0x0200;
+    public static final long FLOW_CODE = 0x0200;
 
     @Override
     public void process(CodecContext context) {
@@ -70,7 +70,7 @@ public class EncodeFlow extends AbstractFlow<CodecContext> {
     }
 
     @Override
-    public int getFlowCode() {
+    public long getFlowCode() {
         return FLOW_CODE;
     }
 }

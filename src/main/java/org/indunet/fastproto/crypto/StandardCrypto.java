@@ -88,6 +88,4 @@ public class StandardCrypto implements Crypto {
 
         return key;
     }
-
-
 }

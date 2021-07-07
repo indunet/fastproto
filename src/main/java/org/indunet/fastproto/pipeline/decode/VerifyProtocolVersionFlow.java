@@ -30,7 +30,7 @@ import org.indunet.fastproto.pipeline.CodecContext;
  * @since 1.7.0
  */
 public class VerifyProtocolVersionFlow extends AbstractFlow<CodecContext> {
-    public static final int FLOW_CODE = 0x0004;
+    public static final long FLOW_CODE = 0x0004;
 
     @Override
     public void process(@NonNull CodecContext context) {
@@ -42,7 +42,7 @@ public class VerifyProtocolVersionFlow extends AbstractFlow<CodecContext> {
     }
 
     @Override
-    public int getFlowCode() {
+    public long getFlowCode() {
         return FLOW_CODE;
     }
 }

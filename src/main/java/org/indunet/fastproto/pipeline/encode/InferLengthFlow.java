@@ -29,7 +29,7 @@ import org.indunet.fastproto.checksum.CheckerUtils;
  * @since 1.7.0
  */
 public class InferLengthFlow extends AbstractFlow<CodecContext> {
-    public static final int FLOW_CODE = 0x0100;
+    public static final long FLOW_CODE = 0x0100;
 
     @Override
     public void process(CodecContext context) {
@@ -43,7 +43,7 @@ public class InferLengthFlow extends AbstractFlow<CodecContext> {
     }
 
     @Override
-    public int getFlowCode() {
+    public long getFlowCode() {
         return FLOW_CODE;
     }
 }

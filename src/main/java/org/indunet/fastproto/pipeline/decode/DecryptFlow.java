@@ -29,7 +29,7 @@ import org.indunet.fastproto.pipeline.CodecContext;
  * @since 2.0.0
  */
 public class DecryptFlow extends AbstractFlow<CodecContext> {
-    public static final int FLOW_CODE = 0x0010;
+    public static final long FLOW_CODE = 0x0010;
 
     @Override
     public void process(CodecContext context) {
@@ -48,10 +48,11 @@ public class DecryptFlow extends AbstractFlow<CodecContext> {
                 .get();
 
         context.setDatagram(crypto.decrypt(key, datagram));
+        this.nextFlow(context);
     }
 
     @Override
-    public int getFlowCode() {
+    public long getFlowCode() {
         return FLOW_CODE;
     }
 }

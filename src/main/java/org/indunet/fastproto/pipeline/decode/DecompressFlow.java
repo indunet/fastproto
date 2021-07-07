@@ -30,7 +30,7 @@ import org.indunet.fastproto.pipeline.CodecContext;
  * @since 1.7.0
  */
 public class DecompressFlow extends AbstractFlow<CodecContext> {
-    public static final int FLOW_CODE = 0x0001;
+    public static final long FLOW_CODE = 0x0001;
 
     @Override
     public void process(CodecContext context) {
@@ -49,7 +49,7 @@ public class DecompressFlow extends AbstractFlow<CodecContext> {
         this.nextFlow(context);
     }
 
-    public int getFlowCode() {
+    public long getFlowCode() {
         return FLOW_CODE;
     }
 }

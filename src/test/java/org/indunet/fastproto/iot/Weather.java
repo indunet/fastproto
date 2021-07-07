@@ -23,9 +23,11 @@ import lombok.NoArgsConstructor;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.annotation.EnableCompress;
+import org.indunet.fastproto.annotation.EnableCrypto;
 import org.indunet.fastproto.annotation.type.*;
 import org.indunet.fastproto.checksum.CheckPolicy;
 import org.indunet.fastproto.compress.CompressPolicy;
+import org.indunet.fastproto.crypto.CryptoPolicy;
 
 import java.sql.Timestamp;
 

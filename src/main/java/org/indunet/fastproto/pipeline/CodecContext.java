@@ -33,5 +33,5 @@ public class CodecContext {
     TypeAssist typeAssist;
     Object object;
     Class<?> protocolClass;
-    int codecFeature;
+    long codecFeature;
 }

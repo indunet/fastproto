@@ -16,6 +16,7 @@
 
 package org.indunet.fastproto;
 
+import lombok.val;
 import org.indunet.fastproto.pipeline.decode.DecompressFlow;
 import org.indunet.fastproto.pipeline.decode.DecryptFlow;
 import org.indunet.fastproto.pipeline.decode.VerifyChecksumFlow;
@@ -29,15 +30,19 @@ import org.indunet.fastproto.pipeline.encode.*;
  * @since 1.7.0
  */
 public final class CodecFeature {
-    public static final int DEFAULT = 0;
-    public static final int DISABLE_COMPRESS = CompressFlow.FLOW_CODE | DecompressFlow.FLOW_CODE;
-    public static final int DISABLE_PROTOCOL_VERSION = VerifyProtocolVersionFlow.FLOW_CODE | WriteProtocolVersionFlow.FLOW_CODE;
-    public static final int DISABLE_CHECKSUM = VerifyChecksumFlow.FLOW_CODE | WriteChecksumFlow.FLOW_CODE;
-    public static final int NON_INFER_LENGTH = InferLengthFlow.FLOW_CODE;
-    public static final int DISABLE_CRYPTO = EncryptFlow.FLOW_CODE | DecryptFlow.FLOW_CODE;
+    public static final long DEFAULT = 0;
+    public static final long DISABLE_COMPRESS = CompressFlow.FLOW_CODE | DecompressFlow.FLOW_CODE;
+    public static final long DISABLE_PROTOCOL_VERSION = VerifyProtocolVersionFlow.FLOW_CODE | WriteProtocolVersionFlow.FLOW_CODE;
+    public static final long DISABLE_CHECKSUM = VerifyChecksumFlow.FLOW_CODE | WriteChecksumFlow.FLOW_CODE;
+    public static final long NON_INFER_LENGTH = InferLengthFlow.FLOW_CODE;
+    public static final long DISABLE_CRYPTO = EncryptFlow.FLOW_CODE | DecryptFlow.FLOW_CODE;
 
-    public static int valueOf(TypeAssist assist) {
-        int codecFeature = 0;
+    public static long of(TypeAssist assist) {
+        long codecFeature = DEFAULT;
+
+        if (!assist.getOpEnableCrypto().isPresent()) {
+            codecFeature |= DISABLE_CRYPTO;
+        }
 
         if (!assist.getOpEnableCompress().isPresent()) {
             codecFeature |= DISABLE_COMPRESS;
@@ -49,6 +54,16 @@ public final class CodecFeature {
 
         if (!assist.getOpProtocolVersion().isPresent()) {
             codecFeature |= DISABLE_PROTOCOL_VERSION;
+        }
+
+        return codecFeature;
+    }
+
+    public static long of(long... codecFeatures) {
+        long codecFeature = DEFAULT;
+
+        for (val feature: codecFeatures) {
+            codecFeature |= feature;
         }
 
         return codecFeature;

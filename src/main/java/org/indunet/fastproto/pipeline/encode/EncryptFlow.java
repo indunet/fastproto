@@ -28,7 +28,7 @@ import org.indunet.fastproto.pipeline.CodecContext;
  * @since 2.0.0
  */
 public class EncryptFlow extends AbstractFlow<CodecContext> {
-    public static final int FLOW_CODE = 0x2000;
+    public static final long FLOW_CODE = 0x2000;
 
     @Override
     public void process(CodecContext context) {
@@ -50,7 +50,7 @@ public class EncryptFlow extends AbstractFlow<CodecContext> {
     }
 
     @Override
-    public int getFlowCode() {
+    public long getFlowCode() {
         return FLOW_CODE;
     }
 }

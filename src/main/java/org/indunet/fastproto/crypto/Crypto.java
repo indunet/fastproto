@@ -29,6 +29,10 @@ public interface Crypto {
     byte[] decrypt(byte[] key, byte[] datagram);
 
     static Crypto getInstance(EnableCrypto enableCrypto) {
-        return StandardCrypto.getInstance(enableCrypto.cryptoPolicy());
+        return getInstance(enableCrypto.cryptoPolicy());
+    }
+
+    static Crypto getInstance(CryptoPolicy policy) {
+        return StandardCrypto.getInstance(policy);
     }
 }

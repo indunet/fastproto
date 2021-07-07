@@ -52,7 +52,7 @@ import java.util.function.Function;
  * @since 1.7.0
  */
 public class DecodeFlow extends AbstractFlow<CodecContext> {
-    public static final int FLOW_CODE = 0x0008;
+    public static final long FLOW_CODE = 0x0008;
 
     @Override
     public void process(CodecContext context) {
@@ -80,7 +80,7 @@ public class DecodeFlow extends AbstractFlow<CodecContext> {
         context.setObject(assist.getObject(protocolClass));
     }
 
-    public int getFlowCode() {
+    public long getFlowCode() {
         return FLOW_CODE;
     }
 }
