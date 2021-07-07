@@ -15,13 +15,15 @@ FastProto以一种全新的方式解决了Java跨语言和跨平台的数据交�
 
 ## *功能*
 
-*   协议化二进制序列化和反序列化，通过注解自定义二进制格式
-*   支持[编码公式 & 解码公式][formula]   
-*   支持无符号整型，如uint8, uint16, uint32 and uint64 
+*   协议化二进制序列化和反序列化
+    *   通过注解自定义二进制格式
+    *   支持无符号类型(uint8/uint16/uint32/uint64)
+    *   自定义数据大小开端
+    *   支持[编码公式 & 解码公式][formula]   
 *   支持数据[压缩 & 解压缩(gzip, deflate)][compression]  
 *   支持[协议版本校验][version]
 *   支持[数据完整性校验][integrity]
-*   支持数据对称加密     
+*   支持数据对称加密 & 解密     
 *   内置[Kafka serializer & deserializer][kafka]
 *   内置Netty解码器 & 编码器
 
