@@ -10,25 +10,24 @@ English | [中文](README-zh.md)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto是一款采用Java编写的协议化二进制序列化和反序列化工具，它允许开发人员通过注释自定义二进制格式。以一种全新的方式解决了Java跨语言和跨平台的
-数据交换问题 ，特别适用于物联网（IoT）领域。
+FastProto is a protocolized binary serialization & deserialization tool written in Java, which allows developers to
+customize binary format through annotations. It solves the problem of cross-language and cross-platform data exchange
+of Java in a new form, especially suitable for the field of Internet of Things(IoT).
 
 ## *Features*
 
-*   协议化二进制序列化和反序列化
-*   通过注解自定义二进制格式
-*   支持[编码公式 & 解码公式][formula]   
-*   支持无符号整型，如uint8, uint16, uint32 and uint64 
-*   支持数据[压缩 & 解压缩(gzip, deflate)][compression]  
-*   支持[协议版本校验][version]
-*   支持[数据完整性校验][integrity]
-*   支持数据对称加密     
-*   内置[Kafka serializer & deserializer][kafka]
-*   内置Netty解码器 & 编码器
+*   Protocolized binary serialization & deserialization
+*   Customize binary format through annotations.
+*   Support [decoding formula & encoding formula][formula]
+*   Support unsigned data types such as uint8, uint16, uint32 and uint64
+*   Support data [compress and decompress(gzip, deflate)][compression]
+*   Support [protocol version verification][version]
+*   Support [data integrity check][integrity]
+*   Built-in [Kafka serializer & deserializer][kafka]
 
 ## *Under Developing*
 
-*   数据对称加密
+*   Netty decoder & encoder
 
 ## Compared with ProtoBuf
 
@@ -52,27 +51,23 @@ ProtoBuf solve the same problem in different ways. It is recommended to use Fast
 
 ## *Quick Start*
 
-有这样一个应用场景，一台气象检测设备实时采集气象数据，并以二进制格式发送到气象站服务器。
-二进制数据的格式（协议）如下：
-Imagine such an application, there is a monitoring device collecting weather data in realtime and sends to 
+Imagine such an application, there is a monitoring device collecting weather data in realtime and sends to
 the weather station server in binary format. The datagram protocol is as follows:
 
-| 字节偏移 | 位偏移 | 数据类型(C/C++)   | 信号名称       | 单位 |  换算公式  |
+| Byte Offset | Bit Offset | Data Type(C/C++)   | Signal Name       | Unit |  Formula  |
 |:-----------:|:----------:|:--------------:|:-----------------:|:----:|:---------:|
-| 0           |            | unsigned char  | 设备编号         |      |           |
-| 1           |            |                | 预留          |      |           |
-| 2-9         |            | long long      | 时间戳              |  ms  |           |
-| 10-11       |            | unsigned short | 湿度          |  %RH |           |
-| 12-13       |            | short          | 温度       |  ℃  |            |
-| 14-17       |            | unsigned int   | 气压          |  Pa  | p * 0.1   |
-| 18          | 0          | bool           | 温度有效标识 |      |           |
-| 18          | 1          | bool           | 湿度有效标识    |      |           |
-| 18          | 2          | bool           | 气压有效标识    |      |           |
-| 18          | 3-7        |                | 预留          |      |           |
-| 19          |            |                | 预留          |      |           |
+| 0           |            | unsigned char  | device id         |      |           |
+| 1           |            |                | reserved          |      |           |
+| 2-9         |            | long long      | time              |  ms  |           |
+| 10-11       |            | unsigned short | humidity          |  %RH |           |
+| 12-13       |            | short          | temperature       |  ℃  |            |
+| 14-17       |            | unsigned int   | pressure          |  Pa  | p * 0.1   |
+| 18          | 0          | bool           | temperature valid |      |           |
+| 18          | 1          | bool           | humidity valid    |      |           |
+| 18          | 2          | bool           | pressure valid    |      |           |
+| 18          | 3-7        |                | reserved          |      |           |
+| 19          |            |                | reserved          |      |           |
 
-二进制数据报文包含8个不同类型的信号。
-定义Java数据对象，按照上面的协议表格，用FastProto注解依次注释各个字段。
 The binary datagram contains 8 signals of different data types, define the Java data object and annotate it with FastProto
 annotations according to the above datagram protocol. The default parameter of the data type annotation is the byte offset.
 
@@ -103,8 +98,7 @@ public class Weather {
     boolean pressureValid;
 }
 ```
-
-通过`FastProto::parseFrom()`方法将二进制数据报文反序列化成Java数据对象。
+Deserialize the binary datagram into the Java data object through `FastProto::parseFrom()` method.
 
 ```java
 byte[] datagram = ...   // Datagram sent by monitoring device.
@@ -113,14 +107,14 @@ Weather weather = FastProto.parseFrom(datagram, Weather.class);
 ```
 
 Serialize the Java data object into binary datagram through `FastProto::toByteArray()` method, the second parameter is
- the datagram size.
+the datagram size.
 
 ```java
 byte[] datagram = FastProto.toByteArray(weather, 20);
 ```
 
-Perhaps you have noticed that the pressure signal in the protocol table corresponds to a conversion formula, which 
-needs to be multiplied by 0.1. In order to help developers reduce intermediate steps, FastProto supports customizing 
+Perhaps you have noticed that the pressure signal in the protocol table corresponds to a conversion formula, which
+needs to be multiplied by 0.1. In order to help developers reduce intermediate steps, FastProto supports customizing
 conversion formula.
 
 Define a decoding conversion formula, which must implement `java.lang.function.Function`
@@ -161,9 +155,9 @@ double pressure;
 
 ## *FastProto Annotations*
 
-In addition to Java primitive data types and their wrapper classes, FastProto also supports Timestamp, String and byte array, 
-all above type annotations can be replaced by `@AutoType`. Taking into account cross-language data sharing, unsigned types, 
-int8, int16 are also introduced. 
+In addition to Java primitive data types and their wrapper classes, FastProto also supports Timestamp, String and byte array,
+all above type annotations can be replaced by `@AutoType`. Taking into account cross-language data sharing, unsigned types,
+int8, int16 are also introduced.
 
 | Annotation      | Java               | C/C++          | Size        |   AutoType |
 |:---------------:|:------------------:|:--------------:|:-----------:|:-----------:|
@@ -185,7 +179,7 @@ int8, int16 are also introduced.
 | `@StringType`     | java.lang.String   | --             | N bytes     |  √ |    
 | `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 bytes |  √  |    
 
-In addition to data type annotations, FastProto also provides other annotations to help developers Help users customize 
+In addition to data type annotations, FastProto also provides other annotations to help developers Help users customize
 the binary format.
 
 | Annotation    | Scope        | Description                           |
@@ -201,7 +195,7 @@ the binary format.
 
 *   macOS, m1 8 cores, 16gb
 *   openjdk 1.8.0_292
-*   datagram of 128 bytes and nested protocol class of 48 fields 
+*   datagram of 128 bytes and nested protocol class of 48 fields
 
 |Benchmark |    Mode  | Samples  |  Score  |   Error   |   Units   |
 |:--------:|:--------:|:--------:|:-------:|:---------:|:---------:|
@@ -210,8 +204,8 @@ the binary format.
 
 ## *Build Requirements*
 
-*   Java 1.8+  
-*   Maven 3.5+    
+*   Java 1.8+
+*   Maven 3.5+
 
 ## *License*
 

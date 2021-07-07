@@ -10,34 +10,34 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto is a protocolized binary serialization & deserialization tool written in Java, which allows developers to
-customize binary format through annotations. It solves the problem of cross-language and cross-platform data exchange
-of Java in a new form, especially suitable for the field of Internet of Things(IoT).
+FastProto是一款协议化二进制序列化和反序列化工具，采用Java编写，它允许开发人员通过注释自定义二进制格式。
+FastProto以一种全新的方式解决了Java跨语言和跨平台的数据交换问题 ，特别适用于物联网（IoT）领域。
 
-## *Features*
+## *功能*
 
-*   Protocolized binary serialization & deserialization
-*   Customize binary format through annotations.
-*   Support [decoding formula & encoding formula][formula]
-*   Support unsigned data types such as uint8, uint16, uint32 and uint64
-*   Support data [compress and decompress(gzip, deflate)][compression]
-*   Support [protocol version verification][version]
-*   Support [data integrity check][integrity]
-*   Built-in [Kafka serializer & deserializer][kafka]
+*   协议化二进制序列化和反序列化，通过注解自定义二进制格式
+*   支持[编码公式 & 解码公式][formula]   
+*   支持无符号整型，如uint8, uint16, uint32 and uint64 
+*   支持数据[压缩 & 解压缩(gzip, deflate)][compression]  
+*   支持[协议版本校验][version]
+*   支持[数据完整性校验][integrity]
+*   支持数据对称加密     
+*   内置[Kafka serializer & deserializer][kafka]
+*   内置Netty解码器 & 编码器
 
 ## *Under Developing*
 
-*   Netty decoder & encoder
+*   优化设计
+*   增加单元测试覆盖率
 
 ## Compared with ProtoBuf
 
-Compared with ProtoBuff, FastProto does not have any obvious advantages, it can only be said that FastProto and
-ProtoBuf solve the same problem in different ways. It is recommended to use FastProto in the following scenarios:
+FastProto和ProtoBuf采用不同的方式解决了相同的问题，与之相比，FastProto更加适用于物联网领域，以下场景推荐使用FastProto:
 
-*   Due to network bandwidth and traffic limitations, smaller serialization results are required
-*   Unable to unify technical routes between systems, especially for embedded systems
-*   Due to debugging requirements, the serialized result must be human readable
-*   Read & write binary format files
+*   因带宽或者流量的限制，需要更小的序列化结果；
+*   嵌入式端采用C/C++编程，不便处理JSON/XML格式数据，同时也不同意采用ProtoBuf;
+*   嵌入式端采用采用非传统的编程方式，如梯形图、功能图等，只能采用二进制格式交换数据；
+*   嵌入式端仅作为网关采集现场总线数据，导致只能采用二进制格式交换数据
 
 ## *Maven*
 
@@ -51,25 +51,24 @@ ProtoBuf solve the same problem in different ways. It is recommended to use Fast
 
 ## *Quick Start*
 
-Imagine such an application, there is a monitoring device collecting weather data in realtime and sends to
-the weather station server in binary format. The datagram protocol is as follows:
+有这样一个应用场景，一台气象检测设备实时采集气象数据，并以二进制格式发送到气象站服务器，其二进制数据格式（协议）如下：
 
-| Byte Offset | Bit Offset | Data Type(C/C++)   | Signal Name       | Unit |  Formula  |
+| 字节偏移 | 位偏移 | 数据类型(C/C++)   | 信号名称       | 单位 |  换算公式  |
 |:-----------:|:----------:|:--------------:|:-----------------:|:----:|:---------:|
-| 0           |            | unsigned char  | device id         |      |           |
-| 1           |            |                | reserved          |      |           |
-| 2-9         |            | long long      | time              |  ms  |           |
-| 10-11       |            | unsigned short | humidity          |  %RH |           |
-| 12-13       |            | short          | temperature       |  ℃  |            |
-| 14-17       |            | unsigned int   | pressure          |  Pa  | p * 0.1   |
-| 18          | 0          | bool           | temperature valid |      |           |
-| 18          | 1          | bool           | humidity valid    |      |           |
-| 18          | 2          | bool           | pressure valid    |      |           |
-| 18          | 3-7        |                | reserved          |      |           |
-| 19          |            |                | reserved          |      |           |
+| 0           |            | unsigned char  | 设备编号         |      |           |
+| 1           |            |                | 预留          |      |           |
+| 2-9         |            | long long      | 时间戳              |  ms  |           |
+| 10-11       |            | unsigned short | 湿度          |  %RH |           |
+| 12-13       |            | short          | 温度       |  ℃  |            |
+| 14-17       |            | unsigned int   | 气压          |  Pa  | p * 0.1   |
+| 18          | 0          | bool           | 温度有效标识 |      |           |
+| 18          | 1          | bool           | 湿度有效标识    |      |           |
+| 18          | 2          | bool           | 气压有效标识    |      |           |
+| 18          | 3-7        |                | 预留          |      |           |
+| 19          |            |                | 预留          |      |           |
 
-The binary datagram contains 8 signals of different data types, define the Java data object and annotate it with FastProto
-annotations according to the above datagram protocol. The default parameter of the data type annotation is the byte offset.
+如上表所示，二进制数据包含8个不同类型的信号，所以定义Java数据对象，并用FastProto注解依次标注各个字段。
+注解的value字段是信号字节偏移量。
 
 ```java
 public class Weather {
@@ -98,7 +97,8 @@ public class Weather {
     boolean pressureValid;
 }
 ```
-Deserialize the binary datagram into the Java data object through `FastProto::parseFrom()` method.
+
+通过`FastProto::parseFrom()`方法将二进制数据报文反序列化成Java数据对象。
 
 ```java
 byte[] datagram = ...   // Datagram sent by monitoring device.
@@ -106,18 +106,16 @@ byte[] datagram = ...   // Datagram sent by monitoring device.
 Weather weather = FastProto.parseFrom(datagram, Weather.class);
 ```
 
-Serialize the Java data object into binary datagram through `FastProto::toByteArray()` method, the second parameter is
-the datagram size.
+通过`FastProto::toByteArray()`方法将Java数据对象序列成二进制数据，该方法的第二个参数是数据报文长度，如不指定，那么FastProto会自动推测长度。
 
 ```java
 byte[] datagram = FastProto.toByteArray(weather, 20);
 ```
 
-Perhaps you have noticed that the pressure signal in the protocol table corresponds to a conversion formula, which
-needs to be multiplied by 0.1. In order to help developers reduce intermediate steps, FastProto supports customizing
-conversion formula.
+也许你已经注意到信号协议表中压力信号对应着一个换算公式，需要将压力值乘以0.1，这在物联网中非常常见。
+为了帮助开发者减少中间步骤，FastProto支持自定义数据换算公式。
 
-Define a decoding conversion formula, which must implement `java.lang.function.Function`
+用户自定义的解码公式必须实现`java.lang.function.Function`接口。
 
 ```java
 public class PressureDecodeFormula implements Function<Long, Double> {
@@ -128,14 +126,14 @@ public class PressureDecodeFormula implements Function<Long, Double> {
 }
 ```
 
-Modify the annotation and data type of the pressure field.
+修改压力字段的注解和数据类型。
 
 ```java
 @UInteger32Type(value = 14, afterDecode = DecodeSpeedFormula.class)
 double pressure;
 ```
 
-An encoding formula is needed if need to perform serialization, which also need to implement the `java.lang.function.Function`
+如果需要序列化操作，那么需要指定一个编码公式，同样必须实现`java.lang.function.Function`接口。
 
 ```java
 public class PressureEncodeFormula implements Function<Double, Long> {
@@ -146,56 +144,57 @@ public class PressureEncodeFormula implements Function<Double, Long> {
 }
 ```
 
-Modify the annotation of the pressure field.
+修改压力字段的注解。
 
 ```java
 @UInteger32Type(value = 14, afterDecode = PressureDecodeFormula.class, beforeEncode = PressureEncodeFormula.class)
 double pressure;
 ```
 
-## *FastProto Annotations*
+## *Annotations*
 
-In addition to Java primitive data types and their wrapper classes, FastProto also supports Timestamp, String and byte array,
-all above type annotations can be replaced by `@AutoType`. Taking into account cross-language data sharing, unsigned types,
-int8, int16 are also introduced.
+除了Java基础数据类型及其包装类，FastProto还支持Timestamp、String和字节数组，上述类型均可通过`@AutoType`替代。
+考虑到跨语言语句交换问题，FastProto还引入了无符号类型、int8和int16。
+
 
 | Annotation      | Java               | C/C++          | Size        |   AutoType |
 |:---------------:|:------------------:|:--------------:|:-----------:|:-----------:|
-| `@BooleanType`    | Boolean / boolean  | bool           | 1 bit       |  √ |    
-| `@CharacterType`  | Character / char   | --             | 2 bytes     |  √  |    
-| `@ByteType`       | Byte / byte        | char           | 1 byte      |  √  |    
-| `@ShortType`      | Short / short      | short          | 2 bytes     |  √  |    
-| `@IntegerType`    | Integer / int      | int            | 4 bytes     |  √ |    
-| `@LongType`       | Long / long        | long long      | 8 bytes     |  √ |    
-| `@FloatType`      | Float / float      | float          | 4 bytes     |  √  |    
-| `@DoubleType`     | Double / double    | double         | 8 bytes     |  √ |    
-| `@Integer8Type`   | Integer / int      | char           | 1 byte      |  ×  |    
-| `@Integer16Type`  | Integer / int      | short          | 2 bytes     |  × |    
-| `@UInteger8Type`  | Integer / int      | unsigned char  | 1 byte      |  ×  |    
-| `@UInteger16Type` | Integer / int      | unsigned short | 2 bytes     |  × |    
-| `@UInteger32Type` | Long / long        | unsigned long  | 4 bytes     |  × |    
-| `@UInteger64Type` | BigInteger        | unsigned long long | 8 bytes  |  √ |    
-| `@BinaryType`     | byte[]             | char[]         | N bytes     |  √  |    
-| `@StringType`     | java.lang.String   | --             | N bytes     |  √ |    
-| `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 bytes |  √  |    
+| `@BooleanType`    | Boolean / boolean  | bool           | 1 位       |  √ |    
+| `@CharacterType`  | Character / char   | --             | 2 字节     |  √  |    
+| `@ByteType`       | Byte / byte        | char           | 1 字节      |  √  |    
+| `@ShortType`      | Short / short      | short          | 2 字节     |  √  |    
+| `@IntegerType`    | Integer / int      | int            | 4 字节     |  √ |    
+| `@LongType`       | Long / long        | long long      | 8 字节     |  √ |    
+| `@FloatType`      | Float / float      | float          | 4 字节     |  √  |    
+| `@DoubleType`     | Double / double    | double         | 8 字节     |  √ |    
+| `@Integer8Type`   | Integer / int      | char           | 1 字节      |  ×  |    
+| `@Integer16Type`  | Integer / int      | short          | 2 字节     |  × |    
+| `@UInteger8Type`  | Integer / int      | unsigned char  | 1 字节      |  ×  |    
+| `@UInteger16Type` | Integer / int      | unsigned short | 2 字节     |  × |    
+| `@UInteger32Type` | Long / long        | unsigned long  | 4 字节     |  × |    
+| `@UInteger64Type` | BigInteger        | unsigned long long | 8 字节  |  √ |    
+| `@BinaryType`     | byte[]             | char[]         | N 字节     |  √  |    
+| `@StringType`     | java.lang.String   | --             | N 字节     |  √ |    
+| `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 字节 |  √  |    
 
-In addition to data type annotations, FastProto also provides other annotations to help developers Help users customize
-the binary format.
+除了数据类型注解，FastProto还提供辅助注解帮助用户更深层次地自定义二进制数据格式。
+
 
 | Annotation    | Scope        | Description                           |
 |:-------------:|:------------:|:-------------------------------------:|
 | `@Endian`       | Class & Field | Endianness, default as little endian. |
 | `@DecodeIgnore` | Field        | Ignore the field when decoding.       |
 | `@EncodeIgnore` | Field        | Ignore the field when encoding.       |
-| `@EnableCompress` | Class        | Compress or decompress datagram, default as gzip. |
-| `@ProtocolVersion` | Class     |  Add protocol version to datagram and validate when deserializing  |
-| `@CheckSum`      |  Class      |  Data integrity check               |
+| `@EnableCompress` | Class        | Enable compress & decompress.  |
+| `@EnableProtocolVersion` | Class     |  Enable protocol version verification.  |
+| `@EnableCheckSum`      |  Class      |  Enable checksum verification.              |
+| `@EnableCrypto`      |  Class      |    Enable encrypt & decrypt.             |
 
 ## *Benchmark*
 
 *   macOS, m1 8 cores, 16gb
 *   openjdk 1.8.0_292
-*   datagram of 128 bytes and nested protocol class of 48 fields
+*   datagram of 128 bytes and nested protocol class of 48 fields 
 
 |Benchmark |    Mode  | Samples  |  Score  |   Error   |   Units   |
 |:--------:|:--------:|:--------:|:-------:|:---------:|:---------:|
@@ -204,8 +203,8 @@ the binary format.
 
 ## *Build Requirements*
 
-*   Java 1.8+
-*   Maven 3.5+
+*   Java 1.8+  
+*   Maven 3.5+    
 
 ## *License*
 
