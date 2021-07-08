@@ -41,14 +41,10 @@ public class DecodeContext {
     }
 
     public <T> T getTypeAnnotation(Class<T> clazz) {
-        return clazz.cast(this.typeAssist.getTypeAnnotation());
+        return (T) this.getTypeAnnotation();
     }
 
     public Annotation getTypeAnnotation() {
         return this.typeAssist.getTypeAnnotation();
-    }
-
-    public <T> T getObject(Class<T> clazz) {
-        return clazz.cast(this.object);
     }
 }

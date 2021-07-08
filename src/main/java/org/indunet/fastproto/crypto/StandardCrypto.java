@@ -47,8 +47,8 @@ public class StandardCrypto implements Crypto {
     }
 
     public static StandardCrypto getInstance(@NonNull CryptoPolicy policy) {
-        return ciphers.computeIfAbsent(policy.transformation, __ ->
-                new StandardCrypto(policy.transformation, policy.keyLength));
+        return ciphers.computeIfAbsent(policy.getTransformation(), __ ->
+                new StandardCrypto(policy.getTransformation(), policy.getKeyLength()));
     }
 
     public byte[] encrypt(byte[] key, byte[] datagram) {

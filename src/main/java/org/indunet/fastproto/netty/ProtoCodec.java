@@ -19,6 +19,7 @@ package org.indunet.fastproto.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.ByteToMessageCodec;
+import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.FastProto;
 
@@ -34,6 +35,16 @@ import java.util.Optional;
 public class ProtoCodec extends ByteToMessageCodec {
     Class<?> protocolClass;
     Optional<Integer> length;
+
+    public ProtoCodec(@NonNull Class<?> protocolClass) {
+        this.protocolClass = protocolClass;
+        this.length = Optional.empty();
+    }
+
+    public ProtoCodec(@NonNull Class<?> protocolClass, int length) {
+        this.protocolClass = protocolClass;
+        this.length = Optional.of(length);
+    }
 
     @Override
     protected void encode(ChannelHandlerContext context, Object object, ByteBuf byteBuf) throws Exception {
