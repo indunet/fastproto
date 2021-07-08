@@ -50,6 +50,10 @@ public class EncodeUtils {
         binaryEncoder.encode(datagram, byteOffset, -1, values);
     }
 
+    public static void type(byte[] datagram, int byteOffset, int length, byte[] values) {
+        binaryEncoder.encode(datagram, byteOffset, length, values);
+    }
+
     public static void binaryType(byte[] datagram, int byteOffset, byte[] values) {
         binaryEncoder.encode(datagram, byteOffset, -1, values);
     }

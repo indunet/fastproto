@@ -34,4 +34,8 @@ public class CodecContext {
     Object object;
     Class<?> protocolClass;
     long codecFeature;
+
+    public <T> T getObject(Class<T> clazz) {
+        return (T) object;
+    }
 }

@@ -18,12 +18,19 @@ package org.indunet.fastproto;
 
 import lombok.SneakyThrows;
 import lombok.val;
+import org.indunet.fastproto.annotation.EnableChecksum;
+import org.indunet.fastproto.annotation.EnableCrypto;
+import org.indunet.fastproto.annotation.EnableProtocolVersion;
+import org.indunet.fastproto.annotation.Endian;
 import org.indunet.fastproto.annotation.type.UInteger64Type;
 import org.indunet.fastproto.checksum.Crc32Checker;
 import org.indunet.fastproto.compress.DeflateCompressor;
 import org.indunet.fastproto.crypto.Crypto;
 import org.indunet.fastproto.crypto.CryptoPolicy;
 import org.indunet.fastproto.encoder.EncodeUtils;
+import org.indunet.fastproto.exception.CheckSumException;
+import org.indunet.fastproto.exception.CryptoException;
+import org.indunet.fastproto.exception.ProtocolVersionException;
 import org.indunet.fastproto.iot.Everything;
 import org.indunet.fastproto.iot.Weather;
 import org.indunet.fastproto.iot.datagram.StateDatagram;
@@ -249,5 +256,58 @@ public class FastProtoTest {
 
         StateDatagram stateDatagram = FastProto.parseFrom(datagram, StateDatagram.class);
         assertNotNull(stateDatagram);
+    }
+
+    @Endian(EndianPolicy.BIG)
+    public static class NonObject {
+
+    }
+
+    @Test
+    public void testNonObject() {
+        val datagram = new byte[10];
+        val nonObject = FastProto.parseFrom(datagram, NonObject.class);
+
+        assertNotNull(nonObject);
+
+        val bytes = FastProto.toByteArray(nonObject, 10);
+
+        assertNotNull(bytes);
+    }
+
+    @EnableChecksum
+    public static class ChecksumObject {
+
+    }
+
+    @Test
+    public void testChecksumException() {
+        val datagram = new byte[] {0, 1, 2, 3, 4, 5, 6, 7};
+
+        assertThrows(CheckSumException.class, () -> FastProto.parseFrom(datagram, ChecksumObject.class));
+    }
+
+    @EnableProtocolVersion(value = 2, version = 10)
+    public static class ProtocolVersionObject {
+
+    }
+
+    @Test
+    public void testProtocolVersionException() {
+        val datagram = new byte[] {0, 1, 2, 3, 4, 5, 6, 7};
+
+        assertThrows(ProtocolVersionException.class, () -> FastProto.parseFrom(datagram, ProtocolVersionObject.class));
+    }
+
+    @EnableCrypto(key = "330926")
+    public static class CryptoObject {
+
+    }
+
+    @Test
+    public void testCryptoException() {
+        val datagram = new byte[100];
+
+        assertThrows(CryptoException.class, () -> FastProto.parseFrom(datagram, CryptoObject.class));
     }
 }

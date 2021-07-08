@@ -16,6 +16,15 @@
 
 package org.indunet.fastproto.pipeline;
 
+import org.indunet.fastproto.exception.CodecError;
+import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.pipeline.decode.*;
+import org.indunet.fastproto.pipeline.encode.*;
+
+import java.util.Arrays;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+
 /**
  * Abstract flow.
  *
@@ -44,4 +53,52 @@ public abstract class AbstractFlow<T> {
     }
 
     public abstract long getFlowCode();
+
+    protected static Class<? extends AbstractFlow>[] decodeFlowClasses = new Class[] {
+            DecryptFlow.class,
+            DecompressFlow.class,
+            VerifyChecksumFlow.class,
+            VerifyProtocolVersionFlow.class,
+            DecodeFlow.class};
+    protected static Class<? extends AbstractFlow>[] encodeFlowClasses = new Class[] {
+            InferLengthFlow.class,
+            EncodeFlow.class,
+            WriteProtocolVersionFlow.class,
+            WriteChecksumFlow.class,
+            CompressFlow.class,
+            EncryptFlow.class
+    };
+
+    protected static ConcurrentMap<Long, AbstractFlow> decodeFlows = new ConcurrentHashMap<>();
+    protected static ConcurrentMap<Long, AbstractFlow> encodeFlows = new ConcurrentHashMap<>();
+
+    public static AbstractFlow<CodecContext> getDecodeFlow(long codecFeature) {
+        return decodeFlows.computeIfAbsent(codecFeature, __ -> getFlow(decodeFlowClasses, codecFeature));
+    }
+
+    public static AbstractFlow<CodecContext> getEncodeFlow(long codecFeature) {
+        return encodeFlows.computeIfAbsent(codecFeature, __ -> getFlow(encodeFlowClasses, codecFeature));
+    }
+
+    protected static AbstractFlow getFlow(Class<? extends AbstractFlow>[] flowClasses, long codecFeature) {
+        AbstractFlow[] array = Arrays.stream(flowClasses)
+                .map(c -> {
+                    try {
+                        return (AbstractFlow) c.newInstance();
+                    } catch (InstantiationException | IllegalAccessException e) {
+                        throw new DecodeException(CodecError.FAIL_CREATING_DECODE_FLOW, e);
+                    }
+                })
+                .filter(f -> (f.getFlowCode() & codecFeature) == 0)
+                .toArray(AbstractFlow[]::new);
+
+        AbstractFlow flow = array[0];
+
+        for (int i = 1; i < array.length; i ++) {
+            flow.setNext(array[i]);
+            flow = flow.next;
+        }
+
+        return array[0];
+    }
 }

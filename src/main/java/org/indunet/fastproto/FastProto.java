@@ -18,8 +18,8 @@ package org.indunet.fastproto;
 
 import lombok.NonNull;
 import lombok.val;
+import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
-import org.indunet.fastproto.pipeline.FlowFactory;
 
 /**
  * FastProto API.
@@ -56,10 +56,10 @@ public class FastProto {
                 .codecFeature(codecFeature)
                 .typeAssist(assist)
                 .build();
-        FlowFactory.createDecode(assist.getCodecFeature() | codecFeature)
+        AbstractFlow.getDecodeFlow(assist.getCodecFeature() | codecFeature)
                 .process(context);
 
-        return (T) context.getObject();
+        return context.getObject(protocolClass);
     }
 
     /**
@@ -93,7 +93,7 @@ public class FastProto {
                 .typeAssist(assist)
                 .build();
 
-        FlowFactory.createEncode(assist.getCodecFeature() | codecFeature)
+        AbstractFlow.getEncodeFlow(assist.getCodecFeature() | codecFeature)
                 .process(context);
 
         return context.getDatagram();
@@ -110,7 +110,7 @@ public class FastProto {
                 .typeAssist(assist)
                 .build();
 
-        FlowFactory.createEncode(assist.getCodecFeature() | CodecFeature.NON_INFER_LENGTH | codecFeature)
+        AbstractFlow.getEncodeFlow(assist.getCodecFeature() | CodecFeature.NON_INFER_LENGTH | codecFeature)
                 .process(context);
 
         return context.getDatagram();
