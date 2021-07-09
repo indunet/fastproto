@@ -10,16 +10,15 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto是一款二进制协议化的序列化和反序列化工具，采用Java语言编写，它允许用户通过注释自定义二进制数据格式。
-FastProto以一种全新的方式解决了Java跨语言和跨平台的数据交换问题 ，特别适用于物联网（IoT）领域。
+FastProto是一款Java编写的协议化二进制序列化和反序列化工具，它允许用户通过注释自定义协议，实现二进制数据的解码和编码。
+FastProto采用一种全新的方式解决了Java跨语言和跨平台的数据交换问题 ，尤其适用于物联网（IoT）领域。
 
 ## *功能*
 
-*   二进制协议化序列化和反序列化
-    *   通过注解自定义二进制格式
-    *   支持无符号类型(uint8/uint16/uint32/uint64)
+*   协议化序列化和反序列化
+    *   支持无符号类型
     *   支持反向寻址 
-    *   自定义数据大小开端
+    *   自定义数据开端
     *   自定义[编码公式 & 解码公式][formula]   
 *   支持数据[压缩 & 解压缩(gzip, deflate)][compression]  
 *   支持[协议版本校验][protocol-version]
@@ -30,17 +29,18 @@ FastProto以一种全新的方式解决了Java跨语言和跨平台的数据交�
 
 ## *Under Developing*
 
-*   优化设计
-*   增加单元测试覆盖率
+*   性能优化
 
-## Compared with ProtoBuf
+## *Compared with ProtoBuf*
 
-FastProto和ProtoBuf采用不同的方式解决了相同的问题，与之相比，FastProto更加适用于物联网领域，以下场景推荐使用FastProto:
+仅对Java而言，可以说两者采用不同的方式解决了相同的问题。
+与之相比，FastProto尤其适用于物联网（IoT）领域，以下场景更推荐使用FastProto：
 
-*   因带宽或者流量的限制，需要更小的序列化结果
-*   嵌入式设备采用C/C++编程，不便处理JSON/XML格式的数据，同时也不愿采用ProtoBuf
+*   因带宽或者流量的限制，要求更小体积的序列化结果
+*   嵌入式设备采用C/C++编程，不便处理JSON/XML格式的数据
+*   因兼容性问题或者商务问题，无法使用ProtoBuf
 *   嵌入式设备采用非传统的编程方式，如梯形图、功能图和ST等，数据只能通过二进制格式交换
-*   通过网关采集现场总线数据，如CAN/MVB/RS-485等
+*   通过网关采集现场总线数据(CAN/MVB/RS-485)，只能以二进制格式转发
 
 ## *Maven*
 
@@ -52,13 +52,13 @@ FastProto和ProtoBuf采用不同的方式解决了相同的问题，与之相比
 </dependency>
 ```
 
-## *Quick Start*
+## *快速入门*
 
 想象这样一个应用场景，一台气象监测设备实时采集气象数据，并以二进制格式发送到气象站服务器，数据报文固定长度20字节。
 
 >   65 00 7F 69 3D 84 7A 01 00 00 55 00 F1 FF 0D 00 00 00 07 00
 
-数据报文包含8个不同类型的信号，具体协议（格式）如下：
+数据报文包含8个不同类型的信号，具体协议如下：
 
 | 字节偏移 | 位偏移 | 数据类型(C/C++)   | 信号名称       | 单位 |  换算公式  |
 |:-----------:|:----------:|:--------------:|:-----------------:|:----:|:---------:|
@@ -74,7 +74,7 @@ FastProto和ProtoBuf采用不同的方式解决了相同的问题，与之相比
 | 18          | 3-7        |                | 预留          |      |           |
 | 19          |            |                | 预留          |      |           |
 
-首先，定义Java数据对象，并用FastProto注解依次标注各个字段。
+按照协议定义Java数据对象，使用FastProto数据类型注解修饰相应字段。
 
 ```java
 public class Weather {
@@ -104,7 +104,7 @@ public class Weather {
 }
 ```
 
-通过`FastProto::parseFrom()`方法将数据报文反序列化成Java数据对象。
+调用`FastProto::parseFrom()`方法将二进制数据反序列化成Java数据对象。
 
 ```java
 byte[] datagram = ...   // Datagram sent by monitoring device.
@@ -112,16 +112,16 @@ byte[] datagram = ...   // Datagram sent by monitoring device.
 Weather weather = FastProto.parseFrom(datagram, Weather.class);
 ```
 
-通过`FastProto::toByteArray()`方法将Java数据对象序列成二进制数据，该方法的第二个参数是数据报文长度，如不指定，那么FastProto会自动推测长度。
+调用`FastProto::toByteArray()`方法将Java数据对象序列成二进制数据，该方法的第二个参数是二进制数据长度，那么FastProto会自动推测长度。
 
 ```java
 byte[] datagram = FastProto.toByteArray(weather, 20);
 ```
 
-也许你已经注意到信号协议表中压力信号对应着一个换算公式，需要将压力值乘以0.1，这在物联网中非常常见。
-为了帮助开发者减少中间步骤，FastProto支持自定义数据换算公式。
+需要注意，压力信号对应着一个换算公式，通常需要用户将序列化后的结果乘以0.1得到最终值。
+为了帮助用户减少中间步骤，FastProto通过编码公式和解码公式实现上述步骤。
 
-用户自定义的解码公式必须实现`java.lang.function.Function`接口。
+自定义解码公式需要实现`java.lang.function.Function`接口，然后通过数据类型注解的`afterDecode`字段指定解码公式。
 
 ```java
 public class PressureDecodeFormula implements Function<Long, Double> {
@@ -132,14 +132,12 @@ public class PressureDecodeFormula implements Function<Long, Double> {
 }
 ```
 
-修改压力字段的注解和数据类型。
-
 ```java
 @UInteger32Type(value = 14, afterDecode = DecodeSpeedFormula.class)
 double pressure;
 ```
 
-如果需要序列化操作，那么需要指定一个编码公式，同样必须实现`java.lang.function.Function`接口。
+同理，编码公式也需要实现`java.lang.function.Function`接口，然后通过数据类型注解的`beforeEncode`字段指定编码公式。[更多][formula]
 
 ```java
 public class PressureEncodeFormula implements Function<Double, Long> {
@@ -150,20 +148,18 @@ public class PressureEncodeFormula implements Function<Double, Long> {
 }
 ```
 
-修改压力字段的注解。
-
 ```java
 @UInteger32Type(value = 14, afterDecode = PressureDecodeFormula.class, beforeEncode = PressureEncodeFormula.class)
 double pressure;
 ```
 
-## *Annotations*
+## *注解*
 
-除了Java基础数据类型及其包装类，FastProto还支持Timestamp、String和字节数组，上述类型均可通过`@AutoType`替代。
-为了兼容跨语言数据交换，FastProto还引入了无符号类型。
+FastProto支持Java基础数据类型、Timestamp、String和字节数组，以上类型均可由`@AutoType`代替。
+考虑到跨语言跨平台的数据交换，FastProto还引入了无符号类型。
 
 
-| Annotation      | Java               | C/C++          | Size        |   AutoType |
+| 注解      | Java               | C/C++          | 大小        |   AutoType |
 |:---------------:|:------------------:|:--------------:|:-----------:|:-----------:|
 | `@BooleanType`    | Boolean / boolean  | bool           | 1 位       |  √ |    
 | `@CharacterType`  | Character / char   | --             | 2 字节     |  √  |    
@@ -183,29 +179,28 @@ double pressure;
 | `@StringType`     | java.lang.String   | --             | N 字节     |  √ |    
 | `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 字节 |  √  |    
 
-除了数据类型注解，FastProto还提供辅助注解帮助用户更深层次地自定义二进制数据格式。
+FastProto还提供了一些辅助注解，帮助用户进一步自定义二进制格式、解码和编码流程。
 
-
-| Annotation    | Scope        | Description                           |
+| 注解    | 作用域        | 描述                           |
 |:-------------:|:------------:|:-------------------------------------:|
-| `@Endian`       | Class & Field | Endianness, default as little endian. |
-| `@DecodeIgnore` | Field        | Ignore the field when decoding.       |
-| `@EncodeIgnore` | Field        | Ignore the field when encoding.       |
-| `@EnableCompress` | Class        | Enable compress & decompress.  |
-| `@EnableProtocolVersion` | Class     |  Enable protocol version verification.  |
-| `@EnableChecksum`      |  Class      |  Enable checksum verification.              |
-| `@EnableCrypto`      |  Class      |    Enable encrypt & decrypt.             |
+| `@Endian`       | Class & Field | 数据开端，默认小开端 |
+| `@DecodeIgnore` | Field        | 反序列化时忽略该字段       |
+| `@EncodeIgnore` | Field        | 序列化时忽略该字段       |
+| `@EnableCompress` | Class        | 启动压缩和解压缩  |
+| `@EnableProtocolVersion` | Class     |  启动协议版本校验  |
+| `@EnableChecksum`      |  Class      |  启动数据完整性校验              |
+| `@EnableCrypto`      |  Class      |    启动加密和解密             |
 
-## *Benchmark*
+## *基准测试*
 
 *   macOS, m1 8 cores, 16gb
 *   openjdk 1.8.0_292
-*   datagram of 128 bytes and nested protocol class of 48 fields 
+*   二进制数据固定大小128字节，嵌套数据对象共包含48个不同类型的字段
 
-|Benchmark |    Mode  | Samples  |  Score  |   Error   |   Units   |
+|Benchmark |    模式  | 样本数量  |  评分  |   误差   |   单位   |
 |:--------:|:--------:|:--------:|:-------:|:---------:|:---------:|
-| `FastProto::parseFrom` |  throughput   |   10  |   115.2 | ± 1.6    |  ops/ms   |
-| `FastProto::toByteArray` | throughput  |   10  |   285.7 | ± 1.5    |  ops/ms   |
+| `FastProto::parseFrom` |  吞吐量   |   10  |   115.2 | ± 1.6    |  ops/ms   |
+| `FastProto::toByteArray` | 吞吐量  |   10  |   285.7 | ± 1.5    |  ops/ms   |
 
 ## *Build Requirements*
 
@@ -237,3 +232,4 @@ limitations under the License.
 [checksum]: https://github.com/indunet/fastproto/wiki/Data-Integrity-Check
 [protocol-version]: https://github.com/indunet/fastproto/wiki/Protocol-Version
 [compression]: https://github.com/indunet/fastproto/wiki/Compression
+[formula]: https://github.com/indunet/fastproto/wiki/Formula-zh
