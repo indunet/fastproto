@@ -11,11 +11,9 @@ import java.util.function.Supplier;
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EnableCrypto {
-    CryptoPolicy cryptoPolicy() default CryptoPolicy.AES_ECB_PKCS5PADDING;
+    CryptoPolicy value() default CryptoPolicy.AES_ECB_PKCS5PADDING;
 
     String key() default "";
 
     Class<? extends Supplier<byte[]>>[] keySupplier() default {};
-
-
 }

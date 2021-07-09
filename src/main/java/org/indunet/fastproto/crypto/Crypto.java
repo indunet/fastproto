@@ -29,7 +29,7 @@ public interface Crypto {
     byte[] decrypt(byte[] key, byte[] datagram);
 
     static Crypto getInstance(EnableCrypto enableCrypto) {
-        return getInstance(enableCrypto.cryptoPolicy());
+        return getInstance(enableCrypto.value());
     }
 
     static Crypto getInstance(CryptoPolicy policy) {

@@ -40,7 +40,7 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EnableCrypto(cryptoPolicy = CryptoPolicy.AES_ECB_PKCS5PADDING, key = "330926")
+@EnableCrypto(value = CryptoPolicy.AES_ECB_PKCS5PADDING, key = "330926")
 @EnableCompress(CompressPolicy.GZIP)
 @EnableProtocolVersion(value = 78, version = 17)
 public class Everything {
