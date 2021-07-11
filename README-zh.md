@@ -30,6 +30,8 @@ FastProto采用一种全新的方式解决了Java跨语言和跨平台的数据�
 ## *Under Developing*
 
 *   性能优化
+*   循环引用
+*   任意类型数组
 
 ## *Compared with ProtoBuf*
 
@@ -54,7 +56,7 @@ FastProto采用一种全新的方式解决了Java跨语言和跨平台的数据�
 
 ## *快速入门*
 
-想象这样一个应用场景，一台气象监测设备实时采集气象数据，并以二进制格式发送数据到气象站，数据报文固定长度20字节。
+想象这样一个应用场景，一台气象监测设备实时采集气象数据，并以二进制格式发送数据到气象站，数据报文固定长度20字节:
 
 >   65 00 7F 69 3D 84 7A 01 00 00 55 00 F1 FF 0D 00 00 00 07 00
 
@@ -114,14 +116,14 @@ Weather weather = FastProto.parseFrom(datagram, Weather.class);
 ```
 
 同理，也可通过`FastProto::toByteArray()`方法将Java数据对象序列成二进制数据。
-需要注意，该方法的第二个参数是数据报文长度，如果用户不指定，那么FastProto会自动推测长度。
+该方法的第二个参数是数据报文长度，如果用户不指定，那么FastProto会自动推测长度。
 
 ```java
 byte[] datagram = FastProto.toByteArray(weather, 20);
 ```
 
-到这里还没有结束，仔细观察信号协议表会发现，压力信号对应着一个换算公式，通常需要用户将序列化后的结果乘以0.1。
-为了帮助用户减少中间步骤，FastProto通过编码公式和解码公式实现了数据换算。
+到这里还没有结束，需要注意，压力信号对应一个换算公式，通常需要用户将序列化后的结果乘以0.1。
+为了帮助用户减少中间步骤，FastProto通过编码公式和解码公式实现上述过程。
 
 自定义解码公式需要实现`java.lang.function.Function`接口，然后通过数据类型注解的`afterDecode`字段指定解码公式。
 
@@ -201,8 +203,8 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 
 |Benchmark |    模式  | 样本数量  |  评分  |   误差   |   单位   |
 |:--------:|:--------:|:--------:|:-------:|:---------:|:---------:|
-| `FastProto::parseFrom` |  吞吐量   |   10  |   115.2 | ± 1.6    |  ops/ms   |
-| `FastProto::toByteArray` | 吞吐量  |   10  |   285.7 | ± 1.5    |  ops/ms   |
+| `FastProto::parseFrom` |  吞吐量   |   10  |   115.2 | ± 1.6    |  次/毫秒   |
+| `FastProto::toByteArray` | 吞吐量  |   10  |   285.7 | ± 1.5    |  次/毫秒   |
 
 ## *Build Requirements*
 
@@ -214,7 +216,7 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 FastProto is released under the [Apache 2.0 license](license).
 
 ```
-Copyright 2019-2021 indunet
+Copyright 2019-2021 indunet.org
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
