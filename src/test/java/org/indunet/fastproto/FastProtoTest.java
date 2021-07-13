@@ -27,7 +27,7 @@ import org.indunet.fastproto.checksum.Crc32Checker;
 import org.indunet.fastproto.compress.DeflateCompressor;
 import org.indunet.fastproto.crypto.Crypto;
 import org.indunet.fastproto.crypto.CryptoPolicy;
-import org.indunet.fastproto.encoder.EncodeUtils;
+import org.indunet.fastproto.util.EncodeUtils;
 import org.indunet.fastproto.exception.CheckSumException;
 import org.indunet.fastproto.exception.CryptoException;
 import org.indunet.fastproto.exception.ProtocolVersionException;

@@ -19,7 +19,7 @@ package org.indunet.fastproto.checksum;
 import lombok.Builder;
 import lombok.val;
 import org.indunet.fastproto.annotation.EnableChecksum;
-import org.indunet.fastproto.encoder.EncodeUtils;
+import org.indunet.fastproto.util.EncodeUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;

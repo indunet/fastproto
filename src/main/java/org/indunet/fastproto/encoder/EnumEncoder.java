@@ -25,6 +25,7 @@ import org.indunet.fastproto.annotation.type.EnumType;
 import org.indunet.fastproto.decoder.TypeDecoder;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.util.EncodeUtils;
 
 import java.text.MessageFormat;
 

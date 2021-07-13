@@ -22,8 +22,8 @@ import org.indunet.fastproto.annotation.EnableProtocolVersion;
 import org.indunet.fastproto.annotation.type.IntegerType;
 import org.indunet.fastproto.annotation.type.UInteger16Type;
 import org.indunet.fastproto.annotation.type.UInteger8Type;
-import org.indunet.fastproto.decoder.DecodeUtils;
-import org.indunet.fastproto.encoder.EncodeUtils;
+import org.indunet.fastproto.util.DecodeUtils;
+import org.indunet.fastproto.util.EncodeUtils;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.ProtocolVersionException;
 

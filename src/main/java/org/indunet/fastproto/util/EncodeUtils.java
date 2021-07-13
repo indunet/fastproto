@@ -14,9 +14,10 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.encoder;
+package org.indunet.fastproto.util;
 
 import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.encoder.*;
 
 import java.math.BigInteger;
 import java.nio.charset.Charset;

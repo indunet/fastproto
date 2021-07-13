@@ -26,6 +26,7 @@ import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
+import org.indunet.fastproto.util.DecodeUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 
 import java.sql.Timestamp;

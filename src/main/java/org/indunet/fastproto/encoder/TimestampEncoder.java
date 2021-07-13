@@ -25,6 +25,7 @@ import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.exception.SpaceNotEnoughException;
+import org.indunet.fastproto.util.EncodeUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 
 import java.sql.Timestamp;

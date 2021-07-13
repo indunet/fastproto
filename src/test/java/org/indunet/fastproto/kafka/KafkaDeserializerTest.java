@@ -40,13 +40,13 @@ public class KafkaDeserializerTest {
         val props = new Properties();
 
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("value.serializer", ProtoKafkaConfig.SERIALIZER_NAME_VALUE);
+        props.put("value.serializer", ProtoKafkaHelper.SERIALIZER_NAME_VALUE);
 
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put("value.deserializer", ProtoKafkaConfig.DESERIALIZER_NAME_VALUE);
+        props.put("value.deserializer", ProtoKafkaHelper.DESERIALIZER_NAME_VALUE);
 
-        props.put(ProtoKafkaConfig.PROTOCOL_CLASS_KEY, Weather.class);
-        props.put(ProtoKafkaConfig.DATAGRAM_LENGTH_KEY, 26);
+        props.put(ProtoKafkaHelper.PROTOCOL_CLASS_KEY, Weather.class);
+        props.put(ProtoKafkaHelper.DATAGRAM_LENGTH_KEY, 26);
 
         val map = new HashMap<String, Object>();
         Weather weather = Weather.builder()
@@ -70,10 +70,10 @@ public class KafkaDeserializerTest {
         val props = new Properties();
 
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("value.serializer", ProtoKafkaConfig.SERIALIZER_NAME_VALUE);
+        props.put("value.serializer", ProtoKafkaHelper.SERIALIZER_NAME_VALUE);
 
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put("value.deserializer", ProtoKafkaConfig.DESERIALIZER_NAME_VALUE);
+        props.put("value.deserializer", ProtoKafkaHelper.DESERIALIZER_NAME_VALUE);
 
         val map = new HashMap<String, Object>();
         props.forEach((key, value) -> map.put(key.toString(), value));

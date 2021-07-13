@@ -20,7 +20,7 @@ import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.EnableChecksum;
-import org.indunet.fastproto.encoder.EncodeUtils;
+import org.indunet.fastproto.util.EncodeUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;

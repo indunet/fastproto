@@ -36,6 +36,7 @@ import java.util.Arrays;
 public enum ProtocolType {
     BINARY(BinaryType.class, true),
     BOOLEAN(BooleanType.class, true),
+    CHARACTER(CharacterType.class, true),
     BYTE(ByteType.class, true),
     DOUBLE(DoubleType.class, true),
     FLOAT(FloatType.class, true),

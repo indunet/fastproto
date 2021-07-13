@@ -1,7 +1,7 @@
 package org.indunet.fastproto;
 
 import org.indunet.fastproto.annotation.type.UInteger64Type;
-import org.indunet.fastproto.encoder.EncodeUtils;
+import org.indunet.fastproto.util.EncodeUtils;
 import org.indunet.fastproto.iot.Everything;
 import org.junit.jupiter.api.Test;
 
