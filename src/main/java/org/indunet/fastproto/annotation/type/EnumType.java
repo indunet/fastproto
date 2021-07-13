@@ -28,6 +28,8 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.lang.reflect.Type;
+import java.util.function.Function;
 
 /**
  * Float type, corresponding to Java Float/float.
@@ -42,6 +44,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EnumType {
+    Type[] JAVA_TYPES = {Enum.class};
+
     int value();
 
     String fieldName() default "";
@@ -49,4 +53,8 @@ public @interface EnumType {
     ProtocolType protocolType() default ProtocolType.UINTEGER8;
 
     EndianPolicy[] endianPolicy() default {};
+
+    Class<? extends Function<? extends Enum, ?>>[] afterDecode() default {};
+
+    Class<? extends Function<?, ? super Enum>>[] beforeEncode() default {};
 }

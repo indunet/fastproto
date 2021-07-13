@@ -145,8 +145,9 @@ public class TypeAssist {
                 .filter(f -> !f.isAnnotationPresent(DecodeIgnore.class)
                         && !f.isAnnotationPresent(EncodeIgnore.class))
                 .filter(isType.negate())
-                .filter(f -> !f.isEnumConstant())  // Stack overflow
-                .filter(f -> !Modifier.isFinal(f.getModifiers()))
+                .filter(f -> !f.getType().isEnum())  // Non enum.
+                .filter(f -> !Modifier.isFinal(f.getModifiers()))   // Non final.
+                .filter(f -> !Modifier.isTransient(f.getModifiers()))   // Non transient.
                 .map(f -> {
                     f.setAccessible(true);
                     Class<?> c = f.getType();
@@ -337,7 +338,9 @@ public class TypeAssist {
                 val f = typeAnnotationClass.getField("JAVA_TYPES");
 
                 Arrays.stream((Type[]) f.get(typeAnnotation))
-                        .filter(t -> t == field.getType())
+                        .filter(t -> t == field.getType()
+                                || (field.getType().isEnum() && (((Class<?>) t).isAssignableFrom(field.getType()))))
+                        // Enum type.
                         .findAny()
                         .orElseThrow(() -> new CodecException(MessageFormat.format(
                                 CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
@@ -352,6 +355,9 @@ public class TypeAssist {
                         .filter(t -> {
                             if (field.getType().isPrimitive()) {
                                 return t == TypeUtils.getWrapperClass(field.getType().getName());
+                            } else if (field.getType().isEnum()) {
+                                // Enum type.
+                                return ((Class<?>) t).isAssignableFrom(field.getType());
                             } else {
                                 return t == field.getType();
                             }
@@ -369,6 +375,9 @@ public class TypeAssist {
                         .filter(t -> {
                             if (field.getType().isPrimitive()) {
                                 return t == TypeUtils.getWrapperClass(field.getType().getName());
+                            } else if (field.getType().isEnum()) {
+                                // Enum type.
+                                return ((Class<?>) t).isAssignableFrom(field.getType());
                             } else {
                                 return t == field.getType();
                             }

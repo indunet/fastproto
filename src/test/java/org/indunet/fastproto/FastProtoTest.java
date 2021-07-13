@@ -33,6 +33,7 @@ import org.indunet.fastproto.exception.CryptoException;
 import org.indunet.fastproto.exception.ProtocolVersionException;
 import org.indunet.fastproto.iot.Everything;
 import org.indunet.fastproto.iot.Weather;
+import org.indunet.fastproto.iot.color.Phone;
 import org.indunet.fastproto.iot.datagram.StateDatagram;
 import org.indunet.fastproto.iot.tesla.Battery;
 import org.indunet.fastproto.iot.tesla.Motor;
@@ -309,5 +310,15 @@ public class FastProtoTest {
         val datagram = new byte[100];
 
         assertThrows(CryptoException.class, () -> FastProto.parseFrom(datagram, CryptoObject.class));
+    }
+
+    @SneakyThrows
+    @Test
+    public void testColor() {
+        val datagram = Phone.getDatagram();
+        val phone = Phone.getDefault();
+
+         assertEquals(phone.toString(), FastProto.parseFrom(datagram, Phone.class).toString());
+         assertArrayEquals(datagram, FastProto.toByteArray(phone, Phone.getLength()));
     }
 }
