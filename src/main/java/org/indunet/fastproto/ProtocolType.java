@@ -49,7 +49,8 @@ public enum ProtocolType {
     UINTEGER8(UInteger8Type.class, false),
     UINTEGER16(UInteger16Type.class, false),
     UINTEGER32(UInteger32Type.class, false),
-    UINTEGER64(UInteger64Type.class, true);
+    UINTEGER64(UInteger64Type.class, true),
+    ENUM(EnumType.class, true);
 
     Class<? extends Annotation> typeAnnotationClass;
     Boolean autoType;
