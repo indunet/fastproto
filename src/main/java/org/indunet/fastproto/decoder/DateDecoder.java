@@ -20,37 +20,37 @@ import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.ProtocolType;
+import org.indunet.fastproto.annotation.type.DateType;
 import org.indunet.fastproto.annotation.type.LongType;
-import org.indunet.fastproto.annotation.type.TimestampType;
 import org.indunet.fastproto.annotation.type.UInteger32Type;
+import org.indunet.fastproto.encoder.TypeEncoder;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
 import org.indunet.fastproto.util.DecodeUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
-
 /**
- * Timestamp type decoder.
+ * Date type encoder.
  *
  * @author Deng Ran
- * @see TypeDecoder
- * @since 1.1.0
+ * @see TypeEncoder
+ * @since 2.2.0
  */
-public class TimestampDecoder implements TypeDecoder<Timestamp> {
+public class DateDecoder implements TypeDecoder<Date> {
     @Override
-    public Timestamp decode(@NonNull DecodeContext context) {
-        EndianPolicy policy = context.getEndianPolicy();
-        TimestampType type = context.getTypeAnnotation(TimestampType.class);
-        ProtocolType dataType = type.protocolType();
+    public Date decode(@NonNull DecodeContext context) {
+        val policy = context.getEndianPolicy();
+        val type = context.getTypeAnnotation(DateType.class);
+        val dataType = type.protocolType();
 
         return this.decode(context.getDatagram(), type.value(), dataType, policy, type.unit());
     }
 
-    public Timestamp decode(@NonNull final byte[] datagram, int byteOffset, @NonNull ProtocolType dataType, @NonNull EndianPolicy policy, @NonNull TimeUnit unit) {
+    public Date decode(@NonNull final byte[] datagram, int byteOffset, @NonNull ProtocolType dataType, @NonNull EndianPolicy policy, @NonNull TimeUnit unit) {
         int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
 
         if (bo < 0) {
@@ -62,7 +62,7 @@ public class TimestampDecoder implements TypeDecoder<Timestamp> {
 
             val value = DecodeUtils.longType(datagram, bo, policy);
 
-            return new Timestamp(value);
+            return new Date(value);
         } else if (dataType == ProtocolType.UINTEGER32 && unit == TimeUnit.SECONDS) {
             if (bo + UInteger32Type.SIZE > datagram.length) {
                 throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
@@ -70,7 +70,7 @@ public class TimestampDecoder implements TypeDecoder<Timestamp> {
 
             val value = DecodeUtils.uInteger32Type(datagram, bo, policy);
 
-            return new Timestamp(value * 1000);
+            return new Date(value * 1000);
         } else {
             throw new DecodeException(CodecError.ILLEGAL_TIMESTAMP_PARAMETERS);
         }

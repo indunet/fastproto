@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,32 +20,32 @@ import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.annotation.TypeFlag;
-import org.indunet.fastproto.decoder.TimestampDecoder;
-import org.indunet.fastproto.encoder.TimestampEncoder;
+import org.indunet.fastproto.decoder.DateDecoder;
+import org.indunet.fastproto.encoder.DateEncoder;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Type;
-import java.sql.Timestamp;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 /**
- * Timestamp type, corresponding to Java java.sql.Timestamp.
+ * Date type, corresponding to Java java.util.Date
  *
  * @author Deng Ran
  * @see TypeFlag
- * @since 1.1.0
+ * @since 2.2.0
  */
 @TypeFlag
-@Decoder(TimestampDecoder.class)
-@Encoder(TimestampEncoder.class)
+@Decoder(DateDecoder.class)
+@Encoder(DateEncoder.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TimestampType {
-    Type[] JAVA_TYPES = {Timestamp.class};
+public @interface DateType {
+    Type[] JAVA_TYPES = {Date.class};
     ProtocolType[] PROTOCOL_TYPES = {ProtocolType.UINTEGER32, ProtocolType.LONG};
 
     int value();
@@ -54,7 +54,7 @@ public @interface TimestampType {
 
     TimeUnit unit() default TimeUnit.MILLISECONDS;
 
-    Class<? extends Function<Timestamp, ?>>[] afterDecode() default {};
+    Class<? extends Function<Date, ?>>[] afterDecode() default {};
 
-    Class<? extends Function<?, Timestamp>>[] beforeEncode() default {};
+    Class<? extends Function<?, Date>>[] beforeEncode() default {};
 }
