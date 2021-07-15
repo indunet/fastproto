@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.decoder;
+package org.indunet.fastproto.util;
 
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.decoder.*;

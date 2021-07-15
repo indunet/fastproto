@@ -16,18 +16,19 @@
 
 package org.indunet.fastproto;
 
+import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.val;
 import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.annotation.EnableCrypto;
 import org.indunet.fastproto.annotation.EnableProtocolVersion;
 import org.indunet.fastproto.annotation.Endian;
+import org.indunet.fastproto.annotation.type.ArrayType;
 import org.indunet.fastproto.annotation.type.UInteger64Type;
 import org.indunet.fastproto.checksum.Crc32Checker;
 import org.indunet.fastproto.compress.DeflateCompressor;
 import org.indunet.fastproto.crypto.Crypto;
 import org.indunet.fastproto.crypto.CryptoPolicy;
-import org.indunet.fastproto.encoder.EncodeUtils;
 import org.indunet.fastproto.exception.CheckSumException;
 import org.indunet.fastproto.exception.CryptoException;
 import org.indunet.fastproto.exception.ProtocolVersionException;
@@ -38,6 +39,7 @@ import org.indunet.fastproto.iot.datagram.StateDatagram;
 import org.indunet.fastproto.iot.tesla.Battery;
 import org.indunet.fastproto.iot.tesla.Motor;
 import org.indunet.fastproto.iot.tesla.Tesla;
+import org.indunet.fastproto.util.EncodeUtils;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -320,5 +322,29 @@ public class FastProtoTest {
 
          assertEquals(phone.toString(), FastProto.parseFrom(datagram, Phone.class).toString());
          assertArrayEquals(datagram, FastProto.toByteArray(phone, Phone.getLength()));
+    }
+
+    @Data
+    public static class ArrayObject {
+        @ArrayType(value = 0, length = 5, protocolType = ProtocolType.UINTEGER16)
+        Integer[] ints;
+    }
+
+    @Test
+    public void testArray() {
+        val datagram = new byte[10];
+
+        datagram[0] = 1;
+        datagram[2] = 2;
+        datagram[4] = 3;
+        datagram[6] = 4;
+        datagram[8] = 5;
+
+        val expected = new ArrayObject();
+        expected.setInts(new Integer[] {1, 2, 3, 4, 5});
+
+        assertEquals(expected.toString(), FastProto.parseFrom(datagram, ArrayObject.class).toString());
+        val bytes = FastProto.toByteArray(expected, 10);
+        assertArrayEquals(datagram, FastProto.toByteArray(expected, 10));
     }
 }

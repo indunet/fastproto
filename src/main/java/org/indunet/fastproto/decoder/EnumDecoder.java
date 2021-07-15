@@ -23,6 +23,7 @@ import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.EnumType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.util.DecodeUtils;
 
 import java.lang.reflect.Field;
 import java.text.MessageFormat;

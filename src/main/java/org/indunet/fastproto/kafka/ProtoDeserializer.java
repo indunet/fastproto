@@ -33,11 +33,11 @@ public class ProtoDeserializer implements Deserializer<Object> {
     @SneakyThrows
     @Override
     public void configure(Map props, boolean isKey) {
-        if (!props.containsKey(ProtoKafkaConfig.PROTOCOL_CLASS_KEY)) {
+        if (!props.containsKey(ProtoKafkaHelper.PROTOCOL_CLASS_KEY)) {
             throw new ProtoKafkaException(ProtoKafkaError.DATAGRAM_LENGTH_NOT_FOUND);
         }
 
-        Object protocolClass = props.get(ProtoKafkaConfig.PROTOCOL_CLASS_KEY);
+        Object protocolClass = props.get(ProtoKafkaHelper.PROTOCOL_CLASS_KEY);
 
         if (protocolClass instanceof Class) {
             this.protocolClass = (Class) protocolClass;

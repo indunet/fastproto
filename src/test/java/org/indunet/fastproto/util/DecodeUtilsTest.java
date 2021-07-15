@@ -15,11 +15,10 @@
  */
 
 
-package org.indunet.fastproto.decoder;
+package org.indunet.fastproto.util;
 
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;

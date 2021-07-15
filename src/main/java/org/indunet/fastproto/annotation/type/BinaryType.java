@@ -27,7 +27,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Type;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 /**
@@ -48,8 +47,6 @@ public @interface BinaryType {
     int value();
 
     int length() default -1;
-
-    TimeUnit unit() default TimeUnit.MILLISECONDS;
 
     Class<? extends Function<byte[], ?>>[] afterDecode() default {};
 

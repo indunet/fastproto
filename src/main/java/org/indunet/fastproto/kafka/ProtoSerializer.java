@@ -34,14 +34,14 @@ public class ProtoSerializer implements Serializer<Object> {
     @SneakyThrows(ClassNotFoundException.class)
     @Override
     public void configure(Map<String, ?> props, boolean isKey) {
-        if (!props.containsKey(ProtoKafkaConfig.PROTOCOL_CLASS_KEY)) {
+        if (!props.containsKey(ProtoKafkaHelper.PROTOCOL_CLASS_KEY)) {
             throw new ProtoKafkaException(ProtoKafkaError.PROTOCOL_CLASS_NOT_FOUND);
-        } else if (!props.containsKey(ProtoKafkaConfig.DATAGRAM_LENGTH_KEY)) {
+        } else if (!props.containsKey(ProtoKafkaHelper.DATAGRAM_LENGTH_KEY)) {
             throw new ProtoKafkaException(ProtoKafkaError.DATAGRAM_LENGTH_NOT_FOUND);
         }
 
-        Object protocolClass = props.get(ProtoKafkaConfig.PROTOCOL_CLASS_KEY);
-        Object length = props.get(ProtoKafkaConfig.DATAGRAM_LENGTH_KEY);
+        Object protocolClass = props.get(ProtoKafkaHelper.PROTOCOL_CLASS_KEY);
+        Object length = props.get(ProtoKafkaHelper.DATAGRAM_LENGTH_KEY);
 
         if (protocolClass instanceof Class) {
             this.clazz = (Class) protocolClass;
