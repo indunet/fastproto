@@ -66,7 +66,8 @@ public enum CodecError {
     NO_KEY_SUPPLIED("No key supplied."),
     INVALID_ENUM_PROTOCOL_TYPE("Invalid protocol type for enum, just uint8, uint16 and int can be applied."),
     ENUM_NOT_FOUND("No enum of code {0} can be found."),
-    ILLEGAL_ENUM_CODE_FIELD("Illegal filed name of enum code {0}");
+    ILLEGAL_ENUM_CODE_FIELD("Illegal filed name of enum code {0}"),
+    NOT_SUPPORT_ARRAY_TYPE("Don't support array type of {0}");
 
     String message;
 }

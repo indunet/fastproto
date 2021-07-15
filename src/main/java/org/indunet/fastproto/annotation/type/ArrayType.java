@@ -43,7 +43,6 @@ import java.util.function.Function;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ArrayType {
     Type[] JAVA_TYPES = {
-            boolean[].class, Boolean[].class,
             char[].class, Character[].class,
             byte[].class, Byte[].class,
             short[].class, Short[].class,
@@ -54,7 +53,6 @@ public @interface ArrayType {
     };
 
     ProtocolType[] PROTOCOL_TYPES = {
-      ProtocolType.BOOLEAN,
       ProtocolType.CHARACTER,
       ProtocolType.BOOLEAN,
       ProtocolType.BYTE,
@@ -68,12 +66,11 @@ public @interface ArrayType {
       ProtocolType.UINTEGER8,
       ProtocolType.UINTEGER16,
       ProtocolType.UINTEGER32,
-      ProtocolType.UINTEGER64,
     };
 
     int value();
 
-    int[] bitOffset() default {};
+    int bitOffset() default 0;
 
     ProtocolType protocolType();
 

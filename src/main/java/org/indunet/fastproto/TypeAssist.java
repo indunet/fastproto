@@ -148,6 +148,7 @@ public class TypeAssist {
                 .filter(f -> !f.getType().isEnum())  // Non enum.
                 .filter(f -> !Modifier.isFinal(f.getModifiers()))   // Non final.
                 .filter(f -> !Modifier.isTransient(f.getModifiers()))   // Non transient.
+                .filter(f -> !f.getType().isArray())    // Non array.
                 .map(f -> {
                     f.setAccessible(true);
                     Class<?> c = f.getType();
@@ -354,7 +355,7 @@ public class TypeAssist {
                         .map(a -> a[1])
                         .filter(t -> {
                             if (field.getType().isPrimitive()) {
-                                return t == TypeUtils.getWrapperClass(field.getType().getName());
+                                return t == TypeUtils.wrapperClass(field.getType().getName());
                             } else if (field.getType().isEnum()) {
                                 // Enum type.
                                 return ((Class<?>) t).isAssignableFrom(field.getType());
@@ -374,7 +375,7 @@ public class TypeAssist {
                         .map(a -> a[0])
                         .filter(t -> {
                             if (field.getType().isPrimitive()) {
-                                return t == TypeUtils.getWrapperClass(field.getType().getName());
+                                return t == TypeUtils.wrapperClass(field.getType().getName());
                             } else if (field.getType().isEnum()) {
                                 // Enum type.
                                 return ((Class<?>) t).isAssignableFrom(field.getType());

@@ -16,36 +16,104 @@
 
 package org.indunet.fastproto.decoder;
 
+import lombok.NonNull;
+import lombok.val;
+import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ProtocolType;
+import org.indunet.fastproto.annotation.type.ArrayType;
+import org.indunet.fastproto.exception.CodecError;
+import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.OutOfBoundsException;
+import org.indunet.fastproto.util.DecodeUtils;
+import org.indunet.fastproto.util.ReverseUtils;
+import org.indunet.fastproto.util.TypeUtils;
+
+import java.text.MessageFormat;
+import java.util.ArrayList;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.stream.IntStream;
+
 /**
  * Array decoder.
  *
  * @author Deng Ran
  * @since 2.2.0
  */
-public class ArrayDecoder<T> implements TypeDecoder<T[]> {
+public class ArrayDecoder implements TypeDecoder<Object> {
     @Override
-    public T[] decode(DecodeContext context) {
-        return null;
+    public Object decode(DecodeContext context) {
+        val type = context.getTypeAnnotation(ArrayType.class);
+
+        return decode(context.getDatagram(), type.value(), type.length(),
+                type.protocolType(), context.getEndianPolicy());
     }
 
-//    public Object decode(@NonNull final byte[] datagram, int byteOffset, int bitOffset, @NonNull ProtocolType type, int length, @NonNull EndianPolicy policy) {
-//        val list = new ArrayList<Object>();
-//
-//        // length check.
-//
-//        switch (type) {
-//            case ProtocolType.SHORT:
-//            IntStream.range(byteOffset, byteOffset + length)
-//                    .parallel()
-//                    .filter(i -> (i - byteOffset % ShortType.SIZE) == 0)
-//                    .forEach(i -> {
-//                        list.add(DecodeUtils.shortType(datagram, i, policy));
-//                    });
-//            return list.toArray(new Short[10]);
-//            case ProtocolType.INTEGER:
-//                IntStream.range(byteOffset, byteOffset + length)
-//                        .forEach();
-//            break;
-//        }
-//    }
+    public Object decode(@NonNull final byte[] datagram, int byteOffset, int length,
+                            @NonNull ProtocolType type, @NonNull EndianPolicy policy) {
+        int size = TypeUtils.size(type);
+        int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
+
+        if (bo < 0) {
+            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
+        } else if (bo >= datagram.length) {
+            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
+        } else if (length <= 0) {
+            throw new DecodeException(CodecError.ILLEGAL_PARAMETER);
+        } else if (bo + size * length > datagram.length) {
+            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+        }
+
+        val list = new ArrayList<Object>();
+
+        Consumer<Function<Integer, ?>> codec = (func) -> {
+            IntStream.range(0, length)
+                    .parallel()
+                    .forEachOrdered(i -> {
+                        list.add(func.apply(i * size + bo));
+                    });
+        };
+
+        switch (type) {
+            case CHARACTER:
+                codec.accept(b -> DecodeUtils.characterType(datagram, b, policy));
+                return list.toArray(new Character[length]);
+            case BYTE:
+                codec.accept(b -> DecodeUtils.byteType(datagram, b));
+                return list.toArray(new Byte[length]);
+            case SHORT:
+                codec.accept(b -> DecodeUtils.shortType(datagram, b, policy));
+                return list.toArray(new Short[length]);
+            case INTEGER:
+                codec.accept(b -> DecodeUtils.integerType(datagram, b, policy));
+                return list.toArray(new Integer[length]);
+            case LONG:
+                codec.accept(b -> DecodeUtils.longType(datagram, b, policy));
+                return list.toArray(new Long[length]);
+            case UINTEGER8:
+                codec.accept(b -> DecodeUtils.uInteger8Type(datagram, b));
+                return list.toArray(new Integer[length]);
+            case UINTEGER16:
+                codec.accept(b -> DecodeUtils.integer16Type(datagram, b, policy));
+                return list.toArray(new Integer[length]);
+            case UINTEGER32:
+                codec.accept(b -> DecodeUtils.uInteger32Type(datagram, b, policy));
+                return list.toArray(new Long[length]);
+            case INTEGER8:
+                codec.accept(b -> DecodeUtils.integer8Type(datagram, b));
+                return list.toArray(new Integer[length]);
+            case INTEGER16:
+                codec.accept(b -> DecodeUtils.integer16Type(datagram, b, policy));
+                return list.toArray(new Integer[length]);
+            case FLOAT:
+                codec.accept(b -> DecodeUtils.floatType(datagram, b, policy));
+                return list.toArray(new Float[length]);
+            case DOUBLE:
+                codec.accept(b -> DecodeUtils.doubleType(datagram, b, policy));
+                return list.toArray(new Double[length]);
+            default:
+                throw new DecodeException(MessageFormat.format(
+                        CodecError.NOT_SUPPORT_ARRAY_TYPE.getMessage(), type.toString()));
+        }
+    }
 }
