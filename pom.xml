@@ -12,7 +12,7 @@
     <description>FastProto is a protocolized binary serialization &amp; deserialization tool written in Java, which allows developers to customize binary format through annotations.</description>
 
     <url>http://fastproto.indunet.org</url>
-    <inceptionYear>2018</inceptionYear>
+    <inceptionYear>2019</inceptionYear>
 
     <scm>
         <url>https://github.com/indunet/fastproto</url>
@@ -20,7 +20,7 @@
     </scm>
 
     <organization>
-        <name>Industrial Internet</name>
+        <name>indunet</name>
         <url>https://github.com/indunet</url>
     </organization>
 
