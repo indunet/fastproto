@@ -69,7 +69,8 @@ public class TypeAssist {
     Class<? extends Function> encodeFormula;
     Function<DecodeContext, ?> decoder;
     Consumer<?> encoder;
-    Integer minLength = 0;  // Used to store minimum length of datagram.
+    // Used to store minimum length of datagram.
+    Integer minLength = 0;
 
     Optional<EnableCrypto> opEnableCrypto;
     Optional<byte[]> opKey;
@@ -295,7 +296,8 @@ public class TypeAssist {
         EndianPolicy policy = Optional.ofNullable(field.getAnnotation(Endian.class))
                 .map(Endian::value)
                 .orElse(null);
-        Boolean decodeIgnore = field.isAnnotationPresent(DecodeIgnore.class);
+        Boolean decodeIgnore = field.isAnnotationPresent(DecodeIgnore.class)
+                || Modifier.isFinal(field.getModifiers());
         Boolean encodeIgnore = field.isAnnotationPresent(EncodeIgnore.class);
 
         Class<? extends Annotation> typeAnnotationClass = getTypeAnnotationClass(field);
