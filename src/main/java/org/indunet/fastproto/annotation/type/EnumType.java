@@ -45,6 +45,7 @@ import java.util.function.Function;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EnumType {
     Type[] JAVA_TYPES = {Enum.class};
+    Boolean AUTO_TYPE = true;
 
     int value();
 

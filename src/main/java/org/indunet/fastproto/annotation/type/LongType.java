@@ -43,6 +43,7 @@ import java.util.function.Function;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LongType {
     Type[] JAVA_TYPES = {Long.class, Long.TYPE};
+    Boolean AUTO_TYPE = true;
     int SIZE = Long.SIZE >> 3;
     long MAX_VALUE = Long.MAX_VALUE;
     long MIN_VALUE = Long.MIN_VALUE;

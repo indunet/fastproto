@@ -22,6 +22,7 @@ import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
 import java.text.MessageFormat;
 
@@ -32,7 +33,8 @@ import java.text.MessageFormat;
  * @since 2.0.0
  */
 public class TypeUtils {
-    protected final static String SIZE_FIELD_NAME = "SIZE";
+    protected final static String SIZE_NAME = "SIZE";
+    protected final static String PROTOCOL_TYPES_NAME = "PROTOCOL_TYPES";
 
     public static Type wrapperClass(@NonNull String name) {
         switch (name) {
@@ -61,7 +63,14 @@ public class TypeUtils {
     @SneakyThrows
     public static int size(@NonNull ProtocolType type) {
         return type.getTypeAnnotationClass()
-                .getDeclaredField(SIZE_FIELD_NAME)
+                .getDeclaredField(SIZE_NAME)
                 .getInt(null);
+    }
+
+    @SneakyThrows
+    public static ProtocolType[] protocolTypes(@NonNull Annotation typeAnnotation) {
+        return (ProtocolType[]) typeAnnotation.getClass()
+        .getField(PROTOCOL_TYPES_NAME)
+        .get(null);
     }
 }

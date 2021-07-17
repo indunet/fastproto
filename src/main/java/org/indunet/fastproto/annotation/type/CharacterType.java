@@ -44,6 +44,7 @@ import java.util.function.Function;
 public @interface CharacterType {
     Type[] JAVA_TYPES = {Character.class, Character.TYPE};
     int SIZE = Character.SIZE >> 3;
+    Boolean AUTO_TYPE = true;
 
     int value();
 

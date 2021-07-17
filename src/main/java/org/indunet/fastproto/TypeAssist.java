@@ -522,7 +522,6 @@ public class TypeAssist {
                             return Stream.empty();
                         }
                     } catch (IllegalAccessException e) {
-                        e.printStackTrace();
                         throw new DecodeException(
                                 MessageFormat.format(CodecError.FAIL_GETTING_FIELD_VALUE.getMessage(), this.clazz.getName()), e);
                     }
