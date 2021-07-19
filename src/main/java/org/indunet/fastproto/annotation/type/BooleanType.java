@@ -45,6 +45,7 @@ import java.util.function.Function;
 public @interface BooleanType {
     Type[] JAVA_TYPES = {Boolean.class, Boolean.TYPE};
     int SIZE = 1;
+    Boolean AUTO_TYPE = true;
     int MAX_BIT_OFFSET = 7;
     int MIN_BIT_OFFSET = 0;
 

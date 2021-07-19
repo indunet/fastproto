@@ -44,6 +44,7 @@ import java.util.function.Function;
 public @interface FloatType {
     Type[] JAVA_TYPES = {Float.class, Float.TYPE};
     int SIZE = Float.SIZE >> 3;
+    Boolean AUTO_TYPE = true;
     float MAX_VALUE = Float.MAX_VALUE;
     float MIN_VALUE = Float.MIN_VALUE;
 

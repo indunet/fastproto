@@ -44,6 +44,7 @@ import java.util.function.Function;
 public @interface UInteger16Type {
     Type[] JAVA_TYPES = {Integer.class, Integer.TYPE};
     int SIZE = Short.SIZE >> 3;
+    Boolean AUTO_TYPE = false;
     int MAX_VALUE = Short.MAX_VALUE - Short.MIN_VALUE;
     int MIN_VALUE = 0;
 

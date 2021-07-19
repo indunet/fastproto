@@ -29,7 +29,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 /**
- * AES Crypto which must be 16 bytes key.
+ * Standard crypto, aes & des
  *
  * @author Deng Ran
  * @since 2.0.0
@@ -51,6 +51,7 @@ public class StandardCrypto implements Crypto {
                 new StandardCrypto(policy.getTransformation(), policy.getKeyLength()));
     }
 
+    @Override
     public byte[] encrypt(byte[] key, byte[] datagram) {
         try {
             Cipher cipher = Cipher.getInstance(this.transformation);
@@ -64,6 +65,7 @@ public class StandardCrypto implements Crypto {
         }
     }
 
+    @Override
     public byte[] decrypt(byte[] key, byte[] datagram) {
         try {
             val cipher = Cipher.getInstance(this.transformation);

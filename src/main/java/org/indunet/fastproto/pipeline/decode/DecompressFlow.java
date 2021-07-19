@@ -49,6 +49,7 @@ public class DecompressFlow extends AbstractFlow<CodecContext> {
         this.nextFlow(context);
     }
 
+    @Override
     public long getFlowCode() {
         return FLOW_CODE;
     }

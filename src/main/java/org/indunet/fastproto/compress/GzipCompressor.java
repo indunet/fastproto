@@ -54,6 +54,7 @@ public class GzipCompressor implements Compressor {
      * @param bytes need to be compressed.
      * @return after compressing.
      */
+    @Override
     public byte[] compress(@NonNull byte[] bytes) {
         val out = new ByteArrayOutputStream();
 
@@ -73,6 +74,7 @@ public class GzipCompressor implements Compressor {
      * @param bytes need to be decompressed.
      * @return after decompressing.
      */
+    @Override
     public byte[] decompress(@NonNull byte[] bytes) {
         val out = new ByteArrayOutputStream();
         val in = new ByteArrayInputStream(bytes);

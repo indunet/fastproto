@@ -43,6 +43,7 @@ import java.util.function.Function;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ShortType {
     Type[] JAVA_TYPES = {Short.class, Short.TYPE};
+    Boolean AUTO_TYPE = true;
     int SIZE = Short.SIZE >> 3;
     int MAX_VALUE = Short.MAX_VALUE;
     int MIN_VALUE = Short.MIN_VALUE;

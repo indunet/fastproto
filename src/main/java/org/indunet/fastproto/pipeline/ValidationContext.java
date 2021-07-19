@@ -18,24 +18,23 @@ package org.indunet.fastproto.pipeline;
 
 import lombok.Builder;
 import lombok.Data;
-import org.indunet.fastproto.TypeAssist;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.function.Function;
 
 /**
- * Codec Context.
+ * Validation context.
  *
  * @author Deng Ran
- * @since 1.7.0
+ * @since 2.3.0
  */
 @Data
 @Builder
-public class CodecContext {
-    byte[] datagram;
-    TypeAssist typeAssist;
-    Object object;
-    Class<?> protocolClass;
-    long codecFeature;
-
-    public <T> T getObject(Class<T> clazz) {
-        return (T) object;
-    }
+public class ValidationContext {
+    Field field;
+    Annotation typeAnnotation;
+    Class<? extends Annotation> typeAnnotationClass;
+    Class<? extends Function> decodeFormula;
+    Class<? extends Function> encodeFormula;
 }

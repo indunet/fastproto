@@ -51,7 +51,6 @@ public @interface ArrayType {
             float[].class, Float[].class,
             double[].class, Double[].class
     };
-
     ProtocolType[] PROTOCOL_TYPES = {
       ProtocolType.CHARACTER,
       ProtocolType.BOOLEAN,
@@ -67,6 +66,7 @@ public @interface ArrayType {
       ProtocolType.UINTEGER16,
       ProtocolType.UINTEGER32,
     };
+    Boolean AUTO_TYPE = true;
 
     int value();
 
