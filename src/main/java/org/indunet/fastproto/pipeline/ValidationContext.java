@@ -16,6 +16,7 @@
 
 package org.indunet.fastproto.pipeline;
 
+import lombok.Builder;
 import lombok.Data;
 
 import java.lang.annotation.Annotation;
@@ -29,9 +30,11 @@ import java.util.function.Function;
  * @since 2.3.0
  */
 @Data
+@Builder
 public class ValidationContext {
     Field field;
     Annotation typeAnnotation;
-    Class<? extends Function> decodeFunction;
-    Class<? extends Function> encodeFunction;
+    Class<? extends Annotation> typeAnnotationClass;
+    Class<? extends Function> decodeFormula;
+    Class<? extends Function> encodeFormula;
 }

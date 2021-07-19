@@ -16,10 +16,12 @@
 
 package org.indunet.fastproto.pipeline;
 
+import lombok.val;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.pipeline.decode.*;
 import org.indunet.fastproto.pipeline.encode.*;
+import org.indunet.fastproto.pipeline.validate.*;
 
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
@@ -36,7 +38,7 @@ public abstract class AbstractFlow<T> {
 
     public abstract void process(T context);
 
-    AbstractFlow<T> setNext(AbstractFlow<T> next) {
+    public AbstractFlow<T> setNext(AbstractFlow<T> next) {
         this.next = next;
 
         return this.next;
@@ -51,7 +53,7 @@ public abstract class AbstractFlow<T> {
     public void end() {
         this.next = null;
     }
-
+    
     public abstract long getFlowCode();
 
     protected static Class<? extends AbstractFlow>[] decodeFlowClasses = new Class[] {
@@ -72,12 +74,33 @@ public abstract class AbstractFlow<T> {
     protected static ConcurrentMap<Long, AbstractFlow> decodeFlows = new ConcurrentHashMap<>();
     protected static ConcurrentMap<Long, AbstractFlow> encodeFlows = new ConcurrentHashMap<>();
 
+    protected static AbstractFlow<ValidationContext> validateFlow;
+
     public static AbstractFlow<CodecContext> getDecodeFlow(long codecFeature) {
         return decodeFlows.computeIfAbsent(codecFeature, __ -> getFlow(decodeFlowClasses, codecFeature));
     }
 
     public static AbstractFlow<CodecContext> getEncodeFlow(long codecFeature) {
         return encodeFlows.computeIfAbsent(codecFeature, __ -> getFlow(encodeFlowClasses, codecFeature));
+    }
+    
+    public synchronized static AbstractFlow<ValidationContext> getValidateFlow() {
+        if (validateFlow == null) {
+            val filedFlow = new FieldFlow();
+            val decodeFormulaFlow = new DecodeFormulaFlow();
+            val encodeFormulaFlow = new EncodeFormulaFlow();
+            val arrayFlow = new ArrayFlow();
+            val timestampFlow = new TimestampFlow();
+
+            filedFlow.setNext(decodeFormulaFlow)
+                    .setNext(encodeFormulaFlow)
+                    .setNext(arrayFlow)
+                    .setNext(timestampFlow);
+
+            validateFlow = filedFlow;
+        }
+
+        return validateFlow;
     }
 
     protected static AbstractFlow getFlow(Class<? extends AbstractFlow>[] flowClasses, long codecFeature) {

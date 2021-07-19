@@ -24,7 +24,8 @@ import org.indunet.fastproto.decoder.TypeDecoder;
 import org.indunet.fastproto.encoder.EncodeContext;
 import org.indunet.fastproto.encoder.TypeEncoder;
 import org.indunet.fastproto.exception.*;
-import org.indunet.fastproto.util.TypeUtils;
+import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.ValidationContext;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -278,10 +279,13 @@ public class TypeAssist {
         Annotation typeAnnotation = getTypeAnnotation(field);
 
         if (typeAnnotation instanceof AutoType) {
-            Class<? extends Annotation> typeAnnotationClass = ProtocolType.byAutoType(field.getType()).typeAnnotationClass;
+            Class<? extends Annotation> typeAnnotationClass = ProtocolType
+                    .byAutoType(field.getType())
+                    .typeAnnotationClass;
+
             return typeAnnotationClass.cast(Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{typeAnnotationClass},
                     (object, method, parameters) -> {
-                        return Arrays.stream(typeAnnotation.getClass().getMethods())
+                        return Arrays.stream(typeAnnotation.annotationType().getMethods())
                                 .filter(m -> m.getName().equals(method.getName()))
                                 .findAny()
                                 .orElseThrow(CodecException::new)
@@ -312,7 +316,6 @@ public class TypeAssist {
                 .map(Encoder::value)
                 .orElse(null);
 
-
         Function<String, Class<? extends Function>> formula = name -> {
             try {
                 Method method = typeAnnotation.getClass().getMethod(name);
@@ -334,64 +337,13 @@ public class TypeAssist {
         Class<? extends Function> afterDecode = formula.apply("afterDecode");
         Class<? extends Function> beforeEncode = formula.apply("beforeEncode");
 
-        // Check if the field and the type annotation match.
-        try {
-            // No encoder and decoder.
-            if (afterDecode == null && beforeEncode == null) {
-                val f = typeAnnotationClass.getField("JAVA_TYPES");
-
-                Arrays.stream((Type[]) f.get(typeAnnotation))
-                        .filter(t -> t == field.getType()
-                                || (field.getType().isEnum() && (((Class<?>) t).isAssignableFrom(field.getType()))))
-                        // Enum type.
-                        .findAny()
-                        .orElseThrow(() -> new CodecException(MessageFormat.format(
-                                CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
-            }
-
-            // Validate decoder return type.
-            if (afterDecode != null) {
-                Arrays.stream(afterDecode.getGenericInterfaces())
-                        .filter(i -> i instanceof ParameterizedType)
-                        .map(i -> ((ParameterizedType) i).getActualTypeArguments())
-                        .map(a -> a[1])
-                        .filter(t -> {
-                            if (field.getType().isPrimitive()) {
-                                return t == TypeUtils.wrapperClass(field.getType().getName());
-                            } else if (field.getType().isEnum()) {
-                                // Enum type.
-                                return ((Class<?>) t).isAssignableFrom(field.getType());
-                            } else {
-                                return t == field.getType();
-                            }
-                        }).findAny()
-                        .orElseThrow(() -> new DecodeFormulaException(MessageFormat.format(
-                                CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
-            }
-
-            // Validate encoder parameter type.
-            if (beforeEncode != null) {
-                Arrays.stream(beforeEncode.getGenericInterfaces())
-                        .filter(i -> i instanceof ParameterizedType)
-                        .map(i -> ((ParameterizedType) i).getActualTypeArguments())
-                        .map(a -> a[0])
-                        .filter(t -> {
-                            if (field.getType().isPrimitive()) {
-                                return t == TypeUtils.wrapperClass(field.getType().getName());
-                            } else if (field.getType().isEnum()) {
-                                // Enum type.
-                                return ((Class<?>) t).isAssignableFrom(field.getType());
-                            } else {
-                                return t == field.getType();
-                            }
-                        }).findAny()
-                        .orElseThrow(() -> new EncodeFormulaException(MessageFormat.format(
-                                CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
-            }
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            throw new CodecException(MessageFormat.format(
-                    CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName()), e);
-        }
+        val context = ValidationContext.builder()
+                .field(field)
+                .typeAnnotation(typeAnnotation)
+                .typeAnnotationClass(typeAnnotationClass)
+                .build();
+        AbstractFlow.getValidateFlow()
+                .process(context);
 
         return TypeAssist.builder()
                 .clazz(field.getType())

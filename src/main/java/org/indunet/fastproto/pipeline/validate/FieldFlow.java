@@ -8,8 +8,6 @@ import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.ValidationContext;
 import org.indunet.fastproto.util.TypeUtils;
 
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Type;
 import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.function.Function;
@@ -26,15 +24,18 @@ public class FieldFlow extends AbstractFlow<ValidationContext> {
     @Override
     public void process(ValidationContext context) {
         val typeAnnotation = context.getTypeAnnotation();
+        val typeAnnotationClass = context.getTypeAnnotationClass();
         val field = context.getField();
         Class<? extends Function> decodeFormula;
         Class<? extends Function> encodeFormula;
 
-
         try {
             decodeFormula = TypeUtils.decodeFormula(typeAnnotation);
             encodeFormula = TypeUtils.encodeFormula(typeAnnotation);
-        }  catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
+
+            context.setDecodeFormula(decodeFormula);
+            context.setEncodeFormula(encodeFormula);
+        } catch (Exception e) {
             throw new DecodeFormulaException(
                     MessageFormat.format(
                             CodecError.FAIL_GETTING_DECODE_FORMULA.getMessage(),
@@ -42,16 +43,15 @@ public class FieldFlow extends AbstractFlow<ValidationContext> {
         }
 
         if (decodeFormula == null && encodeFormula == null) {
-            val f = typeAnnotationClass.getField("JAVA_TYPES");
-
-            Arrays.stream((Type[]) f.get(typeAnnotation))
+            Arrays.stream(TypeUtils.javaTypes(typeAnnotationClass))
                     .filter(t -> t == field.getType()
-                            || (field.getType().isEnum() && (((Class<?>) t).isAssignableFrom(field.getType()))))
-                    // Enum type.
+                                || (field.getType().isEnum() && (((Class<?>) t).isAssignableFrom(field.getType()))))
                     .findAny()
                     .orElseThrow(() -> new CodecException(MessageFormat.format(
                             CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
         }
+
+        this.nextFlow(context);
     }
 
     @Override

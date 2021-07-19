@@ -64,6 +64,7 @@ public class DecodeFlow extends AbstractFlow<CodecContext> {
         context.setObject(assist.getObject(protocolClass));
     }
 
+    @Override
     public long getFlowCode() {
         return FLOW_CODE;
     }
