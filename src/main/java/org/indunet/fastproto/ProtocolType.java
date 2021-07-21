@@ -16,12 +16,10 @@
 
 package org.indunet.fastproto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.SneakyThrows;
-import lombok.val;
+import lombok.*;
 import org.indunet.fastproto.annotation.type.*;
 import org.indunet.fastproto.exception.CodecException;
+import org.indunet.fastproto.util.TypeUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -79,5 +77,13 @@ public enum ProtocolType {
         val field = typeAnnotationClass.getField("JAVA_TYPES");
 
         return (Type[]) field.get(null);
+    }
+
+    @SneakyThrows
+    public static Type[] supportedTypes() {
+        return Arrays.stream(ProtocolType.values())
+                .map(ProtocolType::getTypeAnnotationClass)
+                .flatMap(c -> Arrays.stream(TypeUtils.javaTypes(c)))
+                .toArray(Type[]::new);
     }
 }
