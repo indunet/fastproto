@@ -25,6 +25,7 @@ import org.indunet.fastproto.exception.CodecException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.text.MessageFormat;
 import java.util.Optional;
@@ -38,6 +39,8 @@ import java.util.function.Function;
  */
 public class TypeUtils {
     protected final static String SIZE_NAME = "SIZE";
+    protected final static String BYTE_OFFSET_NAME = "value";
+    protected final static String LENGTH_NAME = "length";
     protected final static String PROTOCOL_TYPES_NAME = "PROTOCOL_TYPES";
     protected final static String ENCODE_FORMULA_NAME = "beforeEncode";
     protected final static String DECODE_FORMULA_NAME = "afterDecode";
@@ -114,5 +117,38 @@ public class TypeUtils {
         return (Type[]) typeAnnotationClass
                 .getDeclaredField(JAVA_TYPES_NAME)
                 .get(null);
+    }
+
+    public static int byteOffset(@NonNull Annotation typeAnnotation) {
+        try {
+            return (Integer) typeAnnotation
+                    .getClass()
+                    .getMethod(BYTE_OFFSET_NAME)
+                    .invoke(typeAnnotation);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            return 0;
+        }
+    }
+
+    public static int size(@NonNull Annotation typeAnnotation) {
+        try {
+            return typeAnnotation
+                    .getClass()
+                    .getField(SIZE_NAME)
+                    .getInt(typeAnnotation);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            return 0;
+        }
+    }
+
+    public static int length(@NonNull Annotation typeAnnotation) {
+        try {
+            return (Integer) typeAnnotation
+                    .getClass()
+                    .getMethod(LENGTH_NAME)
+                    .invoke(typeAnnotation);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            return 0;
+        }
     }
 }

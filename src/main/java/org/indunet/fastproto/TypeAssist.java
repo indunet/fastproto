@@ -26,14 +26,13 @@ import org.indunet.fastproto.encoder.TypeEncoder;
 import org.indunet.fastproto.exception.*;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.ValidationContext;
+import org.indunet.fastproto.util.TypeUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
 import java.lang.reflect.*;
 import java.text.MessageFormat;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Consumer;
 import java.util.function.Function;
@@ -54,6 +53,8 @@ import java.util.stream.Stream;
 public class TypeAssist {
     protected static ConcurrentHashMap<Class<?>, TypeAssist> typeAssists = new ConcurrentHashMap<>();
     protected final static ThreadLocal<Object> instance = new ThreadLocal<>();
+    protected static final ThreadLocal<Map<Class<?>, Object>> objects = new ThreadLocal<>();
+    protected static final ThreadLocal<Set<Class<?>>> protocolClasses = new ThreadLocal<>();
 
     TypeAssist parent;
     Class<?> clazz;
@@ -80,6 +81,8 @@ public class TypeAssist {
     Optional<EnableProtocolVersion> opProtocolVersion;
     Optional<EnableChecksum> opChecksum;
 
+    Boolean circularReference = false;
+
     long codecFeature;
 
     protected TypeAssist() {
@@ -91,6 +94,7 @@ public class TypeAssist {
     }
 
     public static TypeAssist get(@NonNull Class<?> protocolClass) {
+        protocolClasses.set(new HashSet<>());
         TypeAssist assist = of(protocolClass);
 
         // Crypto policy and key.
@@ -133,17 +137,20 @@ public class TypeAssist {
         assist.setOpChecksum(Optional.of(protocolClass)
                 .map(c -> c.getAnnotation(EnableChecksum.class)));
         assist.setCodecFeature(CodecFeature.of(assist));
+        protocolClasses.remove();
 
         return assist;
     }
 
-    public static TypeAssist of(Class<?> clazz) {
+    protected static TypeAssist of(@NonNull Class<?> protocolClass) {
+        protocolClasses.get().add(protocolClass);
+
         Predicate<Field> isType = f -> Arrays.stream(f.getAnnotations())
                 .map(Annotation::annotationType)
                 .anyMatch(t -> t.isAnnotationPresent(TypeFlag.class));
 
         // Nested types.
-        Stream<TypeAssist> typeStream = Arrays.stream(clazz.getDeclaredFields())
+        Stream<TypeAssist> typeStream = Arrays.stream(protocolClass.getDeclaredFields())
                 .filter(f -> !f.isAnnotationPresent(DecodeIgnore.class)
                         && !f.isAnnotationPresent(EncodeIgnore.class))
                 .filter(isType.negate())
@@ -151,27 +158,53 @@ public class TypeAssist {
                 .filter(f -> !Modifier.isFinal(f.getModifiers()))   // Non final.
                 .filter(f -> !Modifier.isTransient(f.getModifiers()))   // Non transient.
                 .filter(f -> !f.getType().isArray())    // Non array.
+                .filter(f -> Arrays.stream(ProtocolType.supportedTypes())
+                        .noneMatch(t -> t == f.getType()))
                 .map(f -> {
                     f.setAccessible(true);
                     Class<?> c = f.getType();
-                    TypeAssist a = TypeAssist.of(c);
-                    Boolean decodeIgnore = f.isAnnotationPresent(DecodeIgnore.class);
-                    Boolean encodeIgnore = f.isAnnotationPresent(EncodeIgnore.class);
-                    a.setDecodeIgnore(decodeIgnore);
-                    a.setEncodeIgnore(encodeIgnore);
-                    a.setField(f);
 
-                    return a;
-                }).filter(TypeAssist::hasElement);
+                    if (protocolClasses.get().contains(c)) {
+                        Boolean decodeIgnore = f.isAnnotationPresent(DecodeIgnore.class);
+
+                        return TypeAssist.builder()
+                                .clazz(c)
+                                .field(f)
+                                .typeAnnotation(null)
+                                .decoderClass(null)
+                                .encoderClass(null)
+                                .decodeFormula(null)
+                                .encodeFormula(null)
+                                .endianPolicy(EndianPolicy.LITTLE)
+                                .decodeIgnore(decodeIgnore)
+                                .encodeIgnore(true)
+                                .elementType(ElementType.TYPE)
+                                .circularReference(true)
+                                .elements(new ArrayList<TypeAssist>())
+                                .minLength(0)
+                                .build();
+                    } else {
+                        TypeAssist a = TypeAssist.of(c);
+                        Boolean decodeIgnore = f.isAnnotationPresent(DecodeIgnore.class);
+                        Boolean encodeIgnore = f.isAnnotationPresent(EncodeIgnore.class);
+                        a.setDecodeIgnore(decodeIgnore);
+                        a.setEncodeIgnore(encodeIgnore);
+                        a.setField(f);
+                        a.setCircularReference(false);
+
+                        return a;
+                    }
+                })
+                .filter(a -> a.hasElement() || a.getCircularReference());
 
         // Default as little endian.
-        EndianPolicy endianPolicy = Optional.ofNullable(clazz.getAnnotation(Endian.class))
+        EndianPolicy endianPolicy = Optional.ofNullable(protocolClass.getAnnotation(Endian.class))
                 .map(Endian::value)
                 .orElse(EndianPolicy.LITTLE);
-        Boolean decodeIgnore = clazz.isAnnotationPresent(DecodeIgnore.class);
-        Boolean encodeIgnore = clazz.isAnnotationPresent(EncodeIgnore.class);
+        Boolean decodeIgnore = protocolClass.isAnnotationPresent(DecodeIgnore.class);
+        Boolean encodeIgnore = protocolClass.isAnnotationPresent(EncodeIgnore.class);
 
-        Stream<TypeAssist> fieldStream = Arrays.stream(clazz.getDeclaredFields())
+        Stream<TypeAssist> fieldStream = Arrays.stream(protocolClass.getDeclaredFields())
                 .filter(f -> !f.isAnnotationPresent(DecodeIgnore.class)
                         && !f.isAnnotationPresent(EncodeIgnore.class))
                 .filter(isType)
@@ -184,7 +217,7 @@ public class TypeAssist {
                 });
 
         TypeAssist assist = TypeAssist.builder()
-                .clazz(clazz)
+                .clazz(protocolClass)
                 .field(null)
                 .typeAnnotation(null)
                 .decoderClass(null)
@@ -195,6 +228,7 @@ public class TypeAssist {
                 .decodeIgnore(decodeIgnore)
                 .encodeIgnore(encodeIgnore)
                 .elementType(ElementType.TYPE)
+                .circularReference(false)
                 .minLength(0)
                 .build();
 
@@ -206,51 +240,29 @@ public class TypeAssist {
         return assist;
     }
 
-    public static Integer getMinLength(Annotation typeAnnotation) {
+    public static Integer getLength(Annotation typeAnnotation) {
         if (typeAnnotation == null) {
             return null;
         }
 
         int minLength = 0;
+        int value = TypeUtils.byteOffset(typeAnnotation);
 
-        try {
-            int value = (Integer) typeAnnotation
-                    .getClass()
-                    .getMethod("value")
-                    .invoke(typeAnnotation);
-
-            if (value >= 0) {
-                minLength += value;
-            } else {
-                return -1;
-            }
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-
+        if (value >= 0) {
+            minLength += value;
+        } else {
+            return -1;
         }
 
-        try {
-            int size = typeAnnotation
-                        .getClass()
-                        .getField("SIZE")
-                        .getInt(null);
-            minLength += size;
-        } catch (IllegalAccessException | NoSuchFieldException e) {
+        int size = TypeUtils.size(typeAnnotation);
+        minLength += size;
 
-        }
+        int length = TypeUtils.length(typeAnnotation);
 
-        try {
-            int length = (Integer) typeAnnotation
-                        .getClass()
-                        .getMethod("length")
-                        .invoke(typeAnnotation);
-
-            if (length >= 0) {
-                minLength += length;
-            } else {
-                return -1;
-            }
-        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
-
+        if (length >= 0) {
+            minLength += length;
+        } else {
+            return -1;
         }
 
         return minLength;
@@ -357,7 +369,8 @@ public class TypeAssist {
                 .decodeIgnore(decodeIgnore)
                 .encodeIgnore(encodeIgnore)
                 .elementType(ElementType.FIELD)
-                .minLength(getMinLength(getProxyTypeAnnotation(field)))     // From proxy type annotation.
+                .circularReference(false)
+                .minLength(getLength(getProxyTypeAnnotation(field)))     // From proxy type annotation.
                 .build();
     }
 
@@ -410,7 +423,14 @@ public class TypeAssist {
 
     protected List<DecodeContext> toDecodeContexts(byte[] datagram, Object parent) {
         try {
-            Object value = this.clazz.newInstance();
+            Object value;
+
+            if (objects.get().containsKey(this.clazz)) {
+                value = objects.get().get(this.clazz);
+            } else {
+                value = this.clazz.newInstance();
+                objects.get().put(this.clazz, value);
+            }
 
             if (parent == null) {
                 instance.set(value);
@@ -442,7 +462,11 @@ public class TypeAssist {
     }
 
     public List<DecodeContext> toDecodeContexts(byte[] datagram) {
-        return this.toDecodeContexts(datagram, null);
+        objects.set(new HashMap<Class<?>, Object>());
+        val contexts = this.toDecodeContexts(datagram, null);
+        objects.remove();
+
+        return contexts;
     }
 
     public EncodeContext toEncodeContext(Object object, byte[] datagram) {
