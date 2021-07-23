@@ -20,50 +20,46 @@ import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.annotation.TypeFlag;
-import org.indunet.fastproto.decoder.ArrayDecoder;
-import org.indunet.fastproto.encoder.ArrayEncoder;
+import org.indunet.fastproto.decoder.ListDecoder;
+import org.indunet.fastproto.encoder.ListEncoder;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Type;
+import java.util.List;
 import java.util.function.Function;
 
+
 /**
- * Array type.
+ * List type.
  *
  * @author Deng Ran
- * @since 2.2.0
+ * @since 2.3.0
  */
 @TypeFlag
-@Decoder(ArrayDecoder.class)
-@Encoder(ArrayEncoder.class)
+@Decoder(ListDecoder.class)
+@Encoder(ListEncoder.class)
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ArrayType {
+public @interface ListType {
     Type[] JAVA_TYPES = {
-            char[].class, Character[].class,
-            byte[].class, Byte[].class,
-            short[].class, Short[].class,
-            int[].class, Integer[].class,
-            long[].class, Long[].class,
-            float[].class, Float[].class,
-            double[].class, Double[].class
+            List.class
     };
     ProtocolType[] PROTOCOL_TYPES = {
-      ProtocolType.CHARACTER,
-      ProtocolType.BYTE,
-      ProtocolType.SHORT,
-      ProtocolType.INTEGER,
-      ProtocolType.LONG,
-      ProtocolType.FLOAT,
-      ProtocolType.DOUBLE,
-      ProtocolType.INTEGER8,
-      ProtocolType.INTEGER16,
-      ProtocolType.UINTEGER8,
-      ProtocolType.UINTEGER16,
-      ProtocolType.UINTEGER32,
+            ProtocolType.CHARACTER,
+            ProtocolType.BYTE,
+            ProtocolType.SHORT,
+            ProtocolType.INTEGER,
+            ProtocolType.LONG,
+            ProtocolType.FLOAT,
+            ProtocolType.DOUBLE,
+            ProtocolType.INTEGER8,
+            ProtocolType.INTEGER16,
+            ProtocolType.UINTEGER8,
+            ProtocolType.UINTEGER16,
+            ProtocolType.UINTEGER32,
     };
     Boolean AUTO_TYPE = true;
 
