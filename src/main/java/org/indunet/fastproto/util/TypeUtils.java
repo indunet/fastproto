@@ -28,8 +28,10 @@ import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.text.MessageFormat;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
+import java.util.stream.IntStream;
 
 /**
  * Type utils.
@@ -150,5 +152,18 @@ public class TypeUtils {
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             return 0;
         }
+    }
+
+    public static Object listToArray(List<?> list, Object array) {
+        if (!array.getClass().isArray()) {
+            throw new IllegalArgumentException("The object must be array type.");
+        }
+
+        IntStream.range(0, list.size())
+                .forEach(i -> {
+                    Array.set(array, i, list.get(i));
+                });
+
+        return array;
     }
 }

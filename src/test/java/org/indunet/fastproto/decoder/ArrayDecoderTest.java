@@ -54,9 +54,20 @@ public class ArrayDecoderTest {
         Short[] values3 = (Short[]) (decoder.decode(datagram, 0, 5,
                 ProtocolType.SHORT, EndianPolicy.LITTLE));
 
+        int[] values4 = (int[]) (decoder.decode(datagram, 0, 5,
+                ProtocolType.UINTEGER16, EndianPolicy.LITTLE, true));
+        int[] values5 = (int[]) (decoder.decode(datagram, 0, 5,
+                ProtocolType.INTEGER16, EndianPolicy.LITTLE, true));
+        short[] values6 = (short[]) (decoder.decode(datagram, 0, 5,
+                ProtocolType.SHORT, EndianPolicy.LITTLE, true));
+
         assertArrayEquals(new Integer[] {1, 2, 3, 4, 5}, values1);
         assertArrayEquals(new Integer[] {1, 2, 3, 4, 5}, values2);
         assertArrayEquals(new Short[] {1, 2, 3, 4, 5}, values3);
+
+        assertArrayEquals(new int[] {1, 2, 3, 4, 5}, values4);
+        assertArrayEquals(new int[] {1, 2, 3, 4, 5}, values5);
+        assertArrayEquals(new short[] {1, 2, 3, 4, 5}, values6);
     }
 
     @Test

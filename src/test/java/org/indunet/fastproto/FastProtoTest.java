@@ -327,7 +327,7 @@ public class FastProtoTest {
     @Data
     public static class ArrayObject {
         @ArrayType(value = 0, length = 5, protocolType = ProtocolType.UINTEGER16)
-        Integer[] ints;
+        int[] ints;
     }
 
     @Test
@@ -341,7 +341,7 @@ public class FastProtoTest {
         datagram[8] = 5;
 
         val expected = new ArrayObject();
-        expected.setInts(new Integer[] {1, 2, 3, 4, 5});
+        expected.setInts(new int[] {1, 2, 3, 4, 5});
 
         assertEquals(expected.toString(), FastProto.parseFrom(datagram, ArrayObject.class).toString());
         val bytes = FastProto.toByteArray(expected, 10);
