@@ -52,6 +52,9 @@ public class ArrayEncoder implements TypeEncoder {
                        @NonNull ProtocolType type, @NonNull EndianPolicy policy, Object values) {
         int size = TypeUtils.size(type);
         int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
+        boolean primitive = values.getClass()
+                .getComponentType()
+                .isPrimitive();
 
         if (bo < 0) {
             throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
@@ -73,40 +76,52 @@ public class ArrayEncoder implements TypeEncoder {
 
         switch (type) {
             case CHARACTER:
-                codec.accept((b, i) -> EncodeUtils.type(datagram, b, policy, ((Character[]) values)[i]));
+                codec.accept((b, i) -> EncodeUtils.type(datagram, b, policy,
+                        primitive ? ((char[]) values)[i] : ((Character[]) values)[i]));
                 break;
             case BYTE:
-                codec.accept((b, i) -> EncodeUtils.type(datagram, b, policy, ((Byte[]) values)[i]));
+                codec.accept((b, i) -> EncodeUtils.type(datagram, b, policy,
+                        primitive ? ((byte[]) values)[i] : ((Byte[]) values)[i]));
                 break;
             case SHORT:
-                codec.accept((b, i) -> EncodeUtils.type(datagram, b, policy, ((Short[]) values)[i]));
+                codec.accept((b, i) -> EncodeUtils.type(datagram, b, policy,
+                        primitive ? ((short[]) values)[i] : ((Short[]) values)[i]));
                 break;
             case INTEGER:
-                codec.accept((b, i) -> EncodeUtils.type(datagram, b, policy, ((Integer[]) values)[i]));
+                codec.accept((b, i) -> EncodeUtils.type(datagram, b, policy,
+                        primitive ? ((int[]) values)[i] : ((Integer[]) values)[i]));
                 break;
             case LONG:
-                codec.accept((b, i) -> EncodeUtils.type(datagram, b, policy, ((Long[]) values)[i]));
+                codec.accept((b, i) -> EncodeUtils.type(datagram, b, policy,
+                        primitive ? ((long[]) values)[i] : ((Long[]) values)[i]));
                 break;
             case UINTEGER8:
-                codec.accept((b, i) -> EncodeUtils.uInteger8Type(datagram, b, ((Integer[]) values)[i]));
+                codec.accept((b, i) -> EncodeUtils.uInteger8Type(datagram, b,
+                        primitive ? ((int[]) values)[i] : ((Integer[]) values)[i]));
                 break;
             case UINTEGER16:
-                codec.accept((b, i) -> EncodeUtils.uInteger16Type(datagram, b, policy, ((Integer[]) values)[i]));
+                codec.accept((b, i) -> EncodeUtils.uInteger16Type(datagram, b, policy,
+                        primitive ? ((int[]) values)[i] : ((Integer[]) values)[i]));
                 break;
             case UINTEGER32:
-                codec.accept((b, i) -> EncodeUtils.uInteger32Type(datagram, b, policy, ((Long[]) values)[i]));
+                codec.accept((b, i) -> EncodeUtils.uInteger32Type(datagram, b, policy,
+                        primitive ? ((long[]) values)[i] : ((Long[]) values)[i]));
                 break;
             case INTEGER8:
-                codec.accept((b, i) -> EncodeUtils.integer8Type(datagram, b, ((Integer[]) values)[i]));
+                codec.accept((b, i) -> EncodeUtils.integer8Type(datagram, b,
+                        primitive ? ((int[]) values)[i] : ((Integer[]) values)[i]));
                 break;
             case INTEGER16:
-                codec.accept((b, i) -> EncodeUtils.integer16Type(datagram, b, policy, ((Integer[]) values)[i]));
+                codec.accept((b, i) -> EncodeUtils.integer16Type(datagram, b, policy,
+                        primitive ? ((int[]) values)[i] : ((Integer[]) values)[i]));
                 break;
             case FLOAT:
-                codec.accept((b, i) -> EncodeUtils.type(datagram, b, policy, ((Float[]) values)[i]));
+                codec.accept((b, i) -> EncodeUtils.type(datagram, b, policy,
+                        primitive ? ((float[]) values)[i] : ((Float[]) values)[i]));
                 break;
             case DOUBLE:
-                codec.accept((b, i) -> EncodeUtils.type(datagram, b, policy, ((Double[]) values)[i]));
+                codec.accept((b, i) -> EncodeUtils.type(datagram, b, policy,
+                        primitive ? ((double[]) values)[i] : ((Double[]) values)[i]));
                 break;
             default:
                 throw new EncodeException(MessageFormat.format(

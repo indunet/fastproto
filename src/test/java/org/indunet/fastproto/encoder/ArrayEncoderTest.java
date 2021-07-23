@@ -35,7 +35,7 @@ public class ArrayEncoderTest {
     @Test
     public void testEncode1() {
         Integer[] values1 = {1, 2, 3, 4, 5};
-        Short[] values2 = {1, 2, 3, 4, 5};
+        short[] values2 = {1, 2, 3, 4, 5};
         val datagram = new byte[10];
 
         datagram[0] = 1;
