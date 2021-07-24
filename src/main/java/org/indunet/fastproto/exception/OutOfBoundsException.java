@@ -16,8 +16,6 @@
 
 package org.indunet.fastproto.exception;
 
-import org.omg.IOP.Codec;
-
 /**
  * @author Deng Ran
  * @since 1.6.5

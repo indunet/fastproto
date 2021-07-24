@@ -43,8 +43,8 @@ public interface Checker {
                 return Crc16Checker.getInstance(policy.getPoly());
             case CRC32:
                 return Crc32Checker.getInstance();
+            default:
+                return Crc16Checker.getInstance();
         }
-
-        return Crc16Checker.getInstance();
     }
 }

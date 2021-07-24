@@ -68,7 +68,7 @@ public class FormulaTest {
     @Test
     public void testDecodeFormula() {
         val datagram = new byte[10];
-        val object = new TestObject1(101);
+
         assertThrows(DecodeFormulaException.class, () -> FastProto.parseFrom(datagram, TestObject2.class));
     }
 }

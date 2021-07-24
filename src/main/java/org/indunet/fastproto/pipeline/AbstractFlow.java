@@ -34,6 +34,21 @@ import java.util.concurrent.ConcurrentMap;
  * @since 1.7.0
  */
 public abstract class AbstractFlow<T> {
+    protected static Class<? extends AbstractFlow>[] decodeFlowClasses = new Class[] {
+            DecryptFlow.class,
+            DecompressFlow.class,
+            VerifyChecksumFlow.class,
+            VerifyProtocolVersionFlow.class,
+            DecodeFlow.class};
+    protected static Class<? extends AbstractFlow>[] encodeFlowClasses = new Class[] {
+            InferLengthFlow.class,
+            EncodeFlow.class,
+            WriteProtocolVersionFlow.class,
+            WriteChecksumFlow.class,
+            CompressFlow.class,
+            EncryptFlow.class
+    };
+
     AbstractFlow<T> next = null;
 
     public abstract void process(T context);
@@ -55,21 +70,6 @@ public abstract class AbstractFlow<T> {
     }
     
     public abstract long getFlowCode();
-
-    protected static Class<? extends AbstractFlow>[] decodeFlowClasses = new Class[] {
-            DecryptFlow.class,
-            DecompressFlow.class,
-            VerifyChecksumFlow.class,
-            VerifyProtocolVersionFlow.class,
-            DecodeFlow.class};
-    protected static Class<? extends AbstractFlow>[] encodeFlowClasses = new Class[] {
-            InferLengthFlow.class,
-            EncodeFlow.class,
-            WriteProtocolVersionFlow.class,
-            WriteChecksumFlow.class,
-            CompressFlow.class,
-            EncryptFlow.class
-    };
 
     protected static ConcurrentMap<Long, AbstractFlow> decodeFlows = new ConcurrentHashMap<>();
     protected static ConcurrentMap<Long, AbstractFlow> encodeFlows = new ConcurrentHashMap<>();

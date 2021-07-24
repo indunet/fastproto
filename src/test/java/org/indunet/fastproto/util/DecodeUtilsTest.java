@@ -172,7 +172,8 @@ public class DecodeUtilsTest {
 
     @Test
     public void testDoubleType() {
-        double pi = 3.141, e = 2.718;
+        double pi = 3.141;
+        double e = 2.718;
 
         assertEquals(DecodeUtils.doubleType(BinaryUtils.valueOf(pi), 0), pi, 0.001);
         assertEquals(DecodeUtils.doubleType(BinaryUtils.valueOf(e), 0, EndianPolicy.LITTLE), e, 0.001);
