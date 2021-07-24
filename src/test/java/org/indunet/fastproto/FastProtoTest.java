@@ -344,7 +344,6 @@ public class FastProtoTest {
         expected.setInts(new int[] {1, 2, 3, 4, 5});
 
         assertEquals(expected.toString(), FastProto.parseFrom(datagram, ArrayObject.class).toString());
-        val bytes = FastProto.toByteArray(expected, 10);
         assertArrayEquals(datagram, FastProto.toByteArray(expected, 10));
     }
 }

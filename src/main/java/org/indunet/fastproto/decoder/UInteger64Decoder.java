@@ -49,7 +49,8 @@ public class UInteger64Decoder implements TypeDecoder<BigInteger> {
             throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
 
-        long low = 0, high = 0;
+        long low = 0;
+        long high = 0;
 
         if (endian == EndianPolicy.LITTLE) {
             low |= (datagram[bo] & 0xFF);

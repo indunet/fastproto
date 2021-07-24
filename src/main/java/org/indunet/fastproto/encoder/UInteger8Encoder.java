@@ -17,7 +17,6 @@
 package org.indunet.fastproto.encoder;
 
 import lombok.NonNull;
-import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.UInteger8Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
@@ -38,7 +37,6 @@ public class UInteger8Encoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
         UInteger8Type type = context.getTypeAnnotation(UInteger8Type.class);
-        EndianPolicy policy = context.getEndianPolicy();
         Integer value = context.getValue(Integer.class);
 
         this.encode(context.getDatagram(), type.value(), value);
