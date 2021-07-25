@@ -71,13 +71,13 @@ public class KafkaTest {
         val record = new ProducerRecord<String, Weather>("fastproto.weather", weather);
 
         Runnable task = () -> {
-            while (true) {
+            while (!Thread.interrupted()) {
                 producer.send(record);
 
                 try {
                     Thread.sleep(100);
                 } catch (InterruptedException e) {
-                    e.printStackTrace();
+                    // e.printStackTrace();
                 }
             }
         };

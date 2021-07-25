@@ -25,7 +25,6 @@ import org.indunet.fastproto.exception.OutOfBoundsException;
 import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -55,9 +54,6 @@ public class ListDecoderTest {
                 ProtocolType.INTEGER16, EndianPolicy.LITTLE);
         List<Short> values3 = decoder.decode(datagram, 0, 5,
                 ProtocolType.SHORT, EndianPolicy.LITTLE);
-
-        System.out.println(values3.getClass().toString());
-        System.out.println(new ArrayList<Integer>().getClass().toString());
 
         assertArrayEquals(new Integer[] {1, 2, 3, 4, 5}, values1.toArray(new Integer[5]));
         assertArrayEquals(new Integer[] {1, 2, 3, 4, 5}, values2.toArray(new Integer[5]));
