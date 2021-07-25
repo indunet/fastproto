@@ -10,10 +10,10 @@ English | [中文](README-zh.md)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto is a protocolized binary serialization & deserialization tool written in Java, which allows users to
-customize protocol through annotations to decode and encode binary data. 
-It solves the problem of cross-language and cross-platform data exchange of Java in a new form, especially suitable for 
-the field of Internet of Things(IoT).
+FastProto is a protocolized binary serialization and deserialization tool written in Java. It not only allows users to 
+customize binary protocols through annotations, but also supports data compression, encryption, data integrity checksums 
+and protocol version verification. FastProto uses a new way to solve the problem of cross-language and cross-platform data
+exchange in Java, especially suitable for the Internet of Things (IoT) field.
 
 ## *Features*
 
