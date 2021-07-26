@@ -42,6 +42,7 @@ import java.util.stream.IntStream;
 public class TypeUtils {
     protected final static String SIZE_NAME = "SIZE";
     protected final static String BYTE_OFFSET_NAME = "value";
+    protected final static String BIT_OFFSET_NAME = "bitOffset";
     protected final static String LENGTH_NAME = "length";
     protected final static String PROTOCOL_TYPES_NAME = "PROTOCOL_TYPES";
     protected final static String ENCODE_FORMULA_NAME = "beforeEncode";
@@ -80,6 +81,13 @@ public class TypeUtils {
     }
 
     @SneakyThrows
+    public static int size(@NonNull Class<? extends Annotation> typeAnnotationClass) {
+        return typeAnnotationClass
+                .getDeclaredField(SIZE_NAME)
+                .getInt(null);
+    }
+
+    @SneakyThrows
     public static ProtocolType[] protocolTypes(@NonNull Annotation typeAnnotation) {
         return (ProtocolType[]) typeAnnotation.annotationType()
         .getDeclaredField(PROTOCOL_TYPES_NAME)
@@ -109,9 +117,10 @@ public class TypeUtils {
 
     @SneakyThrows
     public static Type[] javaTypes(@NonNull Annotation typeAnnotation) {
-        return (Type[]) typeAnnotation.annotationType()
-                .getDeclaredField(JAVA_TYPES_NAME)
-                .get(typeAnnotation);
+        return (Type[]) typeAnnotation
+                .getClass()
+                .getField(JAVA_TYPES_NAME)
+                .get(null);
     }
 
     @SneakyThrows
@@ -126,6 +135,17 @@ public class TypeUtils {
             return (Integer) typeAnnotation
                     .getClass()
                     .getMethod(BYTE_OFFSET_NAME)
+                    .invoke(typeAnnotation);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            return 0;
+        }
+    }
+
+    public static int bitOffset(@NonNull Annotation typeAnnotation) {
+        try {
+            return (Integer) typeAnnotation
+                    .getClass()
+                    .getMethod(BIT_OFFSET_NAME)
                     .invoke(typeAnnotation);
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             return 0;

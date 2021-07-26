@@ -61,7 +61,7 @@ public @interface ListType {
             ProtocolType.UINTEGER16,
             ProtocolType.UINTEGER32,
     };
-    Boolean AUTO_TYPE = true;
+    boolean AUTO_TYPE = true;
 
     int value();
 

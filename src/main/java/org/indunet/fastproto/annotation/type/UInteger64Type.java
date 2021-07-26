@@ -46,7 +46,7 @@ import java.util.function.Function;
 public @interface UInteger64Type {
     Type[] JAVA_TYPES = {BigInteger.class};
     int SIZE = Long.SIZE >> 3;
-    Boolean AUTO_TYPE = false;
+    boolean AUTO_TYPE = false;
     BigInteger MAX_VALUE = new BigInteger(String.valueOf(Long.MAX_VALUE))
             .subtract(new BigInteger(String.valueOf(Long.MIN_VALUE)));
     BigInteger MIN_VALUE = new BigInteger("0");

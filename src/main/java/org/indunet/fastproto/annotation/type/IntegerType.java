@@ -44,7 +44,7 @@ import java.util.function.Function;
 public @interface IntegerType {
     Type[] JAVA_TYPES = {Integer.class, Integer.TYPE};
     int SIZE = Integer.SIZE >> 3;
-    Boolean AUTO_TYPE = true;
+    boolean AUTO_TYPE = true;
     int MAX_VALUE = Integer.MAX_VALUE;
     int MIN_VALUE = Integer.MIN_VALUE;
 
