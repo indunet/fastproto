@@ -43,7 +43,7 @@ public class FieldFlow extends AbstractFlow<ValidationContext> {
         }
 
         if (decodeFormula == null && encodeFormula == null) {
-            Arrays.stream(TypeUtils.javaTypes(typeAnnotationClass))
+            Arrays.stream(TypeUtils.javaTypes(typeAnnotation))
                     .filter(t -> t == field.getType()
                                 || (field.getType().isEnum() && (((Class<?>) t).isAssignableFrom(field.getType()))))
                     .findAny()

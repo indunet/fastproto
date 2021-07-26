@@ -43,7 +43,7 @@ import java.util.function.Function;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface StringType {
     Type[] JAVA_TYPES = {String.class};
-    Boolean AUTO_TYPE = true;
+    boolean AUTO_TYPE = true;
 
     int value();
 

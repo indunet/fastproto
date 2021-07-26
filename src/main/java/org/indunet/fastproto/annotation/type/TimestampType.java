@@ -47,7 +47,7 @@ import java.util.function.Function;
 public @interface TimestampType {
     Type[] JAVA_TYPES = {Timestamp.class};
     ProtocolType[] PROTOCOL_TYPES = {ProtocolType.UINTEGER32, ProtocolType.LONG};
-    Boolean AUTO_TYPE = true;
+    boolean AUTO_TYPE = true;
 
     int value();
 

@@ -18,9 +18,15 @@ package org.indunet.fastproto.pipeline.encode;
 
 import lombok.val;
 import org.indunet.fastproto.ProtocolVersionAssist;
+import org.indunet.fastproto.TypeAssist;
+import org.indunet.fastproto.checksum.CheckerUtils;
+import org.indunet.fastproto.exception.AddressingException;
+import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
-import org.indunet.fastproto.checksum.CheckerUtils;
+
+import java.lang.annotation.ElementType;
+import java.util.ArrayDeque;
 
 /**
  * Infer length flow.
@@ -33,12 +39,41 @@ public class InferLengthFlow extends AbstractFlow<CodecContext> {
 
     @Override
     public void process(CodecContext context) {
-        val assist = context.getTypeAssist();
-        int length = assist.getMaxLength();
-        length += CheckerUtils.getSize(context.getProtocolClass());
-        length += ProtocolVersionAssist.size(assist);
+        val queue = new ArrayDeque<TypeAssist>();
+        int max = 0;
+        queue.add(context.getTypeAssist());
 
-        context.setDatagram(new byte[length]);
+        while (!queue.isEmpty()) {
+            val assist = queue.remove();
+
+            assist.getElements().stream()
+                    .filter(a -> a.getElementType() == ElementType.TYPE)
+                    .forEach(a -> queue.add(a));
+
+            int length = assist.getElements().stream()
+                    .filter(a -> a.getElementType() == ElementType.FIELD)
+                    .mapToInt(a -> {
+                        if (a.getByteOffset() < 0 || a.getLength() < 0) {
+                            throw new AddressingException(CodecError.UNABLE_INFER_LENGTH);
+                        } else {
+                           return a.getByteOffset() + a.getSize() + a.getLength();
+                        }
+                    }).max()
+                    .orElse(0);
+
+            if (length > max) {
+                max = length;
+            }
+        }
+
+        if (max == 0) {
+            throw new AddressingException(CodecError.UNABLE_INFER_LENGTH);
+        } else {
+            max += CheckerUtils.getSize(context.getProtocolClass());
+            max += ProtocolVersionAssist.size(context.getTypeAssist());
+            context.setDatagram(new byte[max]);
+        }
+
         this.nextFlow(context);
     }
 

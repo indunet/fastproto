@@ -71,8 +71,6 @@ public class TypeAssist {
     Class<? extends Function> encodeFormula;
     Function<DecodeContext, ?> decoder;
     Consumer<?> encoder;
-    // Used to store minimum length of datagram.
-    Integer minLength = 0;
 
     Optional<EnableCrypto> opEnableCrypto;
     Optional<byte[]> opKey;
@@ -82,6 +80,11 @@ public class TypeAssist {
     Optional<EnableChecksum> opChecksum;
 
     Boolean circularReference = false;
+
+    Integer byteOffset;
+    Integer bitOffset;
+    Integer size;
+    Integer length;
 
     long codecFeature;
 
@@ -158,6 +161,7 @@ public class TypeAssist {
                 .filter(f -> !Modifier.isFinal(f.getModifiers()))   // Non final.
                 .filter(f -> !Modifier.isTransient(f.getModifiers()))   // Non transient.
                 .filter(f -> !f.getType().isArray())    // Non array.
+                .filter(f -> f.getType() instanceof Class)
                 .filter(f -> Arrays.stream(ProtocolType.supportedTypes())
                         .noneMatch(t -> t == f.getType()))
                 .map(f -> {
@@ -181,7 +185,6 @@ public class TypeAssist {
                                 .elementType(ElementType.TYPE)
                                 .circularReference(true)
                                 .elements(new ArrayList<TypeAssist>())
-                                .minLength(0)
                                 .build();
                     } else {
                         TypeAssist a = TypeAssist.of(c);
@@ -229,7 +232,6 @@ public class TypeAssist {
                 .encodeIgnore(encodeIgnore)
                 .elementType(ElementType.TYPE)
                 .circularReference(false)
-                .minLength(0)
                 .build();
 
         List<TypeAssist> elements = Stream.concat(fieldStream, typeStream)
@@ -238,74 +240,6 @@ public class TypeAssist {
         assist.setElements(elements);
 
         return assist;
-    }
-
-    public static Integer getLength(Annotation typeAnnotation) {
-        if (typeAnnotation == null) {
-            return null;
-        }
-
-        int minLength = 0;
-        int value = TypeUtils.byteOffset(typeAnnotation);
-
-        if (value >= 0) {
-            minLength += value;
-        } else {
-            return -1;
-        }
-
-        int size = TypeUtils.size(typeAnnotation);
-        minLength += size;
-
-        int length = TypeUtils.length(typeAnnotation);
-
-        if (length >= 0) {
-            minLength += length;
-        } else {
-            return -1;
-        }
-
-        return minLength;
-    }
-
-    protected static Class<? extends Annotation> getTypeAnnotationClass(@NonNull Field field) {
-        Annotation typeAnnotation = getTypeAnnotation(field);
-
-        if (typeAnnotation instanceof AutoType) {
-            return ProtocolType
-                    .byAutoType(field.getType())
-                    .typeAnnotationClass;
-        } else {
-            return typeAnnotation.annotationType();
-        }
-    }
-
-    protected static Annotation getTypeAnnotation(@NonNull Field field) {
-        return Arrays.stream(field.getAnnotations())
-                .filter(a -> a.annotationType().isAnnotationPresent(TypeFlag.class))
-                .findAny()
-                .orElseThrow(CodecException::new);
-    }
-
-    protected static Annotation getProxyTypeAnnotation(@NonNull Field field) {
-        Annotation typeAnnotation = getTypeAnnotation(field);
-
-        if (typeAnnotation instanceof AutoType) {
-            Class<? extends Annotation> typeAnnotationClass = ProtocolType
-                    .byAutoType(field.getType())
-                    .typeAnnotationClass;
-
-            return typeAnnotationClass.cast(Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{typeAnnotationClass},
-                    (object, method, parameters) -> {
-                        return Arrays.stream(typeAnnotation.annotationType().getMethods())
-                                .filter(m -> m.getName().equals(method.getName()))
-                                .findAny()
-                                .orElseThrow(CodecException::new)
-                                .invoke(typeAnnotation);
-                    }));
-        } else {
-            return typeAnnotation;
-        }
     }
 
     protected static TypeAssist of(Field field) {
@@ -351,16 +285,17 @@ public class TypeAssist {
 
         val context = ValidationContext.builder()
                 .field(field)
-                .typeAnnotation(typeAnnotation)
-                .typeAnnotationClass(typeAnnotationClass)
+                .typeAnnotation(getProxyTypeAnnotation(field))
                 .build();
         AbstractFlow.getValidateFlow()
                 .process(context);
 
+        val proxyTypeAnnotation = getProxyTypeAnnotation(field);
+
         return TypeAssist.builder()
                 .clazz(field.getType())
                 .field(field)
-                .typeAnnotation(getProxyTypeAnnotation(field))
+                .typeAnnotation(proxyTypeAnnotation)
                 .decoderClass(decoder)
                 .encoderClass(encoder)
                 .decodeFormula(afterDecode)
@@ -370,27 +305,51 @@ public class TypeAssist {
                 .encodeIgnore(encodeIgnore)
                 .elementType(ElementType.FIELD)
                 .circularReference(false)
-                .minLength(getLength(getProxyTypeAnnotation(field)))     // From proxy type annotation.
+                .byteOffset(TypeUtils.byteOffset(proxyTypeAnnotation))
+                .bitOffset(TypeUtils.bitOffset(proxyTypeAnnotation))
+                .length(TypeUtils.length(proxyTypeAnnotation))
+                .size(TypeUtils.size(proxyTypeAnnotation))
                 .build();
     }
 
-    public Integer getMaxLength() {
-        Integer length = this.minLength;
+    protected static Class<? extends Annotation> getTypeAnnotationClass(@NonNull Field field) {
+        Annotation typeAnnotation = getTypeAnnotation(field);
 
-        if (this.elements == null) {
-            return length;
-        } else if (this.elements.stream()
-                .mapToInt(TypeAssist::getMaxLength)
-                .anyMatch(l -> l < 0)) {
-            throw new AddressingException(CodecError.UNABLE_INFER_LENGTH);
+        if (typeAnnotation instanceof AutoType) {
+            return ProtocolType
+                    .byAutoType(field.getType())
+                    .typeAnnotationClass;
+        } else {
+            return typeAnnotation.annotationType();
         }
+    }
 
-        int max = this.elements.stream()
-                .mapToInt(TypeAssist::getMaxLength)
-                .max()
-                .getAsInt();
+    protected static Annotation getTypeAnnotation(@NonNull Field field) {
+        return Arrays.stream(field.getAnnotations())
+                .filter(a -> a.annotationType().isAnnotationPresent(TypeFlag.class))
+                .findAny()
+                .orElseThrow(CodecException::new);
+    }
 
-        return length >= max ? length : max;
+    protected static Annotation getProxyTypeAnnotation(@NonNull Field field) {
+        Annotation typeAnnotation = getTypeAnnotation(field);
+
+        if (typeAnnotation instanceof AutoType) {
+            Class<? extends Annotation> typeAnnotationClass = ProtocolType
+                    .byAutoType(field.getType())
+                    .typeAnnotationClass;
+
+            return typeAnnotationClass.cast(Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{typeAnnotationClass},
+                    (object, method, parameters) -> {
+                        return Arrays.stream(typeAnnotation.annotationType().getMethods())
+                                .filter(m -> m.getName().equals(method.getName()))
+                                .findAny()
+                                .orElseThrow(CodecException::new)
+                                .invoke(typeAnnotation);
+                    }));
+        } else {
+            return typeAnnotation;
+        }
     }
 
     public <T> T getObject(Class<T> clazz) {
