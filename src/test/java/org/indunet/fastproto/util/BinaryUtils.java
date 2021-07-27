@@ -16,7 +16,12 @@
 
 package org.indunet.fastproto.util;
 
+import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
+import org.junit.jupiter.api.Test;
+
+import java.util.Random;
+import java.util.stream.IntStream;
 
 public class BinaryUtils {
     public static byte[] valueOf(float value) {
@@ -107,5 +112,19 @@ public class BinaryUtils {
         }
 
         return bytes;
+    }
+
+    @Test
+    public void test() {
+        IntStream.range(0, 10000000)
+                .parallel()
+                .forEach(i -> {
+                    val random = new Random(System.currentTimeMillis());
+
+                    i += 655;
+                    i -= 323;
+                    i = random.nextInt();
+                    val sqrt = i * i * i;
+                });
     }
 }

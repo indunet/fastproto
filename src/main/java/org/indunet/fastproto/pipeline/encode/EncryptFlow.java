@@ -34,17 +34,13 @@ public class EncryptFlow extends AbstractFlow<CodecContext> {
     public void process(CodecContext context) {
         val assist = context.getTypeAssist();
 
-        if (!assist.getOpEnableCrypto().isPresent()) {
+        if (assist.getEnableCrypto() == null) {
             return;
         }
 
         val datagram = context.getDatagram();
-        val crypto = Crypto.getInstance(assist
-                .getOpEnableCrypto()
-                .get());
-        val key = assist
-                .getOpKey()
-                .get();
+        val crypto = Crypto.getInstance(assist.getEnableCrypto());
+        val key = assist.getKey();
 
         context.setDatagram(crypto.encrypt(key, datagram));
     }

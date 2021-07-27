@@ -50,23 +50,23 @@ public class LongEncoder implements TypeEncoder {
         }
 
         if (policy == EndianPolicy.BIG) {
-            datagram[bo + 7] = (byte) (value & 0xFFL);
-            datagram[bo + 6] = (byte) (value >> 8 & 0xFFL);
-            datagram[bo + 5] = (byte) (value >> 16 & 0xFFL);
-            datagram[bo + 4] = (byte) (value >> 24 & 0xFFL);
-            datagram[bo + 3] = (byte) (value >> 32 & 0xFFL);
-            datagram[bo + 2] = (byte) (value >> 40 & 0xFFL);
-            datagram[bo + 1] = (byte) (value >> 48 & 0xFFL);
-            datagram[bo] = (byte) (value >> 56 & 0xFFL);
+            datagram[bo + 7] = (byte) (value);
+            datagram[bo + 6] = (byte) (value >>> 8);
+            datagram[bo + 5] = (byte) (value >>> 16);
+            datagram[bo + 4] = (byte) (value >>> 24);
+            datagram[bo + 3] = (byte) (value >>> 32);
+            datagram[bo + 2] = (byte) (value >>> 40);
+            datagram[bo + 1] = (byte) (value >>> 48);
+            datagram[bo] = (byte) (value >>> 56);
         } else {
-            datagram[bo] = (byte) (value & 0xFFL);
-            datagram[bo + 1] = (byte) (value >> 8 & 0xFFL);
-            datagram[bo + 2] = (byte) (value >> 16 & 0xFFL);
-            datagram[bo + 3] = (byte) (value >> 24 & 0xFFL);
-            datagram[bo + 4] = (byte) (value >> 32 & 0xFFL);
-            datagram[bo + 5] = (byte) (value >> 40 & 0xFFL);
-            datagram[bo + 6] = (byte) (value >> 48 & 0xFFL);
-            datagram[bo + 7] = (byte) (value >> 56 & 0xFFL);
+            datagram[bo] = (byte) (value);
+            datagram[bo + 1] = (byte) (value >>> 8);
+            datagram[bo + 2] = (byte) (value >>> 16);
+            datagram[bo + 3] = (byte) (value >>> 24);
+            datagram[bo + 4] = (byte) (value >>> 32);
+            datagram[bo + 5] = (byte) (value >>> 40);
+            datagram[bo + 6] = (byte) (value >>> 48);
+            datagram[bo + 7] = (byte) (value >>> 56);
         }
     }
 }

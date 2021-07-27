@@ -129,10 +129,10 @@ public class Crc16Checker implements Checker {
 
             for (int j = 0; j < 8; j++) {
                 if ((crc16 & 0x0001) == 1) {
-                    crc16 >>= 1;
+                    crc16 >>>= 1;
                     crc16 ^= poly;
                 } else {
-                    crc16 >>= 1;
+                    crc16 >>>= 1;
                 }
             }
         }

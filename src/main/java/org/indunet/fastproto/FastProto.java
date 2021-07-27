@@ -115,15 +115,4 @@ public class FastProto {
 
         return context.getDatagram();
     }
-
-    public static void print(@NonNull Class<?> protocolClass) {
-        val assist = TypeAssist.byClass(protocolClass);
-        val list = assist.toDecodeContexts(new byte[8]);
-
-
-    }
-
-    public static void toCsv() {
-
-    }
 }

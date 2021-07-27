@@ -63,25 +63,25 @@ public class UInteger64Encoder implements TypeEncoder {
                 .longValueExact();
 
         if (policy == EndianPolicy.BIG) {
-            datagram[bo + 7] = (byte) (low & 0xFFL);
-            datagram[bo + 6] = (byte) (low >> 8 & 0xFFL);
-            datagram[bo + 5] = (byte) (low >> 16 & 0xFFL);
-            datagram[bo + 4] = (byte) (low >> 24 & 0xFFL);
+            datagram[bo + 7] = (byte) (low);
+            datagram[bo + 6] = (byte) (low >>> 8);
+            datagram[bo + 5] = (byte) (low >>> 16);
+            datagram[bo + 4] = (byte) (low >>> 24);
 
-            datagram[bo + 3] = (byte) (high & 0xFFL);
-            datagram[bo + 2] = (byte) (high >> 8 & 0xFFL);
-            datagram[bo + 1] = (byte) (high >> 16 & 0xFFL);
-            datagram[bo] = (byte) (high >> 24 & 0xFFL);
+            datagram[bo + 3] = (byte) (high);
+            datagram[bo + 2] = (byte) (high >>> 8);
+            datagram[bo + 1] = (byte) (high >>> 16);
+            datagram[bo] = (byte) (high >>> 24);
         } else {
-            datagram[bo] = (byte) (low & 0xFFL);
-            datagram[bo + 1] = (byte) (low >> 8 & 0xFFL);
-            datagram[bo + 2] = (byte) (low >> 16 & 0xFFL);
-            datagram[bo + 3] = (byte) (low >> 24 & 0xFFL);
+            datagram[bo] = (byte) (low);
+            datagram[bo + 1] = (byte) (low >>> 8);
+            datagram[bo + 2] = (byte) (low >>> 16);
+            datagram[bo + 3] = (byte) (low >>> 24);
 
-            datagram[bo + 4] = (byte) (high & 0xFFL);
-            datagram[bo + 5] = (byte) (high >> 8 & 0xFFL);
-            datagram[bo + 6] = (byte) (high >> 16 & 0xFFL);
-            datagram[bo + 7] = (byte) (high >> 24 & 0xFFL);
+            datagram[bo + 4] = (byte) (high);
+            datagram[bo + 5] = (byte) (high >>> 8);
+            datagram[bo + 6] = (byte) (high >>> 16);
+            datagram[bo + 7] = (byte) (high >>> 24);
         }
     }
 }

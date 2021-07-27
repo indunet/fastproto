@@ -50,11 +50,11 @@ public class CharacterEncoder implements TypeEncoder {
         }
 
         if (policy == EndianPolicy.BIG) {
-            datagram[bo] |= (value >> 8 & 0xFF);
-            datagram[bo + 1] |= (value & 0xFF);
+            datagram[bo] = (byte) (value >>> 8);
+            datagram[bo + 1] = (byte) value;
         } else {
-            datagram[bo + 1] |= (value >> 8 & 0xFF);
-            datagram[bo] |= (value & 0xFF);
+            datagram[bo + 1] = (byte) (value >>> 8);
+            datagram[bo] = (byte) value;
         }
     }
 }

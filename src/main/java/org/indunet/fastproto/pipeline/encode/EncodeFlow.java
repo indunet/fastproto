@@ -46,7 +46,7 @@ public class EncodeFlow extends AbstractFlow<CodecContext> {
 
         List<EncodeContext> encodeContexts = assist.toEncodeContexts(object, datagram);
 
-        encodeContexts.stream()
+        encodeContexts
                 .forEach(c -> {
                     TypeAssist a = c.getTypeAssist();
 

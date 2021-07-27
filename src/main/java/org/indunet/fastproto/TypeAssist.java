@@ -72,12 +72,12 @@ public class TypeAssist {
     Function<DecodeContext, ?> decoder;
     Consumer<?> encoder;
 
-    Optional<EnableCrypto> opEnableCrypto;
-    Optional<byte[]> opKey;
+    EnableCrypto enableCrypto;
+    byte[] key;
 
-    Optional<EnableCompress> opEnableCompress;
-    Optional<EnableProtocolVersion> opProtocolVersion;
-    Optional<EnableChecksum> opChecksum;
+    EnableCompress enableCompress;
+    EnableProtocolVersion enableProtocolVersion;
+    EnableChecksum enableChecksum;
 
     Boolean circularReference = false;
 
@@ -101,22 +101,19 @@ public class TypeAssist {
         TypeAssist assist = of(protocolClass);
 
         // Crypto policy and key.
-        val opEnableCrypto = Optional.of(protocolClass)
-                .map(c -> c.getAnnotation(EnableCrypto.class));
+        val enableCrypto = Optional.of(protocolClass)
+                .map(c -> c.getAnnotation(EnableCrypto.class))
+                .orElse(null);
 
-        assist.setOpEnableCrypto(opEnableCrypto);
+        assist.setEnableCrypto(enableCrypto);
 
-        if (opEnableCrypto.isPresent()) {
-            assist.setOpEnableCrypto(opEnableCrypto);
-
-            if (!opEnableCrypto.get()
-                    .key().isEmpty()) {
-                assist.setOpKey(opEnableCrypto
-                        .map(EnableCrypto::key)
-                        .map(String::getBytes));
-            } else if (opEnableCrypto.get()
-                        .keySupplier().length != 0) {
-                assist.setOpKey(opEnableCrypto.map(EnableCrypto::keySupplier)
+        if (enableCrypto != null) {
+            if (!enableCrypto.key().isEmpty()) {
+                assist.setKey(
+                        enableCrypto.key().getBytes());
+            } else if (enableCrypto.keySupplier().length != 0) {
+                assist.setKey(Optional.of(enableCrypto)
+                        .map(EnableCrypto::keySupplier)
                         .map(a -> {
                             try {
                                 val c = a[0];
@@ -126,19 +123,23 @@ public class TypeAssist {
                             } catch (InstantiationException | IllegalAccessException  e) {
                                 throw new CryptoException(CodecError.INVALID_CRYPTO_KEY_SUPPLIER, e);
                             }
-                        })
+                        }).get()
                 );
             } else {
                 throw new CryptoException(CodecError.NO_CRYPTO_KEY);
             }
         }
 
-        assist.setOpEnableCompress(Optional.of(protocolClass)
-                .map(c -> c.getAnnotation(EnableCompress.class)));
-        assist.setOpProtocolVersion(Optional.of(protocolClass)
-                .map(c -> c.getAnnotation(EnableProtocolVersion.class)));
-        assist.setOpChecksum(Optional.of(protocolClass)
-                .map(c -> c.getAnnotation(EnableChecksum.class)));
+        assist.setEnableCompress(Optional.of(protocolClass)
+                .map(c -> c.getAnnotation(EnableCompress.class))
+                .orElse(null));
+        assist.setEnableProtocolVersion(Optional.of(protocolClass)
+                .map(c -> c.getAnnotation(EnableProtocolVersion.class))
+                .orElse(null));
+        assist.setEnableChecksum(Optional.of(protocolClass)
+                .map(c -> c.getAnnotation(EnableChecksum.class))
+                .orElse(null));
+
         assist.setCodecFeature(CodecFeature.of(assist));
         protocolClasses.remove();
 
