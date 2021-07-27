@@ -51,15 +51,15 @@ public class FloatEncoder implements TypeEncoder {
         int bits = Float.floatToIntBits(value);
 
         if (endian == EndianPolicy.LITTLE) {
-            datagram[bo] = (byte) (bits & 0xFFL);
-            datagram[bo + 1] = (byte) (bits >> 8 & 0xFFL);
-            datagram[bo + 2] = (byte) (bits >> 16 & 0xFFL);
-            datagram[bo + 3] = (byte) (bits >> 24 & 0xFFL);
+            datagram[bo] = (byte) bits;
+            datagram[bo + 1] = (byte) (bits >>> 8);
+            datagram[bo + 2] = (byte) (bits >>> 16);
+            datagram[bo + 3] = (byte) (bits >>> 24);
         } else if (endian == EndianPolicy.BIG) {
-            datagram[bo + 3] = (byte) (bits & 0xFFL);
-            datagram[bo + 2] = (byte) (bits >> 8 & 0xFFL);
-            datagram[bo + 1] = (byte) (bits >> 16 & 0xFFL);
-            datagram[bo] = (byte) (bits >> 24 & 0xFFL);
+            datagram[bo + 3] = (byte) (bits);
+            datagram[bo + 2] = (byte) (bits >>> 8);
+            datagram[bo + 1] = (byte) (bits >>> 16);
+            datagram[bo] = (byte) (bits >>> 24);
         }
     }
 }

@@ -45,7 +45,7 @@ public class DecodeFlow extends AbstractFlow<CodecContext> {
         val protocolClass = context.getProtocolClass();
         List<DecodeContext> decodeContexts = assist.toDecodeContexts(datagram);
 
-        decodeContexts.stream()
+        decodeContexts
                 .forEach(c -> {
                     TypeAssist a = c.getTypeAssist();
                     Function<DecodeContext, ?> func = DecoderFactory.getDecoder(

@@ -50,15 +50,15 @@ public class IntegerEncoder implements TypeEncoder {
         }
 
         if (policy == EndianPolicy.LITTLE) {
-            datagram[bo] = (byte) (value & 0xFF);
-            datagram[bo + 1] = (byte) (value >> 8 & 0xFF);
-            datagram[bo + 2] = (byte) (value >> 16 & 0xFF);
-            datagram[bo + 3] = (byte) (value >> 24 & 0xFF);
+            datagram[bo] = (byte) (value);
+            datagram[bo + 1] = (byte) (value >>> 8);
+            datagram[bo + 2] = (byte) (value >>> 16);
+            datagram[bo + 3] = (byte) (value >>> 24);
         } else if (policy == EndianPolicy.BIG) {
-            datagram[bo + 3] = (byte) (value & 0xFF);
-            datagram[bo + 2] = (byte) (value >> 8 & 0xFF);
-            datagram[bo + 1] = (byte) (value >> 16 & 0xFF);
-            datagram[bo] = (byte) (value >> 24 & 0xFF);
+            datagram[bo + 3] = (byte) (value);
+            datagram[bo + 2] = (byte) (value >>> 8);
+            datagram[bo + 1] = (byte) (value >>> 16);
+            datagram[bo] = (byte) (value >>> 24);
         }
     }
 }

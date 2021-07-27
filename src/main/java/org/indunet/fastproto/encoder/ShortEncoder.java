@@ -50,11 +50,11 @@ public class ShortEncoder implements TypeEncoder {
         }
 
         if (policy == EndianPolicy.LITTLE) {
-            datagram[bo] = (byte) (value & 0xFF);
-            datagram[bo + 1] = (byte) (value >> 8 & 0xFF);
+            datagram[bo] = (byte) (value);
+            datagram[bo + 1] = (byte) (value >>> 8);
         } else if (policy == EndianPolicy.BIG) {
-            datagram[bo + 1] = (byte) (value & 0xFF);
-            datagram[bo] = (byte) (value >> 8 & 0xFF);
+            datagram[bo + 1] = (byte) (value);
+            datagram[bo] = (byte) (value >>> 8);
         }
     }
 }

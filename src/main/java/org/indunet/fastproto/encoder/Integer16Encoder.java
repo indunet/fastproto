@@ -57,11 +57,11 @@ public class Integer16Encoder implements TypeEncoder {
         }
 
         if (policy == EndianPolicy.BIG) {
-            datagram[bo + 1] = (byte) (value & 0xFF);
-            datagram[bo] = (byte) (value >> 8 & 0xFF);
+            datagram[bo + 1] = (byte) (value);
+            datagram[bo] = (byte) (value >>> 8);
         } else {
-            datagram[bo] = (byte) (value & 0xFF);
-            datagram[bo + 1] = (byte) (value >> 8 & 0xFF);
+            datagram[bo] = (byte) (value);
+            datagram[bo + 1] = (byte) (value >>> 8);
         }
     }
 }

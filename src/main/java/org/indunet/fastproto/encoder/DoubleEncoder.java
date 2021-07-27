@@ -51,23 +51,23 @@ public class DoubleEncoder implements TypeEncoder {
         long bits = Double.doubleToLongBits(value);
 
         if (endian == EndianPolicy.BIG) {
-            datagram[bo + 7] = (byte) (bits & 0xFFL);
-            datagram[bo + 6] = (byte) (bits >> 8 & 0xFFL);
-            datagram[bo + 5] = (byte) (bits >> 16 & 0xFFL);
-            datagram[bo + 4] = (byte) (bits >> 24 & 0xFFL);
-            datagram[bo + 3] = (byte) (bits >> 32 & 0xFFL);
-            datagram[bo + 2] = (byte) (bits >> 40 & 0xFFL);
-            datagram[bo + 1] = (byte) (bits >> 48 & 0xFFL);
-            datagram[bo] = (byte) (bits >> 56 & 0xFFL);
+            datagram[bo + 7] = (byte) (bits);
+            datagram[bo + 6] = (byte) (bits >>> 8);
+            datagram[bo + 5] = (byte) (bits >>> 16);
+            datagram[bo + 4] = (byte) (bits >>> 24);
+            datagram[bo + 3] = (byte) (bits >>> 32);
+            datagram[bo + 2] = (byte) (bits >>> 40);
+            datagram[bo + 1] = (byte) (bits >>> 48);
+            datagram[bo] = (byte) (bits >>> 56);
         } else {
-            datagram[bo] = (byte) (bits & 0xFFL);
-            datagram[bo + 1] = (byte) (bits >> 8 & 0xFFL);
-            datagram[bo + 2] = (byte) (bits >> 16 & 0xFFL);
-            datagram[bo + 3] = (byte) (bits >> 24 & 0xFFL);
-            datagram[bo + 4] = (byte) (bits >> 32 & 0xFFL);
-            datagram[bo + 5] = (byte) (bits >> 40 & 0xFFL);
-            datagram[bo + 6] = (byte) (bits >> 48 & 0xFFL);
-            datagram[bo + 7] = (byte) (bits >> 56 & 0xFFL);
+            datagram[bo] = (byte) (bits);
+            datagram[bo + 1] = (byte) (bits >>> 8);
+            datagram[bo + 2] = (byte) (bits >>> 16);
+            datagram[bo + 3] = (byte) (bits >>> 24);
+            datagram[bo + 4] = (byte) (bits >>> 32);
+            datagram[bo + 5] = (byte) (bits >>> 40);
+            datagram[bo + 6] = (byte) (bits >>> 48);
+            datagram[bo + 7] = (byte) (bits >>> 56);
         }
     }
 }

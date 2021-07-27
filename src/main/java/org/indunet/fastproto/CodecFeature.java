@@ -40,19 +40,19 @@ public final class CodecFeature {
     public static long of(TypeAssist assist) {
         long codecFeature = DEFAULT;
 
-        if (!assist.getOpEnableCrypto().isPresent()) {
+        if (assist.getEnableCrypto() == null) {
             codecFeature |= DISABLE_CRYPTO;
         }
 
-        if (!assist.getOpEnableCompress().isPresent()) {
+        if (assist.getEnableCompress() == null) {
             codecFeature |= DISABLE_COMPRESS;
         }
 
-        if (!assist.getOpChecksum().isPresent()) {
+        if (assist.getEnableChecksum() == null) {
             codecFeature |= DISABLE_CHECKSUM;
         }
 
-        if (!assist.getOpProtocolVersion().isPresent()) {
+        if (assist.getEnableProtocolVersion() == null) {
             codecFeature |= DISABLE_PROTOCOL_VERSION;
         }
 

@@ -17,8 +17,8 @@ FastProto是一款采用Java编写的协议化二进制序列化和反序列化�
 
 *   协议化二进制序列化和反序列化
     *   支持无符号类型
-    *   支持反向寻址 
-    *   自定义数据开端
+    *   支持反向寻址，适用于非固定长度二进制数据
+    *   自定义开端字节顺序
     *   自定义[编码公式 & 解码公式][formula]   
 *   支持数据[压缩 & 解压缩(gzip, deflate)][compression]  
 *   支持[协议版本校验][protocol-version]
@@ -29,20 +29,19 @@ FastProto是一款采用Java编写的协议化二进制序列化和反序列化�
 
 ## *Under Developing*
 
-*   性能优化
-*   循环引用
-*   任意类型数组
+*  代码结构 & 性能优化
+*  添加测试用例，增加单元测试覆盖率
 
 ## *Compared with ProtoBuf*
 
-仅对Java而言，可以说两者采用不同的方式解决了相同的问题。
-相比之下，FastProto更加适用于物联网（IoT）领域，以下场景推荐使用FastProto：
+虽然ProtoBuf和FastProto都用于解决跨语言和跨平台的数据交换问题，但是两者解决问题的方式并不相同。ProtoBuf通过编写schema自定义协议，而FastProto通过注解
+自定义协议；ProtoBuf能够适配多种语言，而FastProto仅针对Java语言。
 
-*   因带宽或者流量的限制，要求更小体积的序列化结果
-*   嵌入式设备采用C/C++编程，不便处理JSON/XML格式的数据
-*   因兼容性问题而无法使用ProtoBuf
-*   嵌入式设备采用非传统的编程方式，如梯形图、功能图和ST等，数据只能通过二进制格式交换
-*   通过网关采集现场总线数据(CAN/MVB/RS-485)，以二进制格式转发
+以下场景更加推荐使用FastProto:
+
+*   性能要求苛刻，不能容忍通用数据格式（JSON/XML）带来的性能损耗
+*   数据源包含大量二进制内容，如通过现场总线（CAN/MVB/RS-485）采集的数据，并不适用于文本格式
+*   对端软件开发的限制，只能采用二进制格式，且不支持ProtoBuf，如嵌入式设备采用非传统的编程方式（梯形图/功能图/ST）
 
 ## *Maven*
 
@@ -50,7 +49,7 @@ FastProto是一款采用Java编写的协议化二进制序列化和反序列化�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>2.0.0</version>
+    <version>2.2.0</version>
 </dependency>
 ```
 
@@ -76,8 +75,11 @@ FastProto是一款采用Java编写的协议化二进制序列化和反序列化�
 | 18          | 3-7        |                | 预留          |      |           |
 | 19          |            |                | 预留          |      |           |
 
-气象站接收到数据后，希望将其转换成Java数据对象，以便后续的业务功能开发，所以按照协议定义Java数据对象，并使用FastProto数据类型注解修饰相应字段。
-需要注意，任意数据类型注解的`value`字段对应信号的字节偏移量。
+### 序列化 & 反序列化
+
+气象站接收到数据后，需要将其转换成Java数据对象，以便后续的业务功能开发。
+首先，按照协议定义Java数据对象`Weather`，然后使用FastProto数据类型注解修饰各个属性。
+需要注意，任意数据类型注解的`value`属性对应信号的字节偏移量。
 
 ```java
 public class Weather {
@@ -107,7 +109,7 @@ public class Weather {
 }
 ```
 
-通过`FastProto::parseFrom()`方法即可将二进制数据反序列化成Java数据对象。
+调用`FastProto::parseFrom()`方法将二进制数据反序列化成Java数据对象`Weather`
 
 ```java
 byte[] datagram = ...   // Datagram sent by monitoring device.
@@ -115,17 +117,19 @@ byte[] datagram = ...   // Datagram sent by monitoring device.
 Weather weather = FastProto.parseFrom(datagram, Weather.class);
 ```
 
-同理，也可通过`FastProto::toByteArray()`方法将Java数据对象序列成二进制数据。
+调用`FastProto::toByteArray()`方法将Java数据对象`Weather`序列成二进制数据。
 该方法的第二个参数是数据报文长度，如果用户不指定，那么FastProto会自动推测长度。
 
 ```java
 byte[] datagram = FastProto.toByteArray(weather, 20);
 ```
 
-到这里还没有结束，需要注意，压力信号对应一个换算公式，通常需要用户将序列化后的结果乘以0.1。
-为了帮助用户减少中间步骤，FastProto通过编码公式和解码公式实现上述过程。
+### 编码公式 & 解码公式
 
-自定义解码公式需要实现`java.lang.function.Function`接口，然后通过数据类型注解的`afterDecode`字段指定解码公式。
+也许你已经注意到压力信号对应一个换算公式，通常需要用户自行将序列化后的结果乘以0.1，这是物联网数据交换时极其常见的操作。
+为了帮助用户减少中间步骤，FastProto引入的编码公式和解码公式。
+
+自定义解码公式需要实现`java.lang.function.Function`接口，然后通过数据类型注解的`afterDecode`属性指定解码公式。
 
 ```java
 public class PressureDecodeFormula implements Function<Long, Double> {
@@ -141,7 +145,7 @@ public class PressureDecodeFormula implements Function<Long, Double> {
 double pressure;
 ```
 
-同理，编码公式也需要实现`java.lang.function.Function`接口，然后通过数据类型注解的`beforeEncode`字段指定编码公式。[更多][formula]
+同理，编码公式也需要实现`java.lang.function.Function`接口，然后通过数据类型注解的`beforeEncode`属性指定编码公式。[更多][formula]
 
 ```java
 public class PressureEncodeFormula implements Function<Double, Long> {
@@ -157,7 +161,21 @@ public class PressureEncodeFormula implements Function<Double, Long> {
 double pressure;
 ```
 
-## *注解*
+### 其他
+
+FastProto支持数据压缩、协议版本验证、数据完整性校验和数据对称加密，各项功能均可由注解开启。
+
+```java
+@EnableCrypto(value = CryptoPolicy.AES_ECB_PKCS5PADDING, key = "330926")
+@EnableProtocolVersion(value = 78, version = 17)
+@EnableCompress(value = CompressPolicy.DEFLATE, level = 2)
+@EnableChecksum(value = -4, start = 0, length = -5, checkPolicy = CheckPolicy.CRC32, endianPolicy = EndianPolicy.BIG)
+public class Weather {
+    ...
+}
+```
+
+## *核心注解*
 
 FastProto支持Java基础数据类型、Timestamp、String和字节数组，以上类型均可由`@AutoType`代替。
 考虑到跨语言跨平台的数据交换，FastProto还引入了无符号类型。
@@ -182,6 +200,9 @@ FastProto支持Java基础数据类型、Timestamp、String和字节数组，以�
 | `@BinaryType`     | byte[]             | char[]         | N 字节     |  √  |    
 | `@StringType`     | java.lang.String   | --             | N 字节     |  √ |    
 | `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 字节 |  √  |    
+| `@ArrayType`     | 基本数据类型数组   | 基本数据类型数组             | N 字节     |  √ |    
+| `@ListType`  | 基本数据类型列表 | --             | N 字节 |  √  |    
+| `@EnumType`     | 枚举   | 枚举             | N 字节     |  √ |
 
 FastProto还提供了一些辅助注解，帮助用户进一步自定义二进制格式、解码和编码流程。
 
@@ -203,13 +224,17 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 
 |Benchmark |    模式  | 样本数量  |  评分  |   误差   |   单位   |
 |:--------:|:--------:|:--------:|:-------:|:---------:|:---------:|
-| `FastProto::parseFrom` |  吞吐量   |   10  |   115.2 | ± 1.6    |  次/毫秒   |
+| `FastProto::parseFrom` |  吞吐量   |   10  |   291.2 | ± 1.6    |  次/毫秒   |
 | `FastProto::toByteArray` | 吞吐量  |   10  |   285.7 | ± 1.5    |  次/毫秒   |
 
 ## *Build Requirements*
 
 *   Java 1.8+  
 *   Maven 3.5+    
+
+## 欢迎加入
+
+如果你对该项目感兴趣，并希望加入承担部分工作（开发/测试/文档），请通过邮件<deng_ran@foxmail.com>联系我。
 
 ## *License*
 

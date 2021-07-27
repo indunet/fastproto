@@ -51,7 +51,9 @@ public class IntegerEncoderTest {
                 Arguments.arguments(new byte[4], 0, EndianPolicy.LITTLE, -101, BinaryUtils.valueOf(-101)),
                 Arguments.arguments(new byte[4], -4, EndianPolicy.LITTLE, -101, BinaryUtils.valueOf(-101)),
                 Arguments.arguments(new byte[4], 0, EndianPolicy.BIG, Integer.MAX_VALUE,
-                        BinaryUtils.valueOf(Integer.MAX_VALUE, EndianPolicy.BIG))
+                        BinaryUtils.valueOf(Integer.MAX_VALUE, EndianPolicy.BIG)),
+                Arguments.arguments(new byte[4], 0, EndianPolicy.BIG, Integer.MIN_VALUE,
+                        BinaryUtils.valueOf(Integer.MIN_VALUE, EndianPolicy.BIG))
         ).collect(Collectors.toList());
     }
 

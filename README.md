@@ -210,7 +210,7 @@ FastProto also provides some auxiliary annotations to help users further customi
 
 |Benchmark |    Mode  | Samples  |  Score  |   Error   |   Units   |
 |:--------:|:--------:|:--------:|:-------:|:---------:|:---------:|
-| `FastProto::parseFrom` |  throughput   |   10  |   115.2 | ± 1.6    |  ops/ms   |
+| `FastProto::parseFrom` |  throughput   |   10  |   291.2 | ± 1.6    |  ops/ms   |
 | `FastProto::toByteArray` | throughput  |   10  |   285.7 | ± 1.5    |  ops/ms   |
 
 ## *Build Requirements*
