@@ -10,41 +10,46 @@ English | [中文](README-zh.md)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto is a protocolized binary serialization and deserialization tool written in Java. It not only allows users to 
-customize binary protocols through annotations, but also supports data compression, encryption, data integrity checksums 
-and protocol version verification. FastProto uses a new way to solve the problem of cross-language and cross-platform data
-exchange in Java, especially suitable for the Internet of Things (IoT) field.
+FastProto is a protocolized binary serialization & deserialization tool written in Java. It can not only customize the binary
+protocol through annotations, but also supports data compression, encryption, and data integrity checksum, protocol version
+verification. FastProto uses a new way to solve the problem of cross-language and cross-platform data exchange in Java, 
+which is especially suitable for the Internet of Things (IoT).
 
 ## *Features*
 
 *   Protocolized binary serialization & deserialization
     *   Support unsigned data type
-    *   Support reverse addressing
-    *   Customize endianness
+    *   Support reverse addressing, suitable for non-fixed length binary data
+    *   Customize endianness (byte order)
     *   Support [decoding formula & encoding formula][formula]
 *   Support data [compress and decompress(gzip, deflate)][compression]
 *   Support [protocol version verification][protocol-version]
-*   Support [data integrity check][checksum]
-*   Support data decrypt and encrypt
+*   Support [data integrity verification][checksum]
+*   Support data decrypt & encrypt
 *   Built-in [Kafka serializer & deserializer][kafka]
 *   Built-in Netty decoder & encoder
 
 ## *Under Developing*
 
-*   Performance optimization
-*   Circular reference
-    Arbitrary type array
+*   Code structure & performance optimization
+*   Add test cases to increase unit test coverage
+*   Parse multiple pieces of binary data into one data object
 
 ## Compared with ProtoBuf
 
-For Java alone, it can be said that the two solve the same problem in different ways.
-In contrast, FastProto is more suitable for the Internet of Things (IoT). FastProto is recommended for the following scenarios:
+Although both ProtoBuf and FastProto are used to solve the problem of cross-language and cross-platform data exchange, 
+they have completely different ways of solving the problem:
 
-* Due to bandwidth or traffic limitations, smaller serialization results are required
-* Embedded devices use C/C++ programming, which is inconvenient to process data in JSON/XML format
-* ProtoBuf cannot be used due to compatibility issues
-* Embedded devices use non-traditional programming methods, such as ladder diagram, function diagram and ST, etc., and data can only be exchanged in binary format
-* Collect field bus data (CAN/MVB/RS-485) through the gateway and forward it in binary format
+*   ProtoBuf customizes the protocol by writing schema, and FastProto customizes the protocol by annotation
+*   ProtoBuf can adapt to multiple languages, while FastProto only targets the Java language
+*   FastProto performance is more superior, custom protocol granularity is more refined
+
+FastProto is more recommended for the following scenarios:
+
+*   The performance requirements are demanding, and the performance loss caused by common data formats (JSON/XML) cannot be tolerated
+*   The data source contains a lot of binary content, such as data collected through fieldbus (CAN/MVB/RS-485), which is not suitable for text format
+*   Restrictions on end software development can only be in binary format, and ProtoBuf is not supported. For example, 
+    embedded devices use non-traditional programming methods (ladder diagram/function diagram/ST)
 
 ## *Maven*
 
@@ -52,7 +57,7 @@ In contrast, FastProto is more suitable for the Internet of Things (IoT). FastPr
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>1.6.2</version>
+    <version>2.2.0</version>
 </dependency>
 ```
 
@@ -79,10 +84,11 @@ The binary data contains 8 different types of signals, the specific protocol is 
 | 18          | 3-7        |                | reserved          |      |           |
 | 19          |            |                | reserved          |      |           |
 
-After the weather station receives the binary data, it hopes to convert it into a Java data object for subsequent business
-function development. Therefore, the Java data object is defined in accordance with the protocol and the corresponding fields
-are annotated with FastProto data type annotations.
-It should be noted that the `value` field of any data type annotation corresponds to the byte offset of the signal.
+1. **Serialization & Deserialization**
+
+After the weather station receives the data, it needs to be converted into Java data objects for subsequent business function development.
+First, define the Java data object `Weather` according to the protocol, and then use the FastProto data type annotation to annotate each attribute.
+It should be noted that the `value` attribute of any data type annotation corresponds to the byte offset of the signal.
 
 ```java
 public class Weather {
@@ -111,7 +117,8 @@ public class Weather {
     boolean pressureValid;
 }
 ```
-Deserialize the binary data into the Java data object through `FastProto::parseFrom()` method.
+
+Invoke the `FastProto::parseFrom()` method to deserialize the binary data into the Java data object `Weather`
 
 ```java
 byte[] datagram = ...   // Datagram sent by monitoring device.
@@ -119,20 +126,22 @@ byte[] datagram = ...   // Datagram sent by monitoring device.
 Weather weather = FastProto.parseFrom(datagram, Weather.class);
 ```
 
-Similarly, serialize Java data object into binary data through the `FastProto::toByteArray()` method.
-The second parameter of this method is the length of the data message. If the user does not specify it, FastProto will
-automatically infer the length.
+Invoke the `FastProto::toByteArray()` method to serialize the Java data object `Weather` into binary data.
+The second parameter of this method is the length of the binary data. 
+If the user does not specify it, FastProto will automatically guess the length.
 
 ```java
 byte[] datagram = FastProto.toByteArray(weather, 20);
 ```
 
-It’s important to note that the pressure signal corresponds to a conversion formula, which usually requires the user to
-multiply the serialized result by 0.1. To help users reduce intermediate steps, FastProto implements the above process 
-through encoding formulas and decoding formulas.
+2. **Decode Formula & Encode Formula**
+
+Perhaps you have noticed that the pressure signal corresponds to a conversion formula, usually requiring the user to multiply
+the serialized result by 0.1, which is an extremely common operation in IoT data exchange.
+To help users reduce intermediate steps, FastProto introduces encoding formulas and decoding formulas.
 
 The custom decoding formula needs to implement the `java.lang.function.Function` interface, and then specify the decoding
-formula through the `afterDecode` field of the data type annotation.
+formula through the `afterDecode` attribute of the data type annotation.
 
 ```java
 public class PressureDecodeFormula implements Function<Long, Double> {
@@ -144,12 +153,16 @@ public class PressureDecodeFormula implements Function<Long, Double> {
 ```
 
 ```java
-@UInteger32Type(value = 14, afterDecode = PressureDecodeFormula.class)
-double pressure;
+public class Weather {
+    ...
+
+    @UInteger32Type(value = 14, afterDecode = DecodeSpeedFormula.class)
+    double pressure;
+}
 ```
 
-Similarly, the encoding formula also needs to implement the `java.lang.function.Function` interface, and then specify
-the encoding formula through the `beforeEncode` field of the data type annotation. [more][formula]
+Similarly, In the same way, the encoding formula also needs to implement the `java.lang.function.Function` interface, and
+then specify the encoding formula through the `beforeEncode` attribute of the data type annotation. [more][formula]
 
 ```java
 public class PressureEncodeFormula implements Function<Double, Long> {
@@ -161,11 +174,30 @@ public class PressureEncodeFormula implements Function<Double, Long> {
 ```
 
 ```java
-@UInteger32Type(value = 14, afterDecode = PressureDecodeFormula.class, beforeEncode = PressureEncodeFormula.class)
-double pressure;
+public class Weather {
+    ...
+
+    @UInteger32Type(value = 14, afterDecode = PressureDecodeFormula.class, beforeEncode = PressureEncodeFormula.class)
+    double pressure;
+}
 ```
 
-## *FastProto Annotations*
+3. **Other Functions**
+
+FastProto supports data compression, protocol version verification, data integrity verification, and data symmetric encryption.
+Each function can be enabled by annotations.
+
+```java
+@EnableCrypto(value = CryptoPolicy.AES_ECB_PKCS5PADDING, key = "330926")
+@EnableProtocolVersion(value = 78, version = 17)
+@EnableCompress(value = CompressPolicy.DEFLATE, level = 2)
+@EnableChecksum(value = -4, start = 0, length = -5, checkPolicy = CheckPolicy.CRC32, endianPolicy = EndianPolicy.BIG)
+public class Weather {
+    ...
+}
+```
+
+## *Core Annotations*
 
 FastProto supports Java primitive data types, Timestamp, String and byte array. The above types can be replaced by `@AutoType`.
 Taking into account cross-language and cross-platform data exchange, FastProto also introduces unsigned types.
@@ -189,6 +221,9 @@ Taking into account cross-language and cross-platform data exchange, FastProto a
 | `@BinaryType`     | byte[]             | char[]         | N bytes     |  √  |    
 | `@StringType`     | java.lang.String   | --             | N bytes     |  √ |    
 | `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 bytes |  √  |    
+| `@ArrayType`     | primitive type array   | primitive type array    | N 字节     |  √ |    
+| `@ListType`  | primitive type list | --             | N 字节 |  √  |    
+| `@EnumType`     | enum   | enum             | N 字节     |  √ |
 
 FastProto also provides some auxiliary annotations to help users further customize the binary format, decoding and encoding process.
 
@@ -217,6 +252,11 @@ FastProto also provides some auxiliary annotations to help users further customi
 
 *   Java 1.8+
 *   Maven 3.5+
+
+## Welcome
+
+If you are interested in this project and want to join and undertake part of the work (development/testing/documentation),
+please feel free to contact me via email <deng_ran@foxmail.com>.
 
 ## *License*
 
