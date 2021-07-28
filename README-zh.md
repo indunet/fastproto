@@ -10,8 +10,8 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto是一款采用Java编写的协议化二进制序列化和反序列化工具，不仅允许用户通过注释自定义二进制协议，而且支持数据压缩、加密、数据完整性校验和
-协议版本验证。FastProto使用一种全新的方式解决了Java跨语言和跨平台的数据交换问题 ，尤其适用于物联网（IoT）领域。
+FastProto是一款采用Java编写的协议化二进制序列化和反序列化工具，不仅可以通过注释自定义二进制协议，而且支持数据压缩、加密、数据完整性校验和
+协议版本验证。FastProto使用一种全新的方式解决了Java跨语言和跨平台的数据交换问题，尤其适用于物联网（IoT）领域。
 
 ## *功能*
 
@@ -31,13 +31,17 @@ FastProto是一款采用Java编写的协议化二进制序列化和反序列化�
 
 *  代码结构 & 性能优化
 *  添加测试用例，增加单元测试覆盖率
+*  多条二进制数据解析成一个数据对象
 
 ## *Compared with ProtoBuf*
 
-虽然ProtoBuf和FastProto都用于解决跨语言和跨平台的数据交换问题，但是两者解决问题的方式并不相同。ProtoBuf通过编写schema自定义协议，而FastProto通过注解
-自定义协议；ProtoBuf能够适配多种语言，而FastProto仅针对Java语言。
+虽然ProtoBuf和FastProto都用于解决跨语言和跨平台的数据交换问题，但是两者解决问题的方式完全不同：
 
-以下场景更加推荐使用FastProto:
+*   ProtoBuf通过编写schema自定义协议，而FastProto通过注解自定义协议
+*   ProtoBuf能够适配多种语言，而FastProto仅针对Java语言
+*   FastProto性能更加优越，自定义协议粒度更加精细
+
+以下场景更加推荐使用FastProto：
 
 *   性能要求苛刻，不能容忍通用数据格式（JSON/XML）带来的性能损耗
 *   数据源包含大量二进制内容，如通过现场总线（CAN/MVB/RS-485）采集的数据，并不适用于文本格式
@@ -75,7 +79,7 @@ FastProto是一款采用Java编写的协议化二进制序列化和反序列化�
 | 18          | 3-7        |                | 预留          |      |           |
 | 19          |            |                | 预留          |      |           |
 
-### 序列化 & 反序列化
+1. **序列化 & 反序列化**
 
 气象站接收到数据后，需要将其转换成Java数据对象，以便后续的业务功能开发。
 首先，按照协议定义Java数据对象`Weather`，然后使用FastProto数据类型注解修饰各个属性。
@@ -124,7 +128,7 @@ Weather weather = FastProto.parseFrom(datagram, Weather.class);
 byte[] datagram = FastProto.toByteArray(weather, 20);
 ```
 
-### 编码公式 & 解码公式
+2. **编码公式 & 解码公式**
 
 也许你已经注意到压力信号对应一个换算公式，通常需要用户自行将序列化后的结果乘以0.1，这是物联网数据交换时极其常见的操作。
 为了帮助用户减少中间步骤，FastProto引入的编码公式和解码公式。
@@ -141,8 +145,12 @@ public class PressureDecodeFormula implements Function<Long, Double> {
 ```
 
 ```java
-@UInteger32Type(value = 14, afterDecode = DecodeSpeedFormula.class)
-double pressure;
+public class Weather {
+    ...
+    
+    @UInteger32Type(value = 14, afterDecode = DecodeSpeedFormula.class)
+    double pressure;
+}
 ```
 
 同理，编码公式也需要实现`java.lang.function.Function`接口，然后通过数据类型注解的`beforeEncode`属性指定编码公式。[更多][formula]
@@ -157,11 +165,15 @@ public class PressureEncodeFormula implements Function<Double, Long> {
 ```
 
 ```java
-@UInteger32Type(value = 14, afterDecode = PressureDecodeFormula.class, beforeEncode = PressureEncodeFormula.class)
-double pressure;
+public class Weather {
+    ...
+
+    @UInteger32Type(value = 14, afterDecode = PressureDecodeFormula.class, beforeEncode = PressureEncodeFormula.class)
+    double pressure;
+}
 ```
 
-### 其他
+3. **其他功能**
 
 FastProto支持数据压缩、协议版本验证、数据完整性校验和数据对称加密，各项功能均可由注解开启。
 
