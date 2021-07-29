@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  * @author Deng Ran
  * @since 2.2.0
  */
-public class CircularReference {
+public class CircularReferenceTest {
     @Data
     public static class Node1 {
         Node1 node1;

@@ -36,6 +36,7 @@ import org.indunet.fastproto.iot.Everything;
 import org.indunet.fastproto.iot.Weather;
 import org.indunet.fastproto.iot.color.Phone;
 import org.indunet.fastproto.iot.datagram.StateDatagram;
+import org.indunet.fastproto.iot.inverter.Inverter;
 import org.indunet.fastproto.iot.tesla.Battery;
 import org.indunet.fastproto.iot.tesla.Motor;
 import org.indunet.fastproto.iot.tesla.Tesla;
@@ -345,5 +346,18 @@ public class FastProtoTest {
 
         assertEquals(expected.toString(), FastProto.parseFrom(datagram, ArrayObject.class).toString());
         assertArrayEquals(datagram, FastProto.toByteArray(expected, 10));
+    }
+
+    @Test
+    public void testInverter() {
+        val datagram = new byte[10];
+
+        datagram[0] = 1;
+        datagram[2] = 2;
+
+        val expected = new Inverter(1, 2);
+        val inverter = FastProto.parseFrom(datagram, Inverter.class);
+
+        assertEquals(expected.toString(), inverter.toString());
     }
 }

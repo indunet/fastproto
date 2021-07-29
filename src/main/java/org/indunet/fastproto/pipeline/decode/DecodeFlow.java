@@ -25,7 +25,12 @@ import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
 
+import java.lang.annotation.ElementType;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 
@@ -42,8 +47,19 @@ public class DecodeFlow extends AbstractFlow<CodecContext> {
     public void process(CodecContext context) {
         val assist = context.getTypeAssist();
         val datagram = context.getDatagram();
-        val protocolClass = context.getProtocolClass();
+
+        if (assist.getNoArgsConstructor()) {
+            context.setObject(linearDecode(datagram, assist));
+        } else {
+            context.setObject(dfsDecode(datagram, assist));
+        }
+
+        this.nextFlow(context);
+    }
+
+    public Object linearDecode(byte[] datagram, TypeAssist assist) {
         List<DecodeContext> decodeContexts = assist.toDecodeContexts(datagram);
+        val protocolClass = assist.getClazz();
 
         decodeContexts
                 .forEach(c -> {
@@ -61,7 +77,52 @@ public class DecodeFlow extends AbstractFlow<CodecContext> {
                     }
                 });
 
-        context.setObject(assist.getObject(protocolClass));
+        return assist.getObject(protocolClass);
+    }
+
+    public Object dfsDecode(byte[] datagram, TypeAssist assist) {
+        val classes = Arrays.stream(assist.getClazz().getDeclaredFields())
+                .map(Field::getType)
+                .toArray(Class<?>[]::new);
+        val clazz = assist.getClazz();
+        Constructor<?> constructor = null;
+
+        try {
+            constructor = clazz.getConstructor(classes);
+        } catch (NoSuchMethodException e) {
+            throw new DecodeException(MessageFormat.format(
+                    CodecError.FAIL_DECODING_FIELD.getMessage(), assist.getClazz().getName()), e);
+        }
+
+        val objects = assist.getElements()
+                .stream()
+                .map(a -> {
+                    if (a.getElementType() == ElementType.FIELD) {
+                        Function<DecodeContext, ?> func = DecoderFactory.getDecoder(
+                                a.getDecoderClass(),
+                                a.getDecodeFormula());
+                        try {
+                            return func.apply(a.toDecodeContext(datagram, null));
+                        } catch (DecodeException e) {
+                            throw new DecodeException(MessageFormat.format(
+                                    CodecError.FAIL_DECODING_FIELD.getMessage(), a.getField().toString()), e);
+                        }
+                    } else {
+                        if (assist.getCircularReference()) {
+                            return null;
+                        } else {
+                            return this.dfsDecode(datagram, a);
+                        }
+                    }
+                }).toArray(Object[]::new);
+
+        try {
+            return constructor.newInstance(objects);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new DecodeException(
+                    MessageFormat.format(
+                            CodecError.FAIL_INITIALIZING_DECODE_OBJECT.getMessage(), assist.getClazz().getName()), e);
+        }
     }
 
     @Override
