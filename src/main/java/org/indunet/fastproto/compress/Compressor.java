@@ -27,7 +27,7 @@ import org.indunet.fastproto.exception.CompressException;
 public interface Compressor {
     byte[] compress(byte[] bytes);
 
-    byte[] decompress(byte[] bytes);
+    byte[] uncompress(byte[] bytes);
 
     static Compressor getInstance(EnableCompress enableCompress) {
         switch (enableCompress.value()) {

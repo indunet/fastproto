@@ -31,7 +31,9 @@ import java.util.Arrays;
 @Getter
 public enum CompressPolicy {
     GZIP(0x01, "gzip"),
-    DEFLATE(0x02, "deflate");
+    DEFLATE(0x02, "deflate"),
+    SANPPY(0x03, "snappy"),
+    LZ4(0x04, "lz4");
 
     int code;
     String name;

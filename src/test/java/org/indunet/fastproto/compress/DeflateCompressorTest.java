@@ -45,13 +45,13 @@ class DeflateCompressorTest {
     }
 
     @Test
-    public void testDecompress() {
+    public void testUncompress() {
         val datagram = new byte[1024];
         val random = new Random(System.currentTimeMillis());
         IntStream.range(0, 512)
                 .forEach(i -> datagram[i] = (byte) random.nextInt());
         val after = compressor.compress(datagram);
-        val before = compressor.decompress(after);
+        val before = compressor.uncompress(after);
 
         assertTrue(after.length > 0);
         assertArrayEquals(datagram, before);

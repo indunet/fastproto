@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,6 @@ import lombok.val;
 import lombok.var;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CompressException;
-import org.indunet.fastproto.exception.DecodeException;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -75,7 +74,7 @@ public class GzipCompressor implements Compressor {
      * @return after decompressing.
      */
     @Override
-    public byte[] decompress(@NonNull byte[] bytes) {
+    public byte[] uncompress(@NonNull byte[] bytes) {
         val out = new ByteArrayOutputStream();
         val in = new ByteArrayInputStream(bytes);
 
@@ -87,8 +86,8 @@ public class GzipCompressor implements Compressor {
                 out.write(buffer, 0, n);
             }
         } catch (IOException e) {
-            throw new DecodeException(
-                    MessageFormat.format(CodecError.FAIL_DECOMPRESS_DATAGRAM.getMessage(), this.getClass().getName()), e);
+            throw new CompressException(
+                    MessageFormat.format(CodecError.FAIL_UNCOMPRESS_DATAGRAM.getMessage(), this.getClass().getName()), e);
         }
 
         return out.toByteArray();

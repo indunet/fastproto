@@ -43,7 +43,7 @@ public class DecompressFlow extends AbstractFlow<CodecContext> {
             val annotation = protocolClass.getAnnotation(EnableCompress.class);
             val compressor = Compressor.getInstance(annotation);
 
-            context.setDatagram(compressor.decompress(datagram));
+            context.setDatagram(compressor.uncompress(datagram));
         }
 
         this.nextFlow(context);

@@ -43,7 +43,7 @@ public enum CodecError {
     NOT_FOUND_DECODER("Decoder for data type {0} cannot be found."),
     ILLEGAL_TIMESTAMP_PARAMETERS("Illgeal timestamp parameters."),
     FAIL_ASSIGN_VALUE("Fail assigning value for field {0}"),
-    FAIL_DECOMPRESS_DATAGRAM("Fail decompressing datagram with {0}"),
+    FAIL_UNCOMPRESS_DATAGRAM("Fail decompressing datagram with {0}"),
     PROTOCOL_VERSION_NOT_MATCH("Protocol version and datagram version doesn't match."),
     ILLEGAL_PROTOCOL_VERSION_TYPE("Illegal protocol version type"),
     ILLEGAL_CHECK_SUM("Illegal check sum"),
