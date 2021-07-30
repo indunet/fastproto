@@ -29,8 +29,8 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Deng Ran
  * @since 1.3.0
  */
-public class GzipCompressorTest {
-    GzipCompressor compressor = new GzipCompressor();
+public class SnappyCompressorTest {
+    SnappyCompressor compressor = new SnappyCompressor();
 
     @Test
     public void testCompress() {

@@ -31,8 +31,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
  */
 public class TypeAssistTest {
     @Test
-    public void testOf() {
-        TypeAssist assist = TypeAssist.get(Tesla.class);
+    public void testByClass() {
+        TypeAssist assist = TypeAssist.byClass(Tesla.class);
         List<DecodeContext> contexts = assist.toDecodeContexts(new byte[100]);
 
         assertNotNull(contexts);

@@ -59,6 +59,7 @@ public class DeflateCompressor implements Compressor {
      * @param bytes need to be compressed.
      * @return after compressing.
      */
+    @Override
     @SneakyThrows
     synchronized public byte[] compress(@NonNull byte[] bytes) {
         val deflater = new Deflater(this.level);
@@ -88,8 +89,9 @@ public class DeflateCompressor implements Compressor {
      * @param bytes need to be decompressed.
      * @return after decompressing.
      */
+    @Override
     @SneakyThrows
-    synchronized public byte[] decompress(@NonNull byte[] bytes) {
+    synchronized public byte[] uncompress(@NonNull byte[] bytes) {
         val inflater = new Inflater();
         val out = new ByteArrayOutputStream();
 
@@ -105,7 +107,7 @@ public class DeflateCompressor implements Compressor {
             }
         } catch (DataFormatException e) {
             throw new CompressException(MessageFormat.format(
-                    CodecError.FAIL_DECOMPRESS_DATAGRAM.getMessage(), this.getClass().getName()), e);
+                    CodecError.FAIL_UNCOMPRESS_DATAGRAM.getMessage(), this.getClass().getName()), e);
         } finally {
             inflater.end();
             out.close();

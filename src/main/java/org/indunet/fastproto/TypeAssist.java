@@ -88,6 +88,8 @@ public class TypeAssist {
 
     long codecFeature;
 
+    Boolean noArgsConstructor;
+
     protected TypeAssist() {
 
     }
@@ -98,7 +100,7 @@ public class TypeAssist {
 
     public static TypeAssist get(@NonNull Class<?> protocolClass) {
         protocolClasses.set(new HashSet<>());
-        TypeAssist assist = of(protocolClass);
+        TypeAssist assist = resolveClass(protocolClass);
 
         // Crypto policy and key.
         val enableCrypto = Optional.of(protocolClass)
@@ -146,8 +148,12 @@ public class TypeAssist {
         return assist;
     }
 
-    protected static TypeAssist of(@NonNull Class<?> protocolClass) {
+    protected static TypeAssist resolveClass(@NonNull Class<?> protocolClass) {
         protocolClasses.get().add(protocolClass);
+
+        // Constructor flag
+        val noArgsConstructor = Arrays.stream(protocolClass.getConstructors())
+                .anyMatch(c -> c.getParameterCount() == 0);
 
         Predicate<Field> isType = f -> Arrays.stream(f.getAnnotations())
                 .map(Annotation::annotationType)
@@ -159,7 +165,7 @@ public class TypeAssist {
                         && !f.isAnnotationPresent(EncodeIgnore.class))
                 .filter(isType.negate())
                 .filter(f -> !f.getType().isEnum())  // Non enum.
-                .filter(f -> !Modifier.isFinal(f.getModifiers()))   // Non final.
+                // .filter(f -> !Modifier.isFinal(f.getModifiers()))   // Non final.
                 .filter(f -> !Modifier.isTransient(f.getModifiers()))   // Non transient.
                 .filter(f -> !f.getType().isArray())    // Non array.
                 .filter(f -> f.getType() instanceof Class)
@@ -188,7 +194,7 @@ public class TypeAssist {
                                 .elements(new ArrayList<TypeAssist>())
                                 .build();
                     } else {
-                        TypeAssist a = TypeAssist.of(c);
+                        TypeAssist a = TypeAssist.resolveClass(c);
                         Boolean decodeIgnore = f.isAnnotationPresent(DecodeIgnore.class);
                         Boolean encodeIgnore = f.isAnnotationPresent(EncodeIgnore.class);
                         a.setDecodeIgnore(decodeIgnore);
@@ -213,7 +219,7 @@ public class TypeAssist {
                         && !f.isAnnotationPresent(EncodeIgnore.class))
                 .filter(isType)
                 .peek(f -> f.setAccessible(true))
-                .map(TypeAssist::of)
+                .map(TypeAssist::resolveField)
                 .peek(a -> {
                     if (a.getEndianPolicy() == null) {
                         a.setEndianPolicy(endianPolicy);
@@ -233,6 +239,7 @@ public class TypeAssist {
                 .encodeIgnore(encodeIgnore)
                 .elementType(ElementType.TYPE)
                 .circularReference(false)
+                .noArgsConstructor(noArgsConstructor)
                 .build();
 
         List<TypeAssist> elements = Stream.concat(fieldStream, typeStream)
@@ -243,12 +250,12 @@ public class TypeAssist {
         return assist;
     }
 
-    protected static TypeAssist of(Field field) {
+    protected static TypeAssist resolveField(Field field) {
         EndianPolicy policy = Optional.ofNullable(field.getAnnotation(Endian.class))
                 .map(Endian::value)
                 .orElse(null);
-        Boolean decodeIgnore = field.isAnnotationPresent(DecodeIgnore.class)
-                || Modifier.isFinal(field.getModifiers());
+        Boolean decodeIgnore = field.isAnnotationPresent(DecodeIgnore.class);
+                // || Modifier.isFinal(field.getModifiers());       // Removed for case class.
         Boolean encodeIgnore = field.isAnnotationPresent(EncodeIgnore.class);
 
         Class<? extends Annotation> typeAnnotationClass = getTypeAnnotationClass(field);
@@ -373,7 +380,7 @@ public class TypeAssist {
         }
     }
 
-    protected DecodeContext toDecodeContext(byte[] datagram, Object object) {
+    public DecodeContext toDecodeContext(byte[] datagram, Object object) {
         return DecodeContext.builder()
                 .object(object)
                 .datagram(datagram)
@@ -415,7 +422,6 @@ public class TypeAssist {
             return Stream.concat(fieldStream, classStream)
                     .collect(Collectors.toList());
         } catch (InstantiationException | IllegalAccessException e) {
-            e.printStackTrace();
             throw new DecodeException(
                     MessageFormat.format(CodecError.FAIL_INITIALIZING_DECODE_OBJECT.getMessage(), this.clazz.getName()), e);
         }
@@ -437,7 +443,6 @@ public class TypeAssist {
                     .value(this.field.get(object))
                     .build();
         } catch (IllegalAccessException e) {
-            e.printStackTrace();
             throw new EncodeException(
                     MessageFormat.format(CodecError.FAIL_GETTING_FIELD_VALUE.getMessage(), this.field.getName()), e);
         }
