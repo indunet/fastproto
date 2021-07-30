@@ -10,8 +10,8 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto是一款采用Java编写的协议化二进制序列化和反序列化工具，不仅可以通过注解自定义二进制协议，而且支持数据压缩、加密、数据完整性校验和协议版本验证。
-FastProto使用一种全新的方式解决了Java跨语言和跨平台的数据交换问题，尤其适用于物联网（IoT）领域。
+FastProto是一款采用Java编写的协议化二进制序列化和反序列化工具，不仅可以通过注解自定义二进制协议，而且支持数据压缩、加密、数据完整性校验和
+协议版本验证。FastProto使用一种全新的方式解决了Java跨语言和跨平台的数据交换问题，尤其适用于物联网（IoT）领域。
 
 ## *功能*
 
