@@ -14,37 +14,29 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.iot.tesla;
+package org.indunet.fastproto.scala.inverter.iot.tesla;
 
 import lombok.*;
-import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.Endian;
-import org.indunet.fastproto.annotation.type.BooleanType;
+import org.indunet.fastproto.annotation.type.AutoType;
 import org.indunet.fastproto.annotation.type.FloatType;
-import org.indunet.fastproto.annotation.type.LongType;
-import org.indunet.fastproto.annotation.type.TimestampType;
-
-import java.sql.Timestamp;
+import org.indunet.fastproto.annotation.type.IntegerType;
+import org.indunet.fastproto.annotation.type.ShortType;
 
 @Data
 @ToString
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Endian(EndianPolicy.LITTLE)
-public class Tesla {
-    @LongType(0)
-    Long id;
+public class Battery {
+    @ShortType(22)
+    short capacity;
 
-    @TimestampType(8)
-    Timestamp time;
+    @AutoType(value = 24, bitOffset = 0)
+    boolean locked;
 
-    @FloatType(16)
-    float speed;
+    @IntegerType(26)
+    int voltage;
 
-    @BooleanType(value = 20, bitOffset = 0)
-    boolean active;
-
-    Battery battery;
-    Motor motor;
+    @FloatType(30)
+    float temperature;
 }

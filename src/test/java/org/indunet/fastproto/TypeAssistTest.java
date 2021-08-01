@@ -17,7 +17,7 @@
 package org.indunet.fastproto;
 
 import org.indunet.fastproto.decoder.DecodeContext;
-import org.indunet.fastproto.iot.tesla.Tesla;
+import org.indunet.fastproto.scala.inverter.iot.tesla.Tesla;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

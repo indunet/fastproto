@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,17 +14,30 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.iot.formula;
-
-import java.util.function.Function;
+package org.indunet.fastproto.exception;
 
 /**
- * @author Chance
- * @since 1.0.0
+ * @author Deng Ran
+ * @since 2.4.0
  */
-public class EncodeSpeedFormula implements Function<Float, Integer> {
-    @Override
-    public Integer apply(Float value) {
-        return (int) (value * 10);
+public class LengthException extends CodecException {
+    public LengthException() {
+
+    }
+
+    public LengthException(CodecError error) {
+        this(error.getMessage());
+    }
+
+    public LengthException(String message) {
+        super(message);
+    }
+
+    public LengthException(CodecError error, Throwable cause) {
+        this(error.getMessage(), cause);
+    }
+
+    public LengthException(String message, Throwable cause) {
+        super(message, cause);
     }
 }

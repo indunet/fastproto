@@ -1,4 +1,4 @@
-package org.indunet.fastproto.iot.datagram;
+package org.indunet.fastproto.scala.inverter.iot.datagram;
 
 /**
  * @author Deng Ran

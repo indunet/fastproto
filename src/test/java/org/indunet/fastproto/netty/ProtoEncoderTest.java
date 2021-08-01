@@ -20,7 +20,7 @@ import io.netty.buffer.ByteBuf;
 import io.netty.channel.embedded.EmbeddedChannel;
 import lombok.val;
 import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.iot.Sensor;
+import org.indunet.fastproto.scala.inverter.iot.Sensor;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

@@ -14,24 +14,27 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.annotation;
+package org.indunet.fastproto.pipeline.decode;
 
-import org.indunet.fastproto.encoder.TypeEncoder;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.CodecContext;
 
 /**
- * Specify type decoder.
+ * Verify length flow.
  *
  * @author Deng Ran
- * @see Decoder
- * @since 1.0.0
+ * @since 2.4.0
  */
-@Target(ElementType.ANNOTATION_TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Encoder {
-    Class<? extends TypeEncoder> value();
+public class VerifyLengthFlow extends AbstractFlow<CodecContext> {
+    public static final long FLOW_CODE = 0x0020;
+
+    @Override
+    public void process(CodecContext context) {
+
+    }
+
+    @Override
+    public long getFlowCode() {
+        return FLOW_CODE;
+    }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.iot.color;
+package org.indunet.fastproto.scala.inverter.iot.color;
 
 import lombok.Data;
 import lombok.val;

@@ -14,17 +14,24 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.iot.formula;
+package org.indunet.fastproto.scala.inverter.iot;
 
-import java.util.function.Function;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.indunet.fastproto.annotation.type.Integer16Type;
+import org.indunet.fastproto.annotation.type.UInteger16Type;
 
 /**
  * @author Deng Ran
- * @since 1.2.4
+ * @since 1.7.4
  */
-public class DecodeSpeedFormula implements Function<Integer, Float> {
-    @Override
-    public Float apply(Integer value) {
-        return value * 0.1f;
-    }
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Sensor {
+    @Integer16Type(0)
+    int temperature;
+    @UInteger16Type(2)
+    int humidity;
 }

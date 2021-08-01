@@ -14,17 +14,23 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.iot.tesla.formula;
+package org.indunet.fastproto.scala.inverter.iot.tesla;
 
-import java.util.function.Function;
+import lombok.*;
+import org.indunet.fastproto.annotation.type.AutoType;
 
-/**
- * @author Deng Ran
- * @version 1.0
- */
-public class VoltageFormula implements Function<Byte, Double> {
-    @Override
-    public Double apply(Byte value) {
-        return value * 0.1;
-    }
+@Data
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class Motor {
+    @AutoType(34)
+    short voltage;
+
+    @AutoType(36)
+    int current;
+
+    @AutoType(40)
+    float temperature;
 }

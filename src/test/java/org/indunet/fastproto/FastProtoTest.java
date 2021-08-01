@@ -32,14 +32,13 @@ import org.indunet.fastproto.crypto.CryptoPolicy;
 import org.indunet.fastproto.exception.CheckSumException;
 import org.indunet.fastproto.exception.CryptoException;
 import org.indunet.fastproto.exception.ProtocolVersionException;
-import org.indunet.fastproto.iot.Everything;
-import org.indunet.fastproto.iot.Weather;
-import org.indunet.fastproto.iot.color.Phone;
-import org.indunet.fastproto.iot.datagram.StateDatagram;
-import org.indunet.fastproto.iot.inverter.Inverter;
-import org.indunet.fastproto.iot.tesla.Battery;
-import org.indunet.fastproto.iot.tesla.Motor;
-import org.indunet.fastproto.iot.tesla.Tesla;
+import org.indunet.fastproto.scala.inverter.iot.Everything;
+import org.indunet.fastproto.scala.inverter.iot.Weather;
+import org.indunet.fastproto.scala.inverter.iot.color.Phone;
+import org.indunet.fastproto.scala.inverter.iot.datagram.StateDatagram;
+import org.indunet.fastproto.scala.inverter.iot.tesla.Battery;
+import org.indunet.fastproto.scala.inverter.iot.tesla.Motor;
+import org.indunet.fastproto.scala.inverter.iot.tesla.Tesla;
 import org.indunet.fastproto.util.EncodeUtils;
 import org.junit.jupiter.api.Test;
 
@@ -346,18 +345,5 @@ public class FastProtoTest {
 
         assertEquals(expected.toString(), FastProto.parseFrom(datagram, ArrayObject.class).toString());
         assertArrayEquals(datagram, FastProto.toByteArray(expected, 10));
-    }
-
-    @Test
-    public void testInverter() {
-        val datagram = new byte[10];
-
-        datagram[0] = 1;
-        datagram[2] = 2;
-
-        val expected = new Inverter(1, 2);
-        val inverter = FastProto.parseFrom(datagram, Inverter.class);
-
-        assertEquals(expected.toString(), inverter.toString());
     }
 }

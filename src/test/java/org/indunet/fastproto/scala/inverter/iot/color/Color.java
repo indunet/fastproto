@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet.org
+ * Copyright 2019-2021 indunet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,24 +14,21 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.annotation;
+package org.indunet.fastproto.scala.inverter.iot.color;
 
-import org.indunet.fastproto.encoder.TypeEncoder;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
- * Specify type decoder.
- *
  * @author Deng Ran
- * @see Decoder
- * @since 1.0.0
+ * @since 2.1.0
  */
-@Target(ElementType.ANNOTATION_TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Encoder {
-    Class<? extends TypeEncoder> value();
+@AllArgsConstructor
+@Getter
+public enum Color {
+    GREEN(0x01),
+    RED(0x08),
+    YELLOW(0x09);
+
+    int code;
 }

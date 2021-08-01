@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.iot.datagram;
+package org.indunet.fastproto.scala.inverter.iot.datagram;
 
 import lombok.Data;
 import org.indunet.fastproto.EndianPolicy;
@@ -28,7 +28,7 @@ import org.indunet.fastproto.annotation.type.UInteger8Type;
 import java.sql.Timestamp;
 import java.util.concurrent.TimeUnit;
 
-import static org.indunet.fastproto.iot.datagram.DatagramProtocol.*;
+import static org.indunet.fastproto.scala.inverter.iot.datagram.DatagramProtocol.*;
 
 /**
  * @author Deng Ran

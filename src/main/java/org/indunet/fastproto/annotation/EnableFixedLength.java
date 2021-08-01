@@ -16,22 +16,20 @@
 
 package org.indunet.fastproto.annotation;
 
-import org.indunet.fastproto.encoder.TypeEncoder;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Specify type decoder.
+ * Enable fixed length.
  *
  * @author Deng Ran
  * @see Decoder
- * @since 1.0.0
+ * @since 2.4.0
  */
 @Target(ElementType.ANNOTATION_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Encoder {
-    Class<? extends TypeEncoder> value();
+public @interface EnableFixedLength {
+    int value();
 }
