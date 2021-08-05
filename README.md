@@ -200,7 +200,7 @@ public class Weather {
 ## *Core Annotations*
 
 FastProto supports Java primitive data types, Timestamp, String and byte array. The above types can be replaced by `@AutoType`.
-Taking into account cross-language and cross-platform data exchange, FastProto also introduces unsigned types.
+Taking into account cross-language and cross-platform data exchange, FastProto also introduces unsigned types. [more][types]
 
 | Annotation      | Java               | C/C++          | Size        |   AutoType |
 |:---------------:|:------------------:|:--------------:|:-----------:|:-----------:|
@@ -283,3 +283,4 @@ limitations under the License.
 [checksum]: https://github.com/indunet/fastproto/wiki/Data-Integrity-Check
 [protocol-version]: https://github.com/indunet/fastproto/wiki/Protocol-Version
 [compression]: https://github.com/indunet/fastproto/wiki/Compression
+[types]: https://github.com/indunet/fastproto/wiki/Data-Type-Annotations

@@ -190,7 +190,7 @@ public class Weather {
 ## *核心注解*
 
 FastProto支持Java基础数据类型、Timestamp、String和字节数组，以上类型均可由`@AutoType`代替。
-考虑到跨语言跨平台的数据交换，FastProto还引入了无符号类型。
+考虑到跨语言跨平台的数据交换，FastProto还引入了无符号类型。[更多][types]
 
 
 | 注解      | Java               | C/C++          | 大小        |   AutoType |
@@ -274,3 +274,4 @@ limitations under the License.
 [protocol-version]: https://github.com/indunet/fastproto/wiki/Protocol-Version
 [compression]: https://github.com/indunet/fastproto/wiki/Compression
 [formula]: https://github.com/indunet/fastproto/wiki/Formula-zh
+[types]: https://github.com/indunet/fastproto/wiki/Data-Type-Annotations-zh
