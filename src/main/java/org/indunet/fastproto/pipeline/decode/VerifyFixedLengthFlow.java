@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,34 +16,30 @@
 
 package org.indunet.fastproto.pipeline.decode;
 
-import lombok.val;
-import org.indunet.fastproto.CodecFeature;
-import org.indunet.fastproto.annotation.EnableCompress;
-import org.indunet.fastproto.compress.Compressor;
+import org.indunet.fastproto.exception.CodecError;
+import org.indunet.fastproto.exception.FixedLengthException;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.pipeline.FlowCode;
+
+import java.text.MessageFormat;
 
 /**
- * Decompress flow.
+ * Verify length flow.
  *
  * @author Deng Ran
- * @since 1.7.0
+ * @since 2.4.0
  */
-public class DecompressFlow extends AbstractFlow<CodecContext> {
-    public static final long FLOW_CODE = 0x0001;
-
+public class VerifyFixedLengthFlow extends AbstractFlow<CodecContext> {
     @Override
     public void process(CodecContext context) {
-        boolean enableCompress =
-                (context.getCodecFeature() & CodecFeature.DISABLE_COMPRESS) == 0;
-        Class<?> protocolClass = context.getProtocolClass();
-        byte[] datagram = context.getDatagram();
+        int fixedLength = context.getTypeAssist()
+                .getFixedLength();
+        int length = context.getDatagram().length;
 
-        if (enableCompress && protocolClass.isAnnotationPresent(EnableCompress.class)) {
-            val annotation = protocolClass.getAnnotation(EnableCompress.class);
-            val compressor = Compressor.getInstance(annotation);
-
-            context.setDatagram(compressor.uncompress(datagram));
+        if (fixedLength != length) {
+            throw new FixedLengthException(MessageFormat.format(
+                    CodecError.FIXED_LENGTH_UNMATCH.getMessage(), fixedLength, length));
         }
 
         this.nextFlow(context);
@@ -51,6 +47,6 @@ public class DecompressFlow extends AbstractFlow<CodecContext> {
 
     @Override
     public long getFlowCode() {
-        return FLOW_CODE;
+        return FlowCode.VERIFY_FIXED_LENGTH_FLOW_CODE;
     }
 }

@@ -14,30 +14,30 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.exception;
+package org.indunet.fastproto.pipeline.encode;
+
+import lombok.val;
+import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.pipeline.FlowCode;
 
 /**
+ * Codec Context.
+ *
  * @author Deng Ran
  * @since 2.4.0
  */
-public class LengthException extends CodecException {
-    public LengthException() {
+public class FixedLengthFlow extends AbstractFlow<CodecContext> {
+    @Override
+    public void process(CodecContext context) {
+        val assist = context.getTypeAssist();
 
+        context.setDatagram(new byte[assist.getFixedLength()]);
+        this.nextFlow(context);
     }
 
-    public LengthException(CodecError error) {
-        this(error.getMessage());
-    }
-
-    public LengthException(String message) {
-        super(message);
-    }
-
-    public LengthException(CodecError error, Throwable cause) {
-        this(error.getMessage(), cause);
-    }
-
-    public LengthException(String message, Throwable cause) {
-        super(message, cause);
+    @Override
+    public long getFlowCode() {
+        return FlowCode.FIXED_LENGTH_FLOW_CODE;
     }
 }

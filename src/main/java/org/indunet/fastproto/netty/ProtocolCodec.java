@@ -32,16 +32,16 @@ import java.util.Optional;
  * @author Deng Ran
  * @since 1.7.0
  */
-public class ProtoCodec extends ByteToMessageCodec {
+public class ProtocolCodec extends ByteToMessageCodec {
     Class<?> protocolClass;
     Optional<Integer> length;
 
-    public ProtoCodec(@NonNull Class<?> protocolClass) {
+    public ProtocolCodec(@NonNull Class<?> protocolClass) {
         this.protocolClass = protocolClass;
         this.length = Optional.empty();
     }
 
-    public ProtoCodec(@NonNull Class<?> protocolClass, int length) {
+    public ProtocolCodec(@NonNull Class<?> protocolClass, int length) {
         this.protocolClass = protocolClass;
         this.length = Optional.of(length);
     }
@@ -61,14 +61,16 @@ public class ProtoCodec extends ByteToMessageCodec {
 
     @Override
     protected void decode(ChannelHandlerContext context, ByteBuf byteBuf, List list) throws Exception {
-        if (byteBuf.readableBytes() <= 0) {
+        val cnt = byteBuf.readableBytes();
+
+        if (cnt <= 0) {
             return;
         }
 
-        val datagram = new byte[4];
-        val bf = byteBuf.readBytes(4);
-        bf.getBytes(bf.readerIndex(), datagram);
-        Object object = FastProto.parseFrom(datagram, this.protocolClass);
+        val datagram = new byte[cnt];
+        byteBuf.readBytes(datagram);
+
+        val object = FastProto.parseFrom(datagram, this.protocolClass);
 
         list.add(object);
     }

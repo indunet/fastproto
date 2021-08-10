@@ -21,6 +21,7 @@ import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.exception.DecodeFormulaException;
 import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.FlowCode;
 import org.indunet.fastproto.pipeline.ValidationContext;
 import org.indunet.fastproto.util.TypeUtils;
 
@@ -35,8 +36,6 @@ import java.util.function.Function;
  * @since 2.3.0
  */
 public class FieldFlow extends AbstractFlow<ValidationContext> {
-    public static int FIELD_FLOW = 0x01;
-
     @Override
     public void process(ValidationContext context) {
         val typeAnnotation = context.getTypeAnnotation();
@@ -72,6 +71,6 @@ public class FieldFlow extends AbstractFlow<ValidationContext> {
 
     @Override
     public long getFlowCode() {
-        return FIELD_FLOW;
+        return FlowCode.FIELD_FLOW_CODE;
     }
 }

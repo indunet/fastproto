@@ -19,6 +19,7 @@ package org.indunet.fastproto.pipeline.encode;
 import org.indunet.fastproto.ProtocolVersionAssist;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.pipeline.FlowCode;
 
 /**
  * Write protocol version flow.
@@ -27,8 +28,6 @@ import org.indunet.fastproto.pipeline.CodecContext;
  * @since 1.7.0
  */
 public class WriteProtocolVersionFlow extends AbstractFlow<CodecContext> {
-    public static final long FLOW_CODE = 0x0400;
-
     @Override
     public void process(CodecContext context) {
         ProtocolVersionAssist.encode(context.getDatagram(), context.getTypeAssist());
@@ -38,6 +37,6 @@ public class WriteProtocolVersionFlow extends AbstractFlow<CodecContext> {
 
     @Override
     public long getFlowCode() {
-        return FLOW_CODE;
+        return FlowCode.WRITE_PROTOCOL_VERSION_FLOW_CODE;
     }
 }

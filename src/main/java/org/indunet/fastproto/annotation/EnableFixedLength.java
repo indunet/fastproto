@@ -28,7 +28,7 @@ import java.lang.annotation.Target;
  * @see Decoder
  * @since 2.4.0
  */
-@Target(ElementType.ANNOTATION_TYPE)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EnableFixedLength {
     int value();

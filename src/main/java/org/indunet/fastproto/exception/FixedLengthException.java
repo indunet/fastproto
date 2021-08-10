@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,15 +14,30 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.kafka;
+package org.indunet.fastproto.exception;
 
 /**
  * @author Deng Ran
- * @since 1.5.0
+ * @since 2.4.0
  */
-public final class ProtoKafkaHelper {
-    public static final String PROTOCOL_CLASS_KEY = "protocol.class";
-    public static final String DATAGRAM_LENGTH_KEY = "datagram.length";
-    public static final String SERIALIZER_NAME_VALUE = ProtoSerializer.class.getName();
-    public static final String DESERIALIZER_NAME_VALUE = ProtoDeserializer.class.getName();
+public class FixedLengthException extends CodecException {
+    public FixedLengthException() {
+
+    }
+
+    public FixedLengthException(CodecError error) {
+        this(error.getMessage());
+    }
+
+    public FixedLengthException(String message) {
+        super(message);
+    }
+
+    public FixedLengthException(CodecError error, Throwable cause) {
+        this(error.getMessage(), cause);
+    }
+
+    public FixedLengthException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

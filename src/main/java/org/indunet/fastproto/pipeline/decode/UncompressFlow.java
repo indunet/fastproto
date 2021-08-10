@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.pipeline.encode;
+package org.indunet.fastproto.pipeline.decode;
 
 import lombok.val;
 import org.indunet.fastproto.CodecFeature;
@@ -25,16 +25,16 @@ import org.indunet.fastproto.pipeline.CodecContext;
 import org.indunet.fastproto.pipeline.FlowCode;
 
 /**
- * Compress flow.
+ * Decompress flow.
  *
  * @author Deng Ran
  * @since 1.7.0
  */
-public class CompressFlow extends AbstractFlow<CodecContext> {
+public class UncompressFlow extends AbstractFlow<CodecContext> {
     @Override
     public void process(CodecContext context) {
         boolean enableCompress =
-                    (context.getCodecFeature() & CodecFeature.DISABLE_COMPRESS) == 0;
+                (context.getCodecFeature() & CodecFeature.DISABLE_COMPRESS) == 0;
         Class<?> protocolClass = context.getProtocolClass();
         byte[] datagram = context.getDatagram();
 
@@ -42,7 +42,7 @@ public class CompressFlow extends AbstractFlow<CodecContext> {
             val annotation = protocolClass.getAnnotation(EnableCompress.class);
             val compressor = Compressor.getInstance(annotation);
 
-            context.setDatagram(compressor.compress(datagram));
+            context.setDatagram(compressor.uncompress(datagram));
         }
 
         this.nextFlow(context);
@@ -50,6 +50,6 @@ public class CompressFlow extends AbstractFlow<CodecContext> {
 
     @Override
     public long getFlowCode() {
-        return FlowCode.COMPRESS_FLOW_CODE;
+        return FlowCode.UNCOMPRESS_FLOW_CODE;
     }
 }

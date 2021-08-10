@@ -22,6 +22,7 @@ import org.indunet.fastproto.annotation.type.TimestampType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.FlowCode;
 import org.indunet.fastproto.pipeline.ValidationContext;
 
 import java.util.concurrent.TimeUnit;
@@ -33,8 +34,6 @@ import java.util.concurrent.TimeUnit;
  * @since 2.3.0
  */
 public class TimestampFlow extends AbstractFlow<ValidationContext> {
-    public static final long TIMESTAMP_FLOW = 0x20;
-
     @Override
     public void process(ValidationContext context) {
         val typeAnnotation = context.getTypeAnnotation();
@@ -56,6 +55,6 @@ public class TimestampFlow extends AbstractFlow<ValidationContext> {
 
     @Override
     public long getFlowCode() {
-        return TIMESTAMP_FLOW;
+        return FlowCode.TIMESTAMP_FLOW_CODE;
     }
 }

@@ -19,6 +19,7 @@ package org.indunet.fastproto.scala.inverter.iot;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.indunet.fastproto.annotation.EnableFixedLength;
 import org.indunet.fastproto.annotation.type.Integer16Type;
 import org.indunet.fastproto.annotation.type.UInteger16Type;
 
@@ -29,6 +30,7 @@ import org.indunet.fastproto.annotation.type.UInteger16Type;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@EnableFixedLength(10)
 public class Sensor {
     @Integer16Type(0)
     int temperature;

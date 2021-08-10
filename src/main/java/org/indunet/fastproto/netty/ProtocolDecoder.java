@@ -31,23 +31,25 @@ import java.util.List;
  * @author Deng Ran
  * @since 1.7.0
  */
-public class ProtoDecoder extends ByteToMessageDecoder {
+public class ProtocolDecoder extends ByteToMessageDecoder {
     Class<?> protocolClass;
 
-    public ProtoDecoder(@NonNull Class<?> protocolClass) {
+    public ProtocolDecoder(@NonNull Class<?> protocolClass) {
         this.protocolClass = protocolClass;
     }
 
     @Override
     protected void decode(ChannelHandlerContext context, ByteBuf byteBuf, List<Object> list) throws Exception {
-        if (byteBuf.readableBytes() <= 0) {
+        val cnt = byteBuf.readableBytes();
+
+        if (cnt <= 0) {
             return;
         }
 
-        val datagram = new byte[4];
-        val bf = byteBuf.readBytes(4);
-        bf.getBytes(bf.readerIndex(), datagram);
-        Object object = FastProto.parseFrom(datagram, this.protocolClass);
+        val datagram = new byte[cnt];
+        byteBuf.readBytes(datagram);
+
+        val object = FastProto.parseFrom(datagram, this.protocolClass);
 
         list.add(object);
     }
