@@ -20,6 +20,7 @@ import lombok.val;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeFormulaException;
 import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.FlowCode;
 import org.indunet.fastproto.pipeline.ValidationContext;
 import org.indunet.fastproto.util.TypeUtils;
 
@@ -34,8 +35,6 @@ import java.util.Arrays;
  * @since 2.3.0
  */
 public class EncodeFormulaFlow extends AbstractFlow<ValidationContext> {
-    public static final long ENCODE_FORMULA_FLOW = 0x04;
-
     @Override
     public void process(ValidationContext context) {
         val encodeFormula = context.getEncodeFormula();
@@ -67,6 +66,6 @@ public class EncodeFormulaFlow extends AbstractFlow<ValidationContext> {
 
     @Override
     public long getFlowCode() {
-        return ENCODE_FORMULA_FLOW;
+        return FlowCode.ENCODE_FORMULA_FLOW_CODE;
     }
 }

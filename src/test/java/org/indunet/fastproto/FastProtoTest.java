@@ -31,8 +31,10 @@ import org.indunet.fastproto.crypto.Crypto;
 import org.indunet.fastproto.crypto.CryptoPolicy;
 import org.indunet.fastproto.exception.CheckSumException;
 import org.indunet.fastproto.exception.CryptoException;
+import org.indunet.fastproto.exception.FixedLengthException;
 import org.indunet.fastproto.exception.ProtocolVersionException;
 import org.indunet.fastproto.scala.inverter.iot.Everything;
+import org.indunet.fastproto.scala.inverter.iot.Sensor;
 import org.indunet.fastproto.scala.inverter.iot.Weather;
 import org.indunet.fastproto.scala.inverter.iot.color.Phone;
 import org.indunet.fastproto.scala.inverter.iot.datagram.StateDatagram;
@@ -250,6 +252,16 @@ public class FastProtoTest {
         byte[] datagram = FastProto.toByteArray(motor);
         assertEquals(44, datagram.length);
         assertEquals(motor.toString(), FastProto.parseFrom(datagram, Motor.class).toString());
+    }
+
+    @Test
+    public void testSensor() {
+        assertThrows(FixedLengthException.class, () -> FastProto.parseFrom(new byte[8], Sensor.class));
+
+        val sensor = new Sensor(10, 11);
+        val datagram = FastProto.toByteArray(sensor);
+
+        assertEquals(10, datagram.length);
     }
 
     @Test

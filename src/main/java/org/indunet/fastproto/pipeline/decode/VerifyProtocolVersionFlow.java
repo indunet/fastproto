@@ -22,6 +22,7 @@ import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.ProtocolVersionException;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.pipeline.FlowCode;
 
 /**
  * Verify protocol version flow.
@@ -30,8 +31,6 @@ import org.indunet.fastproto.pipeline.CodecContext;
  * @since 1.7.0
  */
 public class VerifyProtocolVersionFlow extends AbstractFlow<CodecContext> {
-    public static final long FLOW_CODE = 0x0004;
-
     @Override
     public void process(@NonNull CodecContext context) {
         if (!ProtocolVersionAssist.validate(context.getDatagram(), context.getTypeAssist())) {
@@ -43,6 +42,6 @@ public class VerifyProtocolVersionFlow extends AbstractFlow<CodecContext> {
 
     @Override
     public long getFlowCode() {
-        return FLOW_CODE;
+        return FlowCode.VERIFY_PROTOCOL_VERSION_FLOW_CODE;
     }
 }

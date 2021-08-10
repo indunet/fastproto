@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet.org
+ * Copyright 2019-2021 indunet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,15 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.pipeline.decode;
-
-import org.indunet.fastproto.pipeline.AbstractFlow;
-import org.indunet.fastproto.pipeline.CodecContext;
+package org.indunet.fastproto.kafka;
 
 /**
- * Verify length flow.
- *
  * @author Deng Ran
- * @since 2.4.0
+ * @since 1.5.0
  */
-public class VerifyLengthFlow extends AbstractFlow<CodecContext> {
-    public static final long FLOW_CODE = 0x0020;
-
-    @Override
-    public void process(CodecContext context) {
-
-    }
-
-    @Override
-    public long getFlowCode() {
-        return FLOW_CODE;
-    }
+public final class ProtocolKafkaHelper {
+    public static final String PROTOCOL_CLASS_KEY = "protocol.class";
+    public static final String DATAGRAM_LENGTH_KEY = "datagram.length";
+    public static final String SERIALIZER_NAME_VALUE = ProtocolSerializer.class.getName();
+    public static final String DESERIALIZER_NAME_VALUE = ProtocolDeserializer.class.getName();
 }

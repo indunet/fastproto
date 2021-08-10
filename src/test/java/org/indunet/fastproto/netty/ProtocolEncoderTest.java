@@ -19,6 +19,7 @@ package org.indunet.fastproto.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.embedded.EmbeddedChannel;
 import lombok.val;
+import org.indunet.fastproto.CodecFeature;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.scala.inverter.iot.Sensor;
 import org.junit.jupiter.api.Test;
@@ -31,12 +32,12 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Deng Ran
  * @since 1.7.0
  */
-public class ProtoEncoderTest {
+public class ProtocolEncoderTest {
     Sensor sensor = new Sensor();
 
     @Test
     public void testEncode1() {
-        EmbeddedChannel channel = new EmbeddedChannel(new ProtoEncoder(30));
+        EmbeddedChannel channel = new EmbeddedChannel(new ProtocolEncoder(30));
 
         assertTrue(channel.writeOutbound(sensor));
         assertTrue(channel.finish());
@@ -45,14 +46,14 @@ public class ProtoEncoderTest {
         val cache = new byte[4];
         buf.getBytes(buf.readerIndex(), cache);
 
-        val expected = FastProto.toByteArray(sensor, 4);
+        val expected = FastProto.toByteArray(sensor, 4, CodecFeature.DISABLE_FIXED_LENGTH);
         assertArrayEquals(expected, cache);
     }
 
     @Test
     public void testEncode2() {
         Sensor sensor = new Sensor();
-        EmbeddedChannel channel = new EmbeddedChannel(new ProtoCodec(Sensor.class, 30));
+        EmbeddedChannel channel = new EmbeddedChannel(new ProtocolCodec(Sensor.class, 30));
 
         assertTrue(channel.writeOutbound(sensor));
         assertTrue(channel.finish());
@@ -61,12 +62,12 @@ public class ProtoEncoderTest {
         val cache = new byte[4];
         buf.getBytes(buf.readerIndex(), cache);
 
-        val expected = FastProto.toByteArray(sensor, 4);
+        val expected = FastProto.toByteArray(sensor, 4, CodecFeature.DISABLE_FIXED_LENGTH);
         assertArrayEquals(expected, cache);
     }
 
     @Test
     public void testException() {
-        assertThrows(ProtoNettyException.class, () -> new ProtoEncoder(-10));
+        assertThrows(ProtocolNettyException.class, () -> new ProtocolEncoder(-10));
     }
 }

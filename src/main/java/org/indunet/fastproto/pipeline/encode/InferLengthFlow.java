@@ -24,6 +24,7 @@ import org.indunet.fastproto.exception.AddressingException;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.pipeline.FlowCode;
 
 import java.lang.annotation.ElementType;
 import java.util.ArrayDeque;
@@ -35,8 +36,6 @@ import java.util.ArrayDeque;
  * @since 1.7.0
  */
 public class InferLengthFlow extends AbstractFlow<CodecContext> {
-    public static final long FLOW_CODE = 0x0100;
-
     @Override
     public void process(CodecContext context) {
         val queue = new ArrayDeque<TypeAssist>();
@@ -79,6 +78,6 @@ public class InferLengthFlow extends AbstractFlow<CodecContext> {
 
     @Override
     public long getFlowCode() {
-        return FLOW_CODE;
+        return FlowCode.INFER_LENGTH_FLOW_CODE;
     }
 }

@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Deng Ran
  * @since 1.7.0
  */
-public class ProtoDecoderTest {
+public class ProtocolDecoderTest {
     Sensor sensor = new Sensor(23, 86);
     ByteBuf buf = Unpooled.buffer();
 
@@ -39,8 +39,9 @@ public class ProtoDecoderTest {
     public void testDecode1() {
         buf.writeShortLE(sensor.getTemperature());
         buf.writeShortLE(sensor.getHumidity());
+        buf.writeBytes(new byte[6]);    // For fixed length of 10 bytes.
 
-        EmbeddedChannel channel = new EmbeddedChannel(new ProtoDecoder(Sensor.class));
+        EmbeddedChannel channel = new EmbeddedChannel(new ProtocolDecoder(Sensor.class));
 
         assertTrue(channel.writeInbound(buf));
         assertTrue(channel.finish());
@@ -50,15 +51,13 @@ public class ProtoDecoderTest {
 
     @Test
     public void testDecode2() {
-        buf.writeShortLE(sensor.getTemperature());
-        buf.writeShortLE(sensor.getHumidity());
-
         Sensor sensor = new Sensor(23, 86);
         ByteBuf buf = Unpooled.buffer();
         buf.writeShortLE(sensor.getTemperature());
         buf.writeShortLE(sensor.getHumidity());
+        buf.writeBytes(new byte[6]);    // For fixed length of 10 bytes.
 
-        EmbeddedChannel channel = new EmbeddedChannel(new ProtoCodec(Sensor.class));
+        EmbeddedChannel channel = new EmbeddedChannel(new ProtocolCodec(Sensor.class));
 
         assertTrue(channel.writeInbound(buf));
         assertTrue(channel.finish());

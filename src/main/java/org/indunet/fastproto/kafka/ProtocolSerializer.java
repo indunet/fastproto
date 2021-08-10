@@ -19,7 +19,7 @@ package org.indunet.fastproto.kafka;
 import lombok.SneakyThrows;
 import org.apache.kafka.common.serialization.Serializer;
 import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.kafka.ProtoKafkaException.ProtoKafkaError;
+import org.indunet.fastproto.kafka.ProtocolKafkaException.ProtoKafkaError;
 
 import java.util.Map;
 
@@ -27,28 +27,28 @@ import java.util.Map;
  * @author Deng Ran
  * @since 1.5.0
  */
-public class ProtoSerializer implements Serializer<Object> {
+public class ProtocolSerializer implements Serializer<Object> {
     protected Class<?> clazz;
     protected int length;
 
     @SneakyThrows(ClassNotFoundException.class)
     @Override
     public void configure(Map<String, ?> props, boolean isKey) {
-        if (!props.containsKey(ProtoKafkaHelper.PROTOCOL_CLASS_KEY)) {
-            throw new ProtoKafkaException(ProtoKafkaError.PROTOCOL_CLASS_NOT_FOUND);
-        } else if (!props.containsKey(ProtoKafkaHelper.DATAGRAM_LENGTH_KEY)) {
-            throw new ProtoKafkaException(ProtoKafkaError.DATAGRAM_LENGTH_NOT_FOUND);
+        if (!props.containsKey(ProtocolKafkaHelper.PROTOCOL_CLASS_KEY)) {
+            throw new ProtocolKafkaException(ProtoKafkaError.PROTOCOL_CLASS_NOT_FOUND);
+        } else if (!props.containsKey(ProtocolKafkaHelper.DATAGRAM_LENGTH_KEY)) {
+            throw new ProtocolKafkaException(ProtoKafkaError.DATAGRAM_LENGTH_NOT_FOUND);
         }
 
-        Object protocolClass = props.get(ProtoKafkaHelper.PROTOCOL_CLASS_KEY);
-        Object length = props.get(ProtoKafkaHelper.DATAGRAM_LENGTH_KEY);
+        Object protocolClass = props.get(ProtocolKafkaHelper.PROTOCOL_CLASS_KEY);
+        Object length = props.get(ProtocolKafkaHelper.DATAGRAM_LENGTH_KEY);
 
         if (protocolClass instanceof Class) {
             this.clazz = (Class) protocolClass;
         } else if (protocolClass instanceof String) {
             this.clazz = Class.forName((String) protocolClass);
         } else {
-            throw new ProtoKafkaException(ProtoKafkaError.INVALID_PROTOCOL_CLASS);
+            throw new ProtocolKafkaException(ProtoKafkaError.INVALID_PROTOCOL_CLASS);
         }
 
         if (length instanceof String) {
@@ -56,7 +56,7 @@ public class ProtoSerializer implements Serializer<Object> {
         } else if (length instanceof Integer) {
             this.length = (Integer) length;
         } else {
-            throw new ProtoKafkaException(ProtoKafkaError.INVALID_DATAGRAM_LENGTH);
+            throw new ProtocolKafkaException(ProtoKafkaError.INVALID_DATAGRAM_LENGTH);
         }
     }
 
@@ -65,7 +65,7 @@ public class ProtoSerializer implements Serializer<Object> {
         if (this.clazz.isInstance(object)) {
             return FastProto.toByteArray(object, this.length);
         } else {
-            throw new ProtoKafkaException(ProtoKafkaError.TYPE_NOT_MATCH);
+            throw new ProtocolKafkaException(ProtoKafkaError.TYPE_NOT_MATCH);
         }
     }
 }

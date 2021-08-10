@@ -46,16 +46,16 @@ public class KafkaTest {
         Properties producerConfig = new Properties();
         producerConfig.put("bootstrap.servers", sharedKafkaTestResource.getKafkaConnectString());
         producerConfig.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        producerConfig.put("value.serializer", ProtoKafkaHelper.SERIALIZER_NAME_VALUE);
-        producerConfig.put(ProtoKafkaHelper.PROTOCOL_CLASS_KEY, Weather.class);
-        producerConfig.put(ProtoKafkaHelper.DATAGRAM_LENGTH_KEY, 26);
+        producerConfig.put("value.serializer", ProtocolKafkaHelper.SERIALIZER_NAME_VALUE);
+        producerConfig.put(ProtocolKafkaHelper.PROTOCOL_CLASS_KEY, Weather.class);
+        producerConfig.put(ProtocolKafkaHelper.DATAGRAM_LENGTH_KEY, 26);
 
         Properties consumerConfig = new Properties();
         consumerConfig.put("bootstrap.servers", sharedKafkaTestResource.getKafkaConnectString());
         consumerConfig.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        consumerConfig.put("value.deserializer", ProtoKafkaHelper.DESERIALIZER_NAME_VALUE);
+        consumerConfig.put("value.deserializer", ProtocolKafkaHelper.DESERIALIZER_NAME_VALUE);
         consumerConfig.put("group.id", "1");
-        consumerConfig.put(ProtoKafkaHelper.PROTOCOL_CLASS_KEY, Weather.class);
+        consumerConfig.put(ProtocolKafkaHelper.PROTOCOL_CLASS_KEY, Weather.class);
 
         val producer = new KafkaProducer<String, Weather>(producerConfig);
         Weather weather = Weather.builder()

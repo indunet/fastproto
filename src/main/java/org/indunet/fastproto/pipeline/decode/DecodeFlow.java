@@ -24,6 +24,7 @@ import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.pipeline.FlowCode;
 
 import java.lang.annotation.ElementType;
 import java.lang.reflect.Constructor;
@@ -41,8 +42,6 @@ import java.util.function.Function;
  * @since 1.7.0
  */
 public class DecodeFlow extends AbstractFlow<CodecContext> {
-    public static final long FLOW_CODE = 0x0008;
-
     @Override
     public void process(CodecContext context) {
         val assist = context.getTypeAssist();
@@ -127,6 +126,6 @@ public class DecodeFlow extends AbstractFlow<CodecContext> {
 
     @Override
     public long getFlowCode() {
-        return FLOW_CODE;
+        return FlowCode.DECODE_FLOW_CODE;
     }
 }

@@ -31,21 +31,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  * @author Deng Ran
  * @since 1.5.2
  */
-public class ProtoSerializerTest {
-    protected ProtoDeserializer deserializer = new ProtoDeserializer();
+public class ProtocolSerializerTest {
+    protected ProtocolDeserializer deserializer = new ProtocolDeserializer();
 
     @Test
     public void testDeserialize() {
         val props = new Properties();
 
         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
-        props.put("value.serializer", ProtoKafkaHelper.SERIALIZER_NAME_VALUE);
+        props.put("value.serializer", ProtocolKafkaHelper.SERIALIZER_NAME_VALUE);
 
         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
-        props.put("value.deserializer", ProtoKafkaHelper.DESERIALIZER_NAME_VALUE);
+        props.put("value.deserializer", ProtocolKafkaHelper.DESERIALIZER_NAME_VALUE);
 
-        props.put(ProtoKafkaHelper.PROTOCOL_CLASS_KEY, Weather.class);
-        props.put(ProtoKafkaHelper.DATAGRAM_LENGTH_KEY, 26);
+        props.put(ProtocolKafkaHelper.PROTOCOL_CLASS_KEY, Weather.class);
+        props.put(ProtocolKafkaHelper.DATAGRAM_LENGTH_KEY, 26);
 
         val map = new HashMap<String, Object>();
         Weather weather = Weather.builder()

@@ -36,12 +36,14 @@ import java.util.concurrent.ConcurrentMap;
 public abstract class AbstractFlow<T> {
     protected static Class<? extends AbstractFlow>[] decodeFlowClasses = new Class[] {
             DecryptFlow.class,
-            DecompressFlow.class,
+            UncompressFlow.class,
+            VerifyFixedLengthFlow.class,
             VerifyChecksumFlow.class,
             VerifyProtocolVersionFlow.class,
             DecodeFlow.class};
     protected static Class<? extends AbstractFlow>[] encodeFlowClasses = new Class[] {
             InferLengthFlow.class,
+            FixedLengthFlow.class,
             EncodeFlow.class,
             WriteProtocolVersionFlow.class,
             WriteChecksumFlow.class,

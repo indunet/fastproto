@@ -21,6 +21,7 @@ import lombok.val;
 import org.indunet.fastproto.crypto.Crypto;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.pipeline.FlowCode;
 
 /**
  * Decrypt flow.
@@ -29,8 +30,6 @@ import org.indunet.fastproto.pipeline.CodecContext;
  * @since 2.0.0
  */
 public class DecryptFlow extends AbstractFlow<CodecContext> {
-    public static final long FLOW_CODE = 0x0010;
-
     @Override
     public void process(CodecContext context) {
         val assist = context.getTypeAssist();
@@ -49,6 +48,6 @@ public class DecryptFlow extends AbstractFlow<CodecContext> {
 
     @Override
     public long getFlowCode() {
-        return FLOW_CODE;
+        return FlowCode.DECRYPT_FLOW_CODE;
     }
 }

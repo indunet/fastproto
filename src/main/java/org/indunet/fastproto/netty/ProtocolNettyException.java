@@ -14,40 +14,38 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.kafka;
+package org.indunet.fastproto.netty;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
+ * FastProto netty exception.
+ *
  * @author Deng Ran
- * @since 1.5.0
+ * @since 1.7.0
  */
-public class ProtoKafkaException extends RuntimeException {
-    public ProtoKafkaException() {
-        super();
-    }
-
-    public ProtoKafkaException(ProtoKafkaError error) {
+public class ProtocolNettyException extends RuntimeException {
+    public ProtocolNettyException(ProtoNettyError error) {
         this(error.getMessage());
     }
 
-    public ProtoKafkaException(String message) {
+    public ProtocolNettyException(ProtoNettyError error, Throwable cause) {
+        this(error.getMessage(), cause);
+    }
+
+    public ProtocolNettyException(String message) {
         super(message);
     }
 
-    public ProtoKafkaException(String message, Throwable cause) {
+    public ProtocolNettyException(String message, Throwable cause) {
         super(message, cause);
     }
 
     @AllArgsConstructor
     @Getter
-    public enum ProtoKafkaError {
-        PROTOCOL_CLASS_NOT_FOUND("protocol.class cannot be found."),
-        DATAGRAM_LENGTH_NOT_FOUND("datagram.length cannot be found."),
-        INVALID_DATAGRAM_LENGTH("Invalid datagram.length which must be String or Integer."),
-        INVALID_PROTOCOL_CLASS("Invalid protocol.class which must be String or Class"),
-        TYPE_NOT_MATCH("Protocol class and object don't match");
+    public enum ProtoNettyError {
+        ILLEAL_LENGTH("Illegal length");
 
         String message;
     }

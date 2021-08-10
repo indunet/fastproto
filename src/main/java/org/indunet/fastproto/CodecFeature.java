@@ -17,11 +17,7 @@
 package org.indunet.fastproto;
 
 import lombok.val;
-import org.indunet.fastproto.pipeline.decode.DecompressFlow;
-import org.indunet.fastproto.pipeline.decode.DecryptFlow;
-import org.indunet.fastproto.pipeline.decode.VerifyChecksumFlow;
-import org.indunet.fastproto.pipeline.decode.VerifyProtocolVersionFlow;
-import org.indunet.fastproto.pipeline.encode.*;
+import org.indunet.fastproto.pipeline.FlowCode;
 
 /**
  * Codec Feature.
@@ -31,11 +27,12 @@ import org.indunet.fastproto.pipeline.encode.*;
  */
 public final class CodecFeature {
     public static final long DEFAULT = 0;
-    public static final long DISABLE_COMPRESS = CompressFlow.FLOW_CODE | DecompressFlow.FLOW_CODE;
-    public static final long DISABLE_PROTOCOL_VERSION = VerifyProtocolVersionFlow.FLOW_CODE | WriteProtocolVersionFlow.FLOW_CODE;
-    public static final long DISABLE_CHECKSUM = VerifyChecksumFlow.FLOW_CODE | WriteChecksumFlow.FLOW_CODE;
-    public static final long NON_INFER_LENGTH = InferLengthFlow.FLOW_CODE;
-    public static final long DISABLE_CRYPTO = EncryptFlow.FLOW_CODE | DecryptFlow.FLOW_CODE;
+    public static final long DISABLE_COMPRESS = FlowCode.COMPRESS_FLOW_CODE | FlowCode.UNCOMPRESS_FLOW_CODE;
+    public static final long DISABLE_PROTOCOL_VERSION = FlowCode.VERIFY_PROTOCOL_VERSION_FLOW_CODE | FlowCode.WRITE_PROTOCOL_VERSION_FLOW_CODE;
+    public static final long DISABLE_CHECKSUM = FlowCode.VERIFY_CHECKSUM_FLOW_CODE | FlowCode.WRITE_CHECKSUM_FLOW_CODE;
+    public static final long NON_INFER_LENGTH = FlowCode.INFER_LENGTH_FLOW_CODE;
+    public static final long DISABLE_CRYPTO = FlowCode.DECRYPT_FLOW_CODE | FlowCode.ENCRYPT_FLOW_CODE;
+    public static final long DISABLE_FIXED_LENGTH = FlowCode.VERIFY_FIXED_LENGTH_FLOW_CODE | FlowCode.FIXED_LENGTH_FLOW_CODE;
 
     public static long of(TypeAssist assist) {
         long codecFeature = DEFAULT;
@@ -54,6 +51,10 @@ public final class CodecFeature {
 
         if (assist.getEnableProtocolVersion() == null) {
             codecFeature |= DISABLE_PROTOCOL_VERSION;
+        }
+
+        if (assist.getFixedLength() == null) {
+            codecFeature |= DISABLE_FIXED_LENGTH;
         }
 
         return codecFeature;

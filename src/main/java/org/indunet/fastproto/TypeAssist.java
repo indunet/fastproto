@@ -72,6 +72,8 @@ public class TypeAssist {
     Function<DecodeContext, ?> decoder;
     Consumer<?> encoder;
 
+    Integer fixedLength;
+
     EnableCrypto enableCrypto;
     byte[] key;
 
@@ -140,6 +142,10 @@ public class TypeAssist {
                 .orElse(null));
         assist.setEnableChecksum(Optional.of(protocolClass)
                 .map(c -> c.getAnnotation(EnableChecksum.class))
+                .orElse(null));
+        assist.setFixedLength(Optional.of(protocolClass)
+                .map(c -> c.getAnnotation(EnableFixedLength.class))
+                .map(EnableFixedLength::value)
                 .orElse(null));
 
         assist.setCodecFeature(CodecFeature.of(assist));
