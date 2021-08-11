@@ -8,6 +8,7 @@
 [![codecov](https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU)](https://codecov.io/gh/indunet/fastproto)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ed904d7aacd142f08b5cd50b16b1d74b)](https://www.codacy.com/gh/indunet/fastproto/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=indunet/fastproto&amp;utm_campaign=Badge_Grade)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
+[![JetBrain Support](https://img.shields.io/badge/JetBrain-support-blue)](https://www.jetbrains.com/community/opensource)
 [![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 FastProto是一款采用Java编写的协议化二进制序列化和反序列化工具，不仅可以通过注解自定义二进制协议，而且支持数据压缩、加密、数据完整性校验和
@@ -53,7 +54,7 @@ FastProto是一款采用Java编写的协议化二进制序列化和反序列化�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>2.2.0</version>
+    <version>2.4.0</version>
 </dependency>
 ```
 
@@ -244,8 +245,9 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 *   Java 1.8+  
 *   Maven 3.5+    
 
-## 欢迎加入
+## *欢迎加入*
 
+FastProto取得了etBrain开源计划的支持，可提供核心开发人员免费的全家桶许可证。
 如果你对该项目感兴趣，并希望加入承担部分工作（开发/测试/文档），请通过邮件<deng_ran@foxmail.com>联系我。
 
 ## *License*
