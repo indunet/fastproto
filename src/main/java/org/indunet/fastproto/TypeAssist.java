@@ -301,8 +301,16 @@ public class TypeAssist {
                 .field(field)
                 .typeAnnotation(getProxyTypeAnnotation(field))
                 .build();
-        AbstractFlow.getValidateFlow()
-                .process(context);
+
+        try {
+            AbstractFlow.getValidateFlow()
+                    .process(context);
+        } catch(CodecException e) {
+            throw new CodecException(MessageFormat.format(
+                    CodecError.FAIL_RESOLVING_FILED.getMessage(), field.toString()
+            ), e);
+        }
+
 
         val proxyTypeAnnotation = getProxyTypeAnnotation(field);
 

@@ -16,9 +16,17 @@
 
 package org.indunet.fastproto.pipeline.validate;
 
+import lombok.val;
+import org.indunet.fastproto.annotation.type.ListType;
+import org.indunet.fastproto.exception.CodecError;
+import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.FlowCode;
 import org.indunet.fastproto.pipeline.ValidationContext;
+
+import java.lang.reflect.ParameterizedType;
+import java.text.MessageFormat;
+import java.util.Arrays;
 
 /**
  * Abstract flow.
@@ -29,7 +37,33 @@ import org.indunet.fastproto.pipeline.ValidationContext;
 public class ListFlow extends AbstractFlow<ValidationContext> {
     @Override
     public void process(ValidationContext context) {
+        val typeAnnotation = context.getTypeAnnotation();
 
+        if (typeAnnotation instanceof ListType) {
+            val listType = (ListType) typeAnnotation;
+            val protocolType = listType.protocolType();
+
+            if (listType.beforeEncode().length == 0 || listType.afterDecode().length == 0) {
+                if (!Arrays.stream(ListType.PROTOCOL_TYPES)
+                        .anyMatch(t -> t == protocolType)) {
+                    throw new CodecException(MessageFormat.format(
+                            CodecError.LIST_UNSUPPORTED_DATA_TYPE.getMessage(), protocolType.toString()
+                    ));
+                }
+
+                val field = context.getField();
+                ParameterizedType parameterizedType = (ParameterizedType) field.getGenericType();
+                Class<?> typeArgument = (Class<?>)parameterizedType.getActualTypeArguments()[0];
+
+                if (!protocolType.match(typeArgument)) {
+                    throw new CodecException(MessageFormat.format(
+                            CodecError.LIST_UNSUPPORTED_DATA_TYPE.getMessage(), typeArgument.toString()
+                    ));
+                }
+            }
+        }
+
+        this.nextFlow(context);
     }
 
     @Override
