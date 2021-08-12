@@ -247,7 +247,7 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 
 ## *欢迎加入*
 
-FastProto取得了etBrain开源计划的支持，可提供核心开发人员免费的全家桶许可证。
+FastProto取得了[JetBrain开源计划][jetbrain]的支持，可提供核心开发人员免费的全家桶许可证。
 如果你对该项目感兴趣，并希望加入承担部分工作（开发/测试/文档），请通过邮件<deng_ran@foxmail.com>联系我。
 
 ## *License*
@@ -277,3 +277,4 @@ limitations under the License.
 [compression]: https://github.com/indunet/fastproto/wiki/Compression
 [formula]: https://github.com/indunet/fastproto/wiki/Formula-zh
 [types]: https://github.com/indunet/fastproto/wiki/Data-Type-Annotations-zh
+[jetbrain]: https://www.jetbrains.com/community/opensource

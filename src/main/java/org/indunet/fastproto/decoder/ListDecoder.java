@@ -20,7 +20,7 @@ import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.ProtocolType;
-import org.indunet.fastproto.annotation.type.ArrayType;
+import org.indunet.fastproto.annotation.type.ListType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
@@ -45,7 +45,7 @@ import java.util.stream.IntStream;
 public class ListDecoder implements TypeDecoder<List<?>> {
     @Override
     public List<?> decode(DecodeContext context) {
-        val type = context.getTypeAnnotation(ArrayType.class);
+        val type = context.getTypeAnnotation(ListType.class);
 
         return decode(context.getDatagram(), type.value(), type.length(),
                 type.protocolType(), context.getEndianPolicy());

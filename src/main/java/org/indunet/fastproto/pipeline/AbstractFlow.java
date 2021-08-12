@@ -93,10 +93,12 @@ public abstract class AbstractFlow<T> {
             val encodeFormulaFlow = new EncodeFormulaFlow();
             val arrayFlow = new ArrayFlow();
             val timestampFlow = new TimestampFlow();
+            val listFlow = new ListFlow();
 
             filedFlow.setNext(decodeFormulaFlow)
                     .setNext(encodeFormulaFlow)
                     .setNext(arrayFlow)
+                    .setNext(listFlow)
                     .setNext(timestampFlow);
 
             validateFlow = filedFlow;

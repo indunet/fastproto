@@ -19,7 +19,10 @@ package org.indunet.fastproto.decoder;
 import lombok.val;
 import lombok.var;
 import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.ProtocolType;
+import org.indunet.fastproto.annotation.type.ListType;
+import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
 import org.indunet.fastproto.util.BinaryUtils;
@@ -27,8 +30,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Deng Ran
@@ -142,5 +144,30 @@ public class ListDecoderTest {
         assertThrows(DecodeException.class, () -> {
             decoder.decode(datagram, -3, 10, ProtocolType.BYTE, EndianPolicy.LITTLE);
         });
+    }
+
+    public static class TestObject1 {
+        @ListType(value = 0, protocolType = ProtocolType.UINTEGER8, length = 2)
+        List<Integer> list;
+    }
+
+    public static class TestObject2 {
+        @ListType(value = 0, protocolType = ProtocolType.UINTEGER8, length = 2)
+        List<Double> list;
+    }
+
+    public static class TestObject3 {
+        @ListType(value = 0, protocolType = ProtocolType.BINARY, length = 2)
+        List<Double> list;
+    }
+
+    @Test
+    public void testDecode6() {
+        val datagram = new byte[10];
+        val object = FastProto.parseFrom(datagram, TestObject1.class);
+
+        assertNotNull(object);
+        assertThrows(CodecException.class, () -> FastProto.parseFrom(datagram, TestObject2.class));
+        assertThrows(CodecException.class, () -> FastProto.parseFrom(datagram, TestObject3.class));
     }
 }

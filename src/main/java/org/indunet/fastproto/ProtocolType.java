@@ -86,4 +86,9 @@ public enum ProtocolType {
                 .flatMap(c -> Arrays.stream(TypeUtils.javaTypes(c)))
                 .toArray(Type[]::new);
     }
+
+    public boolean match(Type type) {
+        return Arrays.stream(this.javaTypes())
+                .anyMatch(t -> t == type);
+    }
 }
