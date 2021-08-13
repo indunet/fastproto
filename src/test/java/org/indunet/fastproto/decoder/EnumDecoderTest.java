@@ -19,7 +19,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.ProtocolType;
+import org.indunet.fastproto.annotation.Endian;
 import org.indunet.fastproto.annotation.type.EnumType;
 import org.indunet.fastproto.exception.DecodeException;
 import org.junit.jupiter.api.Test;
@@ -89,5 +91,27 @@ public class EnumDecoderTest {
             decoder.decode(datagram, 0, EndianPolicy.LITTLE,
                     ProtocolType.UINTEGER8, "", Color.class);
         });
+    }
+
+    @Endian(EndianPolicy.BIG)
+    public static class TestObject {
+        @EnumType(value = 0, protocolType = ProtocolType.UINTEGER16)
+        Color color1;
+
+        @EnumType(value = 2, protocolType = ProtocolType.UINTEGER16)
+        @Endian(EndianPolicy.LITTLE)
+        Color color2;
+    }
+
+    @Test
+    public void testDecode3() {
+        val datagram = new byte[10];
+        datagram[1] = 2;
+        datagram[2] = 1;
+
+
+        TestObject object = FastProto.parseFrom(datagram, TestObject.class);
+        assertEquals(object.color1, Color.YELLOW);
+        assertEquals(object.color2, Color.RED);
     }
 }

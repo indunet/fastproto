@@ -135,7 +135,7 @@ If the user does not specify it, FastProto will automatically guess the length.
 byte[] datagram = FastProto.toByteArray(weather, 20);
 ```
 
-2. **Decode Formula & Encode Formula**
+2. **Deocding Formula & Encoding Formula**
 
 Perhaps you have noticed that the pressure signal corresponds to a conversion formula, usually requiring the user to multiply
 the serialized result by 0.1, which is an extremely common operation in IoT data exchange.
