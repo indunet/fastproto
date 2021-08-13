@@ -16,7 +16,6 @@
 
 package org.indunet.fastproto.annotation.type;
 
-import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
@@ -52,8 +51,6 @@ public @interface EnumType {
     String fieldName() default "";
 
     ProtocolType protocolType() default ProtocolType.UINTEGER8;
-
-    EndianPolicy[] endianPolicy() default {};
 
     Class<? extends Function<? extends Enum, ?>>[] afterDecode() default {};
 
