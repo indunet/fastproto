@@ -23,7 +23,6 @@ import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.annotation.type.UInteger64Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.OutOfBoundsException;
 import org.indunet.fastproto.util.ReverseUtils;
 
 import java.math.BigInteger;
@@ -46,7 +45,7 @@ public class UInteger64Decoder implements TypeDecoder<BigInteger> {
         if (bo < 0) {
             throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (bo + UInteger64Type.SIZE > datagram.length) {
-            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+            throw new DecodeException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         long low = 0;

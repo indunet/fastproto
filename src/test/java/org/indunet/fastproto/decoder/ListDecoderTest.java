@@ -24,7 +24,6 @@ import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.ListType;
 import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.OutOfBoundsException;
 import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
 
@@ -132,10 +131,10 @@ public class ListDecoderTest {
     @Test
     public void testDecode5() {
         val datagram = new byte[10];
-        assertThrows(OutOfBoundsException.class, () -> {
+        assertThrows(DecodeException.class, () -> {
             decoder.decode(datagram, 0, 11, ProtocolType.BYTE, EndianPolicy.LITTLE);
         });
-        assertThrows(OutOfBoundsException.class, () -> {
+        assertThrows(DecodeException.class, () -> {
             decoder.decode(datagram, 0, 6, ProtocolType.UINTEGER16, EndianPolicy.LITTLE);
         });
         assertThrows(DecodeException.class, () -> {

@@ -20,7 +20,6 @@ import lombok.NonNull;
 import org.indunet.fastproto.annotation.type.BooleanType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.OutOfBoundsException;
 import org.indunet.fastproto.util.ReverseUtils;
 
 /**
@@ -46,7 +45,7 @@ public class BooleanDecoder implements TypeDecoder<Boolean> {
         } else if (bitOffset > BooleanType.MAX_BIT_OFFSET || bitOffset < BooleanType.MIN_BIT_OFFSET) {
             throw new DecodeException(CodecError.ILLEGAL_BIT_OFFSET);
         } else if (bo >= datagram.length) {
-            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+            throw new DecodeException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         } else {
             return (datagram[bo] & (0x01 << bitOffset)) != 0;
         }

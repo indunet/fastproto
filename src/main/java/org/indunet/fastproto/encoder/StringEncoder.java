@@ -21,7 +21,6 @@ import lombok.val;
 import org.indunet.fastproto.annotation.type.StringType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.SpaceNotEnoughException;
 import org.indunet.fastproto.util.ReverseUtils;
 
 import java.nio.charset.Charset;
@@ -51,7 +50,7 @@ public class StringEncoder implements TypeEncoder {
         } else if (l <= 0) {
             throw new EncodeException(CodecError.ILLEGAL_PARAMETER);
         } else if (bo + l > datagram.length) {
-            throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+            throw new EncodeException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         val bytes = value.getBytes(set);

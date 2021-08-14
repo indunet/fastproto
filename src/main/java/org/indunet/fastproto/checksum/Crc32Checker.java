@@ -21,11 +21,10 @@ import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.annotation.Endian;
 import org.indunet.fastproto.annotation.type.UInteger32Type;
-import org.indunet.fastproto.util.DecodeUtils;
-import org.indunet.fastproto.util.EncodeUtils;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.OutOfBoundsException;
+import org.indunet.fastproto.util.DecodeUtils;
+import org.indunet.fastproto.util.EncodeUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 
 import java.util.zip.CRC32;
@@ -74,7 +73,7 @@ public class Crc32Checker implements Checker {
         } else if (l <= 0) {
             throw new DecodeException(CodecError.ILLEGAL_PARAMETER);
         } else if (s + length > datagram.length) {
-            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+            throw new DecodeException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         CRC32 crc32 = new CRC32();

@@ -23,7 +23,6 @@ import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.ListType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.SpaceNotEnoughException;
 import org.indunet.fastproto.util.EncodeUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 import org.indunet.fastproto.util.TypeUtils;
@@ -62,7 +61,7 @@ public class ListEncoder implements TypeEncoder {
         } else if (length <= 0) {
             throw new EncodeException(CodecError.ILLEGAL_PARAMETER);
         } else if (bo + size * length > datagram.length) {
-            throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+            throw new EncodeException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         Consumer<BiConsumer<Integer, Integer>> codec = (consumer) -> {

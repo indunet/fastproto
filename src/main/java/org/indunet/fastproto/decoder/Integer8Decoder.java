@@ -20,7 +20,6 @@ import lombok.NonNull;
 import org.indunet.fastproto.annotation.type.Integer8Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.OutOfBoundsException;
 import org.indunet.fastproto.util.ReverseUtils;
 
 /**
@@ -44,7 +43,7 @@ public class Integer8Decoder implements TypeDecoder<Integer> {
         if (bo < 0) {
             throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (bo + Integer8Type.SIZE > datagram.length) {
-            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+            throw new DecodeException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         return datagram[bo];

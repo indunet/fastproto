@@ -288,7 +288,7 @@ public class TypeAssist {
                         .map(o -> (Class<? extends Function>) o)
                         .orElse(null);
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
-                throw new DecodeFormulaException(
+                throw new CodecException(
                         MessageFormat.format(
                                 CodecError.FAIL_GETTING_DECODE_FORMULA.getMessage(), typeAnnotation.annotationType().getName(), field.getName()), e);
             }

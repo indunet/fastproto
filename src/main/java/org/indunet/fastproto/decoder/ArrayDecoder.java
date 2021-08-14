@@ -23,7 +23,6 @@ import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.ArrayType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.OutOfBoundsException;
 import org.indunet.fastproto.util.DecodeUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 import org.indunet.fastproto.util.TypeUtils;
@@ -72,7 +71,7 @@ public class ArrayDecoder implements TypeDecoder<Object> {
         } else if (length <= 0) {
             throw new DecodeException(CodecError.ILLEGAL_PARAMETER);
         } else if (bo + size * length > datagram.length) {
-            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+            throw new DecodeException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         val list = new ArrayList<Object>();

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +20,6 @@ import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.CharacterType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.SpaceNotEnoughException;
 import org.indunet.fastproto.util.ReverseUtils;
 
 /**
@@ -46,7 +45,7 @@ public class CharacterEncoder implements TypeEncoder {
         if (bo < 0) {
             throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (bo + CharacterType.SIZE > datagram.length) {
-            throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+            throw new EncodeException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         if (policy == EndianPolicy.BIG) {
