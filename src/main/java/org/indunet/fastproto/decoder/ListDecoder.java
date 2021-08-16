@@ -23,10 +23,8 @@ import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.ListType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.OutOfBoundsException;
 import org.indunet.fastproto.util.DecodeUtils;
 import org.indunet.fastproto.util.ReverseUtils;
-import org.indunet.fastproto.util.TypeUtils;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -53,7 +51,7 @@ public class ListDecoder implements TypeDecoder<List<?>> {
 
     public List decode(@NonNull final byte[] datagram, int byteOffset, int length,
                             @NonNull ProtocolType type, @NonNull EndianPolicy policy) {
-        int size = TypeUtils.size(type);
+        int size = ProtocolType.size(type);
         int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
 
         if (bo < 0) {
@@ -63,7 +61,7 @@ public class ListDecoder implements TypeDecoder<List<?>> {
         } else if (length <= 0) {
             throw new DecodeException(CodecError.ILLEGAL_PARAMETER);
         } else if (bo + size * length > datagram.length) {
-            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+            throw new DecodeException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         BiFunction<Function<Integer, ?>, List, List> codec = (func, list) -> {

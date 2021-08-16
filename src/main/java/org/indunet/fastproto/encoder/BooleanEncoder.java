@@ -19,7 +19,6 @@ package org.indunet.fastproto.encoder;
 import org.indunet.fastproto.annotation.type.BooleanType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.SpaceNotEnoughException;
 import org.indunet.fastproto.util.ReverseUtils;
 
 /**
@@ -46,7 +45,7 @@ public class BooleanEncoder implements TypeEncoder {
         } else if (bo >= datagram.length) {
             throw new EncodeException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         } else if (bitOffset < BooleanType.MIN_BIT_OFFSET || bitOffset > BooleanType.MAX_BIT_OFFSET) {
-            throw new SpaceNotEnoughException(CodecError.ILLEGAL_BIT_OFFSET);
+            throw new EncodeException(CodecError.ILLEGAL_BIT_OFFSET);
         }
 
         if (value) {

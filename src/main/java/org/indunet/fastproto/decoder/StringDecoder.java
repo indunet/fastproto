@@ -21,7 +21,6 @@ import lombok.val;
 import org.indunet.fastproto.annotation.type.StringType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.OutOfBoundsException;
 import org.indunet.fastproto.util.ReverseUtils;
 
 import java.nio.charset.Charset;
@@ -52,7 +51,7 @@ public class StringDecoder implements TypeDecoder<String> {
         } else if (l <= 0) {
             throw new DecodeException(CodecError.ILLEGAL_PARAMETER);
         } else if (bo + l > datagram.length) {
-            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+            throw new DecodeException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         val bytes = new byte[l];

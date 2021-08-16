@@ -20,8 +20,8 @@ import lombok.val;
 import org.indunet.fastproto.ProtocolVersionAssist;
 import org.indunet.fastproto.TypeAssist;
 import org.indunet.fastproto.checksum.CheckerUtils;
-import org.indunet.fastproto.exception.AddressingException;
 import org.indunet.fastproto.exception.CodecError;
+import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
 import org.indunet.fastproto.pipeline.FlowCode;
@@ -53,7 +53,7 @@ public class InferLengthFlow extends AbstractFlow<CodecContext> {
                     .filter(a -> a.getElementType() == ElementType.FIELD)
                     .mapToInt(a -> {
                         if (a.getByteOffset() < 0 || a.getLength() < 0) {
-                            throw new AddressingException(CodecError.UNABLE_INFER_LENGTH);
+                            throw new CodecException(CodecError.UNABLE_INFER_LENGTH);
                         } else {
                            return a.getByteOffset() + a.getSize() + a.getLength();
                         }
@@ -66,7 +66,7 @@ public class InferLengthFlow extends AbstractFlow<CodecContext> {
         }
 
         if (max == 0) {
-            throw new AddressingException(CodecError.UNABLE_INFER_LENGTH);
+            throw new CodecException(CodecError.UNABLE_INFER_LENGTH);
         } else {
             max += CheckerUtils.getSize(context.getProtocolClass());
             max += ProtocolVersionAssist.size(context.getTypeAssist());

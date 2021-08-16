@@ -21,8 +21,6 @@ import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.Integer16Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.IllegalValueException;
-import org.indunet.fastproto.exception.SpaceNotEnoughException;
 import org.indunet.fastproto.util.ReverseUtils;
 
 import java.text.MessageFormat;
@@ -50,9 +48,9 @@ public class Integer16Encoder implements TypeEncoder {
         if (bo < 0) {
             throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (bo + Integer16Type.SIZE > datagram.length) {
-            throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+            throw new EncodeException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         } else if (value > Integer16Type.MAX_VALUE || value < Integer16Type.MIN_VALUE) {
-            throw new IllegalValueException(
+            throw new EncodeException(
                     MessageFormat.format(CodecError.EXCEEDED_TYPE_SIZE_LIMIT.getMessage(), Integer16Type.class.getName()));
         }
 

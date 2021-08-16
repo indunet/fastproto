@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,8 +21,6 @@ import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.UInteger16Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.IllegalValueException;
-import org.indunet.fastproto.exception.SpaceNotEnoughException;
 import org.indunet.fastproto.util.ReverseUtils;
 
 import java.text.MessageFormat;
@@ -50,9 +48,9 @@ public class UInteger16Encoder implements TypeEncoder {
         if (bo < 0) {
             throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (bo + UInteger16Type.SIZE > datagram.length) {
-            throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+            throw new EncodeException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         } else if (value > UInteger16Type.MAX_VALUE || value < UInteger16Type.MIN_VALUE) {
-            throw new IllegalValueException(
+            throw new EncodeException(
                     MessageFormat.format(CodecError.EXCEEDED_TYPE_SIZE_LIMIT.getMessage(), UInteger16Type.class.getName()));
         }
 

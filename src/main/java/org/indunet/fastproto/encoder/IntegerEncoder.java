@@ -21,7 +21,6 @@ import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.IntegerType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.SpaceNotEnoughException;
 import org.indunet.fastproto.util.ReverseUtils;
 
 /**
@@ -46,7 +45,7 @@ public class IntegerEncoder implements TypeEncoder {
         if (bo < 0) {
             throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (bo + IntegerType.SIZE > datagram.length) {
-            throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+            throw new EncodeException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
 
         if (policy == EndianPolicy.LITTLE) {

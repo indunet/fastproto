@@ -17,13 +17,12 @@
 package org.indunet.fastproto.pipeline.validate;
 
 import lombok.val;
+import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
-import org.indunet.fastproto.exception.DecodeFormulaException;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.FlowCode;
 import org.indunet.fastproto.pipeline.ValidationContext;
-import org.indunet.fastproto.util.TypeUtils;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -45,20 +44,20 @@ public class FieldFlow extends AbstractFlow<ValidationContext> {
         Class<? extends Function> encodeFormula;
 
         try {
-            decodeFormula = TypeUtils.decodeFormula(typeAnnotation);
-            encodeFormula = TypeUtils.encodeFormula(typeAnnotation);
+            decodeFormula = ProtocolType.decodeFormula(typeAnnotation);
+            encodeFormula = ProtocolType.encodeFormula(typeAnnotation);
 
             context.setDecodeFormula(decodeFormula);
             context.setEncodeFormula(encodeFormula);
         } catch (Exception e) {
-            throw new DecodeFormulaException(
+            throw new CodecException(
                     MessageFormat.format(
                             CodecError.FAIL_GETTING_DECODE_FORMULA.getMessage(),
                             typeAnnotation.annotationType().getName(), field.getName()), e);
         }
 
         if (decodeFormula == null && encodeFormula == null) {
-            Arrays.stream(TypeUtils.javaTypes(typeAnnotation))
+            Arrays.stream(ProtocolType.javaTypes(typeAnnotation))
                     .filter(t -> t == field.getType()
                                 || (field.getType().isEnum() && (((Class<?>) t).isAssignableFrom(field.getType()))))
                     .findAny()
