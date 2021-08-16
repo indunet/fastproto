@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,7 +26,6 @@ import org.indunet.fastproto.encoder.TypeEncoder;
 import org.indunet.fastproto.exception.*;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.ValidationContext;
-import org.indunet.fastproto.util.TypeUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.annotation.ElementType;
@@ -327,10 +326,10 @@ public class TypeAssist {
                 .encodeIgnore(encodeIgnore)
                 .elementType(ElementType.FIELD)
                 .circularReference(false)
-                .byteOffset(TypeUtils.byteOffset(proxyTypeAnnotation))
-                .bitOffset(TypeUtils.bitOffset(proxyTypeAnnotation))
-                .length(TypeUtils.length(proxyTypeAnnotation))
-                .size(TypeUtils.size(proxyTypeAnnotation))
+                .byteOffset(ProtocolType.byteOffset(proxyTypeAnnotation))
+                .bitOffset(ProtocolType.bitOffset(proxyTypeAnnotation))
+                .length(ProtocolType.length(proxyTypeAnnotation))
+                .size(ProtocolType.size(proxyTypeAnnotation))
                 .build();
     }
 

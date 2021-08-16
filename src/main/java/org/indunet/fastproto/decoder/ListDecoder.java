@@ -25,7 +25,6 @@ import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.util.DecodeUtils;
 import org.indunet.fastproto.util.ReverseUtils;
-import org.indunet.fastproto.util.TypeUtils;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -52,7 +51,7 @@ public class ListDecoder implements TypeDecoder<List<?>> {
 
     public List decode(@NonNull final byte[] datagram, int byteOffset, int length,
                             @NonNull ProtocolType type, @NonNull EndianPolicy policy) {
-        int size = TypeUtils.size(type);
+        int size = ProtocolType.size(type);
         int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
 
         if (bo < 0) {

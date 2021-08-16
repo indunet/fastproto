@@ -17,12 +17,12 @@
 package org.indunet.fastproto.pipeline.validate;
 
 import lombok.val;
+import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.FlowCode;
 import org.indunet.fastproto.pipeline.ValidationContext;
-import org.indunet.fastproto.util.TypeUtils;
 
 import java.lang.reflect.ParameterizedType;
 import java.text.MessageFormat;
@@ -48,7 +48,7 @@ public class DecodeFormulaFlow extends AbstractFlow<ValidationContext> {
                     .map(a -> a[1])
                     .filter(t -> {
                         if (field.getType().isPrimitive()) {
-                            return t == TypeUtils.wrapperClass(field.getType().getName());
+                            return t == ProtocolType.wrapperClass(field.getType().getName());
                         } else if (field.getType().isEnum()) {
                             // Enum type.
                             return ((Class<?>) t).isAssignableFrom(field.getType());

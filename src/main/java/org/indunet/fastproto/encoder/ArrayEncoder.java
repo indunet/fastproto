@@ -25,7 +25,6 @@ import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.util.EncodeUtils;
 import org.indunet.fastproto.util.ReverseUtils;
-import org.indunet.fastproto.util.TypeUtils;
 
 import java.text.MessageFormat;
 import java.util.function.BiConsumer;
@@ -49,7 +48,7 @@ public class ArrayEncoder implements TypeEncoder {
 
     public void encode(@NonNull byte[] datagram, int byteOffset, int length,
                        @NonNull ProtocolType type, @NonNull EndianPolicy policy, Object values) {
-        int size = TypeUtils.size(type);
+        int size = ProtocolType.size(type);
         int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
         boolean primitive = values.getClass()
                 .getComponentType()
