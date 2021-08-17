@@ -27,10 +27,8 @@ import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
 import java.text.MessageFormat;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.IntStream;
 
 /**
  * @author Deng Ran
@@ -39,36 +37,74 @@ import java.util.stream.IntStream;
 @AllArgsConstructor
 @Getter
 public enum ProtocolType {
-    BINARY(BinaryType.class, true),
-    BOOLEAN(BooleanType.class, true),
-    CHARACTER(CharacterType.class, true),
-    BYTE(ByteType.class, true),
-    DOUBLE(DoubleType.class, true),
-    FLOAT(FloatType.class, true),
-    INTEGER(IntegerType.class, true),
-    LONG(LongType.class, true),
-    SHORT(ShortType.class, true),
-    STRING(StringType.class, true),
-    TIMESTAMP(TimestampType.class, true),
-    INTEGER8(Integer8Type.class, false),
-    INTEGER16(Integer16Type.class, false),
-    UINTEGER8(UInteger8Type.class, false),
-    UINTEGER16(UInteger16Type.class, false),
-    UINTEGER32(UInteger32Type.class, false),
-    UINTEGER64(UInteger64Type.class, true),
-    ENUM(EnumType.class, true);
+    // Byte array type.
+    BINARY(BinaryType.class),
+    BOOLEAN(BooleanType.class),
+    CHARACTER(CharacterType.class),
+    BYTE(ByteType.class),
+    DOUBLE(DoubleType.class),
+    FLOAT(FloatType.class),
+    INTEGER(IntegerType.class),
+    LONG(LongType.class),
+    SHORT(ShortType.class),
+    STRING(StringType.class),
+    // java.sql.Timestamp
+    TIMESTAMP(TimestampType.class),
+    // java.util.Date
+    DATE(DateType.class),
+    // int8
+    INTEGER8(Integer8Type.class),
+    // int16
+    INTEGER16(Integer16Type.class),
+    // uint8
+    UINTEGER8(UInteger8Type.class),
+    // uint16
+    UINTEGER16(UInteger16Type.class),
+    // uint32
+    UINTEGER32(UInteger32Type.class),
+    // uint64
+    UINTEGER64(UInteger64Type.class),
+    ENUM(EnumType.class),
+    // List of primitive type.
+    LIST(ListType.class),
+    // Array of primitive type.
+    ARRAY(ArrayType.class);
+
+    Class<? extends Annotation> typeAnnotationClass;
 
     protected final static String SIZE_NAME = "SIZE";
+    protected final static String PROTOCOL_TYPES_NAME = "PROTOCOL_TYPES";
+    protected final static String JAVA_TYPES_NAME = "JAVA_TYPES";
+    protected final static String AUTO_TYPE_NAME = "AUTO_TYPE";
+
     protected final static String BYTE_OFFSET_NAME = "value";
     protected final static String BIT_OFFSET_NAME = "bitOffset";
     protected final static String LENGTH_NAME = "length";
-    protected final static String PROTOCOL_TYPES_NAME = "PROTOCOL_TYPES";
     protected final static String ENCODE_FORMULA_NAME = "beforeEncode";
     protected final static String DECODE_FORMULA_NAME = "afterDecode";
-    protected final static String JAVA_TYPES_NAME = "JAVA_TYPES";
 
-    Class<? extends Annotation> typeAnnotationClass;
-    Boolean autoType;
+    @SneakyThrows
+    public boolean autoType() {
+        val field = typeAnnotationClass.getField(AUTO_TYPE_NAME);
+
+        return field.getBoolean(null);
+    }
+
+    public Type javaType() {
+        return javaTypes()[0];
+    }
+
+    @SneakyThrows
+    public Type[] javaTypes() {
+        val field = typeAnnotationClass.getField(JAVA_TYPES_NAME);
+
+        return (Type[]) field.get(null);
+    }
+
+    public boolean match(Type type) {
+        return Arrays.stream(this.javaTypes())
+                .anyMatch(t -> t == type);
+    }
 
     public static ProtocolType valueOf(Class<? extends Annotation> clazz) {
         return Arrays.stream(ProtocolType.values())
@@ -84,28 +120,12 @@ public enum ProtocolType {
                 .orElseThrow(CodecException::new);
     }
 
-    public Type javaType() {
-        return javaTypes()[0];
-    }
-
-    @SneakyThrows
-    public Type[] javaTypes() {
-        val field = typeAnnotationClass.getField("JAVA_TYPES");
-
-        return (Type[]) field.get(null);
-    }
-
     @SneakyThrows
     public static Type[] supportedTypes() {
         return Arrays.stream(ProtocolType.values())
                 .map(ProtocolType::getTypeAnnotationClass)
                 .flatMap(c -> Arrays.stream(ProtocolType.javaTypes(c)))
                 .toArray(Type[]::new);
-    }
-
-    public boolean match(Type type) {
-        return Arrays.stream(this.javaTypes())
-                .anyMatch(t -> t == type);
     }
 
     public static Type wrapperClass(@NonNull String name) {
@@ -231,18 +251,5 @@ public enum ProtocolType {
         } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
             return 0;
         }
-    }
-
-    public static Object listToArray(List<?> list, Object array) {
-        if (!array.getClass().isArray()) {
-            throw new IllegalArgumentException("The object must be array type.");
-        }
-
-        IntStream.range(0, list.size())
-                .forEach(i -> {
-                    Array.set(array, i, list.get(i));
-                });
-
-        return array;
     }
 }

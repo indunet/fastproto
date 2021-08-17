@@ -18,26 +18,26 @@ package org.indunet.fastproto.exception;
 
 /**
  * @author Deng Ran
- * @since 1.6.5
+ * @since 2.5.0
  */
-public class ProtocolVersionException extends CodecException {
-    public ProtocolVersionException() {
+public class ResolveException extends RuntimeException {
+    public ResolveException() {
 
     }
 
-    public ProtocolVersionException(CodecError error) {
+    public ResolveException(CodecError error) {
         this(error.getMessage());
     }
 
-    public ProtocolVersionException(String message) {
+    public ResolveException(String message) {
         super(message);
     }
 
-    public ProtocolVersionException(CodecError error, Throwable cause) {
+    public ResolveException(CodecError error, Throwable cause) {
         this(error.getMessage(), cause);
     }
 
-    public ProtocolVersionException(String message, Throwable cause) {
+    public ResolveException(String message, Throwable cause) {
         super(message, cause);
     }
 }

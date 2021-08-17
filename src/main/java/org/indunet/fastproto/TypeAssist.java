@@ -287,7 +287,7 @@ public class TypeAssist {
                         .map(o -> (Class<? extends Function>) o)
                         .orElse(null);
             } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | IllegalArgumentException e) {
-                throw new CodecException(
+                throw new ResolveException(
                         MessageFormat.format(
                                 CodecError.FAIL_GETTING_DECODE_FORMULA.getMessage(), typeAnnotation.annotationType().getName(), field.getName()), e);
             }
@@ -304,8 +304,8 @@ public class TypeAssist {
         try {
             AbstractFlow.getValidateFlow()
                     .process(context);
-        } catch(CodecException e) {
-            throw new CodecException(MessageFormat.format(
+        } catch(ResolveException e) {
+            throw new ResolveException(MessageFormat.format(
                     CodecError.FAIL_RESOLVING_FILED.getMessage(), field.toString()
             ), e);
         }
@@ -349,7 +349,7 @@ public class TypeAssist {
         return Arrays.stream(field.getAnnotations())
                 .filter(a -> a.annotationType().isAnnotationPresent(TypeFlag.class))
                 .findAny()
-                .orElseThrow(CodecException::new);
+                .orElseThrow(ResolveException::new);
     }
 
     protected static Annotation getProxyTypeAnnotation(@NonNull Field field) {
@@ -365,7 +365,7 @@ public class TypeAssist {
                         return Arrays.stream(typeAnnotation.annotationType().getMethods())
                                 .filter(m -> m.getName().equals(method.getName()))
                                 .findAny()
-                                .orElseThrow(CodecException::new)
+                                .orElseThrow(ResolveException::new)
                                 .invoke(typeAnnotation);
                     }));
         } else {

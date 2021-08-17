@@ -20,7 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.val;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.type.Integer8Type;
-import org.indunet.fastproto.exception.CodecException;
+import org.indunet.fastproto.exception.ResolveException;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Function;
@@ -48,7 +48,7 @@ public class FormulaTest {
     @Test
     public void testEncodeFormula() {
         val object = new TestObject1(101);
-        assertThrows(CodecException.class, () -> FastProto.toByteArray(object, 10));
+        assertThrows(ResolveException.class, () -> FastProto.toByteArray(object, 10));
     }
 
     @AllArgsConstructor
@@ -68,6 +68,6 @@ public class FormulaTest {
     public void testDecodeFormula() {
         val datagram = new byte[10];
 
-        assertThrows(CodecException.class, () -> FastProto.parseFrom(datagram, TestObject2.class));
+        assertThrows(ResolveException.class, () -> FastProto.parseFrom(datagram, TestObject2.class));
     }
 }

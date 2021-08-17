@@ -22,8 +22,8 @@ import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.ListType;
-import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
 
@@ -166,7 +166,7 @@ public class ListDecoderTest {
         val object = FastProto.parseFrom(datagram, TestObject1.class);
 
         assertNotNull(object);
-        assertThrows(CodecException.class, () -> FastProto.parseFrom(datagram, TestObject2.class));
-        assertThrows(CodecException.class, () -> FastProto.parseFrom(datagram, TestObject3.class));
+        assertThrows(ResolveException.class, () -> FastProto.parseFrom(datagram, TestObject2.class));
+        assertThrows(ResolveException.class, () -> FastProto.parseFrom(datagram, TestObject3.class));
     }
 }

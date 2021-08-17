@@ -19,7 +19,7 @@ package org.indunet.fastproto.pipeline.validate;
 import lombok.val;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.CodecException;
+import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.FlowCode;
 import org.indunet.fastproto.pipeline.ValidationContext;
@@ -50,7 +50,7 @@ public class FieldFlow extends AbstractFlow<ValidationContext> {
             context.setDecodeFormula(decodeFormula);
             context.setEncodeFormula(encodeFormula);
         } catch (Exception e) {
-            throw new CodecException(
+            throw new ResolveException(
                     MessageFormat.format(
                             CodecError.FAIL_GETTING_DECODE_FORMULA.getMessage(),
                             typeAnnotation.annotationType().getName(), field.getName()), e);
@@ -61,7 +61,7 @@ public class FieldFlow extends AbstractFlow<ValidationContext> {
                     .filter(t -> t == field.getType()
                                 || (field.getType().isEnum() && (((Class<?>) t).isAssignableFrom(field.getType()))))
                     .findAny()
-                    .orElseThrow(() -> new CodecException(MessageFormat.format(
+                    .orElseThrow(() -> new ResolveException(MessageFormat.format(
                             CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
         }
 

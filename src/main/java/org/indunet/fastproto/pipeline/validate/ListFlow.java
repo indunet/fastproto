@@ -19,7 +19,7 @@ package org.indunet.fastproto.pipeline.validate;
 import lombok.val;
 import org.indunet.fastproto.annotation.type.ListType;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.CodecException;
+import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.FlowCode;
 import org.indunet.fastproto.pipeline.ValidationContext;
@@ -46,7 +46,7 @@ public class ListFlow extends AbstractFlow<ValidationContext> {
             if (listType.beforeEncode().length == 0 || listType.afterDecode().length == 0) {
                 if (!Arrays.stream(ListType.PROTOCOL_TYPES)
                         .anyMatch(t -> t == protocolType)) {
-                    throw new CodecException(MessageFormat.format(
+                    throw new ResolveException(MessageFormat.format(
                             CodecError.LIST_UNSUPPORTED_DATA_TYPE.getMessage(), protocolType.toString()
                     ));
                 }
@@ -56,7 +56,7 @@ public class ListFlow extends AbstractFlow<ValidationContext> {
                 Class<?> typeArgument = (Class<?>)parameterizedType.getActualTypeArguments()[0];
 
                 if (!protocolType.match(typeArgument)) {
-                    throw new CodecException(MessageFormat.format(
+                    throw new ResolveException(MessageFormat.format(
                             CodecError.LIST_UNSUPPORTED_DATA_TYPE.getMessage(), typeArgument.toString()
                     ));
                 }

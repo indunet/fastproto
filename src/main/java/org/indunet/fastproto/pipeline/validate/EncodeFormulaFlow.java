@@ -19,7 +19,7 @@ package org.indunet.fastproto.pipeline.validate;
 import lombok.val;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.FlowCode;
 import org.indunet.fastproto.pipeline.ValidationContext;
@@ -57,7 +57,7 @@ public class EncodeFormulaFlow extends AbstractFlow<ValidationContext> {
                             return t == field.getType();
                         }
                     }).findAny()
-                    .orElseThrow(() -> new EncodeException(MessageFormat.format(
+                    .orElseThrow(() -> new ResolveException(MessageFormat.format(
                             CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
         }
 
