@@ -21,6 +21,7 @@ FastProto是一款采用Java编写的协议化二进制序列化和反序列化�
     *   支持反向寻址，适用于非固定长度二进制数据
     *   自定义开端字节顺序
     *   自定义[编码公式 & 解码公式][formula]   
+    *   重复引用检测和循环引用检测
 *   支持数据[压缩 & 解压缩(gzip, deflate)][compression]  
 *   支持[协议版本校验][protocol-version]
 *   支持[数据完整性校验][checksum]
@@ -34,7 +35,7 @@ FastProto是一款采用Java编写的协议化二进制序列化和反序列化�
 *  添加测试用例，增加单元测试覆盖率
 *  多条二进制数据解析成一个数据对象
 
-## *Compared with ProtoBuf*
+## *Why FastProto*
 
 虽然ProtoBuf和FastProto都用于解决跨语言和跨平台的数据交换问题，但是两者解决问题的方式完全不同：
 

@@ -23,6 +23,7 @@ which is especially suitable for the Internet of Things (IoT).
     *   Support reverse addressing, suitable for non-fixed length binary data
     *   Customize endianness (byte order)
     *   Support [decoding formula & encoding formula][formula]
+    *   Duplicate reference detection and circular reference detection
 *   Support data [compress and decompress(gzip, deflate)][compression]
 *   Support [protocol version verification][protocol-version]
 *   Support [data integrity verification][checksum]
@@ -36,7 +37,7 @@ which is especially suitable for the Internet of Things (IoT).
 *   Add test cases to increase unit test coverage
 *   Parse multiple pieces of binary data into one data object
 
-## Compared with ProtoBuf
+## *Why FastProto*
 
 Although both ProtoBuf and FastProto are used to solve the problem of cross-language and cross-platform data exchange, 
 they have completely different ways of solving the problem:
