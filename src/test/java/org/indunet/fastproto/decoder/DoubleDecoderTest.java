@@ -26,7 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class DoubleDecoderTest {
     DoubleDecoder decoder = new DoubleDecoder();
-    double pi = 3.141, e = 2.718;
+    double pi = 3.141;
+    double e = 2.718;
 
     @Test
     public void testDecode1() {
