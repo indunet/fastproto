@@ -221,8 +221,8 @@ public class TypeAssist {
         Boolean encodeIgnore = protocolClass.isAnnotationPresent(EncodeIgnore.class);
 
         Stream<TypeAssist> fieldStream = Arrays.stream(protocolClass.getDeclaredFields())
-                .filter(f -> !f.isAnnotationPresent(DecodeIgnore.class)
-                        && !f.isAnnotationPresent(EncodeIgnore.class))
+//                .filter(f -> !f.isAnnotationPresent(DecodeIgnore.class)
+//                        && !f.isAnnotationPresent(EncodeIgnore.class))
                 .filter(isType)
                 .peek(f -> f.setAccessible(true))
                 .map(TypeAssist::resolveField)
@@ -418,10 +418,12 @@ public class TypeAssist {
             }
 
             Stream<DecodeContext> fieldStream = this.elements.stream()
+                    .filter(a -> a.getDecodeIgnore() == false)
                     .filter(a -> a.getElementType() == ElementType.FIELD)
                     .map(a -> a.toDecodeContext(datagram, value));
 
             Stream<DecodeContext> classStream = this.elements.stream()
+                    .filter(a -> a.getDecodeIgnore() == false)
                     .filter(a -> a.getElementType() == ElementType.TYPE)
                     .flatMap(a -> a.toDecodeContexts(datagram, value).stream());
 
@@ -456,10 +458,12 @@ public class TypeAssist {
 
     public List<EncodeContext> toEncodeContexts(Object object, byte[] datagram) {
         Stream<EncodeContext> fieldStream = this.elements.stream()
+                .filter(a -> a.getEncodeIgnore() == false)
                 .filter(a -> a.getElementType() == ElementType.FIELD)
                 .map(a -> a.toEncodeContext(object, datagram));
 
         Stream<EncodeContext> classStream = this.elements.stream()
+                .filter(a -> a.getEncodeIgnore() == false)
                 .filter(a -> a.getElementType() == ElementType.TYPE)
                 .flatMap(a -> {
                     try {
