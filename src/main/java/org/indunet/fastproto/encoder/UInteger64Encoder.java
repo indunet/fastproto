@@ -44,7 +44,7 @@ public class UInteger64Encoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull EndianPolicy policy, BigInteger value) {
-        int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
+        int bo = ReverseUtils.offset(datagram.length, byteOffset);
 
         if (bo < 0) {
             throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);

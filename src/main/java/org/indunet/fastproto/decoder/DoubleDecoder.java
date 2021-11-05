@@ -40,7 +40,7 @@ public class DoubleDecoder implements TypeDecoder<Double> {
     }
 
     public double decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {
-        int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
+        int bo = ReverseUtils.offset(datagram.length, byteOffset);
 
         if (bo < 0) {
             throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);

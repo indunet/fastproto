@@ -18,8 +18,9 @@ package org.indunet.fastproto.checksum;
 
 import lombok.Builder;
 import lombok.val;
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.EnableChecksum;
-import org.indunet.fastproto.util.EncodeUtils;
+import org.indunet.fastproto.util.CodecUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
@@ -46,7 +47,7 @@ class Crc32CheckerTest {
 
         crc32.update(datagram, 0, 6);
         long value = crc32.getValue();
-        EncodeUtils.uInteger32Type(datagram, 6, value);
+        CodecUtils.uinteger32Type(datagram, 6, EndianPolicy.LITTLE, value);
 
         assertTrue(checker.validate(datagram, TestObject.class));
     }

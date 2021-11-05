@@ -25,7 +25,7 @@ import org.indunet.fastproto.annotation.type.EnumType;
 import org.indunet.fastproto.decoder.TypeDecoder;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.util.EncodeUtils;
+import org.indunet.fastproto.util.CodecUtils;
 
 import java.text.MessageFormat;
 
@@ -40,7 +40,7 @@ public class EnumEncoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
         val type = context.getTypeAnnotation(EnumType.class);
-        val value  = context.getValue(Enum.class);
+        val value = context.getValue(Enum.class);
 
         this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(),
                 type.protocolType(), type.fieldName(), value);
@@ -66,11 +66,11 @@ public class EnumEncoder implements TypeEncoder {
         }
 
         if (protocolType == ProtocolType.UINTEGER8) {
-            EncodeUtils.uInteger8Type(datagram, byteOffset, code);
+            CodecUtils.uinteger8Type(datagram, byteOffset, code);
         } else if (protocolType == ProtocolType.UINTEGER16) {
-            EncodeUtils.uInteger16Type(datagram, byteOffset, policy, code);
+            CodecUtils.uinteger16Type(datagram, byteOffset, policy, code);
         } else if (protocolType == ProtocolType.INTEGER) {
-            EncodeUtils.integerType(datagram, byteOffset, policy, code);
+            CodecUtils.integerType(datagram, byteOffset, policy, code);
         } else {
             throw new EncodeException(CodecError.INVALID_ENUM_PROTOCOL_TYPE);
         }

@@ -1,8 +1,8 @@
 package org.indunet.fastproto;
 
 import org.indunet.fastproto.annotation.type.UInteger64Type;
-import org.indunet.fastproto.util.EncodeUtils;
 import org.indunet.fastproto.scala.inverter.iot.Everything;
+import org.indunet.fastproto.util.CodecUtils;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -40,24 +40,24 @@ public class ProtocolVersionAssistTest {
 
     public ProtocolVersionAssistTest() {
         // Init datagram.
-        EncodeUtils.type(datagram, 0, 1, everything.getABoolean());
-        EncodeUtils.type(datagram, 1, everything.getAByte());
-        EncodeUtils.type(datagram, 2, everything.getAShort());
-        EncodeUtils.type(datagram, 4, everything.getAInteger());
-        EncodeUtils.type(datagram, 8, everything.getALong());
-        EncodeUtils.type(datagram, 16, everything.getAFloat());
-        EncodeUtils.type(datagram, 20, everything.getADouble());
-        EncodeUtils.integer8Type(datagram, 28, everything.getAInteger8());
-        EncodeUtils.integer16Type(datagram, 30, everything.getAInteger16());
-        EncodeUtils.uInteger8Type(datagram, 32, everything.getAUInteger8());
-        EncodeUtils.uInteger16Type(datagram, 34, everything.getAUInteger16());
-        EncodeUtils.uInteger32Type(datagram, 36, everything.getAUInteger32());
-        EncodeUtils.type(datagram, 40, everything.getAByteArray());
-        EncodeUtils.type(datagram, 50, everything.getAString());
-        EncodeUtils.type(datagram, 56, everything.getATimestamp().getTime());
-        EncodeUtils.type(datagram, 64, everything.getACharacter());
-        EncodeUtils.type(datagram, 70, everything.getAUInteger64());
-        EncodeUtils.uInteger16Type(datagram, 78, 17);
+        CodecUtils.type(datagram, 0, 1, everything.getABoolean());
+        CodecUtils.type(datagram, 1, everything.getAByte());
+        CodecUtils.type(datagram, 2, EndianPolicy.LITTLE, everything.getAShort());
+        CodecUtils.type(datagram, 4, EndianPolicy.LITTLE, everything.getAInteger());
+        CodecUtils.type(datagram, 8, EndianPolicy.LITTLE, everything.getALong());
+        CodecUtils.type(datagram, 16, EndianPolicy.LITTLE, everything.getAFloat());
+        CodecUtils.type(datagram, 20, EndianPolicy.LITTLE, everything.getADouble());
+        CodecUtils.integer8Type(datagram, 28, everything.getAInteger8());
+        CodecUtils.integer16Type(datagram, 30, EndianPolicy.LITTLE, everything.getAInteger16());
+        CodecUtils.uinteger8Type(datagram, 32, everything.getAUInteger8());
+        CodecUtils.uinteger16Type(datagram, 34, EndianPolicy.LITTLE, everything.getAUInteger16());
+        CodecUtils.uinteger32Type(datagram, 36, EndianPolicy.LITTLE, everything.getAUInteger32());
+        CodecUtils.type(datagram, 40, everything.getAByteArray());
+        CodecUtils.type(datagram, 50, everything.getAString().getBytes());
+        CodecUtils.type(datagram, 56, EndianPolicy.LITTLE, everything.getATimestamp().getTime());
+        CodecUtils.type(datagram, 64, EndianPolicy.LITTLE, everything.getACharacter());
+        CodecUtils.type(datagram, 70, EndianPolicy.LITTLE, everything.getAUInteger64());
+        CodecUtils.uinteger16Type(datagram, 78, EndianPolicy.LITTLE, 17);
     }
 
     @Test

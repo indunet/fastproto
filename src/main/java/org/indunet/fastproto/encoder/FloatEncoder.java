@@ -40,7 +40,7 @@ public class FloatEncoder implements TypeEncoder {
     }
 
     public void encode(byte[] datagram, int byteOffset, EndianPolicy endian, float value) {
-        int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
+        int bo = ReverseUtils.offset(datagram.length, byteOffset);
 
         if (bo < 0) {
             throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);

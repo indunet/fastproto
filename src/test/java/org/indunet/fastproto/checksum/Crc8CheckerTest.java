@@ -19,7 +19,7 @@ package org.indunet.fastproto.checksum;
 import lombok.val;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.EnableChecksum;
-import org.indunet.fastproto.util.EncodeUtils;
+import org.indunet.fastproto.util.CodecUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.Random;
@@ -43,14 +43,9 @@ public class Crc8CheckerTest {
         IntStream.range(0, 10)
                 .forEach(i -> datagram[i] = (byte) random.nextInt());
         int value = checker.getValue(datagram, 0, 9);
-        EncodeUtils.uInteger8Type(datagram, 9, value);
+        CodecUtils.uinteger8Type(datagram, 9, value);
 
         assertTrue(checker.validate(datagram, TestObject1.class));
-    }
-
-    @EnableChecksum(value = -1, start = 0, length = -2, checkPolicy = CheckPolicy.CRC8)
-    public static class TestObject1 {
-
     }
 
     @Test
@@ -62,14 +57,9 @@ public class Crc8CheckerTest {
         IntStream.range(0, 10)
                 .forEach(i -> datagram[i] = (byte) random.nextInt());
         int value = checker.getValue(datagram, 0, 9);
-        EncodeUtils.uInteger8Type(datagram, 9, value);
+        CodecUtils.uinteger8Type(datagram, 9, value);
 
         assertTrue(checker.validate(datagram, TestObject1.class));
-    }
-
-    @EnableChecksum(value = -1, start = 0, length = -1, checkPolicy = CheckPolicy.CRC8_CCITT)
-    public static class TestObject {
-
     }
 
     @Test
@@ -78,5 +68,15 @@ public class Crc8CheckerTest {
         byte[] datagram = FastProto.toByteArray(testObject, 30);
 
         assertNotNull(datagram);
+    }
+
+    @EnableChecksum(value = -1, start = 0, length = -2, checkPolicy = CheckPolicy.CRC8)
+    public static class TestObject1 {
+
+    }
+
+    @EnableChecksum(value = -1, start = 0, length = -1, checkPolicy = CheckPolicy.CRC8_CCITT)
+    public static class TestObject {
+
     }
 }

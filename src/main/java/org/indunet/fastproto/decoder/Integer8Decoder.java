@@ -39,7 +39,7 @@ public class Integer8Decoder implements TypeDecoder<Integer> {
     }
 
     public int decode(@NonNull final byte[] datagram, int byteOffset) {
-        int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
+        int bo = ReverseUtils.offset(datagram.length, byteOffset);
 
         if (bo < 0) {
             throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);

@@ -20,11 +20,10 @@ import lombok.Getter;
 import lombok.val;
 import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.annotation.type.UInteger8Type;
-import org.indunet.fastproto.util.DecodeUtils;
-import org.indunet.fastproto.util.EncodeUtils;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
+import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 
 import java.util.Map;
@@ -68,7 +67,7 @@ public class Crc8Checker implements Checker {
         int length = checkSum.length();
 
         int actual = this.getValue(datagram, start, length);
-        int expected = DecodeUtils.uInteger8Type(datagram, byteOffset);
+        int expected = CodecUtils.uinteger8Type(datagram, ReverseUtils.offset(datagram.length, byteOffset));
 
         return actual == expected;
     }
@@ -95,11 +94,11 @@ public class Crc8Checker implements Checker {
     public void setValue(byte[] datagram, int byteOffset, int start, int length) {
         int value = this.getValue(datagram, start, length);
 
-        EncodeUtils.uInteger8Type(datagram, byteOffset, value);
+        CodecUtils.uinteger8Type(datagram, byteOffset, value);
     }
 
     public int getValue(byte[] datagram, int start, int length) {
-        int s = ReverseUtils.byteOffset(datagram.length, start);
+        int s = ReverseUtils.offset(datagram.length, start);
         int l = ReverseUtils.length(datagram.length, start, length);
 
         if (s < 0) {
@@ -112,10 +111,10 @@ public class Crc8Checker implements Checker {
 
         byte crc8 = 0;
 
-        for (int i = 0; i < l; i ++) {
+        for (int i = 0; i < l; i++) {
             crc8 ^= datagram[s + i];
 
-            for (int j = 0; j < 8; j ++) {
+            for (int j = 0; j < 8; j++) {
                 if ((crc8 & 0x80) != 0) {
                     crc8 <<= 1;
                     crc8 ^= poly;

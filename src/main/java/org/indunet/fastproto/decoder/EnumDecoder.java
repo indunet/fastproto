@@ -23,7 +23,7 @@ import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.EnumType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.util.DecodeUtils;
+import org.indunet.fastproto.util.CodecUtils;
 
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
@@ -50,7 +50,7 @@ public class EnumDecoder<T extends Enum> implements TypeDecoder<T> {
     }
 
     public T decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy policy,
-                       @NonNull ProtocolType type, @NonNull String fieldName, @NonNull Class<T> enumClass) {
+                    @NonNull ProtocolType type, @NonNull String fieldName, @NonNull Class<T> enumClass) {
         val enums = enumClass.getEnumConstants();
         val code = getCode(datagram, byteOffset, policy, type);
 
@@ -76,19 +76,19 @@ public class EnumDecoder<T extends Enum> implements TypeDecoder<T> {
             return Arrays.stream(enums)
                     .filter(e -> getValue.apply(e) == code)
                     .findAny().
-                    orElseThrow(() -> new DecodeException(MessageFormat.format(
-                            CodecError.ENUM_NOT_FOUND.getMessage(), code)));
+                            orElseThrow(() -> new DecodeException(MessageFormat.format(
+                                    CodecError.ENUM_NOT_FOUND.getMessage(), code)));
         }
     }
 
     public int getCode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy policy,
                        @NonNull ProtocolType type) {
         if (type == ProtocolType.UINTEGER8) {
-            return DecodeUtils.uInteger8Type(datagram, byteOffset);
+            return CodecUtils.uinteger8Type(datagram, byteOffset);
         } else if (type == ProtocolType.UINTEGER16) {
-            return DecodeUtils.uInteger16Type(datagram, byteOffset, policy);
+            return CodecUtils.uinteger16Type(datagram, byteOffset, policy);
         } else if (type == ProtocolType.INTEGER) {
-            return DecodeUtils.integerType(datagram, byteOffset, policy);
+            return CodecUtils.integerType(datagram, byteOffset, policy);
         } else {
             throw new DecodeException(CodecError.INVALID_ENUM_PROTOCOL_TYPE);
         }

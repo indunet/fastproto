@@ -23,13 +23,12 @@ package org.indunet.fastproto.util;
  * @since 2.0.0
  */
 public class ReverseUtils {
-    public static int byteOffset(int datagramLength, int byteOffset) {
-        return byteOffset >= 0 ? byteOffset : datagramLength + byteOffset;
-
+    public static int offset(int length, int offset) {
+        return offset >= 0 ? offset : length + offset;
     }
 
-    public static int length(int datagramLength, int byteOffset, int length) {
-        int bo = byteOffset(datagramLength, byteOffset);
+    public static int length(int datagramLength, int offset, int length) {
+        int bo = offset(datagramLength, offset);
 
         return length >= 0 ? length : datagramLength + length - bo + 1;
     }

@@ -43,7 +43,7 @@ public class StringEncoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, int length, @NonNull Charset set, @NonNull String value) {
-        int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
+        int bo = ReverseUtils.offset(datagram.length, byteOffset);
         int l = ReverseUtils.length(datagram.length, byteOffset, length);
 
         if (bo < 0) {

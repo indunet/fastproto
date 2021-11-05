@@ -40,7 +40,7 @@ public class BinaryDecoder implements TypeDecoder<byte[]> {
     }
 
     public byte[] decode(@NonNull final byte[] datagram, int byteOffset, int length) {
-        int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
+        int bo = ReverseUtils.offset(datagram.length, byteOffset);
         int l = ReverseUtils.length(datagram.length, byteOffset, length);
 
         if (bo < 0) {

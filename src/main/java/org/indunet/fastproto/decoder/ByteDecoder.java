@@ -39,7 +39,7 @@ public class ByteDecoder implements TypeDecoder<Byte> {
     }
 
     public byte decode(@NonNull final byte[] datagram, int byteOffset) {
-        int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
+        int bo = ReverseUtils.offset(datagram.length, byteOffset);
 
         if (bo < 0) {
             throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);

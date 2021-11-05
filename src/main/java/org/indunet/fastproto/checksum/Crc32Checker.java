@@ -21,11 +21,10 @@ import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.annotation.Endian;
 import org.indunet.fastproto.annotation.type.UInteger32Type;
-import org.indunet.fastproto.util.DecodeUtils;
-import org.indunet.fastproto.util.EncodeUtils;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
+import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 
 import java.util.zip.CRC32;
@@ -60,13 +59,13 @@ public class Crc32Checker implements Checker {
         }
 
         long actual = this.getValue(datagram, checksum.start(), checksum.length());
-        long expected = DecodeUtils.uInteger32Type(datagram, checksum.value(), policy);
+        long expected = CodecUtils.uinteger32Type(datagram, ReverseUtils.offset(datagram.length, checksum.value()), policy);
 
         return actual == expected;
     }
 
     public long getValue(byte[] datagram, int start, int length) {
-        int s = ReverseUtils.byteOffset(datagram.length, start);
+        int s = ReverseUtils.offset(datagram.length, start);
         int l = ReverseUtils.length(datagram.length, start, length);
 
         if (s < 0) {
@@ -114,6 +113,6 @@ public class Crc32Checker implements Checker {
     public void setValue(byte[] datagram, int byteOffset, int start, int length, EndianPolicy policy) {
         long value = this.getValue(datagram, start, length);
 
-        EncodeUtils.uInteger32Type(datagram, byteOffset, policy, value);
+        CodecUtils.uinteger32Type(datagram, ReverseUtils.offset(datagram.length, byteOffset), policy, value);
     }
 }

@@ -24,7 +24,7 @@ import org.indunet.fastproto.annotation.type.ArrayType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
-import org.indunet.fastproto.util.DecodeUtils;
+import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 import org.indunet.fastproto.util.TypeUtils;
 
@@ -52,9 +52,9 @@ public class ListDecoder implements TypeDecoder<List<?>> {
     }
 
     public List decode(@NonNull final byte[] datagram, int byteOffset, int length,
-                            @NonNull ProtocolType type, @NonNull EndianPolicy policy) {
+                       @NonNull ProtocolType type, @NonNull EndianPolicy policy) {
         int size = TypeUtils.size(type);
-        int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
+        int bo = ReverseUtils.offset(datagram.length, byteOffset);
 
         if (bo < 0) {
             throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
@@ -78,29 +78,29 @@ public class ListDecoder implements TypeDecoder<List<?>> {
 
         switch (type) {
             case CHARACTER:
-                return codec.apply(b -> DecodeUtils.characterType(datagram, b, policy), new ArrayList<Character>());
+                return codec.apply(b -> CodecUtils.characterType(datagram, b, policy), new ArrayList<Character>());
             case BYTE:
-                return codec.apply(b -> DecodeUtils.byteType(datagram, b), new ArrayList<Byte>());
+                return codec.apply(b -> CodecUtils.byteType(datagram, b), new ArrayList<Byte>());
             case SHORT:
-                return codec.apply(b -> DecodeUtils.shortType(datagram, b, policy), new ArrayList<Short>());
+                return codec.apply(b -> CodecUtils.shortType(datagram, b, policy), new ArrayList<Short>());
             case INTEGER:
-                return codec.apply(b -> DecodeUtils.integerType(datagram, b, policy), new ArrayList<Integer>());
+                return codec.apply(b -> CodecUtils.integerType(datagram, b, policy), new ArrayList<Integer>());
             case LONG:
-                return codec.apply(b -> DecodeUtils.longType(datagram, b, policy), new ArrayList<Long>());
+                return codec.apply(b -> CodecUtils.longType(datagram, b, policy), new ArrayList<Long>());
             case UINTEGER8:
-                return codec.apply(b -> DecodeUtils.uInteger8Type(datagram, b), new ArrayList<Integer>());
+                return codec.apply(b -> CodecUtils.uinteger8Type(datagram, b), new ArrayList<Integer>());
             case UINTEGER16:
-                return codec.apply(b -> DecodeUtils.uInteger16Type(datagram, b, policy), new ArrayList<Integer>());
+                return codec.apply(b -> CodecUtils.uinteger16Type(datagram, b, policy), new ArrayList<Integer>());
             case UINTEGER32:
-                return codec.apply(b -> DecodeUtils.uInteger32Type(datagram, b, policy), new ArrayList<Long>());
+                return codec.apply(b -> CodecUtils.uinteger32Type(datagram, b, policy), new ArrayList<Long>());
             case INTEGER8:
-                return codec.apply(b -> DecodeUtils.integer8Type(datagram, b), new ArrayList<Integer>());
+                return codec.apply(b -> CodecUtils.integer8Type(datagram, b), new ArrayList<Integer>());
             case INTEGER16:
-                return codec.apply(b -> DecodeUtils.integer16Type(datagram, b, policy), new ArrayList<Integer>());
+                return codec.apply(b -> CodecUtils.integer16Type(datagram, b, policy), new ArrayList<Integer>());
             case FLOAT:
-                return codec.apply(b -> DecodeUtils.floatType(datagram, b, policy), new ArrayList<Float>());
+                return codec.apply(b -> CodecUtils.floatType(datagram, b, policy), new ArrayList<Float>());
             case DOUBLE:
-                return codec.apply(b -> DecodeUtils.doubleType(datagram, b, policy), new ArrayList<Double>());
+                return codec.apply(b -> CodecUtils.doubleType(datagram, b, policy), new ArrayList<Double>());
             default:
                 throw new DecodeException(MessageFormat.format(
                         CodecError.NOT_SUPPORT_ARRAY_TYPE.getMessage(), type.toString()));

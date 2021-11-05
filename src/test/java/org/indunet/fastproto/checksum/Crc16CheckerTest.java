@@ -20,7 +20,7 @@ import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.EnableChecksum;
-import org.indunet.fastproto.util.EncodeUtils;
+import org.indunet.fastproto.util.CodecUtils;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -47,14 +47,9 @@ class Crc16CheckerTest {
 
         String tmp = CRC16Util.getCRC(Arrays.copyOfRange(datagram, 0, 8));
         int x = Integer.parseInt(tmp, 16);
-        EncodeUtils.uInteger16Type(datagram, 8, EndianPolicy.BIG, value);
+        CodecUtils.uinteger16Type(datagram, 8, EndianPolicy.BIG, value);
         assertEquals(value, x);
         assertTrue(checker.validate(datagram, TestObject.class));
-    }
-
-    @EnableChecksum(value = -2, checkPolicy = CheckPolicy.CRC16, start = 0, length = -3, endianPolicy = EndianPolicy.BIG)
-    public static class TestObject {
-
     }
 
     @Test
@@ -63,5 +58,10 @@ class Crc16CheckerTest {
         val datagram = FastProto.toByteArray(testObject, 30);
 
         assertNotNull(datagram);
+    }
+
+    @EnableChecksum(value = -2, checkPolicy = CheckPolicy.CRC16, start = 0, length = -3, endianPolicy = EndianPolicy.BIG)
+    public static class TestObject {
+
     }
 }

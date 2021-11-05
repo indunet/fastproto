@@ -39,7 +39,7 @@ public class BooleanDecoder implements TypeDecoder<Boolean> {
     }
 
     public boolean decode(@NonNull final byte[] datagram, int byteOffset, int bitOffset) {
-        int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
+        int bo = ReverseUtils.offset(datagram.length, byteOffset);
 
         if (bo < 0) {
             throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);

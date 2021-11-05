@@ -25,7 +25,7 @@ import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.exception.SpaceNotEnoughException;
-import org.indunet.fastproto.util.EncodeUtils;
+import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 
 import java.sql.Timestamp;
@@ -49,7 +49,7 @@ public class TimestampEncoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull ProtocolType dataType, @NonNull EndianPolicy policy, @NonNull TimeUnit unit, @NonNull Timestamp value) {
-        int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
+        int bo = ReverseUtils.offset(datagram.length, byteOffset);
 
         if (bo < 0) {
             throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
@@ -58,13 +58,13 @@ public class TimestampEncoder implements TypeEncoder {
                 throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 
-            EncodeUtils.longType(datagram, bo, policy, value.getTime());
+            CodecUtils.longType(datagram, bo, policy, value.getTime());
         } else if (dataType == ProtocolType.UINTEGER32 && unit == TimeUnit.SECONDS) {
             if (bo + UInteger32Type.SIZE > datagram.length) {
                 throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 
-            EncodeUtils.integerType(datagram, bo, policy, (int) (value.getTime() / 1000));
+            CodecUtils.integerType(datagram, bo, policy, (int) (value.getTime() / 1000));
         } else {
             throw new EncodeException(CodecError.ILLEGAL_TIMESTAMP_PARAMETERS);
         }

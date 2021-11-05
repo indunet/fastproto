@@ -26,7 +26,7 @@ import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
-import org.indunet.fastproto.util.DecodeUtils;
+import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 
 import java.sql.Timestamp;
@@ -51,7 +51,7 @@ public class TimestampDecoder implements TypeDecoder<Timestamp> {
     }
 
     public Timestamp decode(@NonNull final byte[] datagram, int byteOffset, @NonNull ProtocolType dataType, @NonNull EndianPolicy policy, @NonNull TimeUnit unit) {
-        int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
+        int bo = ReverseUtils.offset(datagram.length, byteOffset);
 
         if (bo < 0) {
             throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
@@ -60,7 +60,7 @@ public class TimestampDecoder implements TypeDecoder<Timestamp> {
                 throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 
-            val value = DecodeUtils.longType(datagram, bo, policy);
+            val value = CodecUtils.longType(datagram, bo, policy);
 
             return new Timestamp(value);
         } else if (dataType == ProtocolType.UINTEGER32 && unit == TimeUnit.SECONDS) {
@@ -68,7 +68,7 @@ public class TimestampDecoder implements TypeDecoder<Timestamp> {
                 throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 
-            val value = DecodeUtils.uInteger32Type(datagram, bo, policy);
+            val value = CodecUtils.uinteger32Type(datagram, bo, policy);
 
             return new Timestamp(value * 1000);
         } else {

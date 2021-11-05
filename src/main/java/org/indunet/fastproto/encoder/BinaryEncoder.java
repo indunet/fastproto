@@ -41,7 +41,7 @@ public class BinaryEncoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, int length, @NonNull byte[] bytes) {
-        int bo = ReverseUtils.byteOffset(datagram.length, byteOffset);
+        int bo = ReverseUtils.offset(datagram.length, byteOffset);
         int l = ReverseUtils.length(datagram.length, byteOffset, length);
 
         if (bo < 0) {

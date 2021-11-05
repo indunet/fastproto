@@ -22,10 +22,9 @@ import org.indunet.fastproto.annotation.EnableProtocolVersion;
 import org.indunet.fastproto.annotation.type.IntegerType;
 import org.indunet.fastproto.annotation.type.UInteger16Type;
 import org.indunet.fastproto.annotation.type.UInteger8Type;
-import org.indunet.fastproto.util.DecodeUtils;
-import org.indunet.fastproto.util.EncodeUtils;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.ProtocolVersionException;
+import org.indunet.fastproto.util.CodecUtils;
 
 /**
  * Protocol version assist.
@@ -55,11 +54,11 @@ public class ProtocolVersionAssist {
 
         switch (enableProtocolVersion.protocolType()) {
             case UINTEGER8:
-                return DecodeUtils.uInteger8Type(datagram, byteOffset);
+                return CodecUtils.uinteger8Type(datagram, byteOffset);
             case UINTEGER16:
-                return DecodeUtils.uInteger16Type(datagram, byteOffset, policy);
+                return CodecUtils.uinteger16Type(datagram, byteOffset, policy);
             case INTEGER:
-                return DecodeUtils.integerType(datagram, byteOffset, policy);
+                return CodecUtils.integerType(datagram, byteOffset, policy);
             default:
                 throw new ProtocolVersionException(CodecError.ILLEGAL_PROTOCOL_VERSION_TYPE);
         }
@@ -77,13 +76,13 @@ public class ProtocolVersionAssist {
 
         switch (versionAnnotation.protocolType()) {
             case UINTEGER8:
-                EncodeUtils.uInteger8Type(datagram, byteOffset, version);
+                CodecUtils.uinteger8Type(datagram, byteOffset, version);
                 break;
             case UINTEGER16:
-                EncodeUtils.uInteger16Type(datagram, byteOffset, policy, version);
+                CodecUtils.uinteger16Type(datagram, byteOffset, policy, version);
                 break;
             case INTEGER:
-                EncodeUtils.integerType(datagram, byteOffset, policy, version);
+                CodecUtils.integerType(datagram, byteOffset, policy, version);
                 break;
             default:
                 throw new ProtocolVersionException(CodecError.ILLEGAL_PROTOCOL_VERSION_TYPE);
