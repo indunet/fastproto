@@ -19,10 +19,8 @@ package org.indunet.fastproto.encoder;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.annotation.type.BinaryType;
-import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.SpaceNotEnoughException;
-import org.indunet.fastproto.util.ReverseUtils;
+import org.indunet.fastproto.util.CodecUtils;
 
 /**
  * Binary type encoder.
@@ -40,24 +38,11 @@ public class BinaryEncoder implements TypeEncoder {
         this.encode(context.getDatagram(), type.value(), type.length(), bytes);
     }
 
-    public void encode(@NonNull byte[] datagram, int byteOffset, int length, @NonNull byte[] bytes) {
-        int bo = ReverseUtils.offset(datagram.length, byteOffset);
-        int l = ReverseUtils.length(datagram.length, byteOffset, length);
-
-        if (bo < 0) {
-            throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (bo >= datagram.length) {
-            throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (l <= 0) {
-            throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (bo + l > datagram.length) {
-            throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
-        }
-
-        if (l >= bytes.length) {
-            System.arraycopy(bytes, 0, datagram, bo, bytes.length);
-        } else {
-            System.arraycopy(bytes, 0, datagram, bo, l);
+    public void encode(@NonNull byte[] datagram, int offset, int length, @NonNull byte[] bytes) {
+        try {
+            CodecUtils.binaryType(datagram, offset, length, bytes);
+        } catch (IndexOutOfBoundsException e) {
+            throw new EncodeException("Fail encoding the binary type.", e);
         }
     }
 }

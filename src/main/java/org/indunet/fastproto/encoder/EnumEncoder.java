@@ -46,7 +46,7 @@ public class EnumEncoder implements TypeEncoder {
                 type.protocolType(), type.fieldName(), value);
     }
 
-    public <T extends Enum> void encode(@NonNull byte[] datagram, int byteOffset, EndianPolicy policy,
+    public <T extends Enum> void encode(@NonNull byte[] datagram, int offset, EndianPolicy policy,
                                         @NonNull ProtocolType protocolType, @NonNull String fieldName, @NonNull T value) {
         var code = 0;
 
@@ -66,11 +66,11 @@ public class EnumEncoder implements TypeEncoder {
         }
 
         if (protocolType == ProtocolType.UINTEGER8) {
-            CodecUtils.uinteger8Type(datagram, byteOffset, code);
+            CodecUtils.uinteger8Type(datagram, offset, code);
         } else if (protocolType == ProtocolType.UINTEGER16) {
-            CodecUtils.uinteger16Type(datagram, byteOffset, policy, code);
+            CodecUtils.uinteger16Type(datagram, offset, policy, code);
         } else if (protocolType == ProtocolType.INTEGER) {
-            CodecUtils.integerType(datagram, byteOffset, policy, code);
+            CodecUtils.integerType(datagram, offset, policy, code);
         } else {
             throw new EncodeException(CodecError.INVALID_ENUM_PROTOCOL_TYPE);
         }

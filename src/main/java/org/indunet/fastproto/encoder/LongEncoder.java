@@ -22,6 +22,7 @@ import org.indunet.fastproto.annotation.type.LongType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.exception.SpaceNotEnoughException;
+import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 
 /**
@@ -40,33 +41,11 @@ public class LongEncoder implements TypeEncoder {
         this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);
     }
 
-    public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull EndianPolicy policy, long value) {
-        int bo = ReverseUtils.offset(datagram.length, byteOffset);
-
-        if (bo < 0) {
-            throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (bo + LongType.SIZE > datagram.length) {
-            throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
-        }
-
-        if (policy == EndianPolicy.BIG) {
-            datagram[bo + 7] = (byte) (value);
-            datagram[bo + 6] = (byte) (value >>> 8);
-            datagram[bo + 5] = (byte) (value >>> 16);
-            datagram[bo + 4] = (byte) (value >>> 24);
-            datagram[bo + 3] = (byte) (value >>> 32);
-            datagram[bo + 2] = (byte) (value >>> 40);
-            datagram[bo + 1] = (byte) (value >>> 48);
-            datagram[bo] = (byte) (value >>> 56);
-        } else {
-            datagram[bo] = (byte) (value);
-            datagram[bo + 1] = (byte) (value >>> 8);
-            datagram[bo + 2] = (byte) (value >>> 16);
-            datagram[bo + 3] = (byte) (value >>> 24);
-            datagram[bo + 4] = (byte) (value >>> 32);
-            datagram[bo + 5] = (byte) (value >>> 40);
-            datagram[bo + 6] = (byte) (value >>> 48);
-            datagram[bo + 7] = (byte) (value >>> 56);
+    public void encode(@NonNull byte[] datagram, int offset, @NonNull EndianPolicy policy, long value) {
+        try {
+            CodecUtils.longType(datagram, offset, policy, value);
+        } catch (IndexOutOfBoundsException e) {
+            throw new EncodeException("Fail encoding the long type.", e);
         }
     }
 }

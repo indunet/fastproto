@@ -19,10 +19,8 @@ package org.indunet.fastproto.decoder;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.annotation.type.StringType;
-import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.OutOfBoundsException;
-import org.indunet.fastproto.util.ReverseUtils;
+import org.indunet.fastproto.util.CodecUtils;
 
 import java.nio.charset.Charset;
 
@@ -41,23 +39,15 @@ public class StringDecoder implements TypeDecoder<String> {
         return this.decode(context.getDatagram(), type.value(), type.length(), Charset.forName(type.charsetName()));
     }
 
-    public String decode(@NonNull byte[] datagram, int byteOffset, int length, @NonNull Charset charset) {
-        int bo = ReverseUtils.offset(datagram.length, byteOffset);
-        int l = ReverseUtils.length(datagram.length, byteOffset, length);
+    public String decode(@NonNull byte[] datagram, int offset, int length, @NonNull Charset charset) {
+        try {
+            val bytes = CodecUtils.binaryType(datagram, offset, length);
 
-        if (bo < 0) {
-            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (bo > datagram.length) {
-            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (l <= 0) {
-            throw new DecodeException(CodecError.ILLEGAL_PARAMETER);
-        } else if (bo + l > datagram.length) {
-            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+            return new String(bytes, charset);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new DecodeException("Fail decoding the string type.", e);
+        } catch (IllegalArgumentException e) {
+            throw new DecodeException("Fail decoding the string type.", e);
         }
-
-        val bytes = new byte[l];
-        System.arraycopy(datagram, bo, bytes, 0, l);
-
-        return new String(bytes, charset);
     }
 }

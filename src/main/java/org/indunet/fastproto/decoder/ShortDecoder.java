@@ -19,10 +19,8 @@ package org.indunet.fastproto.decoder;
 import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.ShortType;
-import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.OutOfBoundsException;
-import org.indunet.fastproto.util.ReverseUtils;
+import org.indunet.fastproto.util.CodecUtils;
 
 /**
  * Short type decoder.
@@ -39,25 +37,11 @@ public class ShortDecoder implements TypeDecoder<Short> {
         return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }
 
-    public short decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {
-        int bo = ReverseUtils.offset(datagram.length, byteOffset);
-
-        if (bo < 0) {
-            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (bo + ShortType.SIZE > datagram.length) {
-            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+    public short decode(@NonNull final byte[] datagram, int offset, @NonNull EndianPolicy policy) {
+        try {
+            return CodecUtils.shortType(datagram, offset, policy);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new DecodeException("Fail decoding the short type.", e);
         }
-
-        short value = 0;
-
-        if (endian == EndianPolicy.LITTLE) {
-            value |= (datagram[bo] & 0x00FF);
-            value |= (datagram[bo + 1] << 8);
-        } else if (endian == EndianPolicy.BIG) {
-            value |= (datagram[bo + 1] & 0x00FF);
-            value |= (datagram[bo] << 8);
-        }
-
-        return value;
     }
 }

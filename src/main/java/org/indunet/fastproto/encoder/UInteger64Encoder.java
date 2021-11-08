@@ -25,6 +25,7 @@ import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.exception.IllegalValueException;
 import org.indunet.fastproto.exception.SpaceNotEnoughException;
+import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 
 import java.math.BigInteger;
@@ -43,45 +44,15 @@ public class UInteger64Encoder implements TypeEncoder {
         this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);
     }
 
-    public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull EndianPolicy policy, BigInteger value) {
-        int bo = ReverseUtils.offset(datagram.length, byteOffset);
-
-        if (bo < 0) {
-            throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (bo + LongType.SIZE > datagram.length) {
-            throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
-        } else if (value.compareTo(UInteger64Type.MAX_VALUE) > 0 || value.compareTo(UInteger64Type.MIN_VALUE) < 0) {
-            throw new IllegalValueException(
-                    MessageFormat.format(CodecError.EXCEEDED_TYPE_SIZE_LIMIT.getMessage(), UInteger64Type.class.getName()));
+    public void encode(@NonNull byte[] datagram, int offset, @NonNull EndianPolicy policy, BigInteger value) {
+        if (value.compareTo(UInteger64Type.MAX_VALUE) > 0 || value.compareTo(UInteger64Type.MIN_VALUE) < 0) {
+            throw new EncodeException("Fail encoding the uinteger64 type.");
         }
 
-        long low = value
-                .and(new BigInteger(String.valueOf(0xFFFF_FFFFL)))
-                .longValueExact();
-        long high = value
-                .shiftRight(32)
-                .longValueExact();
-
-        if (policy == EndianPolicy.BIG) {
-            datagram[bo + 7] = (byte) (low);
-            datagram[bo + 6] = (byte) (low >>> 8);
-            datagram[bo + 5] = (byte) (low >>> 16);
-            datagram[bo + 4] = (byte) (low >>> 24);
-
-            datagram[bo + 3] = (byte) (high);
-            datagram[bo + 2] = (byte) (high >>> 8);
-            datagram[bo + 1] = (byte) (high >>> 16);
-            datagram[bo] = (byte) (high >>> 24);
-        } else {
-            datagram[bo] = (byte) (low);
-            datagram[bo + 1] = (byte) (low >>> 8);
-            datagram[bo + 2] = (byte) (low >>> 16);
-            datagram[bo + 3] = (byte) (low >>> 24);
-
-            datagram[bo + 4] = (byte) (high);
-            datagram[bo + 5] = (byte) (high >>> 8);
-            datagram[bo + 6] = (byte) (high >>> 16);
-            datagram[bo + 7] = (byte) (high >>> 24);
+        try {
+            CodecUtils.uinteger64Type(datagram, offset, policy, value);
+        } catch (IndexOutOfBoundsException e) {
+            throw new EncodeException("Fail encoding the uinteger64 type.", e);
         }
     }
 }

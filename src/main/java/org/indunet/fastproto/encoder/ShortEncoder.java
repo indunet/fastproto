@@ -22,6 +22,7 @@ import org.indunet.fastproto.annotation.type.ShortType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.exception.SpaceNotEnoughException;
+import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 
 /**
@@ -40,21 +41,11 @@ public class ShortEncoder implements TypeEncoder {
         this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);
     }
 
-    public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull EndianPolicy policy, short value) {
-        int bo = ReverseUtils.offset(datagram.length, byteOffset);
-
-        if (bo < 0) {
-            throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (bo + ShortType.SIZE > datagram.length) {
-            throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
-        }
-
-        if (policy == EndianPolicy.LITTLE) {
-            datagram[bo] = (byte) (value);
-            datagram[bo + 1] = (byte) (value >>> 8);
-        } else if (policy == EndianPolicy.BIG) {
-            datagram[bo + 1] = (byte) (value);
-            datagram[bo] = (byte) (value >>> 8);
+    public void encode(@NonNull byte[] datagram, int offset, @NonNull EndianPolicy policy, short value) {
+        try {
+            CodecUtils.shortType(datagram, offset, policy, value);
+        } catch (IndexOutOfBoundsException e) {
+            throw new EncodeException("Fail encoding the short type.", e);
         }
     }
 }

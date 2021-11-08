@@ -19,12 +19,9 @@ package org.indunet.fastproto.decoder;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.annotation.type.UInteger64Type;
-import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.OutOfBoundsException;
-import org.indunet.fastproto.util.ReverseUtils;
+import org.indunet.fastproto.util.CodecUtils;
 
 import java.math.BigInteger;
 
@@ -40,42 +37,11 @@ public class UInteger64Decoder implements TypeDecoder<BigInteger> {
         return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }
 
-    public BigInteger decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {
-        int bo = ReverseUtils.offset(datagram.length, byteOffset);
-
-        if (bo < 0) {
-            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (bo + UInteger64Type.SIZE > datagram.length) {
-            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+    public BigInteger decode(@NonNull final byte[] datagram, int offset, @NonNull EndianPolicy policy) {
+        try {
+            return CodecUtils.uinteger64Type(datagram, offset, policy);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new DecodeException("Fail decoding the uinteger64 type.", e);
         }
-
-        long low = 0;
-        long high = 0;
-
-        if (endian == EndianPolicy.LITTLE) {
-            low |= (datagram[bo] & 0xFF);
-            low |= ((datagram[bo + 1] & 0xFFL) << 8);
-            low |= ((datagram[bo + 2] & 0xFFL) << 16);
-            low |= ((datagram[bo + 3] & 0xFFL) << 24);
-
-            high |= (datagram[bo + 4] & 0xFFL);
-            high |= ((datagram[bo + 5] & 0xFFL) << 8);
-            high |= ((datagram[bo + 6] & 0xFFL) << 16);
-            high |= ((datagram[bo + 7] & 0xFFL) << 24);
-        } else if (endian == EndianPolicy.BIG) {
-            low |= (datagram[bo + 7] & 0xFF);
-            low |= ((datagram[bo + 6] & 0xFFL) << 8);
-            low |= ((datagram[bo + 5] & 0xFFL) << 16);
-            low |= ((datagram[bo + 4] & 0xFFL) << 24);
-
-            high |= (datagram[bo + 3] & 0xFFL);
-            high |= ((datagram[bo + 2] & 0xFFL) << 8);
-            high |= ((datagram[bo + 1] & 0xFFL) << 16);
-            high |= ((datagram[bo] & 0xFFL) << 24);
-        }
-
-        return new BigInteger(String.valueOf(high))
-                .multiply(new BigInteger(String.valueOf(UInteger32Type.MAX_VALUE + 1)))
-                .add(new BigInteger(String.valueOf(low)));
     }
 }

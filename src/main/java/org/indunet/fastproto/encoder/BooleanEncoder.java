@@ -20,6 +20,7 @@ import org.indunet.fastproto.annotation.type.BooleanType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.exception.SpaceNotEnoughException;
+import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 
 /**
@@ -39,20 +40,14 @@ public class BooleanEncoder implements TypeEncoder {
     }
 
     public void encode(byte[] datagram, int byteOffset, int bitOffset, boolean value) {
-        int bo = ReverseUtils.offset(datagram.length, byteOffset);
-
-        if (bo < 0) {
-            throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (bo >= datagram.length) {
-            throw new EncodeException(CodecError.EXCEEDED_DATAGRAM_SIZE);
-        } else if (bitOffset < BooleanType.MIN_BIT_OFFSET || bitOffset > BooleanType.MAX_BIT_OFFSET) {
-            throw new SpaceNotEnoughException(CodecError.ILLEGAL_BIT_OFFSET);
+        if (bitOffset < 0) {
+            throw new EncodeException("Fail  encoding the boolean type.");
         }
 
-        if (value) {
-            datagram[bo] |= (0x01 << bitOffset);
-        } else {
-            datagram[bo] &= ~(0x01 << bitOffset);
+        try {
+            CodecUtils.booleanType(datagram, byteOffset, bitOffset, value);
+        } catch (IndexOutOfBoundsException e) {
+            throw new EncodeException("Fail encoding the boolean type.", e);
         }
     }
 }

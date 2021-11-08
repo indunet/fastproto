@@ -19,10 +19,8 @@ package org.indunet.fastproto.encoder;
 
 import lombok.NonNull;
 import org.indunet.fastproto.annotation.type.ByteType;
-import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.SpaceNotEnoughException;
-import org.indunet.fastproto.util.ReverseUtils;
+import org.indunet.fastproto.util.CodecUtils;
 
 /**
  * Byte type encoder.
@@ -40,15 +38,11 @@ public class ByteEncoder implements TypeEncoder {
         this.encode(context.getDatagram(), type.value(), value);
     }
 
-    public void encode(@NonNull byte[] datagram, int byteOffset, byte value) {
-        int bo = ReverseUtils.offset(datagram.length, byteOffset);
-
-        if (bo < 0) {
-            throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (bo + ByteType.SIZE > datagram.length) {
-            throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+    public void encode(@NonNull byte[] datagram, int offset, byte value) {
+        try {
+            CodecUtils.byteType(datagram, offset, value);
+        } catch (IndexOutOfBoundsException e) {
+            throw new EncodeException("Fail encoding the byte type.", e);
         }
-
-        datagram[bo] = value;
     }
 }

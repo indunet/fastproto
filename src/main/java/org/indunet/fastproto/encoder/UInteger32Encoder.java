@@ -18,11 +18,13 @@ package org.indunet.fastproto.encoder;
 
 import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.annotation.type.UInteger16Type;
 import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.exception.IllegalValueException;
 import org.indunet.fastproto.exception.SpaceNotEnoughException;
+import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 
 import java.text.MessageFormat;
@@ -44,28 +46,15 @@ public class UInteger32Encoder implements TypeEncoder {
         this.encode(context.getDatagram(), type.value(), policy, value);
     }
 
-    public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull EndianPolicy policy, long value) {
-        int bo = ReverseUtils.offset(datagram.length, byteOffset);
-
-        if (bo < 0) {
-            throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (bo + UInteger32Type.SIZE > datagram.length) {
-            throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
-        } else if (value > UInteger32Type.MAX_VALUE || value < UInteger32Type.MIN_VALUE) {
-            throw new IllegalValueException(
-                    MessageFormat.format(CodecError.EXCEEDED_TYPE_SIZE_LIMIT.getMessage(), UInteger32Type.class.getName()));
+    public void encode(@NonNull byte[] datagram, int offset, @NonNull EndianPolicy policy, long value) {
+        if (value < UInteger32Type.MIN_VALUE || value > UInteger32Type.MAX_VALUE) {
+            throw new EncodeException("Fail encoding the integer8 type.");
         }
 
-        if (policy == EndianPolicy.BIG) {
-            datagram[bo + 3] = (byte) (value);
-            datagram[bo + 2] = (byte) (value >>> 8);
-            datagram[bo + 1] = (byte) (value >>> 16);
-            datagram[bo] = (byte) (value >>> 24);
-        } else {
-            datagram[bo] = (byte) (value);
-            datagram[bo + 1] = (byte) (value >>> 8);
-            datagram[bo + 2] = (byte) (value >>> 16);
-            datagram[bo + 3] = (byte) (value >>> 24);
+        try {
+            CodecUtils.uinteger32Type(datagram, offset, policy, value);
+        } catch (IndexOutOfBoundsException e) {
+            throw new EncodeException("Fail encoding the uinteger32 type.", e);
         }
     }
 }

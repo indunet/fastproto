@@ -18,10 +18,8 @@ package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.FloatType;
-import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.SpaceNotEnoughException;
-import org.indunet.fastproto.util.ReverseUtils;
+import org.indunet.fastproto.util.CodecUtils;
 
 /**
  * Float type encoder.
@@ -39,27 +37,11 @@ public class FloatEncoder implements TypeEncoder {
         this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);
     }
 
-    public void encode(byte[] datagram, int byteOffset, EndianPolicy endian, float value) {
-        int bo = ReverseUtils.offset(datagram.length, byteOffset);
-
-        if (bo < 0) {
-            throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (bo + FloatType.SIZE > datagram.length) {
-            throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
-        }
-
-        int bits = Float.floatToIntBits(value);
-
-        if (endian == EndianPolicy.LITTLE) {
-            datagram[bo] = (byte) bits;
-            datagram[bo + 1] = (byte) (bits >>> 8);
-            datagram[bo + 2] = (byte) (bits >>> 16);
-            datagram[bo + 3] = (byte) (bits >>> 24);
-        } else if (endian == EndianPolicy.BIG) {
-            datagram[bo + 3] = (byte) (bits);
-            datagram[bo + 2] = (byte) (bits >>> 8);
-            datagram[bo + 1] = (byte) (bits >>> 16);
-            datagram[bo] = (byte) (bits >>> 24);
+    public void encode(byte[] datagram, int offset, EndianPolicy policy, float value) {
+        try {
+            CodecUtils.floatType(datagram, offset, policy, value);
+        } catch (IndexOutOfBoundsException e) {
+            throw new EncodeException("Fail encoding the float type.", e);
         }
     }
 }

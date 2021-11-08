@@ -39,7 +39,7 @@ public class CodecUtils {
     }
 
     public static byte[] binaryType(@NonNull final byte[] datagram, int offset, int length) {
-        int o =reverse(datagram, offset);
+        int o = reverse(datagram, offset);
         int l = reverse(datagram, offset, length);
 
         return Arrays.copyOfRange(datagram, o, o + l);

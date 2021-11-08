@@ -22,6 +22,7 @@ import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
+import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 
 /**
@@ -40,29 +41,11 @@ public class UInteger32Decoder implements TypeDecoder<Long> {
         return this.decode(context.getDatagram(), type.value(), policy);
     }
 
-    public long decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy policy) {
-        int bo = ReverseUtils.offset(datagram.length, byteOffset);
-
-        if (bo < 0) {
-            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (bo + UInteger32Type.SIZE > datagram.length) {
-            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+    public long decode(@NonNull final byte[] datagram, int offset, @NonNull EndianPolicy policy) {
+        try {
+            return CodecUtils.uinteger32Type(datagram, offset, policy);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new DecodeException("Fail decoding the uinteger32 type.", e);
         }
-
-        long value = 0;
-
-        if (policy == EndianPolicy.LITTLE) {
-            value |= (datagram[bo] & 0xFF);
-            value |= ((datagram[bo + 1] & 0xFFL) << 8);
-            value |= ((datagram[bo + 2] & 0xFFL) << 16);
-            value |= ((datagram[bo + 3] & 0xFFL) << 24);
-        } else if (policy == EndianPolicy.BIG) {
-            value |= (datagram[bo + 3] & 0xFF);
-            value |= ((datagram[bo + 2] & 0xFFL) << 8);
-            value |= ((datagram[bo + 1] & 0xFFL) << 16);
-            value |= ((datagram[bo] & 0xFFL) << 24);
-        }
-
-        return value;
     }
 }

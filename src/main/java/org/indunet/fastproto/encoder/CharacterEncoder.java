@@ -21,6 +21,7 @@ import org.indunet.fastproto.annotation.type.CharacterType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodeException;
 import org.indunet.fastproto.exception.SpaceNotEnoughException;
+import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 
 /**
@@ -40,21 +41,11 @@ public class CharacterEncoder implements TypeEncoder {
         this.encode(context.getDatagram(), type.value(), policy, value);
     }
 
-    public void encode(byte[] datagram, int byteOffset, EndianPolicy policy, char value) {
-        int bo = ReverseUtils.offset(datagram.length, byteOffset);
-
-        if (bo < 0) {
-            throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (bo + CharacterType.SIZE > datagram.length) {
-            throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
-        }
-
-        if (policy == EndianPolicy.BIG) {
-            datagram[bo] = (byte) (value >>> 8);
-            datagram[bo + 1] = (byte) value;
-        } else {
-            datagram[bo + 1] = (byte) (value >>> 8);
-            datagram[bo] = (byte) value;
+    public void encode(byte[] datagram, int offset, EndianPolicy policy, char value) {
+        try {
+            CodecUtils.characterType(datagram, offset, policy, value);
+        } catch (IndexOutOfBoundsException e) {
+            throw new EncodeException("Fail encoding the character type.", e);
         }
     }
 }
