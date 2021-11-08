@@ -18,10 +18,8 @@ package org.indunet.fastproto.decoder;
 
 import lombok.NonNull;
 import org.indunet.fastproto.annotation.type.Integer8Type;
-import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.OutOfBoundsException;
-import org.indunet.fastproto.util.ReverseUtils;
+import org.indunet.fastproto.util.CodecUtils;
 
 /**
  * Integer type decoder.
@@ -38,15 +36,11 @@ public class Integer8Decoder implements TypeDecoder<Integer> {
         return this.decode(context.getDatagram(), type.value());
     }
 
-    public int decode(@NonNull final byte[] datagram, int byteOffset) {
-        int bo = ReverseUtils.offset(datagram.length, byteOffset);
-
-        if (bo < 0) {
-            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (bo + Integer8Type.SIZE > datagram.length) {
-            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+    public int decode(@NonNull final byte[] datagram, int offset) {
+        try {
+            return CodecUtils.integer8Type(datagram, offset);
+        } catch(ArrayIndexOutOfBoundsException e) {
+            throw new DecodeException("Fail decoding the integer8 type.", e);
         }
-
-        return datagram[bo];
     }
 }

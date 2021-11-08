@@ -28,15 +28,31 @@ import java.util.Arrays;
  * @since 2.5.0
  */
 public class CodecUtils {
+    public static int reverse(@NonNull byte[] datagram, int offset) {
+        return offset >= 0 ? offset : datagram.length + offset;
+    }
+
+    public static int reverse(@NonNull byte[] datagram, int offset, int length) {
+        int o = reverse(datagram, offset);
+
+        return length >= 0 ? length : datagram.length + length - o + 1;
+    }
+
     public static byte[] binaryType(@NonNull final byte[] datagram, int offset, int length) {
-        return Arrays.copyOfRange(datagram, offset, offset + length);
+        int o =reverse(datagram, offset);
+        int l = reverse(datagram, offset, length);
+
+        return Arrays.copyOfRange(datagram, o, o + l);
     }
 
     public static void binaryType(@NonNull byte[] datagram, int offset, int length, @NonNull byte[] values) {
-        if (length >= values.length) {
-            System.arraycopy(values, 0, datagram, offset, values.length);
+        int o =reverse(datagram, offset);
+        int l = reverse(datagram, offset, length);
+
+        if (l >= values.length) {
+            System.arraycopy(values, 0, datagram, o, values.length);
         } else {
-            System.arraycopy(values, 0, datagram, offset, length);
+            System.arraycopy(values, 0, datagram, o, l);
         }
     }
 
@@ -49,14 +65,18 @@ public class CodecUtils {
     }
 
     public static boolean booleanType(@NonNull final byte[] datagram, int byteOffset, int bitOffset) {
-        return (datagram[byteOffset] & (0x01 << bitOffset)) != 0;
+        int o = reverse(datagram, byteOffset);
+
+        return (datagram[o] & (0x01 << bitOffset)) != 0;
     }
 
     public static void booleanType(@NonNull final byte[] datagram, int byteOffset, int bitOffset, boolean value) {
+        int o = reverse(datagram, byteOffset);
+
         if (value) {
-            datagram[byteOffset] |= (0x01 << bitOffset);
+            datagram[o] |= (0x01 << bitOffset);
         } else {
-            datagram[byteOffset] &= ~(0x01 << bitOffset);
+            datagram[o] &= ~(0x01 << bitOffset);
         }
     }
 
@@ -65,11 +85,15 @@ public class CodecUtils {
     }
 
     public static byte byteType(@NonNull byte[] datagram, int offset) {
-        return datagram[offset];
+        int o = reverse(datagram, offset);
+
+        return datagram[o];
     }
 
     public static void byteType(@NonNull final byte[] datagram, int offset, byte value) {
-        datagram[offset] = value;
+        int o = reverse(datagram, offset);
+
+        datagram[o] = value;
     }
 
     public static void type(@NonNull final byte[] datagram, int offset, byte value) {
@@ -77,24 +101,27 @@ public class CodecUtils {
     }
 
     public static char characterType(@NonNull byte[] datagram, int offset, EndianPolicy policy) {
+        int o = reverse(datagram, offset);
         int value = 0;
 
         if (policy == EndianPolicy.BIG) {
-            value = (datagram[offset] & 0xFF) * 256 + (datagram[offset + 1] & 0xFF);
+            value = (datagram[o] & 0xFF) * 256 + (datagram[o + 1] & 0xFF);
         } else {
-            value = (datagram[offset + 1] & 0xFF) * 256 + (datagram[offset] & 0xFF);
+            value = (datagram[o + 1] & 0xFF) * 256 + (datagram[o] & 0xFF);
         }
 
         return (char) value;
     }
 
     public static void characterType(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull char value) {
+        int o = reverse(datagram, offset);
+
         if (policy == EndianPolicy.BIG) {
-            datagram[offset] = (byte) (value >>> 8);
-            datagram[offset + 1] = (byte) value;
+            datagram[o] = (byte) (value >>> 8);
+            datagram[o + 1] = (byte) value;
         } else {
-            datagram[offset + 1] = (byte) (value >>> 8);
-            datagram[offset] = (byte) value;
+            datagram[o + 1] = (byte) (value >>> 8);
+            datagram[o] = (byte) value;
         }
     }
 
@@ -103,84 +130,102 @@ public class CodecUtils {
     }
 
     public static int uinteger8Type(@NonNull final byte[] datagram, int offset) {
-        return datagram[offset] & 0xFF;
+        int o = reverse(datagram, offset);
+
+        return datagram[o] & 0xFF;
     }
 
     public static void uinteger8Type(@NonNull byte[] datagram, int offset, @NonNull int value) {
-        datagram[offset] = (byte) value;
+        int o = reverse(datagram, offset);
+
+        datagram[o] = (byte) value;
     }
 
     public static int integer8Type(@NonNull final byte[] datagram, int offset) {
-        return datagram[offset];
+        int o = reverse(datagram, offset);
+
+        return datagram[o];
     }
 
     public static void integer8Type(@NonNull byte[] datagram, int offset, @NonNull int value) {
-        datagram[offset] = (byte) value;
+        int o = reverse(datagram, offset);
+
+        datagram[o] = (byte) value;
     }
 
     public static int uinteger16Type(@NonNull final byte[] datagram, int offset, EndianPolicy policy) {
+        int o = reverse(datagram, offset);
+
         if (policy == EndianPolicy.BIG) {
-            return (datagram[offset] & 0xFF) * 256 + (datagram[offset + 1] & 0xFF);
+            return (datagram[o] & 0xFF) * 256 + (datagram[o + 1] & 0xFF);
         } else {
-            return (datagram[offset + 1] & 0xFF) * 256 + (datagram[offset] & 0xFF);
+            return (datagram[o + 1] & 0xFF) * 256 + (datagram[o] & 0xFF);
         }
     }
 
     public static void uinteger16Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull int value) {
+        int o = reverse(datagram, offset);
+
         if (policy == EndianPolicy.BIG) {
-            datagram[offset + 1] = (byte) (value);
-            datagram[offset] = (byte) (value >>> 8);
+            datagram[o + 1] = (byte) (value);
+            datagram[o] = (byte) (value >>> 8);
         } else {
-            datagram[offset] = (byte) (value);
-            datagram[offset + 1] = (byte) (value >>> 8);
+            datagram[o] = (byte) (value);
+            datagram[o + 1] = (byte) (value >>> 8);
         }
     }
 
     public static int integer16Type(@NonNull final byte[] datagram, int offset, EndianPolicy policy) {
+        int o = reverse(datagram, offset);
         short value = 0;
 
         if (policy == EndianPolicy.BIG) {
-            value |= (datagram[offset + 1] & 0x00FF);
-            value |= (datagram[offset] << 8);
+            value |= (datagram[o + 1] & 0x00FF);
+            value |= (datagram[o] << 8);
         } else {
-            value |= (datagram[offset] & 0x00FF);
-            value |= (datagram[offset + 1] << 8);
+            value |= (datagram[o] & 0x00FF);
+            value |= (datagram[o + 1] << 8);
         }
 
         return value;
     }
 
     public static void integer16Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull int value) {
+        int o = reverse(datagram, offset);
+
         if (policy == EndianPolicy.BIG) {
-            datagram[offset + 1] = (byte) (value);
-            datagram[offset] = (byte) (value >>> 8);
+            datagram[o + 1] = (byte) (value);
+            datagram[o] = (byte) (value >>> 8);
         } else {
-            datagram[offset] = (byte) (value);
-            datagram[offset + 1] = (byte) (value >>> 8);
+            datagram[o] = (byte) (value);
+            datagram[o + 1] = (byte) (value >>> 8);
         }
     }
 
     public static short shortType(@NonNull final byte[] datagram, int offset, EndianPolicy policy) {
+        int o = reverse(datagram, offset);
         short value = 0;
 
         if (policy == EndianPolicy.LITTLE) {
-            value |= (datagram[offset] & 0x00FF);
-            value |= (datagram[offset + 1] << 8);
+            value |= (datagram[o] & 0x00FF);
+            value |= (datagram[o + 1] << 8);
         } else if (policy == EndianPolicy.BIG) {
-            value |= (datagram[offset + 1] & 0x00FF);
-            value |= (datagram[offset] << 8);
+            value |= (datagram[o + 1] & 0x00FF);
+            value |= (datagram[o] << 8);
         }
 
         return value;
     }
 
     public static void shortType(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull short value) {
+        int o = reverse(datagram, offset);
+
         if (policy == EndianPolicy.LITTLE) {
-            datagram[offset] = (byte) (value);
-            datagram[offset + 1] = (byte) (value >>> 8);
+            datagram[o] = (byte) (value);
+            datagram[o + 1] = (byte) (value >>> 8);
         } else if (policy == EndianPolicy.BIG) {
-            datagram[offset + 1] = (byte) (value);
-            datagram[offset] = (byte) (value >>> 8);
+            datagram[o + 1] = (byte) (value);
+            datagram[o] = (byte) (value >>> 8);
         }
     }
 
@@ -189,34 +234,37 @@ public class CodecUtils {
     }
 
     public static int integerType(@NonNull final byte[] datagram, int offset, EndianPolicy policy) {
+        int o = reverse(datagram, offset);
         int value = 0;
 
         if (policy == EndianPolicy.LITTLE) {
-            value |= (datagram[offset] & 0xFF);
-            value |= ((datagram[offset + 1] & 0xFF) << 8);
-            value |= ((datagram[offset + 2] & 0xFF) << 16);
-            value |= ((datagram[offset + 3] & 0xFF) << 24);
+            value |= (datagram[o] & 0xFF);
+            value |= ((datagram[o + 1] & 0xFF) << 8);
+            value |= ((datagram[o + 2] & 0xFF) << 16);
+            value |= ((datagram[o + 3] & 0xFF) << 24);
         } else if (policy == EndianPolicy.BIG) {
-            value |= (datagram[offset + 3] & 0xFF);
-            value |= ((datagram[offset + 2] & 0xFF) << 8);
-            value |= ((datagram[offset + 1] & 0xFF) << 16);
-            value |= ((datagram[offset] & 0xFF) << 24);
+            value |= (datagram[o + 3] & 0xFF);
+            value |= ((datagram[o + 2] & 0xFF) << 8);
+            value |= ((datagram[o + 1] & 0xFF) << 16);
+            value |= ((datagram[o] & 0xFF) << 24);
         }
 
         return value;
     }
 
     public static void integerType(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull int value) {
+        int o = reverse(datagram, offset);
+
         if (policy == EndianPolicy.LITTLE) {
-            datagram[offset] = (byte) (value);
-            datagram[offset + 1] = (byte) (value >>> 8);
-            datagram[offset + 2] = (byte) (value >>> 16);
-            datagram[offset + 3] = (byte) (value >>> 24);
+            datagram[o] = (byte) (value);
+            datagram[o + 1] = (byte) (value >>> 8);
+            datagram[o + 2] = (byte) (value >>> 16);
+            datagram[o + 3] = (byte) (value >>> 24);
         } else if (policy == EndianPolicy.BIG) {
-            datagram[offset + 3] = (byte) (value);
-            datagram[offset + 2] = (byte) (value >>> 8);
-            datagram[offset + 1] = (byte) (value >>> 16);
-            datagram[offset] = (byte) (value >>> 24);
+            datagram[o + 3] = (byte) (value);
+            datagram[o + 2] = (byte) (value >>> 8);
+            datagram[o + 1] = (byte) (value >>> 16);
+            datagram[o] = (byte) (value >>> 24);
         }
     }
 
@@ -225,61 +273,65 @@ public class CodecUtils {
     }
 
     public static long uinteger32Type(@NonNull final byte[] datagram, int offset, EndianPolicy policy) {
+        int o = reverse(datagram, offset);
         long value = 0;
 
         if (policy == EndianPolicy.LITTLE) {
-            value |= (datagram[offset] & 0xFF);
-            value |= ((datagram[offset + 1] & 0xFFL) << 8);
-            value |= ((datagram[offset + 2] & 0xFFL) << 16);
-            value |= ((datagram[offset + 3] & 0xFFL) << 24);
+            value |= (datagram[o] & 0xFF);
+            value |= ((datagram[o + 1] & 0xFFL) << 8);
+            value |= ((datagram[o + 2] & 0xFFL) << 16);
+            value |= ((datagram[o + 3] & 0xFFL) << 24);
         } else if (policy == EndianPolicy.BIG) {
-            value |= (datagram[offset + 3] & 0xFF);
-            value |= ((datagram[offset + 2] & 0xFFL) << 8);
-            value |= ((datagram[offset + 1] & 0xFFL) << 16);
-            value |= ((datagram[offset] & 0xFFL) << 24);
+            value |= (datagram[o + 3] & 0xFF);
+            value |= ((datagram[o + 2] & 0xFFL) << 8);
+            value |= ((datagram[o + 1] & 0xFFL) << 16);
+            value |= ((datagram[o] & 0xFFL) << 24);
         }
 
         return value;
     }
 
     public static void uinteger32Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull long value) {
+        int o = reverse(datagram, offset);
+
         if (policy == EndianPolicy.BIG) {
-            datagram[offset + 3] = (byte) (value);
-            datagram[offset + 2] = (byte) (value >>> 8);
-            datagram[offset + 1] = (byte) (value >>> 16);
-            datagram[offset] = (byte) (value >>> 24);
+            datagram[o + 3] = (byte) (value);
+            datagram[o + 2] = (byte) (value >>> 8);
+            datagram[o + 1] = (byte) (value >>> 16);
+            datagram[o] = (byte) (value >>> 24);
         } else {
-            datagram[offset] = (byte) (value);
-            datagram[offset + 1] = (byte) (value >>> 8);
-            datagram[offset + 2] = (byte) (value >>> 16);
-            datagram[offset + 3] = (byte) (value >>> 24);
+            datagram[o] = (byte) (value);
+            datagram[o + 1] = (byte) (value >>> 8);
+            datagram[o + 2] = (byte) (value >>> 16);
+            datagram[o + 3] = (byte) (value >>> 24);
         }
     }
 
     public static BigInteger uinteger64Type(@NonNull final byte[] datagram, int offset, EndianPolicy policy) {
+        int o = reverse(datagram, offset);
         long low = 0;
         long high = 0;
 
         if (policy == EndianPolicy.LITTLE) {
-            low |= (datagram[offset] & 0xFF);
-            low |= ((datagram[offset + 1] & 0xFFL) << 8);
-            low |= ((datagram[offset + 2] & 0xFFL) << 16);
-            low |= ((datagram[offset + 3] & 0xFFL) << 24);
+            low |= (datagram[o] & 0xFF);
+            low |= ((datagram[o + 1] & 0xFFL) << 8);
+            low |= ((datagram[o + 2] & 0xFFL) << 16);
+            low |= ((datagram[o + 3] & 0xFFL) << 24);
 
-            high |= (datagram[offset + 4] & 0xFFL);
-            high |= ((datagram[offset + 5] & 0xFFL) << 8);
-            high |= ((datagram[offset + 6] & 0xFFL) << 16);
-            high |= ((datagram[offset + 7] & 0xFFL) << 24);
+            high |= (datagram[o + 4] & 0xFFL);
+            high |= ((datagram[o + 5] & 0xFFL) << 8);
+            high |= ((datagram[o + 6] & 0xFFL) << 16);
+            high |= ((datagram[o + 7] & 0xFFL) << 24);
         } else if (policy == EndianPolicy.BIG) {
-            low |= (datagram[offset + 7] & 0xFF);
-            low |= ((datagram[offset + 6] & 0xFFL) << 8);
-            low |= ((datagram[offset + 5] & 0xFFL) << 16);
-            low |= ((datagram[offset + 4] & 0xFFL) << 24);
+            low |= (datagram[o + 7] & 0xFF);
+            low |= ((datagram[o + 6] & 0xFFL) << 8);
+            low |= ((datagram[o + 5] & 0xFFL) << 16);
+            low |= ((datagram[o + 4] & 0xFFL) << 24);
 
-            high |= (datagram[offset + 3] & 0xFFL);
-            high |= ((datagram[offset + 2] & 0xFFL) << 8);
-            high |= ((datagram[offset + 1] & 0xFFL) << 16);
-            high |= ((datagram[offset] & 0xFFL) << 24);
+            high |= (datagram[o + 3] & 0xFFL);
+            high |= ((datagram[o + 2] & 0xFFL) << 8);
+            high |= ((datagram[o + 1] & 0xFFL) << 16);
+            high |= ((datagram[o] & 0xFFL) << 24);
         }
 
         return new BigInteger(String.valueOf(high))
@@ -288,6 +340,7 @@ public class CodecUtils {
     }
 
     public static void uinteger64Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull BigInteger value) {
+        int o = reverse(datagram, offset);
         long low = value
                 .and(new BigInteger(String.valueOf(0xFFFF_FFFFL)))
                 .longValueExact();
@@ -296,25 +349,25 @@ public class CodecUtils {
                 .longValueExact();
 
         if (policy == EndianPolicy.BIG) {
-            datagram[offset + 7] = (byte) (low);
-            datagram[offset + 6] = (byte) (low >>> 8);
-            datagram[offset + 5] = (byte) (low >>> 16);
-            datagram[offset + 4] = (byte) (low >>> 24);
+            datagram[o + 7] = (byte) (low);
+            datagram[o + 6] = (byte) (low >>> 8);
+            datagram[o + 5] = (byte) (low >>> 16);
+            datagram[o + 4] = (byte) (low >>> 24);
 
-            datagram[offset + 3] = (byte) (high);
-            datagram[offset + 2] = (byte) (high >>> 8);
-            datagram[offset + 1] = (byte) (high >>> 16);
-            datagram[offset] = (byte) (high >>> 24);
+            datagram[o + 3] = (byte) (high);
+            datagram[o + 2] = (byte) (high >>> 8);
+            datagram[o + 1] = (byte) (high >>> 16);
+            datagram[o] = (byte) (high >>> 24);
         } else {
-            datagram[offset] = (byte) (low);
-            datagram[offset + 1] = (byte) (low >>> 8);
-            datagram[offset + 2] = (byte) (low >>> 16);
-            datagram[offset + 3] = (byte) (low >>> 24);
+            datagram[o] = (byte) (low);
+            datagram[o + 1] = (byte) (low >>> 8);
+            datagram[o + 2] = (byte) (low >>> 16);
+            datagram[o + 3] = (byte) (low >>> 24);
 
-            datagram[offset + 4] = (byte) (high);
-            datagram[offset + 5] = (byte) (high >>> 8);
-            datagram[offset + 6] = (byte) (high >>> 16);
-            datagram[offset + 7] = (byte) (high >>> 24);
+            datagram[o + 4] = (byte) (high);
+            datagram[o + 5] = (byte) (high >>> 8);
+            datagram[o + 6] = (byte) (high >>> 16);
+            datagram[o + 7] = (byte) (high >>> 24);
         }
     }
 
@@ -323,54 +376,57 @@ public class CodecUtils {
     }
 
     public static long longType(@NonNull final byte[] datagram, int offset, EndianPolicy policy) {
+        int o = reverse(datagram, offset);
         long value = 0;
 
         if (policy == EndianPolicy.LITTLE) {
-            value |= (datagram[offset] & 0xFF);
-            value |= ((datagram[offset + 1] & 0xFFL) << 8);
-            value |= ((datagram[offset + 2] & 0xFFL) << 16);
-            value |= ((datagram[offset + 3] & 0xFFL) << 24);
+            value |= (datagram[o] & 0xFF);
+            value |= ((datagram[o + 1] & 0xFFL) << 8);
+            value |= ((datagram[o + 2] & 0xFFL) << 16);
+            value |= ((datagram[o + 3] & 0xFFL) << 24);
 
-            value |= ((datagram[offset + 4] & 0xFFL) << 32);
-            value |= ((datagram[offset + 5] & 0xFFL) << 40);
-            value |= ((datagram[offset + 6] & 0xFFL) << 48);
-            value |= ((datagram[offset + 7] & 0xFFL) << 56);
+            value |= ((datagram[o + 4] & 0xFFL) << 32);
+            value |= ((datagram[o + 5] & 0xFFL) << 40);
+            value |= ((datagram[o + 6] & 0xFFL) << 48);
+            value |= ((datagram[o + 7] & 0xFFL) << 56);
         } else if (policy == EndianPolicy.BIG) {
-            value |= (datagram[offset + 7] & 0xFF);
-            value |= ((datagram[offset + 6] & 0xFFL) << 8);
-            value |= ((datagram[offset + 5] & 0xFFL) << 16);
-            value |= ((datagram[offset + 4] & 0xFFL) << 24);
+            value |= (datagram[o + 7] & 0xFF);
+            value |= ((datagram[o + 6] & 0xFFL) << 8);
+            value |= ((datagram[o + 5] & 0xFFL) << 16);
+            value |= ((datagram[o + 4] & 0xFFL) << 24);
 
-            value |= ((datagram[offset + 3] & 0xFFL) << 32);
-            value |= ((datagram[offset + 2] & 0xFFL) << 40);
-            value |= ((datagram[offset + 1] & 0xFFL) << 48);
-            value |= ((datagram[offset] & 0xFFL) << 56);
+            value |= ((datagram[o + 3] & 0xFFL) << 32);
+            value |= ((datagram[o + 2] & 0xFFL) << 40);
+            value |= ((datagram[o + 1] & 0xFFL) << 48);
+            value |= ((datagram[o] & 0xFFL) << 56);
         }
 
         return value;
     }
 
     public static void longType(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull long value) {
+        int o = reverse(datagram, offset);
+
         if (policy == EndianPolicy.BIG) {
-            datagram[offset + 7] = (byte) (value);
-            datagram[offset + 6] = (byte) (value >>> 8);
-            datagram[offset + 5] = (byte) (value >>> 16);
-            datagram[offset + 4] = (byte) (value >>> 24);
+            datagram[o + 7] = (byte) (value);
+            datagram[o + 6] = (byte) (value >>> 8);
+            datagram[o + 5] = (byte) (value >>> 16);
+            datagram[o + 4] = (byte) (value >>> 24);
 
-            datagram[offset + 3] = (byte) (value >>> 32);
-            datagram[offset + 2] = (byte) (value >>> 40);
-            datagram[offset + 1] = (byte) (value >>> 48);
-            datagram[offset] = (byte) (value >>> 56);
+            datagram[o + 3] = (byte) (value >>> 32);
+            datagram[o + 2] = (byte) (value >>> 40);
+            datagram[o + 1] = (byte) (value >>> 48);
+            datagram[o] = (byte) (value >>> 56);
         } else {
-            datagram[offset] = (byte) (value);
-            datagram[offset + 1] = (byte) (value >>> 8);
-            datagram[offset + 2] = (byte) (value >>> 16);
-            datagram[offset + 3] = (byte) (value >>> 24);
+            datagram[o] = (byte) (value);
+            datagram[o + 1] = (byte) (value >>> 8);
+            datagram[o + 2] = (byte) (value >>> 16);
+            datagram[o + 3] = (byte) (value >>> 24);
 
-            datagram[offset + 4] = (byte) (value >>> 32);
-            datagram[offset + 5] = (byte) (value >>> 40);
-            datagram[offset + 6] = (byte) (value >>> 48);
-            datagram[offset + 7] = (byte) (value >>> 56);
+            datagram[o + 4] = (byte) (value >>> 32);
+            datagram[o + 5] = (byte) (value >>> 40);
+            datagram[o + 6] = (byte) (value >>> 48);
+            datagram[o + 7] = (byte) (value >>> 56);
         }
     }
 
@@ -379,36 +435,38 @@ public class CodecUtils {
     }
 
     public static float floatType(@NonNull final byte[] datagram, int offset, EndianPolicy policy) {
+        int o = reverse(datagram, offset);
         int value = 0;
 
         if (policy == EndianPolicy.LITTLE) {
-            value |= (datagram[offset] & 0xFF);
-            value |= ((datagram[offset + 1] & 0xFF) << 8);
-            value |= ((datagram[offset + 2] & 0xFF) << 16);
-            value |= ((datagram[offset + 3] & 0xFF) << 24);
+            value |= (datagram[o] & 0xFF);
+            value |= ((datagram[o + 1] & 0xFF) << 8);
+            value |= ((datagram[o + 2] & 0xFF) << 16);
+            value |= ((datagram[o + 3] & 0xFF) << 24);
         } else if (policy == EndianPolicy.BIG) {
-            value |= (datagram[offset + 3] & 0xFF);
-            value |= ((datagram[offset + 2] & 0xFF) << 8);
-            value |= ((datagram[offset + 1] & 0xFF) << 16);
-            value |= ((datagram[offset] & 0xFF) << 24);
+            value |= (datagram[o + 3] & 0xFF);
+            value |= ((datagram[o + 2] & 0xFF) << 8);
+            value |= ((datagram[o + 1] & 0xFF) << 16);
+            value |= ((datagram[o] & 0xFF) << 24);
         }
 
         return Float.intBitsToFloat(value);
     }
 
     public static void floatType(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull float value) {
+        int o = reverse(datagram, offset);
         int bits = Float.floatToIntBits(value);
 
         if (policy == EndianPolicy.LITTLE) {
-            datagram[offset] = (byte) bits;
-            datagram[offset + 1] = (byte) (bits >>> 8);
-            datagram[offset + 2] = (byte) (bits >>> 16);
-            datagram[offset + 3] = (byte) (bits >>> 24);
+            datagram[o] = (byte) bits;
+            datagram[o + 1] = (byte) (bits >>> 8);
+            datagram[o + 2] = (byte) (bits >>> 16);
+            datagram[o + 3] = (byte) (bits >>> 24);
         } else if (policy == EndianPolicy.BIG) {
-            datagram[offset + 3] = (byte) (bits);
-            datagram[offset + 2] = (byte) (bits >>> 8);
-            datagram[offset + 1] = (byte) (bits >>> 16);
-            datagram[offset] = (byte) (bits >>> 24);
+            datagram[o + 3] = (byte) (bits);
+            datagram[o + 2] = (byte) (bits >>> 8);
+            datagram[o + 1] = (byte) (bits >>> 16);
+            datagram[o] = (byte) (bits >>> 24);
         }
     }
 
@@ -417,56 +475,58 @@ public class CodecUtils {
     }
 
     public static double doubleType(@NonNull final byte[] datagram, int offset, EndianPolicy policy) {
+        int o = reverse(datagram, offset);
         long value = 0;
 
         if (policy == EndianPolicy.LITTLE) {
-            value |= (datagram[offset] & 0xFFL);
-            value |= ((datagram[offset + 1] & 0xFFL) << 8);
-            value |= ((datagram[offset + 2] & 0xFFL) << 16);
-            value |= ((datagram[offset + 3] & 0xFFL) << 24);
+            value |= (datagram[o] & 0xFFL);
+            value |= ((datagram[o + 1] & 0xFFL) << 8);
+            value |= ((datagram[o + 2] & 0xFFL) << 16);
+            value |= ((datagram[o + 3] & 0xFFL) << 24);
 
-            value |= ((datagram[offset + 4] & 0xFFL) << 32);
-            value |= ((datagram[offset + 5] & 0xFFL) << 40);
-            value |= ((datagram[offset + 6] & 0xFFL) << 48);
-            value |= ((datagram[offset + 7] & 0xFFL) << 56);
+            value |= ((datagram[o + 4] & 0xFFL) << 32);
+            value |= ((datagram[o + 5] & 0xFFL) << 40);
+            value |= ((datagram[o + 6] & 0xFFL) << 48);
+            value |= ((datagram[o + 7] & 0xFFL) << 56);
         } else if (policy == EndianPolicy.BIG) {
-            value |= (datagram[offset + 7] & 0xFFL);
-            value |= ((datagram[offset + 6] & 0xFFL) << 8);
-            value |= ((datagram[offset + 5] & 0xFFL) << 16);
-            value |= ((datagram[offset + 4] & 0xFFL) << 24);
+            value |= (datagram[o + 7] & 0xFFL);
+            value |= ((datagram[o + 6] & 0xFFL) << 8);
+            value |= ((datagram[o + 5] & 0xFFL) << 16);
+            value |= ((datagram[o + 4] & 0xFFL) << 24);
 
-            value |= ((datagram[offset + 3] & 0xFFL) << 32);
-            value |= ((datagram[offset + 2] & 0xFFL) << 40);
-            value |= ((datagram[offset + 1] & 0xFFL) << 48);
-            value |= ((datagram[offset] & 0xFFL) << 56);
+            value |= ((datagram[o + 3] & 0xFFL) << 32);
+            value |= ((datagram[o + 2] & 0xFFL) << 40);
+            value |= ((datagram[o + 1] & 0xFFL) << 48);
+            value |= ((datagram[o] & 0xFFL) << 56);
         }
 
         return Double.longBitsToDouble(value);
     }
 
     public static void doubleType(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull double value) {
+        int o = reverse(datagram, offset);
         long bits = Double.doubleToLongBits(value);
 
         if (policy == EndianPolicy.BIG) {
-            datagram[offset + 7] = (byte) (bits);
-            datagram[offset + 6] = (byte) (bits >>> 8);
-            datagram[offset + 5] = (byte) (bits >>> 16);
-            datagram[offset + 4] = (byte) (bits >>> 24);
+            datagram[o + 7] = (byte) (bits);
+            datagram[o + 6] = (byte) (bits >>> 8);
+            datagram[o + 5] = (byte) (bits >>> 16);
+            datagram[o + 4] = (byte) (bits >>> 24);
 
-            datagram[offset + 3] = (byte) (bits >>> 32);
-            datagram[offset + 2] = (byte) (bits >>> 40);
-            datagram[offset + 1] = (byte) (bits >>> 48);
-            datagram[offset] = (byte) (bits >>> 56);
+            datagram[o + 3] = (byte) (bits >>> 32);
+            datagram[o + 2] = (byte) (bits >>> 40);
+            datagram[o + 1] = (byte) (bits >>> 48);
+            datagram[o] = (byte) (bits >>> 56);
         } else {
-            datagram[offset] = (byte) (bits);
-            datagram[offset + 1] = (byte) (bits >>> 8);
-            datagram[offset + 2] = (byte) (bits >>> 16);
-            datagram[offset + 3] = (byte) (bits >>> 24);
+            datagram[o] = (byte) (bits);
+            datagram[o + 1] = (byte) (bits >>> 8);
+            datagram[o + 2] = (byte) (bits >>> 16);
+            datagram[o + 3] = (byte) (bits >>> 24);
 
-            datagram[offset + 4] = (byte) (bits >>> 32);
-            datagram[offset + 5] = (byte) (bits >>> 40);
-            datagram[offset + 6] = (byte) (bits >>> 48);
-            datagram[offset + 7] = (byte) (bits >>> 56);
+            datagram[o + 4] = (byte) (bits >>> 32);
+            datagram[o + 5] = (byte) (bits >>> 40);
+            datagram[o + 6] = (byte) (bits >>> 48);
+            datagram[o + 7] = (byte) (bits >>> 56);
         }
     }
 

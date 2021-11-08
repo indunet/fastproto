@@ -18,10 +18,8 @@ package org.indunet.fastproto.decoder;
 
 import lombok.NonNull;
 import org.indunet.fastproto.annotation.type.ByteType;
-import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.OutOfBoundsException;
-import org.indunet.fastproto.util.ReverseUtils;
+import org.indunet.fastproto.util.CodecUtils;
 
 /**
  * Byte type decoder.
@@ -38,15 +36,11 @@ public class ByteDecoder implements TypeDecoder<Byte> {
         return this.decode(context.getDatagram(), type.value());
     }
 
-    public byte decode(@NonNull final byte[] datagram, int byteOffset) {
-        int bo = ReverseUtils.offset(datagram.length, byteOffset);
-
-        if (bo < 0) {
-            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (bo + ByteType.SIZE > datagram.length) {
-            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+    public byte decode(@NonNull final byte[] datagram, int offset) {
+        try {
+            return CodecUtils.byteType(datagram, offset);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new DecodeException("Fail decoding the byte type.", e);
         }
-
-        return datagram[bo];
     }
 }

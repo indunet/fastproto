@@ -19,10 +19,8 @@ package org.indunet.fastproto.decoder;
 import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.FloatType;
-import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.OutOfBoundsException;
-import org.indunet.fastproto.util.ReverseUtils;
+import org.indunet.fastproto.util.CodecUtils;
 
 /**
  * Float type decoder.
@@ -40,28 +38,10 @@ public class FloatDecoder implements TypeDecoder<Float> {
     }
 
     public float decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {
-        int bo = ReverseUtils.offset(datagram.length, byteOffset);
-
-        if (bo < 0) {
-            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (bo + FloatType.SIZE > datagram.length) {
-            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+        try {
+            return CodecUtils.floatType(datagram, byteOffset, endian);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new DecodeException("Fail decoding the float type.", e);
         }
-
-        int value = 0;
-
-        if (endian == EndianPolicy.LITTLE) {
-            value |= (datagram[bo] & 0xFF);
-            value |= ((datagram[bo + 1] & 0xFF) << 8);
-            value |= ((datagram[bo + 2] & 0xFF) << 16);
-            value |= ((datagram[bo + 3] & 0xFF) << 24);
-        } else if (endian == EndianPolicy.BIG) {
-            value |= (datagram[bo + 3] & 0xFF);
-            value |= ((datagram[bo + 2] & 0xFF) << 8);
-            value |= ((datagram[bo + 1] & 0xFF) << 16);
-            value |= ((datagram[bo] & 0xFF) << 24);
-        }
-
-        return Float.intBitsToFloat(value);
     }
 }

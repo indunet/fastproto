@@ -19,10 +19,8 @@ package org.indunet.fastproto.decoder;
 import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.LongType;
-import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.OutOfBoundsException;
-import org.indunet.fastproto.util.ReverseUtils;
+import org.indunet.fastproto.util.CodecUtils;
 
 /**
  * Long type decoder.
@@ -40,36 +38,10 @@ public class LongDecoder implements TypeDecoder<Long> {
     }
 
     public long decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {
-        int bo = ReverseUtils.offset(datagram.length, byteOffset);
-
-        if (bo < 0) {
-            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (bo + LongType.SIZE > datagram.length) {
-            throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+        try {
+            return CodecUtils.longType(datagram, byteOffset, endian);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new DecodeException("Fail decoding the long type.", e);
         }
-
-        long value = 0;
-
-        if (endian == EndianPolicy.LITTLE) {
-            value |= (datagram[bo] & 0xFF);
-            value |= ((datagram[bo + 1] & 0xFFL) << 8);
-            value |= ((datagram[bo + 2] & 0xFFL) << 16);
-            value |= ((datagram[bo + 3] & 0xFFL) << 24);
-            value |= ((datagram[bo + 4] & 0xFFL) << 32);
-            value |= ((datagram[bo + 5] & 0xFFL) << 40);
-            value |= ((datagram[bo + 6] & 0xFFL) << 48);
-            value |= ((datagram[bo + 7] & 0xFFL) << 56);
-        } else if (endian == EndianPolicy.BIG) {
-            value |= (datagram[bo + 7] & 0xFF);
-            value |= ((datagram[bo + 6] & 0xFFL) << 8);
-            value |= ((datagram[bo + 5] & 0xFFL) << 16);
-            value |= ((datagram[bo + 4] & 0xFFL) << 24);
-            value |= ((datagram[bo + 3] & 0xFFL) << 32);
-            value |= ((datagram[bo + 2] & 0xFFL) << 40);
-            value |= ((datagram[bo + 1] & 0xFFL) << 48);
-            value |= ((datagram[bo] & 0xFFL) << 56);
-        }
-
-        return value;
     }
 }
