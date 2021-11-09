@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.decoder;
 
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -45,9 +45,9 @@ public class BinaryDecoderTest {
         assertThrows(NullPointerException.class, () -> this.decoder.decode(null));
         assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 2, 10));
 
-        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 2, 10));
-        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -2, 10));
-        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 2, -10));
-        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 10, -1));
+        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, 2, 10));
+        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, -2, 10));
+        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, 2, -10));
+        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, 10, -1));
     }
 }

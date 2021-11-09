@@ -50,7 +50,7 @@ public @interface ShortType {
 
     int value();
 
-    Class<? extends Function<Short, ?>>[] afterDecode() default {};
+    Class<? extends Function<Short, ?>>[] decodingFormula() default {};
 
-    Class<? extends Function<?, Short>>[] beforeEncode() default {};
+    Class<? extends Function<?, Short>>[] encodingFormula() default {};
 }

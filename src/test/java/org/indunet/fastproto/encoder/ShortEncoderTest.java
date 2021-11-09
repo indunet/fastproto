@@ -18,7 +18,7 @@ package org.indunet.fastproto.encoder;
 
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -49,7 +49,7 @@ public class ShortEncoderTest {
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null));
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null, 0, EndianPolicy.BIG, (short) 1));
 
-        assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, -1, EndianPolicy.BIG, (short) 0));
-        assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, 10, EndianPolicy.LITTLE, (short) 0));
+        assertThrows(EncodingException.class, () -> this.encoder.encode(datagram, -1, EndianPolicy.BIG, (short) 0));
+        assertThrows(EncodingException.class, () -> this.encoder.encode(datagram, 10, EndianPolicy.LITTLE, (short) 0));
     }
 }

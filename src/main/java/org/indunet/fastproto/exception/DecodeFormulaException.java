@@ -20,7 +20,7 @@ package org.indunet.fastproto.exception;
  * @author Chance
  * @since 1.0.0
  */
-public class DecodeFormulaException extends DecodeException {
+public class DecodeFormulaException extends DecodingException {
     public DecodeFormulaException() {
 
     }

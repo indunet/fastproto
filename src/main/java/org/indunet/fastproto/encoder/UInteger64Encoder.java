@@ -19,17 +19,11 @@ package org.indunet.fastproto.encoder;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.type.LongType;
 import org.indunet.fastproto.annotation.type.UInteger64Type;
-import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.IllegalValueException;
-import org.indunet.fastproto.exception.SpaceNotEnoughException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
-import org.indunet.fastproto.util.ReverseUtils;
 
 import java.math.BigInteger;
-import java.text.MessageFormat;
 
 /**
  * @author Deng Ran
@@ -45,14 +39,12 @@ public class UInteger64Encoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int offset, @NonNull EndianPolicy policy, BigInteger value) {
-        if (value.compareTo(UInteger64Type.MAX_VALUE) > 0 || value.compareTo(UInteger64Type.MIN_VALUE) < 0) {
-            throw new EncodeException("Fail encoding the uinteger64 type.");
-        }
-
         try {
             CodecUtils.uinteger64Type(datagram, offset, policy, value);
         } catch (IndexOutOfBoundsException e) {
-            throw new EncodeException("Fail encoding the uinteger64 type.", e);
+            throw new EncodingException("Fail encoding the uinteger64 type.", e);
+        } catch (IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding the uinteger64 type.", e);
         }
     }
 }

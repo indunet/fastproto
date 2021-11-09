@@ -20,7 +20,7 @@ import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.UInteger64Type;
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 import java.math.BigInteger;
@@ -41,7 +41,7 @@ public class UInteger64Decoder implements TypeDecoder<BigInteger> {
         try {
             return CodecUtils.uinteger64Type(datagram, offset, policy);
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new DecodeException("Fail decoding the uinteger64 type.", e);
+            throw new DecodingException("Fail decoding the uinteger64 type.", e);
         }
     }
 }

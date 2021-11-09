@@ -58,7 +58,7 @@ FastProto is more recommended for the following scenarios:
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>2.4.0</version>
+    <version>3.0.0</version>
 </dependency>
 ```
 
@@ -142,7 +142,7 @@ the serialized result by 0.1, which is an extremely common operation in IoT data
 To help users reduce intermediate steps, FastProto introduces encoding formulas and decoding formulas.
 
 The custom decoding formula needs to implement the `java.lang.function.Function` interface, and then specify the decoding
-formula through the `afterDecode` attribute of the data type annotation.
+formula through the `decodingFormula` attribute of the data type annotation.
 
 ```java
 public class PressureDecodeFormula implements Function<Long, Double> {
@@ -157,13 +157,13 @@ public class PressureDecodeFormula implements Function<Long, Double> {
 public class Weather {
     ...
 
-    @UInteger32Type(value = 14, afterDecode = DecodeSpeedFormula.class)
+    @UInteger32Type(value = 14, decodingFormula = DecodeSpeedFormula.class)
     double pressure;
 }
 ```
 
 Similarly, In the same way, the encoding formula also needs to implement the `java.lang.function.Function` interface, and
-then specify the encoding formula through the `beforeEncode` attribute of the data type annotation. [more][formula]
+then specify the encoding formula through the `encodingFormula` attribute of the data type annotation. [more][formula]
 
 ```java
 public class PressureEncodeFormula implements Function<Double, Long> {
@@ -178,7 +178,7 @@ public class PressureEncodeFormula implements Function<Double, Long> {
 public class Weather {
     ...
 
-    @UInteger32Type(value = 14, afterDecode = PressureDecodeFormula.class, beforeEncode = PressureEncodeFormula.class)
+    @UInteger32Type(value = 14, decodingFormula = PressureDecodeFormula.class, encodingFormula = PressureEncodeFormula.class)
     double pressure;
 }
 ```

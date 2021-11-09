@@ -19,11 +19,8 @@ package org.indunet.fastproto.encoder;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.annotation.type.StringType;
-import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.SpaceNotEnoughException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
-import org.indunet.fastproto.util.ReverseUtils;
 
 import java.nio.charset.Charset;
 
@@ -47,7 +44,9 @@ public class StringEncoder implements TypeEncoder {
         try {
             CodecUtils.binaryType(datagram, offset, length, value.getBytes());
         } catch (IndexOutOfBoundsException e) {
-            throw new EncodeException("Fail encoding the string type.", e);
+            throw new EncodingException("Fail encoding the string type.", e);
+        } catch (IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding the string type.", e);
         }
     }
 }

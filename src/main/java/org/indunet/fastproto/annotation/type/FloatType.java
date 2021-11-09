@@ -50,7 +50,7 @@ public @interface FloatType {
 
     int value();
 
-    Class<? extends Function<Float, ?>>[] afterDecode() default {};
+    Class<? extends Function<Float, ?>>[] decodingFormula() default {};
 
-    Class<? extends Function<?, Float>>[] beforeEncode() default {};
+    Class<? extends Function<?, Float>>[] encodingFormula() default {};
 }

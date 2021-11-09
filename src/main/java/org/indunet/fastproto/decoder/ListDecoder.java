@@ -22,7 +22,7 @@ import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.ArrayType;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
 import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
@@ -57,11 +57,11 @@ public class ListDecoder implements TypeDecoder<List<?>> {
         int bo = ReverseUtils.offset(datagram.length, byteOffset);
 
         if (bo < 0) {
-            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
+            throw new DecodingException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (bo >= datagram.length) {
-            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
+            throw new DecodingException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (length <= 0) {
-            throw new DecodeException(CodecError.ILLEGAL_PARAMETER);
+            throw new DecodingException(CodecError.ILLEGAL_PARAMETER);
         } else if (bo + size * length > datagram.length) {
             throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
@@ -102,7 +102,7 @@ public class ListDecoder implements TypeDecoder<List<?>> {
             case DOUBLE:
                 return codec.apply(b -> CodecUtils.doubleType(datagram, b, policy), new ArrayList<Double>());
             default:
-                throw new DecodeException(MessageFormat.format(
+                throw new DecodingException(MessageFormat.format(
                         CodecError.NOT_SUPPORT_ARRAY_TYPE.getMessage(), type.toString()));
         }
     }

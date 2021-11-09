@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.decoder;
 
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -47,7 +47,7 @@ public class UInteger8DecoderTest {
         assertThrows(NullPointerException.class, () -> this.decoder.decode(null));
         assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 0));
 
-        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -101));
-        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 10));
+        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, -101));
+        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, 10));
     }
 }

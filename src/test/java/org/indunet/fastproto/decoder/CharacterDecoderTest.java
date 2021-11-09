@@ -17,7 +17,7 @@
 package org.indunet.fastproto.decoder;
 
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -48,8 +48,8 @@ public class CharacterDecoderTest {
         assertThrows(NullPointerException.class, () -> this.decoder.decode(null));
         assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 10, EndianPolicy.BIG));
 
-        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -1, EndianPolicy.BIG));
-        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 10, EndianPolicy.LITTLE));
-        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 9, EndianPolicy.LITTLE));
+        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, -1, EndianPolicy.BIG));
+        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, 10, EndianPolicy.LITTLE));
+        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, 9, EndianPolicy.LITTLE));
     }
 }

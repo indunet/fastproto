@@ -50,7 +50,7 @@ public @interface DoubleType {
 
     int value();
 
-    Class<? extends Function<Double, ?>>[] afterDecode() default {};
+    Class<? extends Function<Double, ?>>[] decodingFormula() default {};
 
-    Class<? extends Function<?, Double>>[] beforeEncode() default {};
+    Class<? extends Function<?, Double>>[] encodingFormula() default {};
 }

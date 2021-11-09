@@ -18,7 +18,7 @@ package org.indunet.fastproto.util;
 
 import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.type.UInteger32Type;
+import org.indunet.fastproto.annotation.type.*;
 
 import java.math.BigInteger;
 import java.util.Arrays;
@@ -29,18 +29,33 @@ import java.util.Arrays;
  */
 public class CodecUtils {
     public static int reverse(@NonNull byte[] datagram, int offset) {
-        return offset >= 0 ? offset : datagram.length + offset;
+        int o = offset >= 0 ? offset : datagram.length + offset;
+
+        if (o >= 0) {
+            return o;
+        } else {
+            throw new IllegalArgumentException("Out of the datagram range.");
+        }
     }
 
     public static int reverse(@NonNull byte[] datagram, int offset, int length) {
         int o = reverse(datagram, offset);
+        int l = length >= 0 ? length : datagram.length + length - o + 1;
 
-        return length >= 0 ? length : datagram.length + length - o + 1;
+        if (l > 0) {
+            return l;
+        } else {
+            throw new IllegalArgumentException("Out of the datagram range.");
+        }
     }
 
     public static byte[] binaryType(@NonNull final byte[] datagram, int offset, int length) {
         int o = reverse(datagram, offset);
         int l = reverse(datagram, offset, length);
+
+        if (o + l > datagram.length) {
+            throw new IllegalArgumentException("Out of the datagram range.");
+        }
 
         return Arrays.copyOfRange(datagram, o, o + l);
     }
@@ -49,7 +64,9 @@ public class CodecUtils {
         int o =reverse(datagram, offset);
         int l = reverse(datagram, offset, length);
 
-        if (l >= values.length) {
+        if (o + l > datagram.length) {
+            throw new IllegalArgumentException("Out of the datagram range.");
+        } else if (l >= values.length) {
             System.arraycopy(values, 0, datagram, o, values.length);
         } else {
             System.arraycopy(values, 0, datagram, o, l);
@@ -65,12 +82,20 @@ public class CodecUtils {
     }
 
     public static boolean booleanType(@NonNull final byte[] datagram, int byteOffset, int bitOffset) {
+        if (bitOffset < BooleanType.MIN_BIT_OFFSET || bitOffset > BooleanType.MAX_BIT_OFFSET) {
+            throw new IllegalArgumentException("Out of byte range.");
+        }
+
         int o = reverse(datagram, byteOffset);
 
         return (datagram[o] & (0x01 << bitOffset)) != 0;
     }
 
     public static void booleanType(@NonNull final byte[] datagram, int byteOffset, int bitOffset, boolean value) {
+        if (bitOffset < BooleanType.MIN_BIT_OFFSET || bitOffset > BooleanType.MAX_BIT_OFFSET) {
+            throw new IllegalArgumentException("Out of byte range.");
+        }
+
         int o = reverse(datagram, byteOffset);
 
         if (value) {
@@ -136,6 +161,10 @@ public class CodecUtils {
     }
 
     public static void uinteger8Type(@NonNull byte[] datagram, int offset, @NonNull int value) {
+        if (value < UInteger8Type.MIN_VALUE || value > UInteger8Type.MAX_VALUE) {
+            throw new IllegalArgumentException("Out of uinteger8 range.");
+        }
+
         int o = reverse(datagram, offset);
 
         datagram[o] = (byte) value;
@@ -148,6 +177,10 @@ public class CodecUtils {
     }
 
     public static void integer8Type(@NonNull byte[] datagram, int offset, @NonNull int value) {
+        if (value < Integer8Type.MIN_VALUE || value > Integer8Type.MAX_VALUE) {
+            throw new IllegalArgumentException("Out of integer8 range.");
+        }
+
         int o = reverse(datagram, offset);
 
         datagram[o] = (byte) value;
@@ -164,6 +197,10 @@ public class CodecUtils {
     }
 
     public static void uinteger16Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull int value) {
+        if (value < UInteger16Type.MIN_VALUE || value > UInteger16Type.MAX_VALUE) {
+            throw new IllegalArgumentException("Out of uinteger16 range.");
+        }
+
         int o = reverse(datagram, offset);
 
         if (policy == EndianPolicy.BIG) {
@@ -191,6 +228,10 @@ public class CodecUtils {
     }
 
     public static void integer16Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull int value) {
+        if (value < Integer16Type.MIN_VALUE || value > Integer16Type.MAX_VALUE) {
+            throw new IllegalArgumentException("Out of integer16 range.");
+        }
+
         int o = reverse(datagram, offset);
 
         if (policy == EndianPolicy.BIG) {
@@ -292,6 +333,10 @@ public class CodecUtils {
     }
 
     public static void uinteger32Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull long value) {
+        if (value < UInteger32Type.MIN_VALUE || value > UInteger32Type.MAX_VALUE) {
+            throw new IllegalArgumentException("Out of uinteger32 range.");
+        }
+
         int o = reverse(datagram, offset);
 
         if (policy == EndianPolicy.BIG) {
@@ -340,6 +385,10 @@ public class CodecUtils {
     }
 
     public static void uinteger64Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull BigInteger value) {
+        if (value.compareTo(UInteger64Type.MAX_VALUE) > 0 || value.compareTo(UInteger64Type.MIN_VALUE) < 0) {
+            throw new IllegalArgumentException("Out of uinteger64 range.");
+        }
+
         int o = reverse(datagram, offset);
         long low = value
                 .and(new BigInteger(String.valueOf(0xFFFF_FFFFL)))

@@ -21,7 +21,7 @@ import org.indunet.fastproto.TypeAssist;
 import org.indunet.fastproto.encoder.EncodeContext;
 import org.indunet.fastproto.encoder.EncoderFactory;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
 import org.indunet.fastproto.pipeline.FlowCode;
@@ -58,8 +58,8 @@ public class EncodeFlow extends AbstractFlow<CodecContext> {
 
                         Consumer<EncodeContext> consumer = EncoderFactory.getEncoder(c.getTypeAssist().getEncoderClass());
                         consumer.accept(c);
-                    } catch (EncodeException e) {
-                        throw new EncodeException(MessageFormat.format(
+                    } catch (EncodingException e) {
+                        throw new EncodingException(MessageFormat.format(
                                 CodecError.FAIL_ENCODING_FIELD.getMessage(), a.getField().toString()),
                                 e);
                     }

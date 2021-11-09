@@ -50,7 +50,7 @@ public @interface LongType {
 
     int value();
 
-    Class<? extends Function<Long, ?>>[] afterDecode() default {};
+    Class<? extends Function<Long, ?>>[] decodingFormula() default {};
 
-    Class<? extends Function<?, Long>>[] beforeEncode() default {};
+    Class<? extends Function<?, Long>>[] encodingFormula() default {};
 }

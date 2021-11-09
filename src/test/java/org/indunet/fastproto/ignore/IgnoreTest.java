@@ -3,8 +3,8 @@ package org.indunet.fastproto.ignore;
 import lombok.Data;
 import lombok.val;
 import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.annotation.DecodeIgnore;
-import org.indunet.fastproto.annotation.EncodeIgnore;
+import org.indunet.fastproto.annotation.DecodingIgnore;
+import org.indunet.fastproto.annotation.EncodingIgnore;
 import org.indunet.fastproto.annotation.type.Integer16Type;
 import org.indunet.fastproto.annotation.type.Integer8Type;
 import org.junit.jupiter.api.Test;
@@ -18,11 +18,11 @@ import static org.junit.jupiter.api.Assertions.*;
 public class IgnoreTest {
     @Data
     public static class Vehicle {
-        @EncodeIgnore
+        @EncodingIgnore
         @Integer8Type(0)
         Integer speed;
 
-        @DecodeIgnore
+        @DecodingIgnore
         @Integer16Type(2)
         Integer mileage;
     }

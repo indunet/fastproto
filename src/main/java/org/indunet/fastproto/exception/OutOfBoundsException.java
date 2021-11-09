@@ -20,7 +20,7 @@ package org.indunet.fastproto.exception;
  * @author Deng Ran
  * @since 1.6.5
  */
-public class OutOfBoundsException extends DecodeException {
+public class OutOfBoundsException extends DecodingException {
     public OutOfBoundsException() {
 
     }

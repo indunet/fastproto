@@ -17,7 +17,7 @@
 package org.indunet.fastproto.decoder;
 
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
 
@@ -47,9 +47,9 @@ public class DoubleDecoderTest {
         assertThrows(NullPointerException.class,
                 () -> this.decoder.decode(null, 10, EndianPolicy.LITTLE));
 
-        assertThrows(DecodeException.class,
+        assertThrows(DecodingException.class,
                 () -> this.decoder.decode(datagram, -1, EndianPolicy.LITTLE));
-        assertThrows(DecodeException.class,
+        assertThrows(DecodingException.class,
                 () -> this.decoder.decode(datagram, 8, EndianPolicy.LITTLE));
     }
 }

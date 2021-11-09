@@ -17,14 +17,8 @@
 package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.annotation.type.Integer8Type;
-import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.IllegalValueException;
-import org.indunet.fastproto.exception.SpaceNotEnoughException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
-import org.indunet.fastproto.util.ReverseUtils;
-
-import java.text.MessageFormat;
 
 /**
  * Integer8 type encoder.
@@ -43,14 +37,12 @@ public class Integer8Encoder implements TypeEncoder {
     }
 
     public void encode(byte[] datagram, int offset, int value) {
-        if (value < Integer8Type.MIN_VALUE || value > Integer8Type.MAX_VALUE) {
-            throw new EncodeException("Fail encoding the integer8 type.");
-        }
-
         try {
             CodecUtils.integer8Type(datagram, offset, value);
         } catch (IndexOutOfBoundsException e) {
-            throw new EncodeException("Fail encoding the integer8 type.", e);
+            throw new EncodingException("Fail encoding the integer8 type.", e);
+        } catch (IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding the integer8 type.", e);
         }
     }
 }

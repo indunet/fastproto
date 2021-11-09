@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.decoder;
 
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -57,9 +57,9 @@ public class StringDecoderTest {
         assertThrows(NullPointerException.class, () -> this.decoder.decode(null));
         assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 2, 1,StandardCharsets.UTF_8));
 
-        // assertThrows(DecodeException.class, () -> this.decoder.decode("ABCabc".getBytes(), -1, 10, StandardCharsets.UTF_8));
-        // assertThrows(DecodeException.class, () -> this.decoder.decode("ABCabc".getBytes(), 5, -2, StandardCharsets.UTF_8));
-        // assertThrows(DecodeException.class, () -> this.decoder.decode("ABCabc".getBytes(), 0, 10, StandardCharsets.UTF_8));
-        assertThrows(DecodeException.class, () -> this.decoder.decode("ABCabc".getBytes(), 10, -1, StandardCharsets.UTF_8));
+        assertThrows(DecodingException.class, () -> this.decoder.decode("ABCabc".getBytes(), -1, 10, StandardCharsets.UTF_8));
+        assertThrows(DecodingException.class, () -> this.decoder.decode("ABCabc".getBytes(), 5, -2, StandardCharsets.UTF_8));
+        assertThrows(DecodingException.class, () -> this.decoder.decode("ABCabc".getBytes(), 0, 10, StandardCharsets.UTF_8));
+        assertThrows(DecodingException.class, () -> this.decoder.decode("ABCabc".getBytes(), 10, -1, StandardCharsets.UTF_8));
     }
 }

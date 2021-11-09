@@ -20,7 +20,7 @@ import lombok.val;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.TimestampType;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.FlowCode;
 import org.indunet.fastproto.pipeline.ValidationContext;
@@ -46,7 +46,7 @@ public class TimestampFlow extends AbstractFlow<ValidationContext> {
             val condition2 = protocolType == ProtocolType.LONG && unit == TimeUnit.MILLISECONDS;
 
             if (!condition1 && !condition2) {
-                throw new DecodeException(CodecError.ILLEGAL_TIMESTAMP_PARAMETERS);
+                throw new DecodingException(CodecError.ILLEGAL_TIMESTAMP_PARAMETERS);
             }
         }
 

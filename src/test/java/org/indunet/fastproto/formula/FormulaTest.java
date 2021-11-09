@@ -35,7 +35,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class FormulaTest {
     @AllArgsConstructor
     public static class TestObject1 {
-        @Integer8Type(value = 0, beforeEncode = PressureEncodeFormula.class)
+        @Integer8Type(value = 0, encodingFormula = PressureEncodeFormula.class)
         int pressure;
     }
 
@@ -54,7 +54,7 @@ public class FormulaTest {
 
     @AllArgsConstructor
     public static class TestObject2 {
-        @Integer8Type(value = 0, afterDecode = PressureDecodeFormula.class)
+        @Integer8Type(value = 0, decodingFormula = PressureDecodeFormula.class)
         int pressure;
     }
 

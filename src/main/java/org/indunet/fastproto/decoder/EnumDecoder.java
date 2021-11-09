@@ -22,7 +22,7 @@ import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.EnumType;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 import java.lang.reflect.Field;
@@ -58,7 +58,7 @@ public class EnumDecoder<T extends Enum> implements TypeDecoder<T> {
             return Arrays.stream(enums)
                     .filter(e -> e.ordinal() == code)
                     .findAny()
-                    .orElseThrow(() -> new DecodeException(MessageFormat.format(
+                    .orElseThrow(() -> new DecodingException(MessageFormat.format(
                             CodecError.ENUM_NOT_FOUND.getMessage(), code)));
         } else {
             Function<Enum, Integer> getValue = (Enum enumObject) -> {
@@ -68,7 +68,7 @@ public class EnumDecoder<T extends Enum> implements TypeDecoder<T> {
                     field.setAccessible(true);
                     return field.getInt(enumObject);
                 } catch (NoSuchFieldException | IllegalAccessException e) {
-                    throw new DecodeException(MessageFormat.format(
+                    throw new DecodingException(MessageFormat.format(
                             CodecError.ILLEGAL_ENUM_CODE_FIELD.getMessage(), fieldName), e);
                 }
             };
@@ -76,7 +76,7 @@ public class EnumDecoder<T extends Enum> implements TypeDecoder<T> {
             return Arrays.stream(enums)
                     .filter(e -> getValue.apply(e) == code)
                     .findAny().
-                            orElseThrow(() -> new DecodeException(MessageFormat.format(
+                            orElseThrow(() -> new DecodingException(MessageFormat.format(
                                     CodecError.ENUM_NOT_FOUND.getMessage(), code)));
         }
     }
@@ -90,7 +90,7 @@ public class EnumDecoder<T extends Enum> implements TypeDecoder<T> {
         } else if (type == ProtocolType.INTEGER) {
             return CodecUtils.integerType(datagram, offset, policy);
         } else {
-            throw new DecodeException(CodecError.INVALID_ENUM_PROTOCOL_TYPE);
+            throw new DecodingException(CodecError.INVALID_ENUM_PROTOCOL_TYPE);
         }
     }
 }

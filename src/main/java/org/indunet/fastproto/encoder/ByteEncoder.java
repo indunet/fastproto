@@ -19,7 +19,7 @@ package org.indunet.fastproto.encoder;
 
 import lombok.NonNull;
 import org.indunet.fastproto.annotation.type.ByteType;
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 /**
@@ -42,7 +42,9 @@ public class ByteEncoder implements TypeEncoder {
         try {
             CodecUtils.byteType(datagram, offset, value);
         } catch (IndexOutOfBoundsException e) {
-            throw new EncodeException("Fail encoding the byte type.", e);
+            throw new EncodingException("Fail encoding the byte type.", e);
+        } catch (IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding the byte type.", e);
         }
     }
 }

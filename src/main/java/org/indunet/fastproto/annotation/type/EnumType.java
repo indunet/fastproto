@@ -55,7 +55,7 @@ public @interface EnumType {
 
     EndianPolicy[] endianPolicy() default {};
 
-    Class<? extends Function<? extends Enum, ?>>[] afterDecode() default {};
+    Class<? extends Function<? extends Enum, ?>>[] decodingFormula() default {};
 
-    Class<? extends Function<?, ? super Enum>>[] beforeEncode() default {};
+    Class<? extends Function<?, ? super Enum>>[] encodingFormula() default {};
 }

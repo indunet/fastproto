@@ -20,7 +20,7 @@ package org.indunet.fastproto.exception;
  * @author Deng Ran
  * @since 1.6.2
  */
-public class IllegalValueException extends EncodeException {
+public class IllegalValueException extends EncodingException {
     public IllegalValueException() {
 
     }

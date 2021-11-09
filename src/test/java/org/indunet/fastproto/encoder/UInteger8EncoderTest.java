@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.encoder;
 
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -48,11 +48,11 @@ public class UInteger8EncoderTest {
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null));
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null, 0, 8));
 
-        assertThrows(EncodeException.class,
+        assertThrows(EncodingException.class,
                 () -> encoder.encode(datagram, -101, 1));
-        assertThrows(EncodeException.class,
+        assertThrows(EncodingException.class,
                 () -> encoder.encode(datagram, 10, 1));
-        assertThrows(EncodeException.class,
+        assertThrows(EncodingException.class,
                 () -> encoder.encode(datagram, 0, 256));
     }
 }

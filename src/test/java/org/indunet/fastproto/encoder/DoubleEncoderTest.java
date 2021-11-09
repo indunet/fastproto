@@ -17,7 +17,7 @@
 package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
 
@@ -54,9 +54,9 @@ public class DoubleEncoderTest {
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null));
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null, 0, null, 3.14));
 
-        assertThrows(EncodeException.class, () ->
+        assertThrows(EncodingException.class, () ->
                 this.encoder.encode(datagram, -1, EndianPolicy.LITTLE, 3.141));
-        assertThrows(EncodeException.class, () ->
+        assertThrows(EncodingException.class, () ->
                 this.encoder.encode(datagram, 10, EndianPolicy.LITTLE, 3.141));
     }
 }

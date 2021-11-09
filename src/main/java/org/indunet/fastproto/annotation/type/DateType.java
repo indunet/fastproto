@@ -55,7 +55,7 @@ public @interface DateType {
 
     TimeUnit unit() default TimeUnit.MILLISECONDS;
 
-    Class<? extends Function<Date, ?>>[] afterDecode() default {};
+    Class<? extends Function<Date, ?>>[] decodingFormula() default {};
 
-    Class<? extends Function<?, Date>>[] beforeEncode() default {};
+    Class<? extends Function<?, Date>>[] encodingFormula() default {};
 }

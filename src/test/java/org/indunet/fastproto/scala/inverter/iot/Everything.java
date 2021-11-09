@@ -92,7 +92,7 @@ public class Everything {
     @CharacterType(64)
     Character aCharacter;
 
-    @UInteger8Type(value = 66, afterDecode = DecodeSpeedFormula.class, beforeEncode = EncodeSpeedFormula.class)
+    @UInteger8Type(value = 66, decodingFormula = DecodeSpeedFormula.class, encodingFormula = EncodeSpeedFormula.class)
     float speed;
 
     @AutoType(70)

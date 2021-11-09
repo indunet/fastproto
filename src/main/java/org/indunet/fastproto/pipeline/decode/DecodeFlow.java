@@ -21,7 +21,7 @@ import org.indunet.fastproto.TypeAssist;
 import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.DecoderFactory;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
 import org.indunet.fastproto.pipeline.FlowCode;
@@ -70,8 +70,8 @@ public class DecodeFlow extends AbstractFlow<CodecContext> {
                         Object value = func.apply(c);
                         Object o = c.getObject();
                         a.setValue(o, value);
-                    } catch (DecodeException e) {
-                        throw new DecodeException(MessageFormat.format(
+                    } catch (DecodingException e) {
+                        throw new DecodingException(MessageFormat.format(
                                 CodecError.FAIL_DECODING_FIELD.getMessage(), a.getField().toString()), e);
                     }
                 });
@@ -89,7 +89,7 @@ public class DecodeFlow extends AbstractFlow<CodecContext> {
         try {
             constructor = clazz.getConstructor(classes);
         } catch (NoSuchMethodException e) {
-            throw new DecodeException(MessageFormat.format(
+            throw new DecodingException(MessageFormat.format(
                     CodecError.FAIL_DECODING_FIELD.getMessage(), assist.getClazz().getName()), e);
         }
 
@@ -102,8 +102,8 @@ public class DecodeFlow extends AbstractFlow<CodecContext> {
                                 a.getDecodeFormula());
                         try {
                             return func.apply(a.toDecodeContext(datagram, null));
-                        } catch (DecodeException e) {
-                            throw new DecodeException(MessageFormat.format(
+                        } catch (DecodingException e) {
+                            throw new DecodingException(MessageFormat.format(
                                     CodecError.FAIL_DECODING_FIELD.getMessage(), a.getField().toString()), e);
                         }
                     } else {
@@ -118,7 +118,7 @@ public class DecodeFlow extends AbstractFlow<CodecContext> {
         try {
             return constructor.newInstance(objects);
         } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new DecodeException(
+            throw new DecodingException(
                     MessageFormat.format(
                             CodecError.FAIL_INITIALIZING_DECODE_OBJECT.getMessage(), assist.getClazz().getName()), e);
         }

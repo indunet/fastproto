@@ -20,7 +20,7 @@ import lombok.val;
 import lombok.var;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.ProtocolType;
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
 import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
@@ -146,10 +146,10 @@ public class ArrayDecoderTest {
         assertThrows(OutOfBoundsException.class, () -> {
             decoder.decode(datagram, 0, 6, ProtocolType.UINTEGER16, EndianPolicy.LITTLE);
         });
-        assertThrows(DecodeException.class, () -> {
+        assertThrows(DecodingException.class, () -> {
             decoder.decode(datagram, 0, -2, ProtocolType.BYTE, EndianPolicy.LITTLE);
         });
-        assertThrows(DecodeException.class, () -> {
+        assertThrows(DecodingException.class, () -> {
             decoder.decode(datagram, -3, 10, ProtocolType.BYTE, EndianPolicy.LITTLE);
         });
     }

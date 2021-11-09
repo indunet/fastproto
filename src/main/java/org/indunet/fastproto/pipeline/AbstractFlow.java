@@ -18,7 +18,7 @@ package org.indunet.fastproto.pipeline;
 
 import lombok.val;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.pipeline.decode.*;
 import org.indunet.fastproto.pipeline.encode.*;
 import org.indunet.fastproto.pipeline.validate.*;
@@ -111,7 +111,7 @@ public abstract class AbstractFlow<T> {
                     try {
                         return (AbstractFlow) c.newInstance();
                     } catch (InstantiationException | IllegalAccessException e) {
-                        throw new DecodeException(CodecError.FAIL_CREATING_DECODE_FLOW, e);
+                        throw new DecodingException(CodecError.FAIL_CREATING_DECODE_FLOW, e);
                     }
                 })
                 .filter(f -> (f.getFlowCode() & codecFeature) == 0)

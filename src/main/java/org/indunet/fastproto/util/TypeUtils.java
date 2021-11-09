@@ -45,8 +45,8 @@ public class TypeUtils {
     protected final static String BIT_OFFSET_NAME = "bitOffset";
     protected final static String LENGTH_NAME = "length";
     protected final static String PROTOCOL_TYPES_NAME = "PROTOCOL_TYPES";
-    protected final static String ENCODE_FORMULA_NAME = "beforeEncode";
-    protected final static String DECODE_FORMULA_NAME = "afterDecode";
+    protected final static String ENCODE_FORMULA_NAME = "encodingFormula";
+    protected final static String DECODE_FORMULA_NAME = "decodingFormula";
     protected final static String JAVA_TYPES_NAME = "JAVA_TYPES";
 
     public static Type wrapperClass(@NonNull String name) {

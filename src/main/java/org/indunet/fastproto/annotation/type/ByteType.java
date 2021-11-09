@@ -50,7 +50,7 @@ public @interface ByteType {
 
     int value();
 
-    Class<? extends Function<Byte, ?>>[] afterDecode() default {};
+    Class<? extends Function<Byte, ?>>[] decodingFormula() default {};
 
-    Class<? extends Function<?, Byte>>[] beforeEncode() default {};
+    Class<? extends Function<?, Byte>>[] encodingFormula() default {};
 }

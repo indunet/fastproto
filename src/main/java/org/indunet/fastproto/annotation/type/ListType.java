@@ -69,7 +69,7 @@ public @interface ListType {
 
     int length();
 
-    Class<? extends Function<?, ?>>[] afterDecode() default {};
+    Class<? extends Function<?, ?>>[] decodingFormula() default {};
 
-    Class<? extends Function<?, ?>>[] beforeEncode() default {};
+    Class<? extends Function<?, ?>>[] encodingFormula() default {};
 }

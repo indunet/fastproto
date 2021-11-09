@@ -48,7 +48,7 @@ public @interface CharacterType {
 
     int value();
 
-    Class<? extends Function<Character, ?>>[] afterDecode() default {};
+    Class<? extends Function<Character, ?>>[] decodingFormula() default {};
 
-    Class<? extends Function<?, Character>>[] beforeEncode() default {};
+    Class<? extends Function<?, Character>>[] encodingFormula() default {};
 }

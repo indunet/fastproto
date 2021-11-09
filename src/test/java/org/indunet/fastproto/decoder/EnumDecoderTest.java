@@ -21,7 +21,7 @@ import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.EnumType;
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -77,15 +77,15 @@ public class EnumDecoderTest {
 
         datagram[0] = 100;
 
-        assertThrows(DecodeException.class, () -> {
+        assertThrows(DecodingException.class, () -> {
             decoder.decode(datagram, 0, EndianPolicy.LITTLE,
                     ProtocolType.UINTEGER8, "number", Color.class);
         });
-        assertThrows(DecodeException.class, () -> {
+        assertThrows(DecodingException.class, () -> {
             decoder.decode(datagram, 0, EndianPolicy.LITTLE,
                     ProtocolType.UINTEGER32, "", Color.class);
         });
-        assertThrows(DecodeException.class, () -> {
+        assertThrows(DecodingException.class, () -> {
             decoder.decode(datagram, 0, EndianPolicy.LITTLE,
                     ProtocolType.UINTEGER8, "", Color.class);
         });

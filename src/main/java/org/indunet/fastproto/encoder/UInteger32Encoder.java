@@ -18,16 +18,9 @@ package org.indunet.fastproto.encoder;
 
 import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.type.UInteger16Type;
 import org.indunet.fastproto.annotation.type.UInteger32Type;
-import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.IllegalValueException;
-import org.indunet.fastproto.exception.SpaceNotEnoughException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
-import org.indunet.fastproto.util.ReverseUtils;
-
-import java.text.MessageFormat;
 
 /**
  * UInteger32 type encoder.
@@ -47,14 +40,12 @@ public class UInteger32Encoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int offset, @NonNull EndianPolicy policy, long value) {
-        if (value < UInteger32Type.MIN_VALUE || value > UInteger32Type.MAX_VALUE) {
-            throw new EncodeException("Fail encoding the integer8 type.");
-        }
-
         try {
             CodecUtils.uinteger32Type(datagram, offset, policy, value);
         } catch (IndexOutOfBoundsException e) {
-            throw new EncodeException("Fail encoding the uinteger32 type.", e);
+            throw new EncodingException("Fail encoding the uinteger32 type.", e);
+        } catch (IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding the uinteger32 type.", e);
         }
     }
 }

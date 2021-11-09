@@ -40,8 +40,8 @@ import org.indunet.fastproto.annotation.`type`.{UInteger32Type => JavaUInteger32
 import org.indunet.fastproto.annotation.`type`.{UInteger64Type => JavaUInteger64Type}
 
 import org.indunet.fastproto.annotation.{Endian => JavaEndian}
-import org.indunet.fastproto.annotation.{EncodeIgnore => JavaEncodingIgnore}
-import org.indunet.fastproto.annotation.{DecodeIgnore => JavaDecodingIgnore}
+import org.indunet.fastproto.annotation.{EncodingIgnore => JavaEncodingIgnore}
+import org.indunet.fastproto.annotation.{DecodingIgnore => JavaDecodingIgnore}
 
 import org.indunet.fastproto.annotation.{EnableChecksum => JavaEnableChecksum}
 import org.indunet.fastproto.annotation.{EnableCompress => JavaEnableCompress}

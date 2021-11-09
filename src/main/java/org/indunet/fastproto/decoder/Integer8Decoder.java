@@ -18,7 +18,7 @@ package org.indunet.fastproto.decoder;
 
 import lombok.NonNull;
 import org.indunet.fastproto.annotation.type.Integer8Type;
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 /**
@@ -40,7 +40,9 @@ public class Integer8Decoder implements TypeDecoder<Integer> {
         try {
             return CodecUtils.integer8Type(datagram, offset);
         } catch(ArrayIndexOutOfBoundsException e) {
-            throw new DecodeException("Fail decoding the integer8 type.", e);
+            throw new DecodingException("Fail decoding the integer8 type.", e);
+        } catch (IllegalArgumentException e) {
+            throw new DecodingException("Fail decoding the integer8 type.", e);
         }
     }
 }

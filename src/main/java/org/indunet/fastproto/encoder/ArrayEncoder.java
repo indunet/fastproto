@@ -22,7 +22,7 @@ import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.ArrayType;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.exception.SpaceNotEnoughException;
 import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
@@ -57,11 +57,11 @@ public class ArrayEncoder implements TypeEncoder {
                 .isPrimitive();
 
         if (bo < 0) {
-            throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
+            throw new EncodingException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (bo >= datagram.length) {
-            throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
+            throw new EncodingException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (length <= 0) {
-            throw new EncodeException(CodecError.ILLEGAL_PARAMETER);
+            throw new EncodingException(CodecError.ILLEGAL_PARAMETER);
         } else if (bo + size * length > datagram.length) {
             throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }
@@ -124,7 +124,7 @@ public class ArrayEncoder implements TypeEncoder {
                         primitive ? ((double[]) values)[i] : ((Double[]) values)[i]));
                 break;
             default:
-                throw new EncodeException(MessageFormat.format(
+                throw new EncodingException(MessageFormat.format(
                         CodecError.NOT_SUPPORT_ARRAY_TYPE.getMessage(), type.toString()));
         }
     }

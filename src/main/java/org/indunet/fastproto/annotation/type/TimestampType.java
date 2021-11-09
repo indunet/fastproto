@@ -55,7 +55,7 @@ public @interface TimestampType {
 
     TimeUnit unit() default TimeUnit.MILLISECONDS;
 
-    Class<? extends Function<Timestamp, ?>>[] afterDecode() default {};
+    Class<? extends Function<Timestamp, ?>>[] decodingFormula() default {};
 
-    Class<? extends Function<?, Timestamp>>[] beforeEncode() default {};
+    Class<? extends Function<?, Timestamp>>[] encodingFormula() default {};
 }

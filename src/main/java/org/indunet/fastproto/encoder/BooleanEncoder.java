@@ -17,11 +17,8 @@
 package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.annotation.type.BooleanType;
-import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.SpaceNotEnoughException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
-import org.indunet.fastproto.util.ReverseUtils;
 
 /**
  * Boolean type encoder.
@@ -40,14 +37,12 @@ public class BooleanEncoder implements TypeEncoder {
     }
 
     public void encode(byte[] datagram, int byteOffset, int bitOffset, boolean value) {
-        if (bitOffset < 0) {
-            throw new EncodeException("Fail  encoding the boolean type.");
-        }
-
         try {
             CodecUtils.booleanType(datagram, byteOffset, bitOffset, value);
         } catch (IndexOutOfBoundsException e) {
-            throw new EncodeException("Fail encoding the boolean type.", e);
+            throw new EncodingException("Fail encoding the boolean type.", e);
+        } catch (IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding the boolean type.", e);
         }
     }
 }

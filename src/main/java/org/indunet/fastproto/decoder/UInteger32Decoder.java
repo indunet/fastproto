@@ -19,11 +19,8 @@ package org.indunet.fastproto.decoder;
 import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.UInteger32Type;
-import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.OutOfBoundsException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.CodecUtils;
-import org.indunet.fastproto.util.ReverseUtils;
 
 /**
  * UInteger32 type decoder.
@@ -45,7 +42,7 @@ public class UInteger32Decoder implements TypeDecoder<Long> {
         try {
             return CodecUtils.uinteger32Type(datagram, offset, policy);
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new DecodeException("Fail decoding the uinteger32 type.", e);
+            throw new DecodingException("Fail decoding the uinteger32 type.", e);
         }
     }
 }
