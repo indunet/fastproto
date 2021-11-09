@@ -19,7 +19,7 @@ package org.indunet.fastproto.decoder;
 import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.Integer16Type;
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 /**
@@ -42,7 +42,9 @@ public class Integer16Decoder implements TypeDecoder<Integer> {
         try {
             return CodecUtils.integer16Type(datagram, byteOffset, policy);
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new DecodeException("Fail decoding integer16 type.", e);
+            throw new DecodingException("Fail decoding integer16 type.", e);
+        } catch (IllegalArgumentException e) {
+            throw new DecodingException("Fail decoding integer16 type.", e);
         }
     }
 }

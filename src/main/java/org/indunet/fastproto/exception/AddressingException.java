@@ -20,7 +20,7 @@ package org.indunet.fastproto.exception;
  * @author Deng Ran
  * @since 1.6.5
  */
-public class AddressingException extends EncodeException {
+public class AddressingException extends EncodingException {
     public AddressingException() {
         super();
     }

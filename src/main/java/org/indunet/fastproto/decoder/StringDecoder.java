@@ -19,7 +19,7 @@ package org.indunet.fastproto.decoder;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.annotation.type.StringType;
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 import java.nio.charset.Charset;
@@ -45,9 +45,9 @@ public class StringDecoder implements TypeDecoder<String> {
 
             return new String(bytes, charset);
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new DecodeException("Fail decoding the string type.", e);
+            throw new DecodingException("Fail decoding the string type.", e);
         } catch (IllegalArgumentException e) {
-            throw new DecodeException("Fail decoding the string type.", e);
+            throw new DecodingException("Fail decoding the string type.", e);
         }
     }
 }

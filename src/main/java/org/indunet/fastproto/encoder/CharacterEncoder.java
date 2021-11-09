@@ -18,11 +18,8 @@ package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.CharacterType;
-import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.EncodeException;
-import org.indunet.fastproto.exception.SpaceNotEnoughException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
-import org.indunet.fastproto.util.ReverseUtils;
 
 /**
  * Character type encoder.
@@ -45,7 +42,7 @@ public class CharacterEncoder implements TypeEncoder {
         try {
             CodecUtils.characterType(datagram, offset, policy, value);
         } catch (IndexOutOfBoundsException e) {
-            throw new EncodeException("Fail encoding the character type.", e);
+            throw new EncodingException("Fail encoding the character type.", e);
         }
     }
 }

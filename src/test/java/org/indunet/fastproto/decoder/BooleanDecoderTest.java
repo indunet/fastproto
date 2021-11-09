@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.decoder;
 
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -44,8 +44,8 @@ public class BooleanDecoderTest {
         assertThrows(NullPointerException.class, () -> this.decoder.decode(null));
         assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 2, 10));
 
-        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -101, 0));
-        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 0, -1));
-        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 10, 0));
+        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, -101, 0));
+        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, 0, -1));
+        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, 10, 0));
     }
 }

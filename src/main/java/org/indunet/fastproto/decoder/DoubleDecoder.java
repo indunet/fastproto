@@ -19,7 +19,7 @@ package org.indunet.fastproto.decoder;
 import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.DoubleType;
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 /**
@@ -41,7 +41,7 @@ public class DoubleDecoder implements TypeDecoder<Double> {
         try {
             return CodecUtils.doubleType(datagram, offset, endian);
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new DecodeException("Fail decoding the double type.", e);
+            throw new DecodingException("Fail decoding the double type.", e);
         }
     }
 }

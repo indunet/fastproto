@@ -50,7 +50,7 @@ public @interface UInteger16Type {
 
     int value();
 
-    Class<? extends Function<Integer, ?>>[] afterDecode() default {};
+    Class<? extends Function<Integer, ?>>[] decodingFormula() default {};
 
-    Class<? extends Function<?, Integer>>[] beforeEncode() default {};
+    Class<? extends Function<?, Integer>>[] encodingFormula() default {};
 }

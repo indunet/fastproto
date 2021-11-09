@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.encoder;
 
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -60,9 +60,9 @@ public class BinaryEncoderTest {
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null, 0, -1, new byte[8]));
         assertThrows(NullPointerException.class, () -> this.encoder.encode(datagram, 0, -1, null));
 
-        assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, -2, -7, new byte[8]));
-        assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, -11, -7, new byte[8]));
-        // assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, 10, -1, new byte[8]));
-        // assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, 0, 11, new byte[8]));
+        assertThrows(EncodingException.class, () -> this.encoder.encode(datagram, -2, -7, new byte[8]));
+        assertThrows(EncodingException.class, () -> this.encoder.encode(datagram, -11, -7, new byte[8]));
+        assertThrows(EncodingException.class, () -> this.encoder.encode(datagram, 10, -1, new byte[8]));
+        assertThrows(EncodingException.class, () -> this.encoder.encode(datagram, 0, 11, new byte[8]));
     }
 }

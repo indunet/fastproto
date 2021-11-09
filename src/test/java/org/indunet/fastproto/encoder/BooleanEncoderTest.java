@@ -17,7 +17,7 @@
 package org.indunet.fastproto.encoder;
 
 
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -54,9 +54,9 @@ public class BooleanEncoderTest {
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null));
         // assertThrows(NullPointerException.class, () -> this.encoder.encode(null, 0, -1, true));
 
-        assertThrows(EncodeException.class,
+        assertThrows(EncodingException.class,
                 () -> this.encoder.encode(datagram, -101, 1, true));
-        assertThrows(EncodeException.class,
+        assertThrows(EncodingException.class,
                 () -> this.encoder.encode(datagram, 10, 1, true));
     }
 }

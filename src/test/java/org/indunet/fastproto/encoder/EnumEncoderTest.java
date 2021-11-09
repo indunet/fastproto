@@ -20,7 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.ProtocolType;
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -64,11 +64,11 @@ public class EnumEncoderTest {
 
         datagram[0] = 100;
 
-        assertThrows(EncodeException.class, () -> {
+        assertThrows(EncodingException.class, () -> {
             encoder.encode(datagram, 0, EndianPolicy.LITTLE,
                     ProtocolType.UINTEGER8, "number", Color.RED);
         });
-        assertThrows(EncodeException.class, () -> {
+        assertThrows(EncodingException.class, () -> {
             encoder.encode(datagram, 0, EndianPolicy.LITTLE,
                     ProtocolType.UINTEGER32, "", Color.GREEN);
         });

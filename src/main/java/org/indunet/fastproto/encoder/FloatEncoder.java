@@ -18,7 +18,7 @@ package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.FloatType;
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 /**
@@ -41,7 +41,7 @@ public class FloatEncoder implements TypeEncoder {
         try {
             CodecUtils.floatType(datagram, offset, policy, value);
         } catch (IndexOutOfBoundsException e) {
-            throw new EncodeException("Fail encoding the float type.", e);
+            throw new EncodingException("Fail encoding the float type.", e);
         }
     }
 }

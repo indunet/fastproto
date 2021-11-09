@@ -167,8 +167,8 @@ public class TypeAssist {
 
         // Nested types.
         Stream<TypeAssist> typeStream = Arrays.stream(protocolClass.getDeclaredFields())
-                .filter(f -> !f.isAnnotationPresent(DecodeIgnore.class)
-                        && !f.isAnnotationPresent(EncodeIgnore.class))
+                .filter(f -> !f.isAnnotationPresent(DecodingIgnore.class)
+                        && !f.isAnnotationPresent(EncodingIgnore.class))
                 .filter(isType.negate())
                 .filter(f -> !f.getType().isEnum())  // Non enum.
                 // .filter(f -> !Modifier.isFinal(f.getModifiers()))   // Non final.
@@ -182,7 +182,7 @@ public class TypeAssist {
                     Class<?> c = f.getType();
 
                     if (protocolClasses.get().contains(c)) {
-                        Boolean decodeIgnore = f.isAnnotationPresent(DecodeIgnore.class);
+                        Boolean decodeIgnore = f.isAnnotationPresent(DecodingIgnore.class);
 
                         return TypeAssist.builder()
                                 .clazz(c)
@@ -201,8 +201,8 @@ public class TypeAssist {
                                 .build();
                     } else {
                         TypeAssist a = TypeAssist.resolveClass(c);
-                        Boolean decodeIgnore = f.isAnnotationPresent(DecodeIgnore.class);
-                        Boolean encodeIgnore = f.isAnnotationPresent(EncodeIgnore.class);
+                        Boolean decodeIgnore = f.isAnnotationPresent(DecodingIgnore.class);
+                        Boolean encodeIgnore = f.isAnnotationPresent(EncodingIgnore.class);
                         a.setDecodeIgnore(decodeIgnore);
                         a.setEncodeIgnore(encodeIgnore);
                         a.setField(f);
@@ -217,8 +217,8 @@ public class TypeAssist {
         EndianPolicy endianPolicy = Optional.ofNullable(protocolClass.getAnnotation(Endian.class))
                 .map(Endian::value)
                 .orElse(EndianPolicy.LITTLE);
-        Boolean decodeIgnore = protocolClass.isAnnotationPresent(DecodeIgnore.class);
-        Boolean encodeIgnore = protocolClass.isAnnotationPresent(EncodeIgnore.class);
+        Boolean decodeIgnore = protocolClass.isAnnotationPresent(DecodingIgnore.class);
+        Boolean encodeIgnore = protocolClass.isAnnotationPresent(EncodingIgnore.class);
 
         Stream<TypeAssist> fieldStream = Arrays.stream(protocolClass.getDeclaredFields())
 //                .filter(f -> !f.isAnnotationPresent(DecodeIgnore.class)
@@ -260,9 +260,9 @@ public class TypeAssist {
         EndianPolicy policy = Optional.ofNullable(field.getAnnotation(Endian.class))
                 .map(Endian::value)
                 .orElse(null);
-        Boolean decodeIgnore = field.isAnnotationPresent(DecodeIgnore.class);
+        Boolean decodeIgnore = field.isAnnotationPresent(DecodingIgnore.class);
                 // || Modifier.isFinal(field.getModifiers());       // Removed for case class.
-        Boolean encodeIgnore = field.isAnnotationPresent(EncodeIgnore.class);
+        Boolean encodeIgnore = field.isAnnotationPresent(EncodingIgnore.class);
 
         Class<? extends Annotation> typeAnnotationClass = getTypeAnnotationClass(field);
         Annotation typeAnnotation = getTypeAnnotation(field);
@@ -294,8 +294,8 @@ public class TypeAssist {
             }
         };
 
-        Class<? extends Function> afterDecode = formula.apply("afterDecode");
-        Class<? extends Function> beforeEncode = formula.apply("beforeEncode");
+        Class<? extends Function> afterDecode = formula.apply("decodingFormula");
+        Class<? extends Function> beforeEncode = formula.apply("encodingFormula");
 
         val context = ValidationContext.builder()
                 .field(field)
@@ -381,7 +381,7 @@ public class TypeAssist {
         try {
             this.field.set(object, value);
         } catch (IllegalAccessException e) {
-            throw new DecodeException(
+            throw new DecodingException(
                     MessageFormat.format(CodecError.FAIL_ASSIGN_VALUE.getMessage(), this.field.getName()), e);
         }
     }
@@ -430,7 +430,7 @@ public class TypeAssist {
             return Stream.concat(fieldStream, classStream)
                     .collect(Collectors.toList());
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new DecodeException(
+            throw new DecodingException(
                     MessageFormat.format(CodecError.FAIL_INITIALIZING_DECODE_OBJECT.getMessage(), this.clazz.getName()), e);
         }
     }
@@ -451,7 +451,7 @@ public class TypeAssist {
                     .value(this.field.get(object))
                     .build();
         } catch (IllegalAccessException e) {
-            throw new EncodeException(
+            throw new EncodingException(
                     MessageFormat.format(CodecError.FAIL_GETTING_FIELD_VALUE.getMessage(), this.field.getName()), e);
         }
     }
@@ -473,7 +473,7 @@ public class TypeAssist {
                             return Stream.empty();
                         }
                     } catch (IllegalAccessException e) {
-                        throw new DecodeException(
+                        throw new DecodingException(
                                 MessageFormat.format(CodecError.FAIL_GETTING_FIELD_VALUE.getMessage(), this.clazz.getName()), e);
                     }
                 });

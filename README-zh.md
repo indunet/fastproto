@@ -149,12 +149,12 @@ public class PressureDecodeFormula implements Function<Long, Double> {
 public class Weather {
     ...
     
-    @UInteger32Type(value = 14, afterDecode = DecodeSpeedFormula.class)
+    @UInteger32Type(value = 14, decodingFormula = DecodeSpeedFormula.class)
     double pressure;
 }
 ```
 
-同理，编码公式也需要实现`java.lang.function.Function`接口，然后通过数据类型注解的`beforeEncode`属性指定编码公式。[更多][formula]
+同理，编码公式也需要实现`java.lang.function.Function`接口，然后通过数据类型注解的`encodingFormula`属性指定编码公式。[更多][formula]
 
 ```java
 public class PressureEncodeFormula implements Function<Double, Long> {
@@ -169,7 +169,7 @@ public class PressureEncodeFormula implements Function<Double, Long> {
 public class Weather {
     ...
 
-    @UInteger32Type(value = 14, afterDecode = PressureDecodeFormula.class, beforeEncode = PressureEncodeFormula.class)
+    @UInteger32Type(value = 14, decodingFormula = PressureDecodeFormula.class, encodingFormula = PressureEncodeFormula.class)
     double pressure;
 }
 ```

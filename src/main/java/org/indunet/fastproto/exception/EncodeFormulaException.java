@@ -20,7 +20,7 @@ package org.indunet.fastproto.exception;
  * @author Deng Ran
  * @since 1.7.0
  */
-public class EncodeFormulaException extends EncodeException {
+public class EncodeFormulaException extends EncodingException {
     public EncodeFormulaException() {
 
     }

@@ -24,7 +24,7 @@ import org.indunet.fastproto.annotation.type.DateType;
 import org.indunet.fastproto.annotation.type.LongType;
 import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.exception.SpaceNotEnoughException;
 import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
@@ -54,7 +54,7 @@ public class DateEncoder implements TypeEncoder {
         int bo = ReverseUtils.offset(datagram.length, byteOffset);
 
         if (bo < 0) {
-            throw new EncodeException(CodecError.ILLEGAL_BYTE_OFFSET);
+            throw new EncodingException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (dataType == ProtocolType.LONG && unit == TimeUnit.MILLISECONDS) {
             if (bo + LongType.SIZE > datagram.length) {
                 throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
@@ -68,7 +68,7 @@ public class DateEncoder implements TypeEncoder {
 
             CodecUtils.integerType(datagram, bo, policy, (int) (value.getTime() / 1000));
         } else {
-            throw new EncodeException(CodecError.ILLEGAL_TIMESTAMP_PARAMETERS);
+            throw new EncodingException(CodecError.ILLEGAL_TIMESTAMP_PARAMETERS);
         }
     }
 }

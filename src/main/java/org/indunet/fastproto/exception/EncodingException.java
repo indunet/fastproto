@@ -23,24 +23,24 @@ package org.indunet.fastproto.exception;
  * @see CodecException
  * @since 1.0.0
  */
-public class EncodeException extends CodecException {
-    public EncodeException() {
+public class EncodingException extends CodecException {
+    public EncodingException() {
 
     }
 
-    public EncodeException(CodecError error) {
+    public EncodingException(CodecError error) {
         this(error.getMessage());
     }
 
-    public EncodeException(String message) {
+    public EncodingException(String message) {
         super(message);
     }
 
-    public EncodeException(CodecError error, Throwable cause) {
+    public EncodingException(CodecError error, Throwable cause) {
         this(error.getMessage(), cause);
     }
 
-    public EncodeException(String message, Throwable cause) {
+    public EncodingException(String message, Throwable cause) {
         super(message, cause);
     }
 }

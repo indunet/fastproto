@@ -49,7 +49,7 @@ public @interface BinaryType {
 
     int length() default -1;
 
-    Class<? extends Function<byte[], ?>>[] afterDecode() default {};
+    Class<? extends Function<byte[], ?>>[] decodingFormula() default {};
 
-    Class<? extends Function<?, byte[]>>[] beforeEncode() default {};
+    Class<? extends Function<?, byte[]>>[] encodingFormula() default {};
 }

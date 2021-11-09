@@ -18,7 +18,7 @@ package org.indunet.fastproto.decoder;
 
 import lombok.NonNull;
 import org.indunet.fastproto.annotation.type.ByteType;
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 /**
@@ -40,7 +40,9 @@ public class ByteDecoder implements TypeDecoder<Byte> {
         try {
             return CodecUtils.byteType(datagram, offset);
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new DecodeException("Fail decoding the byte type.", e);
+            throw new DecodingException("Fail decoding the byte type.", e);
+        } catch (IllegalArgumentException e) {
+            throw new DecodingException("Fail decoding the byte type.", e);
         }
     }
 }

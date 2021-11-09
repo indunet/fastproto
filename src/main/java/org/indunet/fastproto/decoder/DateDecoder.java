@@ -25,7 +25,7 @@ import org.indunet.fastproto.annotation.type.LongType;
 import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.encoder.TypeEncoder;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
 import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
@@ -54,7 +54,7 @@ public class DateDecoder implements TypeDecoder<Date> {
         int bo = ReverseUtils.offset(datagram.length, byteOffset);
 
         if (bo < 0) {
-            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
+            throw new DecodingException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (dataType == ProtocolType.LONG && unit == TimeUnit.MILLISECONDS) {
             if (bo + LongType.SIZE > datagram.length) {
                 throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
@@ -72,7 +72,7 @@ public class DateDecoder implements TypeDecoder<Date> {
 
             return new Date(value * 1000);
         } else {
-            throw new DecodeException(CodecError.ILLEGAL_TIMESTAMP_PARAMETERS);
+            throw new DecodingException(CodecError.ILLEGAL_TIMESTAMP_PARAMETERS);
         }
     }
 }

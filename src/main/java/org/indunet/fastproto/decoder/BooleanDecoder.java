@@ -18,7 +18,7 @@ package org.indunet.fastproto.decoder;
 
 import lombok.NonNull;
 import org.indunet.fastproto.annotation.type.BooleanType;
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 /**
@@ -37,14 +37,12 @@ public class BooleanDecoder implements TypeDecoder<Boolean> {
     }
 
     public boolean decode(@NonNull final byte[] datagram, int byteOffset, int bitOffset) {
-        if (bitOffset < 0) {
-            throw new DecodeException("Fail decoding the boolean type.");
-        }
-
         try {
             return CodecUtils.booleanType(datagram, byteOffset, bitOffset);
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new DecodeException("Fail decoding the boolean type.", e);
+            throw new DecodingException("Fail decoding the boolean type.", e);
+        } catch (IllegalArgumentException e) {
+            throw new DecodingException("Fail decoding the boolean type.", e);
         }
     }
 }

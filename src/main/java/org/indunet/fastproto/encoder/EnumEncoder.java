@@ -24,7 +24,7 @@ import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.EnumType;
 import org.indunet.fastproto.decoder.TypeDecoder;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 import java.text.MessageFormat;
@@ -60,7 +60,7 @@ public class EnumEncoder implements TypeEncoder {
 
                 code = field.getInt(value);
             } catch (IllegalAccessException | NoSuchFieldException e) {
-                throw new EncodeException(MessageFormat.format(
+                throw new EncodingException(MessageFormat.format(
                         CodecError.ILLEGAL_ENUM_CODE_FIELD.getMessage(), fieldName), e);
             }
         }
@@ -72,7 +72,7 @@ public class EnumEncoder implements TypeEncoder {
         } else if (protocolType == ProtocolType.INTEGER) {
             CodecUtils.integerType(datagram, offset, policy, code);
         } else {
-            throw new EncodeException(CodecError.INVALID_ENUM_PROTOCOL_TYPE);
+            throw new EncodingException(CodecError.INVALID_ENUM_PROTOCOL_TYPE);
         }
     }
 }

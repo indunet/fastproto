@@ -14,19 +14,33 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.annotation;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+package org.indunet.fastproto.exception;
 
 /**
+ * Decode exception.
+ *
  * @author Deng Ran
- * @see Encoder
+ * @see CodecException
  * @since 1.0.0
  */
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface EncodeIgnore {
+public class DecodingException extends CodecException {
+    public DecodingException() {
+
+    }
+
+    public DecodingException(CodecError error) {
+        this(error.getMessage());
+    }
+
+    public DecodingException(String message) {
+        super(message);
+    }
+
+    public DecodingException(CodecError error, Throwable cause) {
+        this(error.getMessage(), cause);
+    }
+
+    public DecodingException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

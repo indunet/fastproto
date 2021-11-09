@@ -17,7 +17,7 @@
 package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -53,11 +53,11 @@ public class Integer16EncoderTest {
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null));
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null, 0, EndianPolicy.BIG, 8));
 
-        assertThrows(EncodeException.class,
+        assertThrows(EncodingException.class,
                 () -> this.encoder.encode(datagram, -1, EndianPolicy.LITTLE, 1));
-        assertThrows(EncodeException.class,
+        assertThrows(EncodingException.class,
                 () -> this.encoder.encode(datagram, 10, EndianPolicy.LITTLE, 1));
-        assertThrows(EncodeException.class,
+        assertThrows(EncodingException.class,
                 () -> this.encoder.encode(datagram, 10, EndianPolicy.LITTLE, Integer.MAX_VALUE));
     }
 }

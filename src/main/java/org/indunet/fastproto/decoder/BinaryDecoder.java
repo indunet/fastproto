@@ -20,7 +20,7 @@ import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.annotation.type.BinaryType;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
 import org.indunet.fastproto.util.ReverseUtils;
 
@@ -44,11 +44,11 @@ public class BinaryDecoder implements TypeDecoder<byte[]> {
         int l = ReverseUtils.length(datagram.length, byteOffset, length);
 
         if (bo < 0) {
-            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
+            throw new DecodingException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (bo >= datagram.length) {
-            throw new DecodeException(CodecError.ILLEGAL_BYTE_OFFSET);
+            throw new DecodingException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (l <= 0) {
-            throw new DecodeException(CodecError.ILLEGAL_PARAMETER);
+            throw new DecodingException(CodecError.ILLEGAL_PARAMETER);
         } else if (bo + l > datagram.length) {
             throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
         }

@@ -17,13 +17,9 @@
 package org.indunet.fastproto.decoder;
 
 import lombok.NonNull;
-import lombok.val;
 import org.indunet.fastproto.annotation.type.UInteger8Type;
-import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.DecodeException;
-import org.indunet.fastproto.exception.OutOfBoundsException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.CodecUtils;
-import org.indunet.fastproto.util.ReverseUtils;
 
 /**
  * UInteger8 type decoder.
@@ -44,7 +40,9 @@ public class UInteger8Decoder implements TypeDecoder<Integer> {
         try {
             return CodecUtils.uinteger8Type(datagram, offset);
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new DecodeException("Fail decoding the uinteger8 type.", e);
+            throw new DecodingException("Fail decoding the uinteger8 type.", e);
+        } catch (IllegalArgumentException e) {
+            throw new DecodingException("Fail decoding the uinteger8 type.", e);
         }
     }
 }

@@ -19,7 +19,7 @@ package org.indunet.fastproto.encoder;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.annotation.type.BinaryType;
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 /**
@@ -42,7 +42,9 @@ public class BinaryEncoder implements TypeEncoder {
         try {
             CodecUtils.binaryType(datagram, offset, length, bytes);
         } catch (IndexOutOfBoundsException e) {
-            throw new EncodeException("Fail encoding the binary type.", e);
+            throw new EncodingException("Fail encoding the binary type.", e);
+        } catch (IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding the binary type.", e);
         }
     }
 }

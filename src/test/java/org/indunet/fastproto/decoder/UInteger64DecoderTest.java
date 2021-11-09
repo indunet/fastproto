@@ -17,7 +17,7 @@
 package org.indunet.fastproto.decoder;
 
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -60,7 +60,7 @@ class UInteger64DecoderTest {
         assertThrows(NullPointerException.class, () -> this.decoder.decode(null));
         assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 0, EndianPolicy.LITTLE));
 
-        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, -1, EndianPolicy.LITTLE));
-        assertThrows(DecodeException.class, () -> this.decoder.decode(datagram, 10, EndianPolicy.LITTLE));
+        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, -1, EndianPolicy.LITTLE));
+        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, 10, EndianPolicy.LITTLE));
     }
 }

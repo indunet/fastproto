@@ -17,7 +17,7 @@
 package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -50,7 +50,7 @@ public class CharacterEncoderTest {
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null));
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null, 0, null, 'A'));
 
-        assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, -1, EndianPolicy.LITTLE, 'A'));
-        assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, 10, EndianPolicy.LITTLE, 'A'));
+        assertThrows(EncodingException.class, () -> this.encoder.encode(datagram, -1, EndianPolicy.LITTLE, 'A'));
+        assertThrows(EncodingException.class, () -> this.encoder.encode(datagram, 10, EndianPolicy.LITTLE, 'A'));
     }
 }

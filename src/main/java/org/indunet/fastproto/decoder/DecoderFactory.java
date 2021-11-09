@@ -17,7 +17,7 @@
 package org.indunet.fastproto.decoder;
 
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.DecodeException;
+import org.indunet.fastproto.exception.DecodingException;
 
 import java.text.MessageFormat;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,7 +37,7 @@ public class DecoderFactory {
                 return c.newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
-                throw new DecodeException(
+                throw new DecodingException(
                         MessageFormat.format(CodecError.FAIL_INITIALIZING_DECODER.getMessage(), clazz.getName()), e);
             }
         })::decode;
@@ -49,7 +49,7 @@ public class DecoderFactory {
                 return c.newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
-                throw new DecodeException(
+                throw new DecodingException(
                         MessageFormat.format(CodecError.FAIL_INITIALIZING_DECODE_FORMULA.getMessage(), clazz.getName()), e);
             }
         });

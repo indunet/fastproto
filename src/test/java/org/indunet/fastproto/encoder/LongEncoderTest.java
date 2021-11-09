@@ -17,7 +17,7 @@
 package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -62,9 +62,9 @@ public class LongEncoderTest {
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null));
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null, 0, EndianPolicy.BIG, 8));
 
-        assertThrows(EncodeException.class,
+        assertThrows(EncodingException.class,
                 () -> this.encoder.encode(datagram, -1, EndianPolicy.LITTLE, -1L));
-        assertThrows(EncodeException.class,
+        assertThrows(EncodingException.class,
                 () -> this.encoder.encode(datagram, 8, EndianPolicy.LITTLE, -1L));
     }
 }

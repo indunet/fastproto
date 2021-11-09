@@ -19,7 +19,7 @@ package org.indunet.fastproto.encoder;
 import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.Integer16Type;
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 /**
@@ -40,14 +40,12 @@ public class Integer16Encoder implements TypeEncoder {
     }
 
     public void encode(@NonNull byte[] datagram, int offset, @NonNull EndianPolicy policy, int value) {
-        if (value < Integer16Type.MIN_VALUE || value > Integer16Type.MAX_VALUE) {
-            throw new EncodeException("Fail encoding the integer8 type.");
-        }
-
         try {
             CodecUtils.integer16Type(datagram, offset, policy, value);
         } catch (IndexOutOfBoundsException e) {
-            throw new EncodeException("Fail encoding the integer16 type.", e);
+            throw new EncodingException("Fail encoding the integer16 type.", e);
+        } catch (IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding the integer8 type.", e);
         }
     }
 }

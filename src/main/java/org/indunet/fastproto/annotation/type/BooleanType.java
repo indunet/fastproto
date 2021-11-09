@@ -53,7 +53,7 @@ public @interface BooleanType {
 
     int bitOffset() default 0;
 
-    Class<? extends Function<Boolean, ?>>[] afterDecode() default {};
+    Class<? extends Function<Boolean, ?>>[] decodingFormula() default {};
 
-    Class<? extends Function<?, Boolean>>[] beforeEncode() default {};
+    Class<? extends Function<?, Boolean>>[] encodingFormula() default {};
 }

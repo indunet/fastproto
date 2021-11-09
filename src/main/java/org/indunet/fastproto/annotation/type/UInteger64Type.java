@@ -53,7 +53,7 @@ public @interface UInteger64Type {
 
     int value();
 
-    Class<? extends Function<BigDecimal, ?>>[] afterDecode() default {};
+    Class<? extends Function<BigDecimal, ?>>[] decodingFormula() default {};
 
-    Class<? extends Function<?, BigDecimal>>[] beforeEncode() default {};
+    Class<? extends Function<?, BigDecimal>>[] encodingFormula() default {};
 }

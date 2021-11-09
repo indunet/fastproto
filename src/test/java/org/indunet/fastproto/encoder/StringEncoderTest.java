@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.encoder;
 
-import org.indunet.fastproto.exception.EncodeException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -61,8 +61,8 @@ public class StringEncoderTest {
         assertThrows(NullPointerException.class, () -> this.encoder.encode(null, 0, 8, StandardCharsets.UTF_8, "ABC"));
 
 
-        assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, -1, 2, StandardCharsets.UTF_8, "ABC"));
-        // assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, 10, -1, StandardCharsets.UTF_8, "ABC"));
-        // assertThrows(EncodeException.class, () -> this.encoder.encode(datagram, 2, 10, StandardCharsets.UTF_8, "ABC"));
+        assertThrows(EncodingException.class, () -> this.encoder.encode(datagram, -1, 2, StandardCharsets.UTF_8, "ABC"));
+        assertThrows(EncodingException.class, () -> this.encoder.encode(datagram, 10, -1, StandardCharsets.UTF_8, "ABC"));
+        assertThrows(EncodingException.class, () -> this.encoder.encode(datagram, 2, 10, StandardCharsets.UTF_8, "ABC"));
     }
 }
