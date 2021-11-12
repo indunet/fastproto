@@ -18,7 +18,7 @@ package org.indunet.fastproto.kafka;
 
 import lombok.val;
 import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.scala.inverter.iot.Weather;
+import org.indunet.fastproto.scala.iot.inverter.Weather;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;

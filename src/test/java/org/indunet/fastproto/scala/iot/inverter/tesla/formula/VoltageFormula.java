@@ -14,27 +14,17 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto;
+package org.indunet.fastproto.scala.iot.inverter.tesla.formula;
 
-import org.indunet.fastproto.decoder.DecodeContext;
-import org.indunet.fastproto.scala.iot.inverter.tesla.Tesla;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import java.util.function.Function;
 
 /**
  * @author Deng Ran
- * @see TypeAssist
- * @since 1.0.0
+ * @version 1.0
  */
-public class TypeAssistTest {
-    @Test
-    public void testByClass() {
-        TypeAssist assist = TypeAssist.byClass(Tesla.class);
-        List<DecodeContext> contexts = assist.toDecodeContexts(new byte[100]);
-
-        assertNotNull(contexts);
+public class VoltageFormula implements Function<Byte, Double> {
+    @Override
+    public Double apply(Byte value) {
+        return value * 0.1;
     }
 }

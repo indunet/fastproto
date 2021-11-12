@@ -135,7 +135,7 @@ If the user does not specify it, FastProto will automatically guess the length.
 byte[] datagram = FastProto.toByteArray(weather, 20);
 ```
 
-2. **Decode Formula & Encode Formula**
+2. **Decoding Formula & Encoding Formula**
 
 Perhaps you have noticed that the pressure signal corresponds to a conversion formula, usually requiring the user to multiply
 the serialized result by 0.1, which is an extremely common operation in IoT data exchange.
@@ -231,8 +231,8 @@ FastProto also provides some auxiliary annotations to help users further customi
 | Annotation    | Scope        | Description                           |
 |:-------------:|:------------:|:-------------------------------------:|
 | `@Endian`       | Class & Field | Endianness, default as little endian. |
-| `@DecodeIgnore` | Field        | Ignore the field when decoding.       |
-| `@EncodeIgnore` | Field        | Ignore the field when encoding.       |
+| `@DecodingIgnore` | Field        | Ignore the field when decoding.       |
+| `@EncodingIgnore` | Field        | Ignore the field when encoding.       |
 | `@EnableCompress` | Class        | Enable compress & decompress, default as deflate |
 | `@EnableProtocolVersion` | Class     |  Enable protocol version verification  |
 | `@EnableCheckSum`      |  Class      |  Enable checksum verification               |

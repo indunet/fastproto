@@ -14,27 +14,26 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto;
+package org.indunet.fastproto.scala.iot.inverter;
 
-import org.indunet.fastproto.decoder.DecodeContext;
-import org.indunet.fastproto.scala.iot.inverter.tesla.Tesla;
-import org.junit.jupiter.api.Test;
-
-import java.util.List;
-
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.indunet.fastproto.annotation.EnableFixedLength;
+import org.indunet.fastproto.annotation.type.Integer16Type;
+import org.indunet.fastproto.annotation.type.UInteger16Type;
 
 /**
  * @author Deng Ran
- * @see TypeAssist
- * @since 1.0.0
+ * @since 1.7.4
  */
-public class TypeAssistTest {
-    @Test
-    public void testByClass() {
-        TypeAssist assist = TypeAssist.byClass(Tesla.class);
-        List<DecodeContext> contexts = assist.toDecodeContexts(new byte[100]);
-
-        assertNotNull(contexts);
-    }
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@EnableFixedLength(10)
+public class Sensor {
+    @Integer16Type(0)
+    int temperature;
+    @UInteger16Type(2)
+    int humidity;
 }

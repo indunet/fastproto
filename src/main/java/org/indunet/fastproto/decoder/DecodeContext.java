@@ -20,6 +20,7 @@ import lombok.Builder;
 import lombok.Data;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.TypeAssist;
+import org.indunet.fastproto.graph.Reference;
 
 import java.lang.annotation.Annotation;
 
@@ -35,16 +36,20 @@ public class DecodeContext {
     Object object;
     byte[] datagram;
     TypeAssist typeAssist;
+    Reference reference;
 
     public EndianPolicy getEndianPolicy() {
-        return this.typeAssist.getEndianPolicy();
+        // return this.typeAssist.getEndianPolicy();
+        return this.reference.getEndianPolicy();
     }
 
     public <T> T getTypeAnnotation(Class<T> clazz) {
-        return (T) this.getTypeAnnotation();
+        // return (T) this.getTypeAnnotation();
+        return (T) this.reference.getTypeAnnotation();
     }
 
     public Annotation getTypeAnnotation() {
-        return this.typeAssist.getTypeAnnotation();
+        // return this.typeAssist.getTypeAnnotation();
+        return this.reference.getTypeAnnotation();
     }
 }

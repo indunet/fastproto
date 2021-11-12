@@ -19,7 +19,7 @@ package org.indunet.fastproto.netty;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import io.netty.channel.embedded.EmbeddedChannel;
-import org.indunet.fastproto.scala.inverter.iot.Sensor;
+import org.indunet.fastproto.scala.iot.inverter.Sensor;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

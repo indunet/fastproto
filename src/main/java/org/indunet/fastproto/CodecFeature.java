@@ -17,6 +17,7 @@
 package org.indunet.fastproto;
 
 import lombok.val;
+import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.pipeline.FlowCode;
 
 /**
@@ -54,6 +55,32 @@ public final class CodecFeature {
         }
 
         if (assist.getFixedLength() == null) {
+            codecFeature |= DISABLE_FIXED_LENGTH;
+        }
+
+        return codecFeature;
+    }
+
+    public static long of(Reference reference) {
+        long codecFeature = DEFAULT;
+
+        if (reference.getEnableCrypto() == null) {
+            codecFeature |= DISABLE_CRYPTO;
+        }
+
+        if (reference.getEnableCompress() == null) {
+            codecFeature |= DISABLE_COMPRESS;
+        }
+
+        if (reference.getEnableChecksum() == null) {
+            codecFeature |= DISABLE_CHECKSUM;
+        }
+
+        if (reference.getEnableProtocolVersion() == null) {
+            codecFeature |= DISABLE_PROTOCOL_VERSION;
+        }
+
+        if (reference.getEnableFixedLength() == null) {
             codecFeature |= DISABLE_FIXED_LENGTH;
         }
 

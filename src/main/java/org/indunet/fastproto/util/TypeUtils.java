@@ -94,11 +94,11 @@ public class TypeUtils {
         .get(typeAnnotation);
     }
 
-    public static Class<? extends Function> encodeFormula(@NonNull Annotation typeAnnotation) {
+    public static Class<? extends Function> encodingFormula(@NonNull Annotation typeAnnotation) {
         return formula(typeAnnotation, ENCODE_FORMULA_NAME);
     }
 
-    public static Class<? extends Function> decodeFormula(@NonNull Annotation typeAnnotation) {
+    public static Class<? extends Function> decodingFormula(@NonNull Annotation typeAnnotation) {
         return formula(typeAnnotation, DECODE_FORMULA_NAME);
     }
 

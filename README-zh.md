@@ -134,7 +134,7 @@ byte[] datagram = FastProto.toByteArray(weather, 20);
 也许你已经注意到压力信号对应一个换算公式，通常需要用户自行将序列化后的结果乘以0.1，这是物联网数据交换时极其常见的操作。
 为了帮助用户减少中间步骤，FastProto引入的编码公式和解码公式。
 
-自定义解码公式需要实现`java.lang.function.Function`接口，然后通过数据类型注解的`afterDecode`属性指定解码公式。
+自定义解码公式需要实现`java.lang.function.Function`接口，然后通过数据类型注解的`decodingFormula`属性指定解码公式。
 
 ```java
 public class PressureDecodeFormula implements Function<Long, Double> {
@@ -222,8 +222,8 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 | 注解    | 作用域        | 描述                           |
 |:-------------:|:------------:|:-------------------------------------:|
 | `@Endian`       | Class & Field | 数据开端，默认小开端 |
-| `@DecodeIgnore` | Field        | 反序列化时忽略该字段       |
-| `@EncodeIgnore` | Field        | 序列化时忽略该字段       |
+| `@DecodingIgnore` | Field        | 反序列化时忽略该字段       |
+| `@EncodingIgnore` | Field        | 序列化时忽略该字段       |
 | `@EnableCompress` | Class        | 启动压缩和解压缩  |
 | `@EnableProtocolVersion` | Class     |  启动协议版本校验  |
 | `@EnableChecksum`      |  Class      |  启动数据完整性校验              |

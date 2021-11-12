@@ -14,27 +14,29 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto;
+package org.indunet.fastproto.scala.iot.inverter.tesla;
 
-import org.indunet.fastproto.decoder.DecodeContext;
-import org.indunet.fastproto.scala.iot.inverter.tesla.Tesla;
-import org.junit.jupiter.api.Test;
+import lombok.*;
+import org.indunet.fastproto.annotation.type.AutoType;
+import org.indunet.fastproto.annotation.type.FloatType;
+import org.indunet.fastproto.annotation.type.IntegerType;
+import org.indunet.fastproto.annotation.type.ShortType;
 
-import java.util.List;
+@Data
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class Battery {
+    @ShortType(22)
+    short capacity;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+    @AutoType(value = 24, bitOffset = 0)
+    boolean locked;
 
-/**
- * @author Deng Ran
- * @see TypeAssist
- * @since 1.0.0
- */
-public class TypeAssistTest {
-    @Test
-    public void testByClass() {
-        TypeAssist assist = TypeAssist.byClass(Tesla.class);
-        List<DecodeContext> contexts = assist.toDecodeContexts(new byte[100]);
+    @IntegerType(26)
+    int voltage;
 
-        assertNotNull(contexts);
-    }
+    @FloatType(30)
+    float temperature;
 }

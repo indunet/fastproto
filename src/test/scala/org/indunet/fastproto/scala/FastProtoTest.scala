@@ -1,7 +1,7 @@
 package org.indunet.fastproto.scala
 
 import org.indunet.fastproto.FastProto
-import org.indunet.fastproto.scala.inverter.iot.Inverter
+import org.indunet.fastproto.scala.iot.inverter.Inverter
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 

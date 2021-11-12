@@ -17,13 +17,22 @@
 package org.indunet.fastproto;
 
 import lombok.*;
+import org.indunet.fastproto.annotation.Decoder;
+import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.annotation.type.*;
+import org.indunet.fastproto.decoder.TypeDecoder;
+import org.indunet.fastproto.encoder.TypeEncoder;
+import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
-import org.indunet.fastproto.util.TypeUtils;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Array;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
+import java.text.MessageFormat;
 import java.util.Arrays;
+import java.util.Optional;
+import java.util.function.Function;
 
 /**
  * @author Deng Ran
@@ -32,27 +41,63 @@ import java.util.Arrays;
 @AllArgsConstructor
 @Getter
 public enum ProtocolType {
-    BINARY(BinaryType.class, true),
-    BOOLEAN(BooleanType.class, true),
-    CHARACTER(CharacterType.class, true),
-    BYTE(ByteType.class, true),
-    DOUBLE(DoubleType.class, true),
-    FLOAT(FloatType.class, true),
-    INTEGER(IntegerType.class, true),
-    LONG(LongType.class, true),
-    SHORT(ShortType.class, true),
-    STRING(StringType.class, true),
-    TIMESTAMP(TimestampType.class, true),
-    INTEGER8(Integer8Type.class, false),
-    INTEGER16(Integer16Type.class, false),
-    UINTEGER8(UInteger8Type.class, false),
-    UINTEGER16(UInteger16Type.class, false),
-    UINTEGER32(UInteger32Type.class, false),
-    UINTEGER64(UInteger64Type.class, true),
-    ENUM(EnumType.class, true);
+    BINARY(BinaryType.class),
+    BOOLEAN(BooleanType.class),
+    CHARACTER(CharacterType.class),
+    BYTE(ByteType.class),
+    DOUBLE(DoubleType.class),
+    FLOAT(FloatType.class),
+    INTEGER(IntegerType.class),
+    LONG(LongType.class),
+    SHORT(ShortType.class),
+    STRING(StringType.class),
+    TIMESTAMP(TimestampType.class),
+    DATE(DateType.class),
+    INTEGER8(Integer8Type.class),
+    INTEGER16(Integer16Type.class),
+    UINTEGER8(UInteger8Type.class),
+    UINTEGER16(UInteger16Type.class),
+    UINTEGER32(UInteger32Type.class),
+    UINTEGER64(UInteger64Type.class),
+    ENUM(EnumType.class),
+    LIST(ListType.class),
+    ARRAY(ArrayType.class);
 
     Class<? extends Annotation> typeAnnotationClass;
-    Boolean autoType;
+
+    protected final static String SIZE_NAME = "SIZE";
+    protected final static String PROTOCOL_TYPES_NAME = "PROTOCOL_TYPES";
+    protected final static String JAVA_TYPES_NAME = "JAVA_TYPES";
+    protected final static String AUTO_TYPE_NAME = "AUTO_TYPE";
+
+    protected final static String BYTE_OFFSET_NAME = "value";
+    protected final static String BIT_OFFSET_NAME = "bitOffset";
+    protected final static String LENGTH_NAME = "length";
+    protected final static String ENCODE_FORMULA_NAME = "encodingFormula";
+    protected final static String DECODE_FORMULA_NAME = "decodingFormula";
+
+    @SneakyThrows
+    public boolean autoType() {
+        val field = typeAnnotationClass.getField(AUTO_TYPE_NAME);
+
+        return field.getBoolean(null);
+    }
+
+    public Type javaType() {
+        return javaTypes()[0];
+    }
+
+    @SneakyThrows
+    public Type[] javaTypes() {
+        val field = typeAnnotationClass.getField(JAVA_TYPES_NAME);
+
+        return (Type[]) field.get(null);
+    }
+
+    public boolean match(Type type) {
+        return Arrays.stream(this.javaTypes())
+                .anyMatch(t -> t == type);
+    }
 
     public static ProtocolType valueOf(Class<? extends Annotation> clazz) {
         return Arrays.stream(ProtocolType.values())
@@ -68,22 +113,157 @@ public enum ProtocolType {
                 .orElseThrow(CodecException::new);
     }
 
-    public Type javaType() {
-        return javaTypes()[0];
-    }
-
-    @SneakyThrows
-    public Type[] javaTypes() {
-        val field = typeAnnotationClass.getField("JAVA_TYPES");
-
-        return (Type[]) field.get(null);
-    }
-
     @SneakyThrows
     public static Type[] supportedTypes() {
         return Arrays.stream(ProtocolType.values())
                 .map(ProtocolType::getTypeAnnotationClass)
-                .flatMap(c -> Arrays.stream(TypeUtils.javaTypes(c)))
+                .flatMap(c -> Arrays.stream(ProtocolType.javaTypes(c)))
                 .toArray(Type[]::new);
+    }
+
+    public static boolean isSupported(@NonNull Type type) {
+        return Arrays.stream(ProtocolType.values())
+                .map(ProtocolType::getTypeAnnotationClass)
+                .flatMap(c -> Arrays.stream(ProtocolType.javaTypes(c)))
+                .anyMatch(t -> t == type);
+    }
+
+    public static Type wrapperClass(@NonNull String name) {
+        switch (name) {
+            case "boolean":
+                return Boolean.class;
+            case "byte":
+                return Byte.class;
+            case "char":
+                return Character.class;
+            case "short":
+                return Short.class;
+            case "int":
+                return Integer.class;
+            case "long":
+                return Long.class;
+            case "float":
+                return Float.class;
+            case "double":
+                return Double.class;
+            default:
+                throw new CodecException(
+                        MessageFormat.format(CodecError.UNSUPPORTED_TYPE.getMessage(), name));
+        }
+    }
+
+    @SneakyThrows
+    public static int size(@NonNull ProtocolType type) {
+        return type.getTypeAnnotationClass()
+                .getDeclaredField(SIZE_NAME)
+                .getInt(null);
+    }
+
+    @SneakyThrows
+    public static int size(@NonNull Class<? extends Annotation> typeAnnotationClass) {
+        return typeAnnotationClass
+                .getDeclaredField(SIZE_NAME)
+                .getInt(null);
+    }
+
+    @SneakyThrows
+    public static ProtocolType[] protocolTypes(@NonNull Annotation typeAnnotation) {
+        return (ProtocolType[]) typeAnnotation.annotationType()
+                .getDeclaredField(PROTOCOL_TYPES_NAME)
+                .get(typeAnnotation);
+    }
+
+    public static Class<? extends Function> encodeFormula(@NonNull Annotation typeAnnotation) {
+        return formula(typeAnnotation, ENCODE_FORMULA_NAME);
+    }
+
+    public static Class<? extends Function> decodeFormula(@NonNull Annotation typeAnnotation) {
+        return formula(typeAnnotation, DECODE_FORMULA_NAME);
+    }
+
+    public static Class<? extends TypeDecoder> decoderCLass(@NonNull Annotation typeAnnotation) {
+        return Optional.of(typeAnnotation.annotationType())
+                .map(t -> t.getAnnotation(Decoder.class))
+                .map(Decoder::value)
+                .orElse(null);
+    }
+
+    public static Class<? extends TypeEncoder> encoderClass(@NonNull Annotation typeAnnotation) {
+        return Optional.of(typeAnnotation.annotationType())
+                .map(t -> t.getAnnotation(Encoder.class))
+                .map(Encoder::value)
+                .orElse(null);
+    }
+
+    @SneakyThrows
+    protected static Class<? extends Function> formula(@NonNull Annotation typeAnnotation, @NonNull String name) {
+        val method = typeAnnotation.getClass().getMethod(name);
+        val array = method.invoke(typeAnnotation);
+
+        return Optional.of(array)
+                .filter(a -> a.getClass().isArray())
+                .filter(a -> Array.getLength(a) >= 1)
+                .map(a -> Array.get(a, 0))
+                .map(o -> (Class<? extends Function>) o)
+                .orElse(null);
+    }
+
+    @SneakyThrows
+    public static Type[] javaTypes(@NonNull Annotation typeAnnotation) {
+        return (Type[]) typeAnnotation
+                .getClass()
+                .getField(JAVA_TYPES_NAME)
+                .get(null);
+    }
+
+    @SneakyThrows
+    public static Type[] javaTypes(@NonNull Class<? extends Annotation> typeAnnotationClass) {
+        return (Type[]) typeAnnotationClass
+                .getDeclaredField(JAVA_TYPES_NAME)
+                .get(null);
+    }
+
+    public static int byteOffset(@NonNull Annotation typeAnnotation) {
+        try {
+            return (Integer) typeAnnotation
+                    .getClass()
+                    .getMethod(BYTE_OFFSET_NAME)
+                    .invoke(typeAnnotation);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            return 0;
+        }
+    }
+
+    public static int bitOffset(@NonNull Annotation typeAnnotation) {
+        try {
+            return (Integer) typeAnnotation
+                    .getClass()
+                    .getMethod(BIT_OFFSET_NAME)
+                    .invoke(typeAnnotation);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            return 0;
+        }
+    }
+
+    public static int size(@NonNull Annotation typeAnnotation) {
+        try {
+            return typeAnnotation
+                    .getClass()
+                    .getField(SIZE_NAME)
+                    .getInt(typeAnnotation);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            return 0;
+        }
+    }
+
+    public static int length(@NonNull Annotation typeAnnotation) {
+        try {
+            return (Integer) typeAnnotation
+                    .getClass()
+                    .getMethod(LENGTH_NAME)
+                    .invoke(typeAnnotation);
+        } catch (IllegalAccessException | InvocationTargetException | NoSuchMethodException e) {
+            return 0;
+        }
     }
 }

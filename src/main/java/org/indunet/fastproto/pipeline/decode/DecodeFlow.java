@@ -22,6 +22,8 @@ import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.DecoderFactory;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
+import org.indunet.fastproto.graph.Reference;
+import org.indunet.fastproto.graph.ReferenceGraph;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
 import org.indunet.fastproto.pipeline.FlowCode;
@@ -44,84 +46,36 @@ import java.util.function.Function;
 public class DecodeFlow extends AbstractFlow<CodecContext> {
     @Override
     public void process(CodecContext context) {
-        val assist = context.getTypeAssist();
+        // val assist = context.getTypeAssist();
+        val reference = context.getReferenceGraph().root();
         val datagram = context.getDatagram();
 
-        if (assist.getNoArgsConstructor()) {
-            context.setObject(linearDecode(datagram, assist));
-        } else {
-            context.setObject(dfsDecode(datagram, assist));
-        }
+        context.setObject(linearDecode(datagram, context.getReferenceGraph()));
 
         this.nextFlow(context);
     }
 
-    public Object linearDecode(byte[] datagram, TypeAssist assist) {
-        List<DecodeContext> decodeContexts = assist.toDecodeContexts(datagram);
-        val protocolClass = assist.getClazz();
+    public Object linearDecode(byte[] datagram, ReferenceGraph graph) {
+        List<DecodeContext> decodeContexts = graph.decodeContexts(datagram);
 
         decodeContexts
                 .forEach(c -> {
-                    TypeAssist a = c.getTypeAssist();
+                    Reference r = c.getReference();
                     Function<DecodeContext, ?> func = DecoderFactory.getDecoder(
-                            a.getDecoderClass(),
-                            a.getDecodeFormula());
+                            r.getDecoderClass(),
+                            r.getDecodeFormula());
+
                     try {
                         Object value = func.apply(c);
-                        Object o = c.getObject();
-                        a.setValue(o, value);
+
+                        r.setValue(value);
                     } catch (DecodingException e) {
                         throw new DecodingException(MessageFormat.format(
-                                CodecError.FAIL_DECODING_FIELD.getMessage(), a.getField().toString()), e);
+                                CodecError.FAIL_DECODING_FIELD.getMessage(), r.getField().toString()), e);
                     }
                 });
 
-        return assist.getObject(protocolClass);
-    }
-
-    public Object dfsDecode(byte[] datagram, TypeAssist assist) {
-        val classes = Arrays.stream(assist.getClazz().getDeclaredFields())
-                .map(Field::getType)
-                .toArray(Class<?>[]::new);
-        val clazz = assist.getClazz();
-        Constructor<?> constructor = null;
-
-        try {
-            constructor = clazz.getConstructor(classes);
-        } catch (NoSuchMethodException e) {
-            throw new DecodingException(MessageFormat.format(
-                    CodecError.FAIL_DECODING_FIELD.getMessage(), assist.getClazz().getName()), e);
-        }
-
-        val objects = assist.getElements()
-                .stream()
-                .map(a -> {
-                    if (a.getElementType() == ElementType.FIELD) {
-                        Function<DecodeContext, ?> func = DecoderFactory.getDecoder(
-                                a.getDecoderClass(),
-                                a.getDecodeFormula());
-                        try {
-                            return func.apply(a.toDecodeContext(datagram, null));
-                        } catch (DecodingException e) {
-                            throw new DecodingException(MessageFormat.format(
-                                    CodecError.FAIL_DECODING_FIELD.getMessage(), a.getField().toString()), e);
-                        }
-                    } else {
-                        if (assist.getCircularReference()) {
-                            return null;
-                        } else {
-                            return this.dfsDecode(datagram, a);
-                        }
-                    }
-                }).toArray(Object[]::new);
-
-        try {
-            return constructor.newInstance(objects);
-        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
-            throw new DecodingException(
-                    MessageFormat.format(
-                            CodecError.FAIL_INITIALIZING_DECODE_OBJECT.getMessage(), assist.getClazz().getName()), e);
-        }
+        return graph.generate();
     }
 
     @Override

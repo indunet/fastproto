@@ -45,8 +45,8 @@ public class FieldFlow extends AbstractFlow<ValidationContext> {
         Class<? extends Function> encodeFormula;
 
         try {
-            decodeFormula = TypeUtils.decodeFormula(typeAnnotation);
-            encodeFormula = TypeUtils.encodeFormula(typeAnnotation);
+            decodeFormula = TypeUtils.decodingFormula(typeAnnotation);
+            encodeFormula = TypeUtils.encodingFormula(typeAnnotation);
 
             context.setDecodeFormula(decodeFormula);
             context.setEncodeFormula(encodeFormula);
