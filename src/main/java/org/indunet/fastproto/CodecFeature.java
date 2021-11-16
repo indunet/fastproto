@@ -35,32 +35,6 @@ public final class CodecFeature {
     public static final long DISABLE_CRYPTO = FlowCode.DECRYPT_FLOW_CODE | FlowCode.ENCRYPT_FLOW_CODE;
     public static final long DISABLE_FIXED_LENGTH = FlowCode.VERIFY_FIXED_LENGTH_FLOW_CODE | FlowCode.FIXED_LENGTH_FLOW_CODE;
 
-    public static long of(TypeAssist assist) {
-        long codecFeature = DEFAULT;
-
-        if (assist.getEnableCrypto() == null) {
-            codecFeature |= DISABLE_CRYPTO;
-        }
-
-        if (assist.getEnableCompress() == null) {
-            codecFeature |= DISABLE_COMPRESS;
-        }
-
-        if (assist.getEnableChecksum() == null) {
-            codecFeature |= DISABLE_CHECKSUM;
-        }
-
-        if (assist.getEnableProtocolVersion() == null) {
-            codecFeature |= DISABLE_PROTOCOL_VERSION;
-        }
-
-        if (assist.getFixedLength() == null) {
-            codecFeature |= DISABLE_FIXED_LENGTH;
-        }
-
-        return codecFeature;
-    }
-
     public static long of(Reference reference) {
         long codecFeature = DEFAULT;
 

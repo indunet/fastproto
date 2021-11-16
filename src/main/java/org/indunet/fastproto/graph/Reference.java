@@ -44,11 +44,15 @@ import java.util.stream.Collectors;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@With
 public class Reference {
     ReferenceType referenceType;
     EndianPolicy endianPolicy;
-    Boolean decodeIgnore;
-    Boolean encodeIgnore;
+
+    @Builder.Default
+    Boolean decodingIgnore = false;
+    @Builder.Default
+    Boolean encodingIgnore = false;
 
     Class<?> protocolClass;
     ConstructorType constructorType;
@@ -77,7 +81,7 @@ public class Reference {
 
     public Object newInstance() {
         try {
-            val object =  this.protocolClass.newInstance();
+            val object = this.protocolClass.newInstance();
 
             this.value.set(object);
 
@@ -88,15 +92,19 @@ public class Reference {
         }
     }
 
-    public Object newInstance(Reference[] args) {
-        val types = Arrays.stream(args)
+    public Object newInstance(Reference[] references) {
+        val types = Arrays.stream(references)
                 .map(Reference::getField)
                 .map(Field::getType)
                 .collect(Collectors.toList())
-                .toArray(new Class[args.length]);
+                .toArray(new Class[references.length]);
 
         try {
             Constructor<?> constructor = this.protocolClass.getConstructor(types);
+            val args = Arrays.stream(references)
+                    .map(r -> r.getValue().get())
+                    .toArray();
+
             val object = constructor.newInstance(args);
 
             this.value.set(object);
@@ -116,17 +124,24 @@ public class Reference {
                 field.set(this.value.get(), reference.getValue().get());
             } catch (IllegalAccessException e) {
                 throw new DecodingException(
-                        String.format("Fail decoding the field %s of class %s", this.field.toString(), this.protocolClass.getName()), e);
+                        String.format("Fail decoding the field %s of class %s", field.toString(), this.protocolClass.getName()), e);
             }
-        } else {
-            throw new DecodingException(
-                    String.format("Fail decoding the class %s", this.protocolClass.getName()));
         }
+//        else {
+//            throw new DecodingException(
+//                    String.format("Fail decoding the class %s", this.protocolClass.getName()));
+//        }
     }
 
-    public Object getValue(@NonNull Object object) {
+    public Object getValue(Object object) {
         try {
-            return this.field.get(object);
+            if (object == null) {
+                return null;
+            } else if (this.field == null) {
+                return object;
+            } else {
+                return this.field.get(object);
+            }
         } catch (IllegalAccessException e) {
             throw new EncodingException(
                     String.format("Fail decoding the field %s of class %s", this.field.toString(), this.protocolClass.getName()), e);
@@ -139,6 +154,24 @@ public class Reference {
 
     public void setValue(Object value) {
         this.value.set(value);
+    }
+
+    @Override
+    public boolean equals(Object other) {
+        if (other instanceof Reference && this.referenceType == ReferenceType.CLASS && ((Reference) other).referenceType == ReferenceType.CLASS) {
+            return this.protocolClass == ((Reference) other).protocolClass;
+        } else {
+            return super.equals(other);
+        }
+    }
+
+    @Override
+    public int hashCode() {
+        if (this.referenceType == ReferenceType.CLASS) {
+            return this.protocolClass.hashCode();
+        } else {
+            return super.hashCode();
+        }
     }
 
     public enum ReferenceType {

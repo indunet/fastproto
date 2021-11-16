@@ -1,6 +1,8 @@
 package org.indunet.fastproto;
 
+import lombok.val;
 import org.indunet.fastproto.annotation.type.UInteger64Type;
+import org.indunet.fastproto.graph.ReferenceResolver;
 import org.indunet.fastproto.iot.Everything;
 import org.indunet.fastproto.util.CodecUtils;
 import org.junit.jupiter.api.Test;
@@ -62,21 +64,21 @@ public class ProtocolVersionAssistTest {
 
     @Test
     public void testValidate() {
-        TypeAssist assist = TypeAssist.get(Everything.class);
-        assertTrue(ProtocolVersionAssist.validate(datagram, assist));
+        val graph = ReferenceResolver.resolve(Everything.class);
+        assertTrue(ProtocolVersionAssist.validate(datagram, graph.root()));
     }
 
     @Test
     public void testDecode() {
-        TypeAssist assist = TypeAssist.get(Everything.class);
-        assertEquals(17, ProtocolVersionAssist.decode(datagram, assist));
+        val graph = ReferenceResolver.resolve(Everything.class);
+        assertEquals(17, ProtocolVersionAssist.decode(datagram, graph.root()));
     }
 
     @Test
     public void testEncode() {
         byte[] datagram = new byte[80];
-        TypeAssist assist = TypeAssist.get(Everything.class);
-        ProtocolVersionAssist.encode(datagram, assist);
+        val graph = ReferenceResolver.resolve(Everything.class);
+        ProtocolVersionAssist.encode(datagram, graph.root());
 
         assertEquals(17, datagram[78]);
     }

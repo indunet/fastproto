@@ -17,7 +17,6 @@
 package org.indunet.fastproto.pipeline.decode;
 
 import lombok.val;
-import org.indunet.fastproto.TypeAssist;
 import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.DecoderFactory;
 import org.indunet.fastproto.exception.CodecError;
@@ -28,12 +27,7 @@ import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
 import org.indunet.fastproto.pipeline.FlowCode;
 
-import java.lang.annotation.ElementType;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.InvocationTargetException;
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.List;
 import java.util.function.Function;
 

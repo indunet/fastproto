@@ -27,6 +27,7 @@ import org.indunet.fastproto.graph.Reference.ReferenceType;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * Reference Graph.
@@ -61,8 +62,9 @@ public class ReferenceGraph {
     }
 
     public boolean contains(@NonNull Reference reference) {
-        return this.adj.keySet().stream()
-                .anyMatch(s -> s.equals(reference));
+//        return this.adj.keySet().stream()
+//                .anyMatch(s -> s.equals(reference));
+        return this.adj.keySet().contains(reference);
     }
 
     public void addClass(@NonNull Reference reference) {
@@ -90,7 +92,7 @@ public class ReferenceGraph {
         this.addReference(key, reference);
     }
 
-    public Reference getSchema(@NonNull Class<?> protocolCLass) {
+    public Reference getReference(@NonNull Class<?> protocolCLass) {
         return this.adj.keySet().stream()
                 .filter(s -> s.getProtocolClass() == protocolCLass)
                 .findAny()
@@ -131,13 +133,47 @@ public class ReferenceGraph {
     public List<DecodeContext> decodeContexts(@NonNull byte[] datagram) {
         return this.adj.values().stream()
                 .flatMap(Collection::stream)
-                .filter(r -> !r.decodeIgnore)
                 .filter(r -> r.referenceType == Reference.ReferenceType.FIELD)
+                .filter(r -> !r.decodingIgnore)
                 .map(r -> DecodeContext.builder()
                         .datagram(datagram)
                         .reference(r)
                         .build())
                 .collect(Collectors.toList());
+    }
+
+    public Stream<Reference> stream() {
+        val list = new ArrayList<Reference>();
+
+        this.foreach(r -> list.add(r));
+
+        return list.stream();
+    }
+
+    public void foreach(Consumer<Reference> consumer) {
+        val queue = new ArrayDeque<Reference>();
+        val marks = new HashSet<Reference>();
+
+        queue.add(this.root());
+        marks.add(this.root());
+
+        while (!queue.isEmpty()) {
+            val ref = queue.remove();
+
+            consumer.accept(ref);
+
+            this.adj(ref).stream()
+                    .filter(r -> r.getReferenceType() == ReferenceType.CLASS)
+                    .filter(r -> !marks.contains(r))
+                    .forEach(r -> {
+                        queue.add(r);
+                        marks.add(r);
+                    });
+
+            this.adj(ref).stream()
+                    .filter(r -> r.getReferenceType() == ReferenceType.FIELD)
+                    .forEach(consumer::accept);
+        }
     }
 
     public Object generate() {
@@ -150,21 +186,8 @@ public class ReferenceGraph {
         return object;
     }
 
-    public void foreach(Consumer<Reference> consumer) {
-        val deque = new ArrayDeque<Reference>();
-        this.adj.get(root())
-                .forEach(r -> deque.add(r));
-
-        // BFS
-        while (!deque.isEmpty()) {
-            val reference = deque.remove();
-
-            consumer.accept(reference);
-        }
-    }
-
-    protected Object generate(Reference reference) {
-        val list = new ArrayList<Reference>();
+    protected void generate(Reference reference) {
+        val list = this.adj(reference);
 
         if (reference.getConstructorType() == ConstructorType.NO_ARGS) {
 
@@ -173,7 +196,7 @@ public class ReferenceGraph {
             list.stream()
                     .filter(r -> r.getReferenceType() != ReferenceType.INVALID)
                     .forEach(r -> {
-                        if (r.getReferenceType() == ReferenceType.CLASS) {
+                        if (r.getReferenceType() == ReferenceType.CLASS && r.getValue().get() == null) {
                             this.generate(r);
                         }
 
@@ -186,26 +209,40 @@ public class ReferenceGraph {
 
             reference.newInstance(list.toArray(new Reference[list.size()]));
         }
-
-        return reference.getValue().get();
     }
 
     public List<EncodeContext> encodeContexts(@NonNull Object object, @NonNull byte[] datagram) {
-        List<Reference> references = this.getAdj().get(this.root());
+        Set<Reference> marks = new HashSet<>();
+        Deque<Reference> queue = new ArrayDeque<>();
+        List<EncodeContext> list = new ArrayList<>();
 
-        val list = references.stream()
-                .filter(r -> r.getReferenceType() == ReferenceType.FIELD);
+        marks.add(this.root());
+        queue.add(this.root());
 
-        for (val reference: references) {
-            if (reference.getReferenceType() == ReferenceType.FIELD) {
-                val value = reference.getValue(object);
-            } else if (reference.getReferenceType() == ReferenceType.CLASS) {
+        while (!queue.isEmpty()) {
+            val ref = queue.remove();
+            val obj = ref.getValue(object);
 
+            this.adj(ref).stream()
+                    .filter(r -> r.getReferenceType() == ReferenceType.FIELD)
+                    .filter(r -> !r.getEncodingIgnore())
+                    .map(r -> EncodeContext.builder()
+                        .reference(r)
+                        .value(r.getValue(obj))
+                        .datagram(datagram)
+                        .build())
+                    .forEach(c -> {
+                        list.add(c);
+                    });
+
+            for (val r: this.adj(ref)) {
+                if (r.getReferenceType() == ReferenceType.CLASS && !marks.contains(r)) {
+                    queue.add(r);
+                    marks.add(r);
+                }
             }
         }
-    }
 
-    public List<EncodeContext> encodeContexts(@NonNull Object object, @NonNull byte[] datagram) {
-
+        return list;
     }
 }

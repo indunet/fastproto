@@ -23,5 +23,5 @@ import org.indunet.fastproto.annotation.scala._
  * @since 2.4.0
  */
 class Relay {
-  @BooleanType(value = 0, bitOffset = 1) var state = false
+  @BooleanType(value = 8, bitOffset = 1) var state = false
 }

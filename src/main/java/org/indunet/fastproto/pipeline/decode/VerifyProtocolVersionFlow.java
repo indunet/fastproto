@@ -33,7 +33,7 @@ import org.indunet.fastproto.pipeline.FlowCode;
 public class VerifyProtocolVersionFlow extends AbstractFlow<CodecContext> {
     @Override
     public void process(@NonNull CodecContext context) {
-        if (!ProtocolVersionAssist.validate(context.getDatagram(), context.getTypeAssist())) {
+        if (!ProtocolVersionAssist.validate(context.getDatagram(), context.getReferenceGraph().root())) {
             throw new ProtocolVersionException(CodecError.PROTOCOL_VERSION_NOT_MATCH);
         } else {
             this.nextFlow(context);

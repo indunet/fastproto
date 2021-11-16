@@ -20,6 +20,7 @@ import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.graph.Reference.ReferenceType;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -40,69 +41,67 @@ public class ReferenceResolver {
     protected static AbstractFlow<Reference> resolveFieldFlow = AbstractFlow.getResolveFieldFlow();
 
     public static ReferenceGraph resolve(@NonNull Class<?> protocolClass) {
-        val graph = graphs.computeIfAbsent(protocolClass, __ -> new ReferenceGraph());
-        val deque = new ArrayDeque<Field>();
+        return graphs.computeIfAbsent(protocolClass, __ -> {
+            val graph = new ReferenceGraph();
+            val deque = new ArrayDeque<Field>();
 
-        // Root.
-        val reference = Reference.builder()
-                .protocolClass(protocolClass)
-                .referenceType(Reference.ReferenceType.CLASS)
-                .build();
-        resolveClassFlow.process(reference);
-        graph.addClass(reference);
+            // Root.
+            val reference = Reference.builder()
+                    .protocolClass(protocolClass)
+                    .referenceType(ReferenceType.CLASS)
+                    .build();
+            resolveClassFlow.process(reference);
+            graph.addClass(reference);
 
-        Arrays.stream(protocolClass.getDeclaredFields())
-                .forEach(f -> deque.add(f));
+            Arrays.stream(protocolClass.getDeclaredFields())
+                    .peek(f -> f.setAccessible(true))
+                    .forEach(f -> deque.add(f));
 
-        // BFS
-        while (!deque.isEmpty()) {
-            val field = deque.remove();
+            // BFS
+            while (!deque.isEmpty()) {
+                val field = deque.remove();
 
-            if (isData(field)) {
-                val s = Reference.builder()
-                        .field(field)
-                        .referenceType(Reference.ReferenceType.FIELD)
-                        .build();
-
-                resolveFieldFlow.process(s);
-                graph.addReference(s);
-            } else if (isClass(field)) {
-                if (graph.contains(field.getType())) {
-                    val s = graph.getSchema(field.getType());
-
-                    graph.addReference(s);
-                } else {
+                if (isData(field)) {
                     val s = Reference.builder()
-                            .protocolClass(field.getType())
                             .field(field)
-                            .referenceType(Reference.ReferenceType.CLASS)
+                            .referenceType(Reference.ReferenceType.FIELD)
                             .build();
 
-                    resolveClassFlow.process(s);
-                    graph.addClass(s);
+                    resolveFieldFlow.process(s);
                     graph.addReference(s);
-                    Arrays.stream(field.getType().getDeclaredFields())
-                            .forEach(f -> deque.add(f));
+                } else if (isClass(field)) {
+                    if (graph.contains(field.getType())) {
+                        val ref = graph.getReference(field.getType())
+                                .withField(field);
+
+                        graph.addReference(ref);
+                    } else {
+                        val s = Reference.builder()
+                                .protocolClass(field.getType())
+                                .field(field)
+                                .referenceType(Reference.ReferenceType.CLASS)
+                                .build();
+
+                        resolveClassFlow.process(s);
+                        graph.addClass(s);
+                        graph.addReference(s);
+                        Arrays.stream(field.getType().getDeclaredFields())
+                                .peek(f -> f.setAccessible(true))
+                                .forEach(f -> deque.add(f));
+                    }
+                } else {
+                    // Invalid field.
+                    val s = Reference.builder()
+                            .field(field)
+                            .referenceType(Reference.ReferenceType.INVALID)
+                            .build();
+
+                    graph.addReference(s);
                 }
-            } else {
-                // Invalid field.
-                val s = Reference.builder()
-                        .field(field)
-                        .referenceType(Reference.ReferenceType.INVALID)
-                        .build();
-
-                graph.addReference(s);
             }
-        }
 
-        // Inherit endian from declaring class.
-//        for (val key: graph.adj.keySet()) {
-//            graph.adj.get(key).stream()
-//                    .filter(r -> r.getEndianPolicy() == null)
-//                    .forEach(r -> r.setEndianPolicy(key.getEndianPolicy()));
-//        }
-
-        return graph;
+            return graph;
+        });
     }
 
     protected static boolean isClass(@NonNull Field field) {

@@ -19,7 +19,6 @@ package org.indunet.fastproto.encoder;
 import lombok.Builder;
 import lombok.Data;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.TypeAssist;
 import org.indunet.fastproto.graph.Reference;
 
 /**
@@ -30,7 +29,6 @@ import org.indunet.fastproto.graph.Reference;
 @Builder
 public class EncodeContext {
     byte[] datagram;
-    TypeAssist typeAssist;
     Object value;
     Reference reference;
 

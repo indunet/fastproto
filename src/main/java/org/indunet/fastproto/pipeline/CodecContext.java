@@ -18,7 +18,6 @@ package org.indunet.fastproto.pipeline;
 
 import lombok.Builder;
 import lombok.Data;
-import org.indunet.fastproto.TypeAssist;
 import org.indunet.fastproto.graph.ReferenceGraph;
 
 /**
@@ -31,7 +30,6 @@ import org.indunet.fastproto.graph.ReferenceGraph;
 @Builder
 public class CodecContext {
     byte[] datagram;
-    TypeAssist typeAssist;
     ReferenceGraph referenceGraph;
     Object object;
     Class<?> protocolClass;

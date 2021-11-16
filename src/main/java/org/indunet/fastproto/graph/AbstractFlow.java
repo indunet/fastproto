@@ -30,6 +30,7 @@ public abstract class AbstractFlow<T> {
 
     public static AbstractFlow<Reference> getResolveClassFlow() {
         val endianFlow = new EndianFlow();
+        val enableFixedLength = new EnableFixedLengthFlow();
         val enableProtocolVersionFlow = new EnableProtocolVersionFlow();
         val enableCryptoFlow = new EnableCryptoFlow();
         val enableCompressFlow = new EnableCompressFlow();
@@ -37,7 +38,9 @@ public abstract class AbstractFlow<T> {
         val constructorFlow = new ConstructorFlow();
         val codecIgnoreFlow = new CodecIgnoreFlow();
 
-        endianFlow.setNext(enableProtocolVersionFlow)
+        endianFlow
+                .setNext(enableFixedLength)
+                .setNext(enableProtocolVersionFlow)
                 .setNext(enableCryptoFlow)
                 .setNext(enableCompressFlow)
                 .setNext(enableChecksumFlow)

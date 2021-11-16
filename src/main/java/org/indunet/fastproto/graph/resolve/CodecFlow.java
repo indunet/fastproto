@@ -19,7 +19,6 @@ package org.indunet.fastproto.graph.resolve;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.ProtocolType;
-import org.indunet.fastproto.annotation.type.AutoType;
 import org.indunet.fastproto.decoder.TypeDecoder;
 import org.indunet.fastproto.encoder.TypeEncoder;
 import org.indunet.fastproto.exception.ResolveException;
@@ -57,7 +56,7 @@ public class CodecFlow extends AbstractFlow<Reference> {
         val field = reference.getField();
         val context = ValidationContext.builder()
                 .field(field)
-                .typeAnnotation(getProxyTypeAnnotation(field, typeAnnotation))
+                .typeAnnotation(typeAnnotation)
                 .build();
 
         // TODO, add validator.
@@ -71,25 +70,6 @@ public class CodecFlow extends AbstractFlow<Reference> {
         }
 
         this.nextFlow(reference);
-    }
-
-    protected static Annotation getProxyTypeAnnotation(@NonNull Field field, @NonNull Annotation typeAnnotation) {
-        if (typeAnnotation instanceof AutoType) {
-            Class<? extends Annotation> typeAnnotationClass = ProtocolType
-                    .byAutoType(field.getType())
-                    .getTypeAnnotationClass();
-
-            return typeAnnotationClass.cast(Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class[]{typeAnnotationClass},
-                    (object, method, parameters) -> {
-                        return Arrays.stream(typeAnnotation.annotationType().getMethods())
-                                .filter(m -> m.getName().equals(method.getName()))
-                                .findAny()
-                                .orElseThrow(ResolveException::new)
-                                .invoke(typeAnnotation);
-                    }));
-        } else {
-            return typeAnnotation;
-        }
     }
 
     @Override

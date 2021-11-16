@@ -91,33 +91,35 @@ public class FastProto {
     }
 
     public static byte[] toByteArray(@NonNull Object object, long... codecFeatures) {
-        val assist = TypeAssist.byClass(object.getClass());
+        val graph = ReferenceResolver.resolve(object.getClass());
         val codecFeature = CodecFeature.of(codecFeatures);
         val context = CodecContext.builder()
                 .object(object)
                 .protocolClass(object.getClass())
                 .codecFeature(codecFeature)
-                .typeAssist(assist)
+                .referenceGraph(graph)
                 .build();
+        val feature = CodecFeature.of(graph.root());
 
-        AbstractFlow.getEncodeFlow(assist.getCodecFeature() | codecFeature)
+        AbstractFlow.getEncodeFlow(feature | codecFeature)
                 .process(context);
 
         return context.getDatagram();
     }
 
     public static byte[] toByteArray(@NonNull Object object, int length, long... codecFeatures) {
-        val assist = TypeAssist.byClass(object.getClass());
+        val graph = ReferenceResolver.resolve(object.getClass());
         val codecFeature = CodecFeature.of(codecFeatures);
         val context = CodecContext.builder()
                 .object(object)
                 .protocolClass(object.getClass())
                 .codecFeature(codecFeature)
                 .datagram(new byte[length])
-                .typeAssist(assist)
+                .referenceGraph(graph)
                 .build();
+        val feature = CodecFeature.of(graph.root());
 
-        AbstractFlow.getEncodeFlow(assist.getCodecFeature() | CodecFeature.NON_INFER_LENGTH | codecFeature)
+        AbstractFlow.getEncodeFlow(feature | CodecFeature.NON_INFER_LENGTH | codecFeature)
                 .process(context);
 
         return context.getDatagram();

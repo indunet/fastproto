@@ -45,7 +45,7 @@ public class ArrayDecoder implements TypeDecoder<Object> {
     public Object decode(DecodeContext context) {
         val type = context.getTypeAnnotation(ArrayType.class);
         val length = type.length();
-        val componentType = context.getTypeAssist()
+        val componentType = context.getReference()
                 .getField()
                 .getType()
                 .getComponentType();

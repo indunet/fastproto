@@ -17,7 +17,6 @@
 package org.indunet.fastproto.annotation
 
 import org.indunet.fastproto.annotation.`type`.{ArrayType => JavaArrayType}
-import org.indunet.fastproto.annotation.`type`.{AutoType => JavaAutoType}
 import org.indunet.fastproto.annotation.`type`.{BinaryType => JavaBinaryType}
 import org.indunet.fastproto.annotation.`type`.{BooleanType => JavaBooleanType}
 import org.indunet.fastproto.annotation.`type`.{ByteType => JavaByteType}
@@ -47,6 +46,7 @@ import org.indunet.fastproto.annotation.{EnableChecksum => JavaEnableChecksum}
 import org.indunet.fastproto.annotation.{EnableCompress => JavaEnableCompress}
 import org.indunet.fastproto.annotation.{EnableCrypto => JavaEnableCrypto}
 import org.indunet.fastproto.annotation.{EnableProtocolVersion => JavaEnableProtocolVersion}
+import org.indunet.fastproto.annotation.{EnableFixedLength => JavaEnableFixedLength}
 
 import _root_.scala.annotation.meta.field
 
@@ -58,7 +58,6 @@ import _root_.scala.annotation.meta.field
  */
 package object scala {
   type ArrayType = JavaArrayType @field
-  type AutoType = JavaAutoType @field
   type BinaryType = JavaBinaryType @field
   type BooleanType = JavaBooleanType @field
   type ByteType = JavaByteType @field
@@ -88,4 +87,5 @@ package object scala {
   type EnableCompress = JavaEnableCompress
   type EnableCrypto = JavaEnableCrypto
   type EnableProtocolVersion = JavaEnableProtocolVersion
+  type EnableFixedLength = JavaEnableFixedLength
 }

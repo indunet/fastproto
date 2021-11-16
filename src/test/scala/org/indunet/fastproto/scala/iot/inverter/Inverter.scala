@@ -16,6 +16,7 @@
 
 package org.indunet.fastproto.scala.iot.inverter
 
+import org.indunet.fastproto.EndianPolicy
 import org.indunet.fastproto.annotation.scala._
 
 /**
@@ -24,6 +25,7 @@ import org.indunet.fastproto.annotation.scala._
  */
 case class Inverter(
                      @UInt8Type(0) voltage: Int,
-                     @UInt8Type(2) current: Int
-                     // fan: Fan
+                     @UInt8Type(2) current: Int,
+                     fan: Fan,
+                     @Endian(EndianPolicy.BIG) @UInt16Type(8) power: Int
                    )

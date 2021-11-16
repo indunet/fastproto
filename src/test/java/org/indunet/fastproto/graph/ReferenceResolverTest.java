@@ -23,7 +23,7 @@ import org.indunet.fastproto.annotation.type.Integer8Type;
 import org.indunet.fastproto.annotation.type.UInteger8Type;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Reference Resolver Test.
@@ -65,5 +65,21 @@ public class ReferenceResolverTest {
 
         graph.print();
         assertNotNull(graph);
+    }
+
+    @Test
+    public void testDecodeContext() {
+        val graph = ReferenceResolver.resolve(TestObject1.class);
+        val contexts = graph.decodeContexts(new byte[10]);
+
+        assertTrue(contexts.size() > 3);
+    }
+
+    @Test
+    public void testEncodeContext() {
+        val graph = ReferenceResolver.resolve(TestObject1.class);
+        val contexts = graph.encodeContexts(new TestObject1(), new byte[10]);
+
+        assertTrue(contexts.size() > 3);
     }
 }

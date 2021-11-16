@@ -19,7 +19,6 @@ package org.indunet.fastproto.decoder;
 import lombok.Builder;
 import lombok.Data;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.TypeAssist;
 import org.indunet.fastproto.graph.Reference;
 
 import java.lang.annotation.Annotation;
@@ -35,7 +34,6 @@ import java.lang.annotation.Annotation;
 public class DecodeContext {
     Object object;
     byte[] datagram;
-    TypeAssist typeAssist;
     Reference reference;
 
     public EndianPolicy getEndianPolicy() {

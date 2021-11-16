@@ -37,8 +37,8 @@ public class CodecIgnoreFlow extends AbstractFlow<Reference> {
             val decodeIgnore = field.isAnnotationPresent(DecodingIgnore.class);
             val encodeIngore = field.isAnnotationPresent(EncodingIgnore.class);
 
-            reference.setDecodeIgnore(decodeIgnore);
-            reference.setEncodeIgnore(encodeIngore);
+            reference.setDecodingIgnore(decodeIgnore);
+            reference.setEncodingIgnore(encodeIngore);
         }
 
         this.nextFlow(reference);
