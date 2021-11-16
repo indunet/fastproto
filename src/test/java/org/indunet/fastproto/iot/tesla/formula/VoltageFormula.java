@@ -14,20 +14,17 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.scala.iot.inverter.datagram;
+package org.indunet.fastproto.iot.tesla.formula;
+
+import java.util.function.Function;
 
 /**
  * @author Deng Ran
- * @since 1.6.2
+ * @version 1.0
  */
-public class DatagramProtocol {
-    public static final int VEHICLE_MODEL_NUMBER_OFFSET = 0;
-    public static final int SERIAL_NUMBER_OFFSET = 4;
-    public static final int PROTOCOL_VERSION_OFFSET = 11;
-    public static final int EVENT_TIME_OFFSET = 14;
-    public static final int VEHICLE_NUMBER_OFFSET = 18;
-    public static final int DATAGRAM_TYPE_NUMBER_OFFSET = 20;
-    public static final int DATAGRAM_NUMBER_OFFSET = 24;
-    public static final int SECURITY_CODE_OFFSET = -4;
-    public static final int CRC16_CODE_OFFSET = -2;
+public class VoltageFormula implements Function<Byte, Double> {
+    @Override
+    public Double apply(Byte value) {
+        return value * 0.1;
+    }
 }

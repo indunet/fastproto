@@ -23,6 +23,7 @@ import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.TypeDecoder;
 import org.indunet.fastproto.encoder.TypeEncoder;
 import org.indunet.fastproto.exception.DecodingException;
+import org.indunet.fastproto.exception.EncodingException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -44,8 +45,6 @@ import java.util.stream.Collectors;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Reference {
-    Class<?> declaringClass;
-
     ReferenceType referenceType;
     EndianPolicy endianPolicy;
     Boolean decodeIgnore;
@@ -117,11 +116,20 @@ public class Reference {
                 field.set(this.value.get(), reference.getValue().get());
             } catch (IllegalAccessException e) {
                 throw new DecodingException(
-                        String.format("Fail decoding the field %s of class %s", this.field.toString(), this.protocolClass.getName()));
+                        String.format("Fail decoding the field %s of class %s", this.field.toString(), this.protocolClass.getName()), e);
             }
         } else {
             throw new DecodingException(
                     String.format("Fail decoding the class %s", this.protocolClass.getName()));
+        }
+    }
+
+    public Object getValue(@NonNull Object object) {
+        try {
+            return this.field.get(object);
+        } catch (IllegalAccessException e) {
+            throw new EncodingException(
+                    String.format("Fail decoding the field %s of class %s", this.field.toString(), this.protocolClass.getName()), e);
         }
     }
 

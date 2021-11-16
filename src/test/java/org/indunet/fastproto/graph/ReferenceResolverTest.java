@@ -23,7 +23,6 @@ import org.indunet.fastproto.annotation.type.Integer8Type;
 import org.indunet.fastproto.annotation.type.UInteger8Type;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 /**
@@ -61,7 +60,7 @@ public class ReferenceResolverTest {
     }
 
     @Test
-    public void testResolve() throws NoSuchFieldException {
+    public void testResolve() {
         val graph = ReferenceResolver.resolve(TestObject1.class);
 
         graph.print();

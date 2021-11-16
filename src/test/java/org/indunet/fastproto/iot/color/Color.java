@@ -14,26 +14,21 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.scala.iot.inverter;
+package org.indunet.fastproto.iot.color;
 
 import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.indunet.fastproto.annotation.EnableFixedLength;
-import org.indunet.fastproto.annotation.type.Integer16Type;
-import org.indunet.fastproto.annotation.type.UInteger16Type;
+import lombok.Getter;
 
 /**
  * @author Deng Ran
- * @since 1.7.4
+ * @since 2.1.0
  */
-@Data
 @AllArgsConstructor
-@NoArgsConstructor
-@EnableFixedLength(10)
-public class Sensor {
-    @Integer16Type(0)
-    int temperature;
-    @UInteger16Type(2)
-    int humidity;
+@Getter
+public enum Color {
+    GREEN(0x01),
+    RED(0x08),
+    YELLOW(0x09);
+
+    int code;
 }

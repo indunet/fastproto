@@ -14,21 +14,17 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.scala.iot.inverter.color;
+package org.indunet.fastproto.iot.formula;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import java.util.function.Function;
 
 /**
  * @author Deng Ran
- * @since 2.1.0
+ * @since 1.2.4
  */
-@AllArgsConstructor
-@Getter
-public enum Color {
-    GREEN(0x01),
-    RED(0x08),
-    YELLOW(0x09);
-
-    int code;
+public class DecodeSpeedFormula implements Function<Integer, Float> {
+    @Override
+    public Float apply(Integer value) {
+        return value * 0.1f;
+    }
 }

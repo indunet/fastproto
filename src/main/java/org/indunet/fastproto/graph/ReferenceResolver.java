@@ -46,6 +46,7 @@ public class ReferenceResolver {
         // Root.
         val reference = Reference.builder()
                 .protocolClass(protocolClass)
+                .referenceType(Reference.ReferenceType.CLASS)
                 .build();
         resolveClassFlow.process(reference);
         graph.addClass(reference);
@@ -60,6 +61,7 @@ public class ReferenceResolver {
             if (isData(field)) {
                 val s = Reference.builder()
                         .field(field)
+                        .referenceType(Reference.ReferenceType.FIELD)
                         .build();
 
                 resolveFieldFlow.process(s);
@@ -73,6 +75,7 @@ public class ReferenceResolver {
                     val s = Reference.builder()
                             .protocolClass(field.getType())
                             .field(field)
+                            .referenceType(Reference.ReferenceType.CLASS)
                             .build();
 
                     resolveClassFlow.process(s);
@@ -92,18 +95,12 @@ public class ReferenceResolver {
             }
         }
 
-        // Inherit endian of declaring class.
-        graph.getAdj().entrySet()
-                .forEach(entry -> {
-                    val endian = entry.getKey().endianPolicy;
-
-                    entry.getValue()
-                            .forEach(s -> {
-                                if (s.getEndianPolicy() == null) {
-                                    s.setEndianPolicy(endian);
-                                }
-                            });
-                });
+        // Inherit endian from declaring class.
+//        for (val key: graph.adj.keySet()) {
+//            graph.adj.get(key).stream()
+//                    .filter(r -> r.getEndianPolicy() == null)
+//                    .forEach(r -> r.setEndianPolicy(key.getEndianPolicy()));
+//        }
 
         return graph;
     }

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.scala.iot.inverter.datagram;
+package org.indunet.fastproto.iot.datagram;
 
 import lombok.Data;
 import org.indunet.fastproto.EndianPolicy;

@@ -14,23 +14,17 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.scala.iot.inverter.tesla;
+package org.indunet.fastproto.iot.formula;
 
-import lombok.*;
-import org.indunet.fastproto.annotation.type.AutoType;
+import java.util.function.Function;
 
-@Data
-@ToString
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class Motor {
-    @AutoType(34)
-    short voltage;
-
-    @AutoType(36)
-    int current;
-
-    @AutoType(40)
-    float temperature;
+/**
+ * @author Chance
+ * @since 1.0.0
+ */
+public class EncodeSpeedFormula implements Function<Float, Integer> {
+    @Override
+    public Integer apply(Float value) {
+        return (int) (value * 10);
+    }
 }

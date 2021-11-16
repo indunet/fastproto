@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.scala.iot.inverter;
+package org.indunet.fastproto.iot;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

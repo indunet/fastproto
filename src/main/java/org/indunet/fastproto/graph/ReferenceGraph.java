@@ -19,11 +19,10 @@ package org.indunet.fastproto.graph;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.decoder.DecodeContext;
+import org.indunet.fastproto.encoder.EncodeContext;
 import org.indunet.fastproto.exception.ResolveException;
-
 import org.indunet.fastproto.graph.Reference.ConstructorType;
 import org.indunet.fastproto.graph.Reference.ReferenceType;
-
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -61,34 +60,34 @@ public class ReferenceGraph {
                 .anyMatch(s -> s.getProtocolClass() == protocolClass);
     }
 
-    public boolean contains(@NonNull Reference schema) {
+    public boolean contains(@NonNull Reference reference) {
         return this.adj.keySet().stream()
-                .anyMatch(s -> s.equals(schema));
+                .anyMatch(s -> s.equals(reference));
     }
 
-    public void addClass(@NonNull Reference schema) {
-        if (!this.contains(schema)) {
-            this.adj.put(schema, new ArrayList<>());
+    public void addClass(@NonNull Reference reference) {
+        if (!this.contains(reference)) {
+            this.adj.put(reference, new ArrayList<>());
         }
     }
 
-    public void addReference(@NonNull Reference classSchema, @NonNull Reference referenceSchema) {
-        if (this.contains(classSchema)) {
-            adj.get(classSchema).add(referenceSchema);
+    public void addReference(@NonNull Reference parent, @NonNull Reference child) {
+        if (this.contains(parent)) {
+            adj.get(parent).add(child);
         } else {
-            adj.put(classSchema, new ArrayList<Reference>());
-            adj.get(classSchema).add(referenceSchema);
+            adj.put(parent, new ArrayList<Reference>());
+            adj.get(parent).add(child);
         }
     }
 
-    public void addReference(@NonNull Reference schema) {
-        val classSchema = this.adj.keySet().stream()
+    public void addReference(@NonNull Reference reference) {
+        val key = this.adj.keySet().stream()
                 .filter(s -> s.getProtocolClass()
-                        == schema.getField().getDeclaringClass())
+                        == reference.getField().getDeclaringClass())
                 .findAny()
                 .orElseThrow(ResolveException::new);
 
-        this.addReference(classSchema, schema);
+        this.addReference(key, reference);
     }
 
     public Reference getSchema(@NonNull Class<?> protocolCLass) {
@@ -98,8 +97,8 @@ public class ReferenceGraph {
                 .orElse(null);
     }
 
-    public List<Reference> adj(@NonNull Reference schema) {
-        return this.adj.get(schema);
+    public List<Reference> adj(@NonNull Reference reference) {
+        return this.adj.get(reference);
     }
 
     public int degree(@NonNull Reference schema) {
@@ -191,30 +190,22 @@ public class ReferenceGraph {
         return reference.getValue().get();
     }
 
-//    public List<EncodeContext> encodeContexts(@NonNull Object object, @NonNull byte[] datagram) {
-//        val deque = new ArrayDeque<Reference>();
-//        this.adj.get(root())
-//                .forEach(r -> deque.add(r));
-//
-//        // BFS
-//        while (!deque.isEmpty()) {
-//            val reference = deque.remove();
-//
-//            if (reference.getSchemaType() == Reference.SchemaType.PROTOCOL_TYPE_FIELD) {
-//                try {
-//                    val o = reference.getField().get(parent);
-//                } catch (IllegalAccessException e) {
-//                    throw new DecodingException("");
-//                }
-//            } else if (reference.getSchemaType() == Reference.SchemaType.PROTOCOL_CLASS) {
-//                try {
-//                    parent = reference.getField().get(parent);
-//                } catch (IllegalAccessException e) {
-//                    throw new DecodingException("");
-//                }
-//            }
-//
-//            val field = deque.remove();
-//        }
-//    }
+    public List<EncodeContext> encodeContexts(@NonNull Object object, @NonNull byte[] datagram) {
+        List<Reference> references = this.getAdj().get(this.root());
+
+        val list = references.stream()
+                .filter(r -> r.getReferenceType() == ReferenceType.FIELD);
+
+        for (val reference: references) {
+            if (reference.getReferenceType() == ReferenceType.FIELD) {
+                val value = reference.getValue(object);
+            } else if (reference.getReferenceType() == ReferenceType.CLASS) {
+
+            }
+        }
+    }
+
+    public List<EncodeContext> encodeContexts(@NonNull Object object, @NonNull byte[] datagram) {
+
+    }
 }

@@ -47,10 +47,10 @@ public class EndianFlow extends AbstractFlow<Reference> {
             val field = reference.getField();
             val endianPolicy = Optional.ofNullable(field.getAnnotation(Endian.class))
                     .map(Endian::value)
-                    .orElseGet(() -> Optional.ofNullable(reference.getDeclaringClass())
+                    .orElseGet(() -> Optional.ofNullable(reference.getField().getDeclaringClass())
                         .map(c -> c.getAnnotation(Endian.class))
                         .map(Endian::value)
-                        .orElse(null));     // Inherit endian of declaring class.
+                        .orElse(DEFAULT_ENDIAN_POLICY));     // Inherit endian of declaring class.
 
             reference.setEndianPolicy(endianPolicy);
         }

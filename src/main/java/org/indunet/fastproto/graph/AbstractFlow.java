@@ -48,16 +48,16 @@ public abstract class AbstractFlow<T> {
     }
 
     public static AbstractFlow<Reference> getResolveFieldFlow() {
-        val typeAnnptationFlow = new TypeAnnotationFlow();
+        val typeAnnotationFlow = new TypeAnnotationFlow();
         val endianFlow = new EndianFlow();
         val codecFlow = new CodecFlow();
         val codecIgnoreFlow = new CodecIgnoreFlow();
 
-        typeAnnptationFlow.setNext(endianFlow)
+        typeAnnotationFlow.setNext(endianFlow)
                 .setNext(codecFlow)
                 .setNext(codecIgnoreFlow);
 
-        return typeAnnptationFlow;
+        return typeAnnotationFlow;
     }
 
     public abstract void process(T context);

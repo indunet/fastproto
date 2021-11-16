@@ -1,4 +1,4 @@
-package org.indunet.fastproto.scala.iot.inverter.tesla.formula;
+package org.indunet.fastproto.iot.tesla.formula;
 
 import java.util.function.Function;
 

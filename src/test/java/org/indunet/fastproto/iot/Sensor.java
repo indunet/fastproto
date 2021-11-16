@@ -14,29 +14,26 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.scala.iot.inverter.tesla;
+package org.indunet.fastproto.iot;
 
-import lombok.*;
-import org.indunet.fastproto.annotation.type.AutoType;
-import org.indunet.fastproto.annotation.type.FloatType;
-import org.indunet.fastproto.annotation.type.IntegerType;
-import org.indunet.fastproto.annotation.type.ShortType;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.indunet.fastproto.annotation.EnableFixedLength;
+import org.indunet.fastproto.annotation.type.Integer16Type;
+import org.indunet.fastproto.annotation.type.UInteger16Type;
 
+/**
+ * @author Deng Ran
+ * @since 1.7.4
+ */
 @Data
-@ToString
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
-public class Battery {
-    @ShortType(22)
-    short capacity;
-
-    @AutoType(value = 24, bitOffset = 0)
-    boolean locked;
-
-    @IntegerType(26)
-    int voltage;
-
-    @FloatType(30)
-    float temperature;
+@EnableFixedLength(10)
+public class Sensor {
+    @Integer16Type(0)
+    int temperature;
+    @UInteger16Type(2)
+    int humidity;
 }

@@ -21,7 +21,7 @@ import io.netty.channel.embedded.EmbeddedChannel;
 import lombok.val;
 import org.indunet.fastproto.CodecFeature;
 import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.scala.iot.inverter.Sensor;
+import org.indunet.fastproto.iot.Sensor;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
