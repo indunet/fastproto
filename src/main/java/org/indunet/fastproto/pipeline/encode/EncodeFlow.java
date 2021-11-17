@@ -17,7 +17,6 @@
 package org.indunet.fastproto.pipeline.encode;
 
 import lombok.val;
-import org.indunet.fastproto.TypeAssist;
 import org.indunet.fastproto.encoder.EncodeContext;
 import org.indunet.fastproto.encoder.EncoderFactory;
 import org.indunet.fastproto.exception.CodecError;
@@ -39,28 +38,29 @@ import java.util.function.Consumer;
 public class EncodeFlow extends AbstractFlow<CodecContext> {
     @Override
     public void process(CodecContext context) {
-        val assist = context.getTypeAssist();
+        // val assist = context.getTypeAssist();
+        val graph = context.getReferenceGraph();
         val object = context.getObject();
         val datagram = context.getDatagram();
 
-        List<EncodeContext> encodeContexts = assist.toEncodeContexts(object, datagram);
+        List<EncodeContext> encodeContexts = graph.encodeContexts(object, datagram);
 
         encodeContexts
                 .forEach(c -> {
-                    TypeAssist a = c.getTypeAssist();
+                    val ref = c.getReference();
 
                     try {
-                        if (a.getEncodeFormula() != null) {
-                            Object o = EncoderFactory.getFormula(c.getTypeAssist().getEncodeFormula())
+                        if (ref.getEncodeFormula() != null) {
+                            Object o = EncoderFactory.getFormula(ref.getEncodeFormula())
                                     .apply(c.getValue());
                             c.setValue(o);
                         }
 
-                        Consumer<EncodeContext> consumer = EncoderFactory.getEncoder(c.getTypeAssist().getEncoderClass());
+                        Consumer<EncodeContext> consumer = EncoderFactory.getEncoder(ref.getEncoderClass());
                         consumer.accept(c);
                     } catch (EncodingException e) {
                         throw new EncodingException(MessageFormat.format(
-                                CodecError.FAIL_ENCODING_FIELD.getMessage(), a.getField().toString()),
+                                CodecError.FAIL_ENCODING_FIELD.getMessage(), ref.getField().toString()),
                                 e);
                     }
                 });

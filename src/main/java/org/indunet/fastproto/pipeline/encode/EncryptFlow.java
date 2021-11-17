@@ -17,10 +17,15 @@
 package org.indunet.fastproto.pipeline.encode;
 
 import lombok.val;
+import org.indunet.fastproto.annotation.EnableCrypto;
 import org.indunet.fastproto.crypto.Crypto;
+import org.indunet.fastproto.exception.CodecError;
+import org.indunet.fastproto.exception.CryptoException;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
 import org.indunet.fastproto.pipeline.FlowCode;
+
+import java.util.Optional;
 
 /**
  * Encrypt flow.
@@ -31,15 +36,36 @@ import org.indunet.fastproto.pipeline.FlowCode;
 public class EncryptFlow extends AbstractFlow<CodecContext> {
     @Override
     public void process(CodecContext context) {
-        val assist = context.getTypeAssist();
+        val graph = context.getReferenceGraph();
+        val ref = graph.root();
 
-        if (assist.getEnableCrypto() == null) {
+        if (ref.getEnableCrypto() == null) {
             return;
         }
 
         val datagram = context.getDatagram();
-        val crypto = Crypto.getInstance(assist.getEnableCrypto());
-        val key = assist.getKey();
+        val crypto = Crypto.getInstance(ref.getEnableCrypto());
+        val enableCrypto = ref.getEnableCrypto();
+        byte[] key;
+
+        if (!enableCrypto.key().isEmpty()) {
+            key = enableCrypto.key().getBytes();
+        } else if (enableCrypto.keySupplier().length != 0) {
+            key = Optional.of(enableCrypto)
+                    .map(EnableCrypto::keySupplier)
+                    .map(a -> {
+                        try {
+                            val c = a[0];
+
+                            return c.newInstance()
+                                    .get();
+                        } catch (InstantiationException | IllegalAccessException  e) {
+                            throw new CryptoException(CodecError.INVALID_CRYPTO_KEY_SUPPLIER, e);
+                        }
+                    }).get();
+        } else {
+            throw new CryptoException(CodecError.NO_CRYPTO_KEY);
+        }
 
         context.setDatagram(crypto.encrypt(key, datagram));
     }

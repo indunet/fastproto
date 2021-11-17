@@ -20,6 +20,10 @@ import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.val;
 import org.indunet.fastproto.ProtocolType;
+import org.indunet.fastproto.annotation.Decoder;
+import org.indunet.fastproto.annotation.Encoder;
+import org.indunet.fastproto.decoder.TypeDecoder;
+import org.indunet.fastproto.encoder.TypeEncoder;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
 
@@ -73,32 +77,25 @@ public class TypeUtils {
         }
     }
 
-    @SneakyThrows
-    public static int size(@NonNull ProtocolType type) {
-        return type.getTypeAnnotationClass()
-                .getDeclaredField(SIZE_NAME)
-                .getInt(null);
+    public static Class<? extends TypeDecoder> decoderClass(@NonNull Annotation typeAnnotation) {
+        return Optional.of(typeAnnotation.annotationType())
+                .map(t -> t.getAnnotation(Decoder.class))
+                .map(Decoder::value)
+                .orElse(null);
     }
 
-    @SneakyThrows
-    public static int size(@NonNull Class<? extends Annotation> typeAnnotationClass) {
-        return typeAnnotationClass
-                .getDeclaredField(SIZE_NAME)
-                .getInt(null);
+    public static Class<? extends TypeEncoder> encoderClass(@NonNull Annotation typeAnnotation) {
+        return Optional.of(typeAnnotation.annotationType())
+                .map(t -> t.getAnnotation(Encoder.class))
+                .map(Encoder::value)
+                .orElse(null);
     }
 
-    @SneakyThrows
-    public static ProtocolType[] protocolTypes(@NonNull Annotation typeAnnotation) {
-        return (ProtocolType[]) typeAnnotation.annotationType()
-        .getDeclaredField(PROTOCOL_TYPES_NAME)
-        .get(typeAnnotation);
-    }
-
-    public static Class<? extends Function> encodeFormula(@NonNull Annotation typeAnnotation) {
+    public static Class<? extends Function> encodingFormula(@NonNull Annotation typeAnnotation) {
         return formula(typeAnnotation, ENCODE_FORMULA_NAME);
     }
 
-    public static Class<? extends Function> decodeFormula(@NonNull Annotation typeAnnotation) {
+    public static Class<? extends Function> decodingFormula(@NonNull Annotation typeAnnotation) {
         return formula(typeAnnotation, DECODE_FORMULA_NAME);
     }
 
@@ -113,21 +110,6 @@ public class TypeUtils {
                 .map(a -> Array.get(a, 0))
                 .map(o -> (Class<? extends Function>) o)
                 .orElse(null);
-    }
-
-    @SneakyThrows
-    public static Type[] javaTypes(@NonNull Annotation typeAnnotation) {
-        return (Type[]) typeAnnotation
-                .getClass()
-                .getField(JAVA_TYPES_NAME)
-                .get(null);
-    }
-
-    @SneakyThrows
-    public static Type[] javaTypes(@NonNull Class<? extends Annotation> typeAnnotationClass) {
-        return (Type[]) typeAnnotationClass
-                .getDeclaredField(JAVA_TYPES_NAME)
-                .get(null);
     }
 
     public static int byteOffset(@NonNull Annotation typeAnnotation) {
@@ -152,16 +134,6 @@ public class TypeUtils {
         }
     }
 
-    public static int size(@NonNull Annotation typeAnnotation) {
-        try {
-            return typeAnnotation
-                    .getClass()
-                    .getField(SIZE_NAME)
-                    .getInt(typeAnnotation);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            return 0;
-        }
-    }
 
     public static int length(@NonNull Annotation typeAnnotation) {
         try {

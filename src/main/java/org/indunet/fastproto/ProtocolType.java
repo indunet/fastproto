@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,12 @@
 
 package org.indunet.fastproto;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.SneakyThrows;
 import org.indunet.fastproto.annotation.type.*;
 import org.indunet.fastproto.exception.CodecException;
-import org.indunet.fastproto.util.TypeUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
@@ -32,58 +34,67 @@ import java.util.Arrays;
 @AllArgsConstructor
 @Getter
 public enum ProtocolType {
-    BINARY(BinaryType.class, true),
-    BOOLEAN(BooleanType.class, true),
-    CHARACTER(CharacterType.class, true),
-    BYTE(ByteType.class, true),
-    DOUBLE(DoubleType.class, true),
-    FLOAT(FloatType.class, true),
-    INTEGER(IntegerType.class, true),
-    LONG(LongType.class, true),
-    SHORT(ShortType.class, true),
-    STRING(StringType.class, true),
-    TIMESTAMP(TimestampType.class, true),
-    INTEGER8(Integer8Type.class, false),
-    INTEGER16(Integer16Type.class, false),
-    UINTEGER8(UInteger8Type.class, false),
-    UINTEGER16(UInteger16Type.class, false),
-    UINTEGER32(UInteger32Type.class, false),
-    UINTEGER64(UInteger64Type.class, true),
-    ENUM(EnumType.class, true);
+    BINARY(BinaryType.class),
+    BOOLEAN(BooleanType.class),
+    CHARACTER(CharacterType.class),
+    BYTE(ByteType.class),
+    DOUBLE(DoubleType.class),
+    FLOAT(FloatType.class),
+    INTEGER(IntegerType.class),
+    LONG(LongType.class),
+    SHORT(ShortType.class),
+    STRING(StringType.class),
+    TIMESTAMP(TimestampType.class),
+    DATE(DateType.class),
+    INTEGER8(Integer8Type.class),
+    INTEGER16(Integer16Type.class),
+    UINTEGER8(UInteger8Type.class),
+    UINTEGER16(UInteger16Type.class),
+    UINTEGER32(UInteger32Type.class),
+    UINTEGER64(UInteger64Type.class),
+    ENUM(EnumType.class),
+    LIST(ListType.class),
+    ARRAY(ArrayType.class);
 
+    protected final static String SIZE_NAME = "SIZE";
+    protected final static String PROTOCOL_TYPES_NAME = "PROTOCOL_TYPES";
+    protected final static String JAVA_TYPES_NAME = "JAVA_TYPES";
     Class<? extends Annotation> typeAnnotationClass;
-    Boolean autoType;
 
-    public static ProtocolType valueOf(Class<? extends Annotation> clazz) {
+    public static ProtocolType valueOf(@NonNull Annotation typeAnnotation) {
         return Arrays.stream(ProtocolType.values())
-                .filter(t -> t.typeAnnotationClass == clazz)
+                .filter(t -> t.typeAnnotationClass == typeAnnotation.annotationType())
                 .findFirst()
-                .orElseThrow(CodecException::new);
+                .orElseThrow(() -> new CodecException("Cannot find matching type."));
     }
 
-    public static ProtocolType byAutoType(Type type) {
+    public static boolean isSupported(@NonNull Type type) {
         return Arrays.stream(ProtocolType.values())
-                .filter(t -> Arrays.asList(t.javaTypes()).contains(type))
-                .findFirst()
-                .orElseThrow(CodecException::new);
-    }
-
-    public Type javaType() {
-        return javaTypes()[0];
+                .flatMap(t -> Arrays.stream(t.javaTypes()))
+                .anyMatch(t -> t == type);
     }
 
     @SneakyThrows
     public Type[] javaTypes() {
-        val field = typeAnnotationClass.getField("JAVA_TYPES");
+        return (Type[]) typeAnnotationClass
+                .getDeclaredField(JAVA_TYPES_NAME)
+                .get(null);
+    }
 
-        return (Type[]) field.get(null);
+    public int size() {
+        try {
+            return this.typeAnnotationClass
+                    .getDeclaredField(SIZE_NAME)
+                    .getInt(null);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            return 0;
+        }
     }
 
     @SneakyThrows
-    public static Type[] supportedTypes() {
-        return Arrays.stream(ProtocolType.values())
-                .map(ProtocolType::getTypeAnnotationClass)
-                .flatMap(c -> Arrays.stream(TypeUtils.javaTypes(c)))
-                .toArray(Type[]::new);
+    public ProtocolType[] protocolTypes() {
+        return (ProtocolType[]) this.typeAnnotationClass
+                .getDeclaredField(PROTOCOL_TYPES_NAME)
+                .get(null);
     }
 }

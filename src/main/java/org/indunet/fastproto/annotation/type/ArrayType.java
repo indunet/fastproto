@@ -65,7 +65,6 @@ public @interface ArrayType {
       ProtocolType.UINTEGER16,
       ProtocolType.UINTEGER32,
     };
-    boolean AUTO_TYPE = true;
 
     int value();
 

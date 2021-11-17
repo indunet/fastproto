@@ -30,7 +30,7 @@ import org.indunet.fastproto.pipeline.FlowCode;
 public class WriteProtocolVersionFlow extends AbstractFlow<CodecContext> {
     @Override
     public void process(CodecContext context) {
-        ProtocolVersionAssist.encode(context.getDatagram(), context.getTypeAssist());
+        ProtocolVersionAssist.encode(context.getDatagram(), context.getReferenceGraph().root());
 
         this.nextFlow(context);
     }

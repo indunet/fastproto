@@ -4,12 +4,12 @@
 
 # *Fast Protocol*
 
-[![Build Status](https://travis-ci.com/indunet/fastproto.svg?branch=master)](https://travis-ci.com/indunet/fastproto)
+[![Build Status](https://app.travis-ci.com/indunet/fastproto.svg?branch=master)](https://app.travis-ci.com/indunet/fastproto)
 [![codecov](https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU)](https://codecov.io/gh/indunet/fastproto)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ed904d7aacd142f08b5cd50b16b1d74b)](https://www.codacy.com/gh/indunet/fastproto/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=indunet/fastproto&amp;utm_campaign=Badge_Grade)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![JetBrain Support](https://img.shields.io/badge/JetBrain-support-blue)](https://www.jetbrains.com/community/opensource)
-[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+[![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 FastProto是一款采用Java编写的协议化二进制序列化和反序列化工具，不仅可以通过注解自定义二进制协议，而且支持数据压缩、加密、数据完整性校验和
 协议版本验证。FastProto使用一种全新的方式解决了Java跨语言和跨平台的数据交换问题，尤其适用于物联网（IoT）领域。
@@ -134,7 +134,7 @@ byte[] datagram = FastProto.toByteArray(weather, 20);
 也许你已经注意到压力信号对应一个换算公式，通常需要用户自行将序列化后的结果乘以0.1，这是物联网数据交换时极其常见的操作。
 为了帮助用户减少中间步骤，FastProto引入的编码公式和解码公式。
 
-自定义解码公式需要实现`java.lang.function.Function`接口，然后通过数据类型注解的`afterDecode`属性指定解码公式。
+自定义解码公式需要实现`java.lang.function.Function`接口，然后通过数据类型注解的`decodingFormula`属性指定解码公式。
 
 ```java
 public class PressureDecodeFormula implements Function<Long, Double> {
@@ -222,8 +222,8 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 | 注解    | 作用域        | 描述                           |
 |:-------------:|:------------:|:-------------------------------------:|
 | `@Endian`       | Class & Field | 数据开端，默认小开端 |
-| `@DecodeIgnore` | Field        | 反序列化时忽略该字段       |
-| `@EncodeIgnore` | Field        | 序列化时忽略该字段       |
+| `@DecodingIgnore` | Field        | 反序列化时忽略该字段       |
+| `@EncodingIgnore` | Field        | 序列化时忽略该字段       |
 | `@EnableCompress` | Class        | 启动压缩和解压缩  |
 | `@EnableProtocolVersion` | Class     |  启动协议版本校验  |
 | `@EnableChecksum`      |  Class      |  启动数据完整性校验              |

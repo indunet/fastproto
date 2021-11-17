@@ -44,7 +44,6 @@ import java.util.function.Function;
 public @interface Integer8Type {
     Type[] JAVA_TYPES = {Integer.class, Integer.TYPE};
     int SIZE = Byte.SIZE >> 3;
-    boolean AUTO_TYPE = false;
     int MAX_VALUE = Byte.MAX_VALUE;
     int MIN_VALUE = Byte.MIN_VALUE;
 

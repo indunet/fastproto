@@ -44,7 +44,6 @@ import java.util.function.Function;
 public @interface UInteger32Type {
     Type[] JAVA_TYPES = {Long.class, Long.TYPE};
     int SIZE = Integer.SIZE >> 3;
-    boolean AUTO_TYPE = false;
     long MAX_VALUE = (long) Integer.MAX_VALUE - Integer.MIN_VALUE;
     int MIN_VALUE = 0;
 

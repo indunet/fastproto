@@ -45,7 +45,7 @@ public class ArrayDecoder implements TypeDecoder<Object> {
     public Object decode(DecodeContext context) {
         val type = context.getTypeAnnotation(ArrayType.class);
         val length = type.length();
-        val componentType = context.getTypeAssist()
+        val componentType = context.getReference()
                 .getField()
                 .getType()
                 .getComponentType();
@@ -62,7 +62,7 @@ public class ArrayDecoder implements TypeDecoder<Object> {
 
     public Object decode(@NonNull final byte[] datagram, int byteOffset, int length,
                          @NonNull ProtocolType type, @NonNull EndianPolicy policy, boolean primitive) {
-        int size = TypeUtils.size(type);
+        int size = type.size();
         int bo = ReverseUtils.offset(datagram.length, byteOffset);
 
         if (bo < 0) {

@@ -44,7 +44,6 @@ import java.util.function.Function;
 public @interface DoubleType {
     Type[] JAVA_TYPES = {Double.class, Double.TYPE};
     int SIZE = Double.SIZE >> 3;
-    boolean AUTO_TYPE = true;
     double MAX_VALUE = Double.MAX_VALUE;
     double MIN_VALUE = Double.MIN_VALUE;
 

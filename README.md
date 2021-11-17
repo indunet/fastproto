@@ -4,12 +4,12 @@ English | [中文](README-zh.md)
 
 # *Fast Protocol*
 
-[![Build Status](https://travis-ci.com/indunet/fastproto.svg?branch=master)](https://travis-ci.com/indunet/fastproto)
+[![Build Status](https://app.travis-ci.com/indunet/fastproto.svg?branch=master)](https://app.travis-ci.com/indunet/fastproto)
 [![codecov](https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU)](https://codecov.io/gh/indunet/fastproto)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ed904d7aacd142f08b5cd50b16b1d74b)](https://www.codacy.com/gh/indunet/fastproto/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=indunet/fastproto&amp;utm_campaign=Badge_Grade)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![JetBrain Support](https://img.shields.io/badge/JetBrain-support-blue)](https://www.jetbrains.com/community/opensource)
-[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+[![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 FastProto is a protocolized binary serialization & deserialization tool written in Java. It can not only customize the binary
 protocol through annotations, but also supports data compression, encryption, and data integrity checksum, protocol version
@@ -135,7 +135,7 @@ If the user does not specify it, FastProto will automatically guess the length.
 byte[] datagram = FastProto.toByteArray(weather, 20);
 ```
 
-2. **Decode Formula & Encode Formula**
+2. **Decoding Formula & Encoding Formula**
 
 Perhaps you have noticed that the pressure signal corresponds to a conversion formula, usually requiring the user to multiply
 the serialized result by 0.1, which is an extremely common operation in IoT data exchange.
@@ -231,8 +231,8 @@ FastProto also provides some auxiliary annotations to help users further customi
 | Annotation    | Scope        | Description                           |
 |:-------------:|:------------:|:-------------------------------------:|
 | `@Endian`       | Class & Field | Endianness, default as little endian. |
-| `@DecodeIgnore` | Field        | Ignore the field when decoding.       |
-| `@EncodeIgnore` | Field        | Ignore the field when encoding.       |
+| `@DecodingIgnore` | Field        | Ignore the field when decoding.       |
+| `@EncodingIgnore` | Field        | Ignore the field when encoding.       |
 | `@EnableCompress` | Class        | Enable compress & decompress, default as deflate |
 | `@EnableProtocolVersion` | Class     |  Enable protocol version verification  |
 | `@EnableCheckSum`      |  Class      |  Enable checksum verification               |

@@ -42,8 +42,9 @@ public class EnumDecoder<T extends Enum> implements TypeDecoder<T> {
     public T decode(DecodeContext context) {
         val type = context.getTypeAnnotation(EnumType.class);
         val enumClass = context
-                .getTypeAssist()
-                .getClazz();
+                .getReference()
+                .getField()
+                .getType();
 
         return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy(),
                 type.protocolType(), type.fieldName(), (Class<T>) enumClass);

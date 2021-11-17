@@ -17,17 +17,16 @@
 package org.indunet.fastproto.pipeline.encode;
 
 import lombok.val;
+import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.ProtocolVersionAssist;
-import org.indunet.fastproto.TypeAssist;
 import org.indunet.fastproto.checksum.CheckerUtils;
 import org.indunet.fastproto.exception.AddressingException;
 import org.indunet.fastproto.exception.CodecError;
+import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
 import org.indunet.fastproto.pipeline.FlowCode;
-
-import java.lang.annotation.ElementType;
-import java.util.ArrayDeque;
+import org.indunet.fastproto.util.TypeUtils;
 
 /**
  * Infer length flow.
@@ -38,38 +37,26 @@ import java.util.ArrayDeque;
 public class InferLengthFlow extends AbstractFlow<CodecContext> {
     @Override
     public void process(CodecContext context) {
-        val queue = new ArrayDeque<TypeAssist>();
-        int max = 0;
-        queue.add(context.getTypeAssist());
+        val graph = context.getReferenceGraph();
 
-        while (!queue.isEmpty()) {
-            val assist = queue.remove();
+        int max = graph.stream()
+                .filter(r -> r.getReferenceType() == Reference.ReferenceType.FIELD)
+                .mapToInt(r -> {
+                    val type = r.getTypeAnnotation();
 
-            assist.getElements().stream()
-                    .filter(a -> a.getElementType() == ElementType.TYPE)
-                    .forEach(a -> queue.add(a));
-
-            int length = assist.getElements().stream()
-                    .filter(a -> a.getElementType() == ElementType.FIELD)
-                    .mapToInt(a -> {
-                        if (a.getByteOffset() < 0 || a.getLength() < 0) {
-                            throw new AddressingException(CodecError.UNABLE_INFER_LENGTH);
-                        } else {
-                           return a.getByteOffset() + a.getSize() + a.getLength();
-                        }
-                    }).max()
-                    .orElse(0);
-
-            if (length > max) {
-                max = length;
-            }
-        }
+                    if (TypeUtils.byteOffset(type) < 0 || TypeUtils.length(type) < 0) {
+                        throw new AddressingException(CodecError.UNABLE_INFER_LENGTH);
+                    } else {
+                        return TypeUtils.byteOffset(type) + ProtocolType.valueOf(type).size() + TypeUtils.length(type);
+                    }
+                }).max()
+                .orElse(0);
 
         if (max == 0) {
             throw new AddressingException(CodecError.UNABLE_INFER_LENGTH);
         } else {
             max += CheckerUtils.getSize(context.getProtocolClass());
-            max += ProtocolVersionAssist.size(context.getTypeAssist());
+            max += ProtocolVersionAssist.size(graph.root());
             context.setDatagram(new byte[max]);
         }
 

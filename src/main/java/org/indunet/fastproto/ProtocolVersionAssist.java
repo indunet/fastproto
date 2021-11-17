@@ -24,6 +24,7 @@ import org.indunet.fastproto.annotation.type.UInteger16Type;
 import org.indunet.fastproto.annotation.type.UInteger8Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.ProtocolVersionException;
+import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.util.CodecUtils;
 
 /**
@@ -33,23 +34,23 @@ import org.indunet.fastproto.util.CodecUtils;
  * @since 1.5.3
  */
 public class ProtocolVersionAssist {
-    public static boolean validate(@NonNull byte[] datagram, @NonNull TypeAssist assist) {
-        if (assist.getEnableProtocolVersion() == null) {
+    public static boolean validate(@NonNull byte[] datagram, @NonNull Reference reference) {
+        if (reference.getEnableProtocolVersion() == null) {
             return true;
         }
 
-        EnableProtocolVersion enableProtocolVersion = assist.getEnableProtocolVersion();
+        EnableProtocolVersion enableProtocolVersion = reference.getEnableProtocolVersion();
 
-        return enableProtocolVersion.version() == decode(datagram, assist);
+        return enableProtocolVersion.version() == decode(datagram, reference);
     }
 
-    public static int decode(@NonNull byte[] datagram, @NonNull TypeAssist assist) {
-        if (assist.getEnableProtocolVersion() == null) {
+    public static int decode(@NonNull byte[] datagram, @NonNull Reference reference) {
+        if (reference.getEnableProtocolVersion() == null) {
             return -1;
         }
 
-        EnableProtocolVersion enableProtocolVersion = assist.getEnableProtocolVersion();
-        EndianPolicy policy = endianPolicy(assist);
+        EnableProtocolVersion enableProtocolVersion = reference.getEnableProtocolVersion();
+        EndianPolicy policy = endianPolicy(reference);
         int byteOffset = enableProtocolVersion.value();
 
         switch (enableProtocolVersion.protocolType()) {
@@ -64,13 +65,13 @@ public class ProtocolVersionAssist {
         }
     }
 
-    public static void encode(@NonNull byte[] datagram, @NonNull TypeAssist assist) {
-        if (assist.getEnableProtocolVersion() == null) {
+    public static void encode(@NonNull byte[] datagram, @NonNull Reference reference) {
+        if (reference.getEnableProtocolVersion() == null) {
             return;
         }
 
-        EnableProtocolVersion versionAnnotation = assist.getEnableProtocolVersion();
-        EndianPolicy policy = endianPolicy(assist);
+        EnableProtocolVersion versionAnnotation = reference.getEnableProtocolVersion();
+        EndianPolicy policy = endianPolicy(reference);
         int byteOffset = versionAnnotation.value();
         int version = versionAnnotation.version();
 
@@ -89,22 +90,22 @@ public class ProtocolVersionAssist {
         }
     }
 
-    public static EndianPolicy endianPolicy(@NonNull TypeAssist assist) {
-        EnableProtocolVersion enableProtocolVersion = assist.getEnableProtocolVersion();
+    public static EndianPolicy endianPolicy(@NonNull Reference reference) {
+        EnableProtocolVersion enableProtocolVersion = reference.getEnableProtocolVersion();
 
         if (enableProtocolVersion.endianPolicy().length > 0) {
             return enableProtocolVersion.endianPolicy()[0];
         } else {
-            return assist.getEndianPolicy();
+            return reference.getEndianPolicy();
         }
     }
 
-    public static int size(@NonNull TypeAssist assist) {
-        if (assist.getEnableProtocolVersion() == null) {
+    public static int size(@NonNull Reference reference) {
+        if (reference.getEnableProtocolVersion() == null) {
             return 0;
         }
 
-        val enableProtocolVersion = assist.getEnableProtocolVersion();
+        val enableProtocolVersion = reference.getEnableProtocolVersion();
 
         switch (enableProtocolVersion.protocolType()) {
             case UINTEGER8:

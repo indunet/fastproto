@@ -30,9 +30,10 @@ import org.indunet.fastproto.pipeline.FlowCode;
 public class FixedLengthFlow extends AbstractFlow<CodecContext> {
     @Override
     public void process(CodecContext context) {
-        val assist = context.getTypeAssist();
+        val ref = context.getReferenceGraph().root();
+        val len = ref.getEnableFixedLength().value();
 
-        context.setDatagram(new byte[assist.getFixedLength()]);
+        context.setDatagram(new byte[len]);
         this.nextFlow(context);
     }
 

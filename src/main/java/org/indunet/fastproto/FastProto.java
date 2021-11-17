@@ -18,6 +18,7 @@ package org.indunet.fastproto;
 
 import lombok.NonNull;
 import lombok.val;
+import org.indunet.fastproto.graph.ReferenceResolver;
 import org.indunet.fastproto.pipeline.AbstractFlow;
 import org.indunet.fastproto.pipeline.CodecContext;
 
@@ -48,15 +49,21 @@ public class FastProto {
      * @return deserialize object instance
      */
     public static <T> T parseFrom(@NonNull byte[] datagram, @NonNull Class<T> protocolClass, long... codecFeatures) {
-        val assist = TypeAssist.byClass(protocolClass);
+        // val assist = TypeAssist.byClass(protocolClass);
+
+        val graph = ReferenceResolver.resolve(protocolClass);
         val codecFeature = CodecFeature.of(codecFeatures);
         val context = CodecContext.builder()
                 .datagram(datagram)
                 .protocolClass(protocolClass)
                 .codecFeature(codecFeature)
-                .typeAssist(assist)
+                // .typeAssist(assist)
+                .referenceGraph(graph)
                 .build();
-        AbstractFlow.getDecodeFlow(assist.getCodecFeature() | codecFeature)
+
+        val feature = CodecFeature.of(graph.root());
+
+        AbstractFlow.getDecodeFlow(feature | codecFeature)
                 .process(context);
 
         return context.getObject(protocolClass);
@@ -84,33 +91,35 @@ public class FastProto {
     }
 
     public static byte[] toByteArray(@NonNull Object object, long... codecFeatures) {
-        val assist = TypeAssist.byClass(object.getClass());
+        val graph = ReferenceResolver.resolve(object.getClass());
         val codecFeature = CodecFeature.of(codecFeatures);
         val context = CodecContext.builder()
                 .object(object)
                 .protocolClass(object.getClass())
                 .codecFeature(codecFeature)
-                .typeAssist(assist)
+                .referenceGraph(graph)
                 .build();
+        val feature = CodecFeature.of(graph.root());
 
-        AbstractFlow.getEncodeFlow(assist.getCodecFeature() | codecFeature)
+        AbstractFlow.getEncodeFlow(feature | codecFeature)
                 .process(context);
 
         return context.getDatagram();
     }
 
     public static byte[] toByteArray(@NonNull Object object, int length, long... codecFeatures) {
-        val assist = TypeAssist.byClass(object.getClass());
+        val graph = ReferenceResolver.resolve(object.getClass());
         val codecFeature = CodecFeature.of(codecFeatures);
         val context = CodecContext.builder()
                 .object(object)
                 .protocolClass(object.getClass())
                 .codecFeature(codecFeature)
                 .datagram(new byte[length])
-                .typeAssist(assist)
+                .referenceGraph(graph)
                 .build();
+        val feature = CodecFeature.of(graph.root());
 
-        AbstractFlow.getEncodeFlow(assist.getCodecFeature() | CodecFeature.NON_INFER_LENGTH | codecFeature)
+        AbstractFlow.getEncodeFlow(feature | CodecFeature.NON_INFER_LENGTH | codecFeature)
                 .process(context);
 
         return context.getDatagram();

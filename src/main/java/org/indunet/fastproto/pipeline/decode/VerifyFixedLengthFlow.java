@@ -33,8 +33,10 @@ import java.text.MessageFormat;
 public class VerifyFixedLengthFlow extends AbstractFlow<CodecContext> {
     @Override
     public void process(CodecContext context) {
-        int fixedLength = context.getTypeAssist()
-                .getFixedLength();
+        int fixedLength = context.getReferenceGraph()
+                .root()
+                .getEnableFixedLength()
+                .value();
         int length = context.getDatagram().length;
 
         if (fixedLength != length) {

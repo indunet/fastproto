@@ -17,6 +17,7 @@
 package org.indunet.fastproto.pipeline.validate;
 
 import lombok.val;
+import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.exception.DecodeFormulaException;
@@ -45,8 +46,8 @@ public class FieldFlow extends AbstractFlow<ValidationContext> {
         Class<? extends Function> encodeFormula;
 
         try {
-            decodeFormula = TypeUtils.decodeFormula(typeAnnotation);
-            encodeFormula = TypeUtils.encodeFormula(typeAnnotation);
+            decodeFormula = TypeUtils.decodingFormula(typeAnnotation);
+            encodeFormula = TypeUtils.encodingFormula(typeAnnotation);
 
             context.setDecodeFormula(decodeFormula);
             context.setEncodeFormula(encodeFormula);
@@ -58,7 +59,7 @@ public class FieldFlow extends AbstractFlow<ValidationContext> {
         }
 
         if (decodeFormula == null && encodeFormula == null) {
-            Arrays.stream(TypeUtils.javaTypes(typeAnnotation))
+            Arrays.stream(ProtocolType.valueOf(typeAnnotation).javaTypes())
                     .filter(t -> t == field.getType()
                                 || (field.getType().isEnum() && (((Class<?>) t).isAssignableFrom(field.getType()))))
                     .findAny()
