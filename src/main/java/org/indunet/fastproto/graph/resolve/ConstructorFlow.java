@@ -23,6 +23,7 @@ import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.graph.AbstractFlow;
 
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
 /**
@@ -51,9 +52,14 @@ public class ConstructorFlow extends AbstractFlow<Reference> {
                     .getAsInt();
         }
 
+        // Filter transient fields, jacoco would add it during test.
+        val fieldCnt = Arrays.stream(protocolClass.getDeclaredFields())
+                .filter(f -> !Modifier.isTransient(f.getModifiers()))
+                .count();
+
         if (cnt == 0) {
             reference.setConstructorType(Reference.ConstructorType.NO_ARGS);
-        } else if (protocolClass.getDeclaredFields().length != cnt) {
+        } else if (fieldCnt != cnt) {
                 throw new ResolveException(String.format(
                         "The number of constructor parameters of %s does not match the number of class fields.",
                         protocolClass.getName()));
