@@ -43,7 +43,6 @@ import java.util.function.Function;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BinaryType {
     Type[] JAVA_TYPES = {byte[].class};
-    boolean AUTO_TYPE = true;
 
     int value();
 

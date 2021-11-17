@@ -17,6 +17,7 @@
 package org.indunet.fastproto.pipeline.validate;
 
 import lombok.val;
+import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.ArrayType;
 import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.pipeline.AbstractFlow;
@@ -39,7 +40,7 @@ public class ArrayFlow extends AbstractFlow<ValidationContext> {
 
         if (typeAnnotation instanceof ArrayType) {
             val protocolType = ((ArrayType) typeAnnotation).protocolType();
-            val protocolTypes = TypeUtils.protocolTypes(typeAnnotation);
+            val protocolTypes = ProtocolType.valueOf(typeAnnotation).protocolTypes();
 
             Arrays.stream(protocolTypes)
                     .filter(t -> t == protocolType)

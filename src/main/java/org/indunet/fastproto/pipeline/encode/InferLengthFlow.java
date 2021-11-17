@@ -17,6 +17,7 @@
 package org.indunet.fastproto.pipeline.encode;
 
 import lombok.val;
+import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.ProtocolVersionAssist;
 import org.indunet.fastproto.checksum.CheckerUtils;
 import org.indunet.fastproto.exception.AddressingException;
@@ -46,7 +47,7 @@ public class InferLengthFlow extends AbstractFlow<CodecContext> {
                     if (TypeUtils.byteOffset(type) < 0 || TypeUtils.length(type) < 0) {
                         throw new AddressingException(CodecError.UNABLE_INFER_LENGTH);
                     } else {
-                        return TypeUtils.byteOffset(type) + TypeUtils.size(type) + TypeUtils.length(type);
+                        return TypeUtils.byteOffset(type) + ProtocolType.valueOf(type).size() + TypeUtils.length(type);
                     }
                 }).max()
                 .orElse(0);

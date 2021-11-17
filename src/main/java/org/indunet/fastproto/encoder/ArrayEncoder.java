@@ -50,7 +50,7 @@ public class ArrayEncoder implements TypeEncoder {
 
     public void encode(@NonNull byte[] datagram, int byteOffset, int length,
                        @NonNull ProtocolType type, @NonNull EndianPolicy policy, Object values) {
-        int size = TypeUtils.size(type);
+        int size = type.size();
         int bo = ReverseUtils.offset(datagram.length, byteOffset);
         boolean primitive = values.getClass()
                 .getComponentType()

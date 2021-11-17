@@ -25,6 +25,7 @@ import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.graph.AbstractFlow;
 import org.indunet.fastproto.pipeline.ValidationContext;
+import org.indunet.fastproto.util.TypeUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -43,10 +44,10 @@ public class CodecFlow extends AbstractFlow<Reference> {
     @Override
     public void process(Reference reference) {
         val typeAnnotation = reference.getTypeAnnotation();
-        Class<? extends TypeDecoder> decoderClass = ProtocolType.decoderCLass(typeAnnotation);
-        Class<? extends TypeEncoder> encoderClass = ProtocolType.encoderClass(typeAnnotation);
-        Class<? extends Function> afterDecode = ProtocolType.decodeFormula(typeAnnotation);
-        Class<? extends Function> beforeEncode = ProtocolType.encodeFormula(typeAnnotation);
+        Class<? extends TypeDecoder> decoderClass = TypeUtils.decoderClass(typeAnnotation);
+        Class<? extends TypeEncoder> encoderClass = TypeUtils.encoderClass(typeAnnotation);
+        Class<? extends Function> afterDecode = TypeUtils.decodingFormula(typeAnnotation);
+        Class<? extends Function> beforeEncode = TypeUtils.encodingFormula(typeAnnotation);
 
         reference.setDecoderClass(decoderClass);
         reference.setEncoderClass(encoderClass);

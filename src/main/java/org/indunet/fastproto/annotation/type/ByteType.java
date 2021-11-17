@@ -44,7 +44,6 @@ import java.util.function.Function;
 public @interface ByteType {
     Type[] JAVA_TYPES = {Byte.class, Byte.TYPE};
     int SIZE = Byte.SIZE >> 3;
-    boolean AUTO_TYPE = true;
     int MAX_VALUE = Byte.MAX_VALUE;
     int MIN_VALUE = Byte.MIN_VALUE;
 

@@ -45,8 +45,8 @@ public class TypeAnnotationFlow extends AbstractFlow<Reference> {
         reference.setTypeAnnotation(typeAnnotation);
         reference.setReferenceType(Reference.ReferenceType.FIELD);
 
-        reference.setDecoderClass(ProtocolType.decoderCLass(typeAnnotation));
-        reference.setEncoderClass(ProtocolType.encoderClass(typeAnnotation));
+        reference.setDecoderClass(TypeUtils.decoderClass(typeAnnotation));
+        reference.setEncoderClass(TypeUtils.encoderClass(typeAnnotation));
         reference.setDecodeFormula(TypeUtils.decodingFormula(typeAnnotation));
         reference.setEncodeFormula(TypeUtils.encodingFormula(typeAnnotation));
 

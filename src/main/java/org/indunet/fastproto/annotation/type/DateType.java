@@ -47,7 +47,6 @@ import java.util.function.Function;
 public @interface DateType {
     Type[] JAVA_TYPES = {Date.class};
     ProtocolType[] PROTOCOL_TYPES = {ProtocolType.UINTEGER32, ProtocolType.LONG};
-    boolean AUTO_TYPE = true;
 
     int value();
 
