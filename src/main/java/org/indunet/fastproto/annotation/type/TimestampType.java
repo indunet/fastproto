@@ -29,6 +29,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Type;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -45,7 +46,7 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TimestampType {
-    Type[] JAVA_TYPES = {Timestamp.class};
+    Type[] JAVA_TYPES = {Timestamp.class, Date.class};
     ProtocolType[] PROTOCOL_TYPES = {ProtocolType.UINTEGER32, ProtocolType.LONG};
 
     int value();

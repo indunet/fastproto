@@ -221,7 +221,7 @@ Taking into account cross-language and cross-platform data exchange, FastProto a
 | `@UInteger64Type` | BigInteger        | unsigned long long | 8 bytes  |  √ |    
 | `@BinaryType`     | byte[]             | char[]         | N bytes     |  √  |    
 | `@StringType`     | java.lang.String   | --             | N bytes     |  √ |    
-| `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 bytes |  √  |    
+| `@TimestampType`  | java.sql.Timestamp / java.util.Date | --             | 4 / 8 bytes |  √  |    
 | `@ArrayType`     | primitive type array   | primitive type array    | N 字节     |  √ |    
 | `@ListType`  | primitive type list | --             | N 字节 |  √  |    
 | `@EnumType`     | enum   | enum             | N 字节     |  √ |
@@ -237,6 +237,7 @@ FastProto also provides some auxiliary annotations to help users further customi
 | `@EnableProtocolVersion` | Class     |  Enable protocol version verification  |
 | `@EnableCheckSum`      |  Class      |  Enable checksum verification               |
 | `@EnableCrypto`   |  Class | Enable encrypt & decrypt |
+| `@EnableFixedLength`   |  Class | Enable fixed length of datagram |
 
 ## *Benchmark*
 

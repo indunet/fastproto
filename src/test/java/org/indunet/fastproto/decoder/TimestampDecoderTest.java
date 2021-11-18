@@ -26,6 +26,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -43,19 +44,19 @@ public class TimestampDecoderTest {
 
     @ParameterizedTest
     @MethodSource
-    public void testDecode1(byte[] datagram, int byteOffset, ProtocolType type, EndianPolicy policy, TimeUnit unit, Timestamp expected) {
-        Timestamp value = decoder.decode(datagram, byteOffset, type, policy, unit);
-
-        assertEquals(expected, value);
+    public void testDecode1(byte[] datagram, int byteOffset, ProtocolType type, EndianPolicy policy, TimeUnit unit, Class<?> clazz, Date expected) {
+        assertEquals(expected, decoder.decode(datagram, byteOffset, type, policy, unit, clazz));
     }
 
     public static List<Arguments> testDecode1() {
         long current = System.currentTimeMillis();
 
         return Stream.of(
-                Arguments.arguments(BinaryUtils.valueOf(current), 0, ProtocolType.LONG, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, new Timestamp(current)),
-                Arguments.arguments(BinaryUtils.uint32of(current / 1000), 0, ProtocolType.UINTEGER32, EndianPolicy.LITTLE, TimeUnit.SECONDS, new Timestamp(current / 1000 * 1000)),
-                Arguments.arguments(BinaryUtils.uint32of(current / 1000), -4, ProtocolType.UINTEGER32, EndianPolicy.LITTLE, TimeUnit.SECONDS, new Timestamp(current / 1000 * 1000))
+                Arguments.arguments(BinaryUtils.valueOf(current), 0, ProtocolType.LONG, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, Timestamp.class, new Timestamp(current)),
+                Arguments.arguments(BinaryUtils.valueOf(current), 0, ProtocolType.LONG, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, Date.class, new Date(current)),
+                Arguments.arguments(BinaryUtils.uint32of(current / 1000), 0, ProtocolType.UINTEGER32, EndianPolicy.LITTLE, TimeUnit.SECONDS, Timestamp.class, new Timestamp(current / 1000 * 1000)),
+                Arguments.arguments(BinaryUtils.uint32of(current / 1000), -4, ProtocolType.UINTEGER32, EndianPolicy.LITTLE, TimeUnit.SECONDS, Timestamp.class, new Timestamp(current / 1000 * 1000)),
+                Arguments.arguments(BinaryUtils.uint32of(current / 1000), -4, ProtocolType.UINTEGER32, EndianPolicy.LITTLE, TimeUnit.SECONDS, Date.class, new Date(current / 1000 * 1000))
         ).collect(Collectors.toList());
     }
 
@@ -64,9 +65,9 @@ public class TimestampDecoderTest {
         byte[] datagram = new byte[10];
 
         assertThrows(NullPointerException.class, () -> this.decoder.decode(null));
-        assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 0, ProtocolType.LONG, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS));
+        assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 0, ProtocolType.LONG, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, Timestamp.class));
 
-        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, -1, ProtocolType.LONG, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS));
-        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, 10, ProtocolType.LONG, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS));
+        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, -1, ProtocolType.LONG, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, Timestamp.class));
+        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, 10, ProtocolType.LONG, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, Timestamp.class));
     }
 }

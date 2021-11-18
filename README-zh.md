@@ -212,7 +212,7 @@ FastProto支持Java基础数据类型、Timestamp、String和字节数组，以�
 | `@UInteger64Type` | BigInteger        | unsigned long long | 8 字节  |  √ |    
 | `@BinaryType`     | byte[]             | char[]         | N 字节     |  √  |    
 | `@StringType`     | java.lang.String   | --             | N 字节     |  √ |    
-| `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 字节 |  √  |    
+| `@TimestampType`  | java.sql.Timestamp / java.util.Date | --             | 4 / 8 字节 |  √  |    
 | `@ArrayType`     | 基本数据类型数组   | 基本数据类型数组             | N 字节     |  √ |    
 | `@ListType`  | 基本数据类型列表 | --             | N 字节 |  √  |    
 | `@EnumType`     | 枚举   | 枚举             | N 字节     |  √ |
@@ -228,6 +228,7 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 | `@EnableProtocolVersion` | Class     |  启动协议版本校验  |
 | `@EnableChecksum`      |  Class      |  启动数据完整性校验              |
 | `@EnableCrypto`      |  Class      |    启动加密和解密             |
+| `@EnableFixedLength`      |  Class      |    启动固定报文长度             |
 
 ## *基准测试*
 

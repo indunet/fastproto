@@ -30,7 +30,9 @@ import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 
 /**
@@ -40,37 +42,47 @@ import java.util.concurrent.TimeUnit;
  * @see TypeDecoder
  * @since 1.1.0
  */
-public class TimestampDecoder implements TypeDecoder<Timestamp> {
+public class TimestampDecoder<T extends Date> implements TypeDecoder<T> {
     @Override
-    public Timestamp decode(@NonNull DecodeContext context) {
+    public T decode(@NonNull DecodeContext context) {
         EndianPolicy policy = context.getEndianPolicy();
         TimestampType type = context.getTypeAnnotation(TimestampType.class);
         ProtocolType dataType = type.protocolType();
+        val clazz = context.getReference()
+                .getField().getType();
 
-        return this.decode(context.getDatagram(), type.value(), dataType, policy, type.unit());
+        return this.decode(context.getDatagram(), type.value(), dataType, policy, type.unit(), (Class<T>) clazz);
     }
 
-    public Timestamp decode(@NonNull final byte[] datagram, int byteOffset, @NonNull ProtocolType dataType, @NonNull EndianPolicy policy, @NonNull TimeUnit unit) {
+    public T decode(@NonNull final byte[] datagram, int byteOffset, @NonNull ProtocolType dataType, @NonNull EndianPolicy policy, @NonNull TimeUnit unit, Class<T> clazz) {
+        Function<Long, T> newInstance = v -> {
+            if (clazz == Timestamp.class) {
+                return (T) new Timestamp(v);
+            } else {
+                return (T) new Date(v);
+            }
+        };
+
         int bo = ReverseUtils.offset(datagram.length, byteOffset);
 
         if (bo < 0) {
             throw new DecodingException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (dataType == ProtocolType.LONG && unit == TimeUnit.MILLISECONDS) {
             if (bo + LongType.SIZE > datagram.length) {
-                throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+                throw new DecodingException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 
             val value = CodecUtils.longType(datagram, bo, policy);
 
-            return new Timestamp(value);
+            return newInstance.apply(value);
         } else if (dataType == ProtocolType.UINTEGER32 && unit == TimeUnit.SECONDS) {
             if (bo + UInteger32Type.SIZE > datagram.length) {
-                throw new OutOfBoundsException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+                throw new DecodingException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 
             val value = CodecUtils.uinteger32Type(datagram, bo, policy);
 
-            return new Timestamp(value * 1000);
+            return newInstance.apply(value * 1000);
         } else {
             throw new DecodingException(CodecError.ILLEGAL_TIMESTAMP_PARAMETERS);
         }

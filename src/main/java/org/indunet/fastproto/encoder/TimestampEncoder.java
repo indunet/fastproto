@@ -17,6 +17,7 @@
 package org.indunet.fastproto.encoder;
 
 import lombok.NonNull;
+import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.LongType;
@@ -29,6 +30,7 @@ import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -43,25 +45,25 @@ public class TimestampEncoder implements TypeEncoder {
     public void encode(@NonNull EncodeContext context) {
         EndianPolicy policy = context.getEndianPolicy();
         TimestampType type = context.getTypeAnnotation(TimestampType.class);
-        Timestamp value = context.getValue(Timestamp.class);
+        val value = context.getValue(Date.class);
 
         this.encode(context.getDatagram(), type.value(), type.protocolType(), policy, type.unit(), value);
     }
 
-    public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull ProtocolType dataType, @NonNull EndianPolicy policy, @NonNull TimeUnit unit, @NonNull Timestamp value) {
+    public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull ProtocolType dataType, @NonNull EndianPolicy policy, @NonNull TimeUnit unit, @NonNull Date value) {
         int bo = ReverseUtils.offset(datagram.length, byteOffset);
 
         if (bo < 0) {
             throw new EncodingException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (dataType == ProtocolType.LONG && unit == TimeUnit.MILLISECONDS) {
             if (bo + LongType.SIZE > datagram.length) {
-                throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+                throw new EncodingException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 
             CodecUtils.longType(datagram, bo, policy, value.getTime());
         } else if (dataType == ProtocolType.UINTEGER32 && unit == TimeUnit.SECONDS) {
             if (bo + UInteger32Type.SIZE > datagram.length) {
-                throw new SpaceNotEnoughException(CodecError.EXCEEDED_DATAGRAM_SIZE);
+                throw new EncodingException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 
             CodecUtils.integerType(datagram, bo, policy, (int) (value.getTime() / 1000));

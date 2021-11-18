@@ -45,7 +45,6 @@ public enum ProtocolType {
     SHORT(ShortType.class),
     STRING(StringType.class),
     TIMESTAMP(TimestampType.class),
-    DATE(DateType.class),
     INTEGER8(Integer8Type.class),
     INTEGER16(Integer16Type.class),
     UINTEGER8(UInteger8Type.class),

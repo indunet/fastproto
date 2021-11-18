@@ -23,6 +23,7 @@ import org.indunet.fastproto.util.AnnotationUtils;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -35,7 +36,7 @@ public class ProtocolTypeTest {
     public void testJavaType() {
         ProtocolType type = ProtocolType.valueOf(AnnotationUtils.mock(TimestampType.class, 0));
 
-        assertArrayEquals(type.javaTypes(), new Class<?>[] {Timestamp.class});
+        assertArrayEquals(type.javaTypes(), new Class<?>[] {Timestamp.class, Date.class});
     }
 
     @Test
