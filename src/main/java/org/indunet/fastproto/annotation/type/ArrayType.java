@@ -75,4 +75,6 @@ public @interface ArrayType {
     Class<? extends Function<?, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, ?>>[] encodingFormula() default {};
+
+    String description() default "";
 }

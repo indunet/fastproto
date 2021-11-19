@@ -55,4 +55,6 @@ public @interface UInteger64Type {
     Class<? extends Function<BigDecimal, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, BigDecimal>>[] encodingFormula() default {};
+
+    String description() default "";
 }

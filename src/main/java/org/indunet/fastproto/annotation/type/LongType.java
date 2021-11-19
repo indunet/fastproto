@@ -52,4 +52,6 @@ public @interface LongType {
     Class<? extends Function<Long, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Long>>[] encodingFormula() default {};
+
+    String description() default "";
 }

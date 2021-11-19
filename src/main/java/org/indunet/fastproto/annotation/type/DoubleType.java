@@ -52,4 +52,6 @@ public @interface DoubleType {
     Class<? extends Function<Double, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Double>>[] encodingFormula() default {};
+
+    String description() default "";
 }

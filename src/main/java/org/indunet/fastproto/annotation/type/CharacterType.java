@@ -50,4 +50,6 @@ public @interface CharacterType {
     Class<? extends Function<Character, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Character>>[] encodingFormula() default {};
+
+    String description() default "";
 }

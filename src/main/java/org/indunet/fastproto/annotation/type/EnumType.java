@@ -57,4 +57,6 @@ public @interface EnumType {
     Class<? extends Function<? extends Enum, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, ? super Enum>>[] encodingFormula() default {};
+
+    String description() default "";
 }

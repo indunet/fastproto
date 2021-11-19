@@ -52,4 +52,6 @@ public @interface ShortType {
     Class<? extends Function<Short, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Short>>[] encodingFormula() default {};
+
+    String description() default "";
 }

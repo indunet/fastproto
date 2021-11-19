@@ -51,4 +51,6 @@ public @interface BinaryType {
     Class<? extends Function<byte[], ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, byte[]>>[] encodingFormula() default {};
+
+    String description() default "";
 }

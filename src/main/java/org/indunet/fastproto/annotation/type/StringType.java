@@ -53,4 +53,6 @@ public @interface StringType {
     Class<? extends Function<String, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, String>>[] encodingFormula() default {};
+
+    String description() default "";
 }

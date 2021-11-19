@@ -55,4 +55,6 @@ public @interface BooleanType {
     Class<? extends Function<Boolean, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Boolean>>[] encodingFormula() default {};
+
+    String description() default "";
 }

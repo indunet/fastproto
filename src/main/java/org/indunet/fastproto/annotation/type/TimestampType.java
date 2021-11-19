@@ -58,4 +58,6 @@ public @interface TimestampType {
     Class<? extends Function<Timestamp, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Timestamp>>[] encodingFormula() default {};
+
+    String description() default "";
 }

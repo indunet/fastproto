@@ -52,4 +52,6 @@ public @interface FloatType {
     Class<? extends Function<Float, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Float>>[] encodingFormula() default {};
+
+    String description() default "";
 }

@@ -52,4 +52,6 @@ public @interface ByteType {
     Class<? extends Function<Byte, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Byte>>[] encodingFormula() default {};
+
+    String description() default "";
 }

@@ -71,4 +71,6 @@ public @interface ListType {
     Class<? extends Function<?, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, ?>>[] encodingFormula() default {};
+
+    String description() default "";
 }

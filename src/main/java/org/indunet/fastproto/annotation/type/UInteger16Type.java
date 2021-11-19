@@ -52,4 +52,6 @@ public @interface UInteger16Type {
     Class<? extends Function<Integer, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Integer>>[] encodingFormula() default {};
+
+    String description() default "";
 }
