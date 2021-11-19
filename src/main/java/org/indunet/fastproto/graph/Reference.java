@@ -94,14 +94,15 @@ public class Reference {
 
     public Object newInstance(Reference[] references) {
         val types = Arrays.stream(references)
+                .filter(r -> r.getReferenceType() != ReferenceType.INVALID)
                 .map(Reference::getField)
                 .map(Field::getType)
-                .collect(Collectors.toList())
-                .toArray(new Class[references.length]);
+                .toArray(Class<?>[]::new);
 
         try {
             Constructor<?> constructor = this.protocolClass.getConstructor(types);
             val args = Arrays.stream(references)
+                    .filter(r -> r.getReferenceType() != ReferenceType.INVALID)
                     .map(r -> r.getValue().get())
                     .toArray();
 
@@ -127,10 +128,6 @@ public class Reference {
                         String.format("Fail decoding the field %s of class %s", field.toString(), this.protocolClass.getName()), e);
             }
         }
-//        else {
-//            throw new DecodingException(
-//                    String.format("Fail decoding the class %s", this.protocolClass.getName()));
-//        }
     }
 
     public Object getValue(Object object) {

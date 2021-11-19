@@ -19,9 +19,15 @@ package org.indunet.fastproto.graph.resolve;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.annotation.EnableProtocolVersion;
 import org.indunet.fastproto.annotation.Endian;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.graph.AbstractFlow;
+import org.jeasy.rules.annotation.Action;
+import org.jeasy.rules.annotation.Condition;
+import org.jeasy.rules.annotation.Fact;
+import org.jeasy.rules.annotation.Rule;
+import org.jeasy.rules.api.Facts;
 
 import java.util.Optional;
 
@@ -31,11 +37,18 @@ import java.util.Optional;
  * @author Deng Ran
  * @since 2.5.0
  */
+@Rule(name = "endian", priority = 2)
 public class EndianFlow extends AbstractFlow<Reference> {
     protected final static EndianPolicy DEFAULT_ENDIAN_POLICY = EndianPolicy.LITTLE;
 
+    @Condition
+    public boolean evaluate(Facts facts) {
+        return true;
+    }
+
+    @Action
     @Override
-    public void process(@NonNull Reference reference) {
+    public void process(@NonNull @Fact("reference") Reference reference) {
         if (reference.getReferenceType() == Reference.ReferenceType.CLASS) {
             val protocolClass = reference.getProtocolClass();
             val endianPolicy = Optional.ofNullable(protocolClass.getAnnotation(Endian.class))

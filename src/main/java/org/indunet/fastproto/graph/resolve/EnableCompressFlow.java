@@ -17,9 +17,14 @@
 package org.indunet.fastproto.graph.resolve;
 
 import lombok.val;
+import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.annotation.EnableCompress;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.graph.AbstractFlow;
+import org.jeasy.rules.annotation.Action;
+import org.jeasy.rules.annotation.Condition;
+import org.jeasy.rules.annotation.Fact;
+import org.jeasy.rules.annotation.Rule;
 
 /**
  * Resolve enable compress flow.
@@ -27,9 +32,16 @@ import org.indunet.fastproto.graph.AbstractFlow;
  * @author Deng Ran
  * @since 2.5.0
  */
+@Rule(name = "compress")
 public class EnableCompressFlow extends AbstractFlow<Reference> {
+    @Condition
+    public boolean evaluate(@Fact("reference") Reference reference) {
+        return reference.getProtocolClass().isAnnotationPresent(EnableCompress.class);
+    }
+
+    @Action
     @Override
-    public void process(Reference reference) {
+    public void process(@Fact("reference") Reference reference) {
         val protocolClass = reference.getProtocolClass();
 
         if (protocolClass.isAnnotationPresent(EnableCompress.class)) {

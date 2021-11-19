@@ -26,6 +26,12 @@ import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.graph.AbstractFlow;
 import org.indunet.fastproto.pipeline.ValidationContext;
 import org.indunet.fastproto.util.TypeUtils;
+import org.jeasy.rules.annotation.Action;
+import org.jeasy.rules.annotation.Condition;
+import org.jeasy.rules.annotation.Fact;
+import org.jeasy.rules.annotation.Rule;
+import org.jeasy.rules.api.Facts;
+import org.jeasy.rules.core.RuleProxy;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -40,9 +46,16 @@ import java.util.function.Function;
  * @author Deng Ran
  * @since 2.5.0
  */
+@Rule(name = "codec", priority = 3)
 public class CodecFlow extends AbstractFlow<Reference> {
+    @Condition
+    public boolean evaluate(Facts facts) {
+        return true;
+    }
+
+    @Action
     @Override
-    public void process(Reference reference) {
+    public void process(@Fact("reference") Reference reference) {
         val typeAnnotation = reference.getTypeAnnotation();
         Class<? extends TypeDecoder> decoderClass = TypeUtils.decoderClass(typeAnnotation);
         Class<? extends TypeEncoder> encoderClass = TypeUtils.encoderClass(typeAnnotation);
@@ -72,6 +85,8 @@ public class CodecFlow extends AbstractFlow<Reference> {
 
         this.nextFlow(reference);
     }
+
+
 
     @Override
     public long getFlowCode() {

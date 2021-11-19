@@ -21,6 +21,10 @@ import org.indunet.fastproto.annotation.DecodingIgnore;
 import org.indunet.fastproto.annotation.EncodingIgnore;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.graph.AbstractFlow;
+import org.jeasy.rules.annotation.Action;
+import org.jeasy.rules.annotation.Condition;
+import org.jeasy.rules.annotation.Fact;
+import org.jeasy.rules.annotation.Rule;
 
 /**
  * Resolve decode ignore and encode ignore flow.
@@ -28,9 +32,16 @@ import org.indunet.fastproto.graph.AbstractFlow;
  * @author Deng Ran
  * @since 2.5.0
  */
+@Rule(name = "ignore", priority = 4)
 public class CodecIgnoreFlow extends AbstractFlow<Reference> {
+    @Condition
+    public boolean evaluate(@Fact("reference") Reference reference) {
+        return reference.getField() != null;
+    }
+
+    @Action
     @Override
-    public void process(Reference reference) {
+    public void process(@Fact("reference") Reference reference) {
         val field = reference.getField();
 
         if (field != null) {

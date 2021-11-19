@@ -20,6 +20,11 @@ import lombok.val;
 import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.graph.AbstractFlow;
+import org.jeasy.rules.annotation.Action;
+import org.jeasy.rules.annotation.Condition;
+import org.jeasy.rules.annotation.Fact;
+import org.jeasy.rules.annotation.Rule;
+import org.jeasy.rules.api.Facts;
 
 /**
  * Resolve enable checksum flow.
@@ -27,9 +32,16 @@ import org.indunet.fastproto.graph.AbstractFlow;
  * @author Deng Ran
  * @since 2.5.0
  */
+@Rule(name = "checksum")
 public class EnableChecksumFlow extends AbstractFlow<Reference> {
+    @Condition
+    public boolean evaluate(@Fact("reference") Reference reference) {
+        return reference.getProtocolClass().isAnnotationPresent(EnableChecksum.class);
+    }
+
+    @Action
     @Override
-    public void process(Reference reference) {
+    public void process(@Fact("reference") Reference reference) {
         val protocolClass = reference.getProtocolClass();
 
         if (protocolClass.isAnnotationPresent(EnableChecksum.class)) {

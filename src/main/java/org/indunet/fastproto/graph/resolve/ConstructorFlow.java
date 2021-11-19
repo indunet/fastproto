@@ -23,6 +23,11 @@ import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.graph.AbstractFlow;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.graph.Reference.ConstructorType;
+import org.jeasy.rules.annotation.Action;
+import org.jeasy.rules.annotation.Condition;
+import org.jeasy.rules.annotation.Fact;
+import org.jeasy.rules.annotation.Rule;
+import org.jeasy.rules.api.Facts;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -35,9 +40,16 @@ import java.util.stream.Collectors;
  * @author Deng Ran
  * @since 2.5.0
  */
+@Rule(name = "constructor")
 public class ConstructorFlow extends AbstractFlow<Reference> {
+    @Condition
+    public boolean evaluate(Facts facts) {
+        return true;
+    }
+
+    @Action
     @Override
-    public void process(Reference reference) {
+    public void process(@Fact("reference") Reference reference) {
         val protocolClass = reference.getProtocolClass();
         var cnt = 0;
 
@@ -55,25 +67,17 @@ public class ConstructorFlow extends AbstractFlow<Reference> {
                     .getAsInt();
         }
 
-        // Filter transient fields, jacoco would add it during test.
-        val fieldCnt = Arrays.stream(protocolClass.getDeclaredFields())
-                .filter(f -> !Modifier.isTransient(f.getModifiers()))
-                .count();
-
         if (cnt == 0) {
             reference.setConstructorType(ConstructorType.NO_ARGS);
-        } else if (fieldCnt != cnt) {
-            throw new ResolveException(String.format(
-                    "The number of constructor parameters of %s does not match the number of class fields.",
-                    protocolClass.getName()));
         } else {
+            // Filter transient fields, jacoco would add it during test.
             val paramTypes = Arrays.stream(protocolClass.getDeclaredFields())
+                    .filter(f -> !Modifier.isTransient(f.getModifiers()))
                     .map(Field::getType)
-                    .collect(Collectors.toList())
-                    .toArray(new Class<?>[cnt]);
+                    .toArray(Class<?>[]::new);
+
             try {
                 protocolClass.getConstructor(paramTypes);
-
                 reference.setConstructorType(ConstructorType.ALL_ARGS);
             } catch (NoSuchMethodException e) {
                 throw new ResolveException(String.format(

@@ -32,8 +32,8 @@ public class FastProto {
     /**
      * Convert binary message into object.
      *
-     * @param datagram binary message
-     * @param protocolClass    deserialized object
+     * @param datagram      binary message
+     * @param protocolClass deserialized object
      * @return deserialize object instance
      */
     public static <T> T parseFrom(@NonNull byte[] datagram, @NonNull Class<T> protocolClass) {
@@ -43,21 +43,18 @@ public class FastProto {
     /**
      * Convert binary message into object.
      *
-     * @param datagram binary message
-     * @param protocolClass    deserialized object
+     * @param datagram      binary message
+     * @param protocolClass deserialized object
      * @param codecFeatures codec feature code
      * @return deserialize object instance
      */
     public static <T> T parseFrom(@NonNull byte[] datagram, @NonNull Class<T> protocolClass, long... codecFeatures) {
-        // val assist = TypeAssist.byClass(protocolClass);
-
         val graph = ReferenceResolver.resolve(protocolClass);
         val codecFeature = CodecFeature.of(codecFeatures);
         val context = CodecContext.builder()
                 .datagram(datagram)
                 .protocolClass(protocolClass)
                 .codecFeature(codecFeature)
-                // .typeAssist(assist)
                 .referenceGraph(graph)
                 .build();
 
