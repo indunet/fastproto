@@ -14,26 +14,27 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.pipeline.validate;
+package org.indunet.fastproto.graph.validate;
 
-import org.indunet.fastproto.pipeline.AbstractFlow;
-import org.indunet.fastproto.pipeline.FlowCode;
-import org.indunet.fastproto.pipeline.ValidationContext;
+import lombok.Builder;
+import lombok.Data;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.function.Function;
 
 /**
- * Abstract flow.
+ * Validation context.
  *
  * @author Deng Ran
  * @since 2.3.0
  */
-public class ListFlow extends AbstractFlow<ValidationContext> {
-    @Override
-    public void process(ValidationContext context) {
-
-    }
-
-    @Override
-    public long getFlowCode() {
-        return FlowCode.LIST_FLOW_CODE;
-    }
+@Data
+@Builder
+public class ValidatorContext {
+    Field field;
+    Annotation typeAnnotation;
+    Class<? extends Annotation> typeAnnotationClass;
+    Class<? extends Function> decodingFormula;
+    Class<? extends Function> encodingFormula;
 }

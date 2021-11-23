@@ -21,7 +21,7 @@ import org.indunet.fastproto.encoder.EncodeContext;
 import org.indunet.fastproto.encoder.EncoderFactory;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodingException;
-import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.CodecContext;
 import org.indunet.fastproto.pipeline.FlowCode;
 
@@ -35,7 +35,7 @@ import java.util.function.Consumer;
  * @author Deng Ran
  * @since 1.7.0
  */
-public class EncodeFlow extends AbstractFlow<CodecContext> {
+public class EncodeFlow extends Pipeline<CodecContext> {
     @Override
     public void process(CodecContext context) {
         // val assist = context.getTypeAssist();
@@ -65,11 +65,11 @@ public class EncodeFlow extends AbstractFlow<CodecContext> {
                     }
                 });
 
-        this.nextFlow(context);
+        this.forward(context);
     }
 
     @Override
-    public long getFlowCode() {
+    public long getCode() {
         return FlowCode.ENCODE_FLOW_CODE;
     }
 }

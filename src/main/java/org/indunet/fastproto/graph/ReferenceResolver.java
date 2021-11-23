@@ -21,6 +21,7 @@ import lombok.val;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.TypeFlag;
 import org.indunet.fastproto.graph.Reference.ReferenceType;
+import org.indunet.fastproto.graph.resolve.ResolvePipeline;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -37,8 +38,8 @@ import java.util.function.Predicate;
  */
 public class ReferenceResolver {
     protected static ConcurrentHashMap<Class<?>, ReferenceGraph> graphs = new ConcurrentHashMap<>();
-    protected static AbstractFlow<Reference> resolveClassFlow = AbstractFlow.getResolveClassFlow();
-    protected static AbstractFlow<Reference> resolveFieldFlow = AbstractFlow.getResolveFieldFlow();
+    protected static ResolvePipeline resolveClassFlow = ResolvePipeline.getClassPipeline();
+    protected static ResolvePipeline resolveFieldFlow = ResolvePipeline.getFieldPipeline();
 
     public static ReferenceGraph resolve(@NonNull Class<?> protocolClass) {
         return graphs.computeIfAbsent(protocolClass, __ -> {
@@ -62,13 +63,13 @@ public class ReferenceResolver {
                 val field = deque.remove();
 
                 if (isData(field)) {
-                    val s = Reference.builder()
+                    val r = Reference.builder()
                             .field(field)
                             .referenceType(Reference.ReferenceType.FIELD)
                             .build();
 
-                    resolveFieldFlow.process(s);
-                    graph.addReference(s);
+                    resolveFieldFlow.process(r);
+                    graph.addReference(r);
                 } else if (isClass(field)) {
                     if (graph.contains(field.getType())) {
                         val ref = graph.getReference(field.getType())

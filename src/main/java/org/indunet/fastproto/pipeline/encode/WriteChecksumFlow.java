@@ -19,7 +19,7 @@ package org.indunet.fastproto.pipeline.encode;
 import lombok.val;
 import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.checksum.Checker;
-import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.CodecContext;
 import org.indunet.fastproto.pipeline.FlowCode;
 
@@ -29,7 +29,7 @@ import org.indunet.fastproto.pipeline.FlowCode;
  * @author Deng Ran
  * @since 1.7.0
  */
-public class WriteChecksumFlow extends AbstractFlow<CodecContext> {
+public class WriteChecksumFlow extends Pipeline<CodecContext> {
     @Override
     public void process(CodecContext context) {
         val object = context.getObject();
@@ -43,11 +43,11 @@ public class WriteChecksumFlow extends AbstractFlow<CodecContext> {
             checker.setValue(datagram, object.getClass());
         }
 
-        this.nextFlow(context);
+        this.forward(context);
     }
 
     @Override
-    public long getFlowCode() {
+    public long getCode() {
         return  FlowCode.WRITE_CHECKSUM_FLOW_CODE;
     }
 }

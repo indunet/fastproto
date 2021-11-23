@@ -16,22 +16,17 @@
 
 package org.indunet.fastproto.graph.resolve;
 
-import lombok.NonNull;
 import lombok.val;
-import org.indunet.fastproto.ProtocolType;
+import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.TypeDecoder;
 import org.indunet.fastproto.encoder.TypeEncoder;
 import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.graph.Reference;
-import org.indunet.fastproto.graph.AbstractFlow;
-import org.indunet.fastproto.pipeline.ValidationContext;
+import org.indunet.fastproto.graph.validate.TypeValidator;
+import org.indunet.fastproto.graph.validate.ValidatorContext;
 import org.indunet.fastproto.util.TypeUtils;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.lang.reflect.Proxy;
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.function.Function;
 
 /**
@@ -40,7 +35,7 @@ import java.util.function.Function;
  * @author Deng Ran
  * @since 2.5.0
  */
-public class CodecFlow extends AbstractFlow<Reference> {
+public class CodecFlow extends ResolvePipeline {
     @Override
     public void process(Reference reference) {
         val typeAnnotation = reference.getTypeAnnotation();
@@ -55,26 +50,22 @@ public class CodecFlow extends AbstractFlow<Reference> {
         reference.setEncodeFormula(beforeEncode);
 
         val field = reference.getField();
-        val context = ValidationContext.builder()
+        val context = ValidatorContext.builder()
                 .field(field)
                 .typeAnnotation(typeAnnotation)
                 .build();
 
-        // TODO, add validator.
         try {
-            org.indunet.fastproto.pipeline.AbstractFlow.getValidateFlow()
+            val validator = typeAnnotation.annotationType().getAnnotation(Validator.class);
+
+            TypeValidator.create(validator.value())
                     .process(context);
-        } catch(ResolveException e) {
+        } catch (ResolveException e) {
             throw new ResolveException(MessageFormat.format(
                     "Fail resolving the filed of %s", field.toString()
             ), e);
         }
 
-        this.nextFlow(reference);
-    }
-
-    @Override
-    public long getFlowCode() {
-        return 0;
+        this.forward(reference);
     }
 }

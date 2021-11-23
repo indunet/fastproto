@@ -20,8 +20,10 @@ import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.TimestampDecoder;
 import org.indunet.fastproto.encoder.TimestampEncoder;
+import org.indunet.fastproto.graph.validate.*;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -43,6 +45,7 @@ import java.util.function.Function;
 @TypeFlag
 @Decoder(TimestampDecoder.class)
 @Encoder(TimestampEncoder.class)
+@Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class, TimestampValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TimestampType {

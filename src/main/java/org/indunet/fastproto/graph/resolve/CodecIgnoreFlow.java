@@ -20,7 +20,6 @@ import lombok.val;
 import org.indunet.fastproto.annotation.DecodingIgnore;
 import org.indunet.fastproto.annotation.EncodingIgnore;
 import org.indunet.fastproto.graph.Reference;
-import org.indunet.fastproto.graph.AbstractFlow;
 
 /**
  * Resolve decode ignore and encode ignore flow.
@@ -28,7 +27,7 @@ import org.indunet.fastproto.graph.AbstractFlow;
  * @author Deng Ran
  * @since 2.5.0
  */
-public class CodecIgnoreFlow extends AbstractFlow<Reference> {
+public class CodecIgnoreFlow extends ResolvePipeline {
     @Override
     public void process(Reference reference) {
         val field = reference.getField();
@@ -41,11 +40,6 @@ public class CodecIgnoreFlow extends AbstractFlow<Reference> {
             reference.setEncodingIgnore(encodeIngore);
         }
 
-        this.nextFlow(reference);
-    }
-
-    @Override
-    public long getFlowCode() {
-        return 0;
+        this.forward(reference);
     }
 }
