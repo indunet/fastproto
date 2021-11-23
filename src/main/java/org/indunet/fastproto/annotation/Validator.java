@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet.org
+ * Copyright 2019-2021 indunet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,27 +14,21 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.pipeline;
+package org.indunet.fastproto.annotation;
 
-import lombok.Builder;
-import lombok.Data;
+import org.indunet.fastproto.graph.validate.TypeValidator;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.function.Function;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Validation context.
- *
  * @author Deng Ran
- * @since 2.3.0
+ * @since 3.2.0
  */
-@Data
-@Builder
-public class ValidationContext {
-    Field field;
-    Annotation typeAnnotation;
-    Class<? extends Annotation> typeAnnotationClass;
-    Class<? extends Function> decodeFormula;
-    Class<? extends Function> encodeFormula;
+@Target(ElementType.ANNOTATION_TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Validator {
+    Class<? extends TypeValidator>[] value();
 }

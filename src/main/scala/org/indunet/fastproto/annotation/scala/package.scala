@@ -21,7 +21,6 @@ import org.indunet.fastproto.annotation.`type`.{BinaryType => JavaBinaryType}
 import org.indunet.fastproto.annotation.`type`.{BooleanType => JavaBooleanType}
 import org.indunet.fastproto.annotation.`type`.{ByteType => JavaByteType}
 import org.indunet.fastproto.annotation.`type`.{CharacterType => JavaCharacterType}
-import org.indunet.fastproto.annotation.`type`.{DateType => JavaDateType}
 import org.indunet.fastproto.annotation.`type`.{DoubleType => JavaDoubleType}
 import org.indunet.fastproto.annotation.`type`.{EnumType => JavaEnumType}
 import org.indunet.fastproto.annotation.`type`.{FloatType => JavaFloatType}
@@ -62,7 +61,6 @@ package object scala {
   type BooleanType = JavaBooleanType @field
   type ByteType = JavaByteType @field
   type CharacterType = JavaCharacterType @field
-  type DateType = JavaDateType @field
   type DoubleType = JavaDoubleType @field
   type EnumType = JavaEnumType @field
   type FloatType = JavaFloatType @field

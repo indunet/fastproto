@@ -21,8 +21,12 @@ import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.EnumDecoder;
 import org.indunet.fastproto.encoder.EnumEncoder;
+import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
+import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
+import org.indunet.fastproto.graph.validate.FieldValidator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -41,6 +45,7 @@ import java.util.function.Function;
 @TypeFlag
 @Decoder(EnumDecoder.class)
 @Encoder(EnumEncoder.class)
+@Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EnumType {
@@ -57,4 +62,6 @@ public @interface EnumType {
     Class<? extends Function<? extends Enum, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, ? super Enum>>[] encodingFormula() default {};
+
+    String description() default "";
 }

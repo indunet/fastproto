@@ -19,8 +19,12 @@ package org.indunet.fastproto.annotation.type;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.CharacterDecoder;
 import org.indunet.fastproto.encoder.CharacterEncoder;
+import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
+import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
+import org.indunet.fastproto.graph.validate.FieldValidator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -39,6 +43,7 @@ import java.util.function.Function;
 @TypeFlag
 @Decoder(CharacterDecoder.class)
 @Encoder(CharacterEncoder.class)
+@Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CharacterType {
@@ -50,4 +55,6 @@ public @interface CharacterType {
     Class<? extends Function<Character, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Character>>[] encodingFormula() default {};
+
+    String description() default "";
 }

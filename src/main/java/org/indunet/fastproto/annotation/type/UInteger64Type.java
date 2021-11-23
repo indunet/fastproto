@@ -19,8 +19,12 @@ package org.indunet.fastproto.annotation.type;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.UInteger64Decoder;
 import org.indunet.fastproto.encoder.UInteger64Encoder;
+import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
+import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
+import org.indunet.fastproto.graph.validate.FieldValidator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -41,6 +45,7 @@ import java.util.function.Function;
 @TypeFlag
 @Decoder(UInteger64Decoder.class)
 @Encoder(UInteger64Encoder.class)
+@Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UInteger64Type {
@@ -55,4 +60,6 @@ public @interface UInteger64Type {
     Class<? extends Function<BigDecimal, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, BigDecimal>>[] encodingFormula() default {};
+
+    String description() default "";
 }

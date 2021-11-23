@@ -26,6 +26,7 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -43,7 +44,7 @@ public class TimestampEncoderTest {
 
     @ParameterizedTest
     @MethodSource
-    public void testEncode1(byte[] datagram, int byteOffset, ProtocolType type, EndianPolicy policy, TimeUnit unit, Timestamp value, byte[] expected) {
+    public void testEncode1(byte[] datagram, int byteOffset, ProtocolType type, EndianPolicy policy, TimeUnit unit, Date value, byte[] expected) {
         encoder.encode(datagram, byteOffset, type, policy, unit, value);
         assertArrayEquals(datagram, expected);
     }
@@ -56,8 +57,12 @@ public class TimestampEncoderTest {
                         EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, new Timestamp(current), BinaryUtils.valueOf(current)),
                 Arguments.arguments(new byte[8], -8, ProtocolType.LONG,
                         EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, new Timestamp(current), BinaryUtils.valueOf(current)),
+                Arguments.arguments(new byte[8], -8, ProtocolType.LONG,
+                        EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, new Date(current), BinaryUtils.valueOf(current)),
                 Arguments.arguments(new byte[4], 0, ProtocolType.UINTEGER32,
-                        EndianPolicy.LITTLE, TimeUnit.SECONDS, new Timestamp(current), BinaryUtils.uint32of(current / 1000))
+                        EndianPolicy.LITTLE, TimeUnit.SECONDS, new Timestamp(current), BinaryUtils.uint32of(current / 1000)),
+                Arguments.arguments(new byte[4], 0, ProtocolType.UINTEGER32,
+                        EndianPolicy.LITTLE, TimeUnit.SECONDS, new Date(current), BinaryUtils.uint32of(current / 1000))
         ).collect(Collectors.toList());
     }
 

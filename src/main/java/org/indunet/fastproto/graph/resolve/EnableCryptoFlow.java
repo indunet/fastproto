@@ -21,7 +21,6 @@ import org.indunet.fastproto.annotation.EnableCrypto;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CryptoException;
 import org.indunet.fastproto.graph.Reference;
-import org.indunet.fastproto.graph.AbstractFlow;
 
 /**
  * Resolve enable crypto flow.
@@ -29,7 +28,7 @@ import org.indunet.fastproto.graph.AbstractFlow;
  * @author Deng Ran
  * @since 2.5.0
  */
-public class EnableCryptoFlow extends AbstractFlow<Reference> {
+public class EnableCryptoFlow extends ResolvePipeline {
     @Override
     public void process(Reference reference) {
         val protocolClass = reference.getProtocolClass();
@@ -57,11 +56,6 @@ public class EnableCryptoFlow extends AbstractFlow<Reference> {
             }
         }
 
-        this.nextFlow(reference);
-    }
-
-    @Override
-    public long getFlowCode() {
-        return 0;
+        this.forward(reference);
     }
 }

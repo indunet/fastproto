@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,29 +14,29 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.pipeline.encode;
+package org.indunet.fastproto.graph.validate;
 
-import org.indunet.fastproto.ProtocolVersionAssist;
+import lombok.val;
+import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.pipeline.Pipeline;
-import org.indunet.fastproto.pipeline.CodecContext;
-import org.indunet.fastproto.pipeline.FlowCode;
+
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Write protocol version flow.
- *
- * @author Deng Ran
- * @since 1.7.0
+ * @author Chance
+ * @since 1.0.0
  */
-public class WriteProtocolVersionFlow extends Pipeline<CodecContext> {
-    @Override
-    public void process(CodecContext context) {
-        ProtocolVersionAssist.encode(context.getDatagram(), context.getReferenceGraph().root());
-
-        this.forward(context);
-    }
+public abstract class TypeValidator extends Pipeline<ValidatorContext> {
+    protected final static ConcurrentHashMap<Class<?>[], TypeValidator> validators = new ConcurrentHashMap<>();
 
     @Override
     public long getCode() {
-        return FlowCode.WRITE_PROTOCOL_VERSION_FLOW_CODE;
+        return 0;
+    }
+
+    public static TypeValidator create(Validator validator) {
+        val classes = validator.value();
+
+        return validators.computeIfAbsent(classes,  __ -> (TypeValidator) TypeValidator.create(classes));
     }
 }

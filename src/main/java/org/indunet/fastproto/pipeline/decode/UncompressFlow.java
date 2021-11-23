@@ -20,7 +20,7 @@ import lombok.val;
 import org.indunet.fastproto.CodecFeature;
 import org.indunet.fastproto.annotation.EnableCompress;
 import org.indunet.fastproto.compress.Compressor;
-import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.CodecContext;
 import org.indunet.fastproto.pipeline.FlowCode;
 
@@ -30,7 +30,7 @@ import org.indunet.fastproto.pipeline.FlowCode;
  * @author Deng Ran
  * @since 1.7.0
  */
-public class UncompressFlow extends AbstractFlow<CodecContext> {
+public class UncompressFlow extends Pipeline<CodecContext> {
     @Override
     public void process(CodecContext context) {
         boolean enableCompress =
@@ -45,11 +45,11 @@ public class UncompressFlow extends AbstractFlow<CodecContext> {
             context.setDatagram(compressor.uncompress(datagram));
         }
 
-        this.nextFlow(context);
+        this.forward(context);
     }
 
     @Override
-    public long getFlowCode() {
+    public long getCode() {
         return FlowCode.UNCOMPRESS_FLOW_CODE;
     }
 }

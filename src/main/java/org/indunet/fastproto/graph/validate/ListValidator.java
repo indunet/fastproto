@@ -14,29 +14,17 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.graph.resolve;
-
-import lombok.val;
-import org.indunet.fastproto.annotation.EnableChecksum;
-import org.indunet.fastproto.graph.Reference;
+package org.indunet.fastproto.graph.validate;
 
 /**
- * Resolve enable checksum flow.
+ * Abstract flow.
  *
  * @author Deng Ran
- * @since 2.5.0
+ * @since 2.3.0
  */
-public class EnableChecksumFlow extends ResolvePipeline {
+public class ListValidator extends TypeValidator {
     @Override
-    public void process(Reference reference) {
-        val protocolClass = reference.getProtocolClass();
+    public void process(ValidatorContext context) {
 
-        if (protocolClass.isAnnotationPresent(EnableChecksum.class)) {
-            val enableChecksum = protocolClass.getAnnotation(EnableChecksum.class);
-
-            reference.setEnableChecksum(enableChecksum);
-        }
-
-        this.forward(reference);
     }
 }

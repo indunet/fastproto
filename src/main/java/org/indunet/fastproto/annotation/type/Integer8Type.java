@@ -19,8 +19,12 @@ package org.indunet.fastproto.annotation.type;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.Integer8Decoder;
 import org.indunet.fastproto.encoder.Integer8Encoder;
+import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
+import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
+import org.indunet.fastproto.graph.validate.FieldValidator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -39,6 +43,7 @@ import java.util.function.Function;
 @TypeFlag
 @Decoder(Integer8Decoder.class)
 @Encoder(Integer8Encoder.class)
+@Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Integer8Type {
@@ -52,4 +57,6 @@ public @interface Integer8Type {
     Class<? extends Function<Integer, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Integer>>[] encodingFormula() default {};
+
+    String description() default "";
 }
