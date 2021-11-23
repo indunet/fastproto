@@ -16,6 +16,12 @@
 
 package org.indunet.fastproto.graph.validate;
 
+import lombok.val;
+import org.indunet.fastproto.annotation.type.ListType;
+import org.indunet.fastproto.exception.DecodingException;
+
+import java.util.Arrays;
+
 /**
  * Abstract flow.
  *
@@ -25,6 +31,11 @@ package org.indunet.fastproto.graph.validate;
 public class ListValidator extends TypeValidator {
     @Override
     public void process(ValidatorContext context) {
+        val type = (ListType) context.getTypeAnnotation();
 
+        if (!Arrays.stream(ListType.PROTOCOL_TYPES)
+                .anyMatch(t -> t == type.protocolType())) {
+            throw new DecodingException("Illegal protocol type.");
+        }
     }
 }
