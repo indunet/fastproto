@@ -14,20 +14,27 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.engine;
+package org.indunet.fastproto.graph.validate;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import lombok.Builder;
+import lombok.Data;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.function.Function;
 
 /**
- * Action annotation.
+ * Validation context.
  *
  * @author Deng Ran
- * @since 3.2.0
+ * @since 2.3.0
  */
-@Target(ElementType.METHOD)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Action {
+@Data
+@Builder
+public class ValidatorContext {
+    Field field;
+    Annotation typeAnnotation;
+    Class<? extends Annotation> typeAnnotationClass;
+    Class<? extends Function> decodingFormula;
+    Class<? extends Function> encodingFormula;
 }

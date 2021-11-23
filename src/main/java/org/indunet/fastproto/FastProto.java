@@ -19,7 +19,7 @@ package org.indunet.fastproto;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.graph.ReferenceResolver;
-import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.CodecContext;
 
 /**
@@ -60,7 +60,7 @@ public class FastProto {
 
         val feature = CodecFeature.of(graph.root());
 
-        AbstractFlow.getDecodeFlow(feature | codecFeature)
+        Pipeline.getDecodeFlow(feature | codecFeature)
                 .process(context);
 
         return context.getObject(protocolClass);
@@ -98,7 +98,7 @@ public class FastProto {
                 .build();
         val feature = CodecFeature.of(graph.root());
 
-        AbstractFlow.getEncodeFlow(feature | codecFeature)
+        Pipeline.getEncodeFlow(feature | codecFeature)
                 .process(context);
 
         return context.getDatagram();
@@ -116,7 +116,7 @@ public class FastProto {
                 .build();
         val feature = CodecFeature.of(graph.root());
 
-        AbstractFlow.getEncodeFlow(feature | CodecFeature.NON_INFER_LENGTH | codecFeature)
+        Pipeline.getEncodeFlow(feature | CodecFeature.NON_INFER_LENGTH | codecFeature)
                 .process(context);
 
         return context.getDatagram();

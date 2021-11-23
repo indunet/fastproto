@@ -14,14 +14,11 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.pipeline.validate;
+package org.indunet.fastproto.graph.validate;
 
 import lombok.val;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeFormulaException;
-import org.indunet.fastproto.pipeline.AbstractFlow;
-import org.indunet.fastproto.pipeline.FlowCode;
-import org.indunet.fastproto.pipeline.ValidationContext;
 import org.indunet.fastproto.util.TypeUtils;
 
 import java.lang.reflect.ParameterizedType;
@@ -34,10 +31,10 @@ import java.util.Arrays;
  * @author Deng Ran
  * @since 2.3.0
  */
-public class DecodeFormulaFlow extends AbstractFlow<ValidationContext> {
+public class DecodingFormulaValidator extends TypeValidator {
     @Override
-    public void process(ValidationContext context) {
-        val decodeFormula = context.getDecodeFormula();
+    public void process(ValidatorContext context) {
+        val decodeFormula = context.getDecodingFormula();
         val typeAnnotation = context.getTypeAnnotation();
         val field = context.getField();
 
@@ -60,11 +57,6 @@ public class DecodeFormulaFlow extends AbstractFlow<ValidationContext> {
                             CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
         }
 
-        this.nextFlow(context);
-    }
-
-    @Override
-    public long getFlowCode() {
-        return FlowCode.DECODE_FORMULA_FLOW_CODE;
+        this.forward(context);
     }
 }

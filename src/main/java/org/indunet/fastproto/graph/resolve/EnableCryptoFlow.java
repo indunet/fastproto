@@ -20,12 +20,7 @@ import lombok.val;
 import org.indunet.fastproto.annotation.EnableCrypto;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CryptoException;
-import org.indunet.fastproto.graph.AbstractFlow;
 import org.indunet.fastproto.graph.Reference;
-import org.jeasy.rules.annotation.Action;
-import org.jeasy.rules.annotation.Condition;
-import org.jeasy.rules.annotation.Fact;
-import org.jeasy.rules.annotation.Rule;
 
 /**
  * Resolve enable crypto flow.
@@ -33,16 +28,9 @@ import org.jeasy.rules.annotation.Rule;
  * @author Deng Ran
  * @since 2.5.0
  */
-@Rule(name = "crypto")
-public class EnableCryptoFlow extends AbstractFlow<Reference> {
-    @Condition
-    public boolean evaluate(@Fact("reference") Reference reference) {
-        return reference.getProtocolClass().isAnnotationPresent(EnableCrypto.class);
-    }
-
-    @Action
+public class EnableCryptoFlow extends ResolvePipeline {
     @Override
-    public void process(@Fact("reference") Reference reference) {
+    public void process(Reference reference) {
         val protocolClass = reference.getProtocolClass();
 
         if (protocolClass.isAnnotationPresent(EnableCrypto.class)) {
@@ -68,11 +56,6 @@ public class EnableCryptoFlow extends AbstractFlow<Reference> {
             }
         }
 
-        this.nextFlow(reference);
-    }
-
-    @Override
-    public long getFlowCode() {
-        return 0;
+        this.forward(reference);
     }
 }

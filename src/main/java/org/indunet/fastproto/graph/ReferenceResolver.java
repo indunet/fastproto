@@ -21,12 +21,7 @@ import lombok.val;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.TypeFlag;
 import org.indunet.fastproto.graph.Reference.ReferenceType;
-import org.indunet.fastproto.graph.resolve.*;
-import org.jeasy.rules.api.Fact;
-import org.jeasy.rules.api.Facts;
-import org.jeasy.rules.api.Rules;
-import org.jeasy.rules.api.RulesEngine;
-import org.jeasy.rules.core.DefaultRulesEngine;
+import org.indunet.fastproto.graph.resolve.ResolvePipeline;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -43,27 +38,8 @@ import java.util.function.Predicate;
  */
 public class ReferenceResolver {
     protected static ConcurrentHashMap<Class<?>, ReferenceGraph> graphs = new ConcurrentHashMap<>();
-    protected static AbstractFlow<Reference> resolveClassFlow = AbstractFlow.getResolveClassFlow();
-    protected static AbstractFlow<Reference> resolveFieldFlow = AbstractFlow.getResolveFieldFlow();
-
-    static Rules classRules = new Rules(new EndianFlow(),
-            new EnableFixedLengthFlow(),
-            new EnableProtocolVersionFlow(),
-            new EnableCryptoFlow(),
-            new EnableCompressFlow(),
-            new EnableChecksumFlow(),
-            new ConstructorFlow(),
-            new CodecIgnoreFlow());
-    static Rules fieldRules = new Rules();
-    static RulesEngine engine = new DefaultRulesEngine();
-
-    static {
-        fieldRules.register(new TypeAnnotationFlow(),
-                new EndianFlow(),
-                new CodecFlow(),
-                new CodecIgnoreFlow(),
-                new MyListener());
-    }
+    protected static ResolvePipeline resolveClassFlow = ResolvePipeline.getClassPipeline();
+    protected static ResolvePipeline resolveFieldFlow = ResolvePipeline.getFieldPipeline();
 
     public static ReferenceGraph resolve(@NonNull Class<?> protocolClass) {
         return graphs.computeIfAbsent(protocolClass, __ -> {
@@ -92,12 +68,7 @@ public class ReferenceResolver {
                             .referenceType(Reference.ReferenceType.FIELD)
                             .build();
 
-                    // resolveFieldFlow.process(s);
-                    Facts facts = new Facts();
-                    Fact<Reference> fact = new Fact<>("reference", r);
-                    facts.add(fact);
-                    engine.fire(fieldRules, facts);
-
+                    resolveFieldFlow.process(r);
                     graph.addReference(r);
                 } else if (isClass(field)) {
                     if (graph.contains(field.getType())) {

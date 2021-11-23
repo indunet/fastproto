@@ -14,39 +14,17 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.engine;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.List;
+package org.indunet.fastproto.graph.validate;
 
 /**
- * Flows.
+ * Abstract flow.
  *
  * @author Deng Ran
- * @since 3.2.0
+ * @since 2.3.0
  */
-public class Flows extends Iterable<Flow> {
-    List<Flow> flows = new ArrayList<>();
-
-    public Flows() {
-
-    }
-
-    public Flows(Flow... flows) {
-        Arrays.stream(flows)
-                .forEach(f -> {
-                    this.flows.add(f);
-                });
-    }
-
-    public void add(Flow flow) {
-        this.flows.add(flow);
-    }
-
+public class ListValidator extends TypeValidator {
     @Override
-    public Iterator<Flow> iterator() {
-        return null;
+    public void process(ValidatorContext context) {
+
     }
 }

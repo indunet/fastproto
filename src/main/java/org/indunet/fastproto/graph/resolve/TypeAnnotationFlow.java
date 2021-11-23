@@ -17,17 +17,10 @@
 package org.indunet.fastproto.graph.resolve;
 
 import lombok.val;
-import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.TypeFlag;
 import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.graph.Reference;
-import org.indunet.fastproto.graph.AbstractFlow;
 import org.indunet.fastproto.util.TypeUtils;
-import org.jeasy.rules.annotation.Action;
-import org.jeasy.rules.annotation.Condition;
-import org.jeasy.rules.annotation.Fact;
-import org.jeasy.rules.annotation.Rule;
-import org.jeasy.rules.api.Facts;
 
 import java.util.Arrays;
 
@@ -37,16 +30,9 @@ import java.util.Arrays;
  * @author Deng Ran
  * @since 2.5.0
  */
-@Rule(name = "type", priority = 1)
-public class TypeAnnotationFlow extends AbstractFlow<Reference> {
-    @Condition
-    public boolean evaluate(Facts facts) {
-        return true;
-    }
-
-    @Action
+public class TypeAnnotationFlow extends ResolvePipeline {
     @Override
-    public void process(@Fact("reference") Reference reference) {
+    public void process(Reference reference) {
         val field = reference.getField();
 
         val typeAnnotation = Arrays.stream(field.getAnnotations())
@@ -62,11 +48,6 @@ public class TypeAnnotationFlow extends AbstractFlow<Reference> {
         reference.setDecodeFormula(TypeUtils.decodingFormula(typeAnnotation));
         reference.setEncodeFormula(TypeUtils.encodingFormula(typeAnnotation));
 
-        this.nextFlow(reference);
-    }
-
-    @Override
-    public long getFlowCode() {
-        return 0;
+        this.forward(reference);
     }
 }

@@ -20,19 +20,12 @@ import lombok.val;
 import lombok.var;
 import org.indunet.fastproto.annotation.Constructor;
 import org.indunet.fastproto.exception.ResolveException;
-import org.indunet.fastproto.graph.AbstractFlow;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.graph.Reference.ConstructorType;
-import org.jeasy.rules.annotation.Action;
-import org.jeasy.rules.annotation.Condition;
-import org.jeasy.rules.annotation.Fact;
-import org.jeasy.rules.annotation.Rule;
-import org.jeasy.rules.api.Facts;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
 import java.util.Arrays;
-import java.util.stream.Collectors;
 
 /**
  * Resolve Constructor type flow.
@@ -40,16 +33,9 @@ import java.util.stream.Collectors;
  * @author Deng Ran
  * @since 2.5.0
  */
-@Rule(name = "constructor")
-public class ConstructorFlow extends AbstractFlow<Reference> {
-    @Condition
-    public boolean evaluate(Facts facts) {
-        return true;
-    }
-
-    @Action
+public class ConstructorFlow extends ResolvePipeline {
     @Override
-    public void process(@Fact("reference") Reference reference) {
+    public void process(Reference reference) {
         val protocolClass = reference.getProtocolClass();
         var cnt = 0;
 
@@ -86,11 +72,6 @@ public class ConstructorFlow extends AbstractFlow<Reference> {
             }
         }
 
-        this.nextFlow(reference);
-    }
-
-    @Override
-    public long getFlowCode() {
-        return 0;
+        this.forward(reference);
     }
 }
