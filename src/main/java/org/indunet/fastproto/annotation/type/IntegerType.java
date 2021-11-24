@@ -47,7 +47,10 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface IntegerType {
-    Type[] JAVA_TYPES = {Integer.class, Integer.TYPE};
+    Type[] ALLOWED_JAVA_TYPES = {
+            int.class,
+            Integer.class
+    };
     int SIZE = Integer.SIZE >> 3;
     int MAX_VALUE = Integer.MAX_VALUE;
     int MIN_VALUE = Integer.MIN_VALUE;

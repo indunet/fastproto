@@ -51,7 +51,7 @@ public class EnumDecoderTest {
         @EnumType(0)
         Color color1;
 
-        @EnumType(value = 1, fieldName = "code")
+        @EnumType(value = 1, field = "code")
         Color color2;
     }
 

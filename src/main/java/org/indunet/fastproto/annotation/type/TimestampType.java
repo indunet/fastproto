@@ -25,10 +25,7 @@ import org.indunet.fastproto.decoder.TimestampDecoder;
 import org.indunet.fastproto.encoder.TimestampEncoder;
 import org.indunet.fastproto.graph.validate.*;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 import java.lang.reflect.Type;
 import java.sql.Timestamp;
 import java.util.Date;
@@ -49,12 +46,18 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TimestampType {
-    Type[] JAVA_TYPES = {Timestamp.class, Date.class};
-    ProtocolType[] PROTOCOL_TYPES = {ProtocolType.UINTEGER32, ProtocolType.LONG};
+    Type[] ALLOWED_JAVA_TYPES = {
+            Timestamp.class,
+            Date.class
+    };
+    Class<?>[] ALLOWED_GENERIC_TYPES = {
+            ProtocolType.UINTEGER32,
+            ProtocolType.LONG
+    };
 
     int value();
 
-    ProtocolType protocolType() default ProtocolType.LONG;
+    Class<? extends Annotation> genericType() default LongType.class;
 
     TimeUnit unit() default TimeUnit.MILLISECONDS;
 

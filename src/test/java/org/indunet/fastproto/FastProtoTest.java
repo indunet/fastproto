@@ -21,7 +21,7 @@ import lombok.SneakyThrows;
 import lombok.val;
 import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.annotation.EnableCrypto;
-import org.indunet.fastproto.annotation.EnableProtocolVersion;
+import org.indunet.fastproto.annotation.EnableVersion;
 import org.indunet.fastproto.annotation.Endian;
 import org.indunet.fastproto.annotation.type.ArrayType;
 import org.indunet.fastproto.annotation.type.UInteger64Type;
@@ -343,7 +343,7 @@ public class FastProtoTest {
 
     }
 
-    @EnableProtocolVersion(value = 2, version = 10)
+    @EnableVersion(value = 2, version = 10)
     public static class ProtocolVersionObject {
 
     }
@@ -355,7 +355,7 @@ public class FastProtoTest {
 
     @Data
     public static class ArrayObject {
-        @ArrayType(value = 0, length = 5, protocolType = ProtocolType.UINTEGER16)
+        @ArrayType(value = 0, length = 5, genericType = ProtocolType.UINTEGER16)
         int[] ints;
     }
 }

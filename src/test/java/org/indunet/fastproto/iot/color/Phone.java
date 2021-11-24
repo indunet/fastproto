@@ -26,10 +26,10 @@ import org.indunet.fastproto.annotation.type.EnumType;
  */
 @Data
 public class Phone {
-    @EnumType(value = 0, fieldName = "code")
+    @EnumType(value = 0, field = "code")
     Color backCover;
 
-    @EnumType(value = 1, fieldName = "code")
+    @EnumType(value = 1, field = "code")
     Color frontCover;
 
     transient static final int LENGTH = 10;

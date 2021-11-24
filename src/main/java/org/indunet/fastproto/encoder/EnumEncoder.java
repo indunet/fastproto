@@ -43,7 +43,7 @@ public class EnumEncoder implements TypeEncoder {
         val value = context.getValue(Enum.class);
 
         this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(),
-                type.protocolType(), type.fieldName(), value);
+                type.genericType(), type.field(), value);
     }
 
     public <T extends Enum> void encode(@NonNull byte[] datagram, int offset, EndianPolicy policy,

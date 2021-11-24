@@ -25,7 +25,6 @@ import org.indunet.fastproto.annotation.type.TimestampType;
 import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
-import org.indunet.fastproto.exception.OutOfBoundsException;
 import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 
@@ -47,7 +46,7 @@ public class TimestampDecoder<T extends Date> implements TypeDecoder<T> {
     public T decode(@NonNull DecodeContext context) {
         EndianPolicy policy = context.getEndianPolicy();
         TimestampType type = context.getTypeAnnotation(TimestampType.class);
-        ProtocolType dataType = type.protocolType();
+        ProtocolType dataType = type.genericType();
         val clazz = context.getReference()
                 .getField().getType();
 

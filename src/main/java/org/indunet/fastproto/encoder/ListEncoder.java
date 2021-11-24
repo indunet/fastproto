@@ -26,7 +26,6 @@ import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.exception.SpaceNotEnoughException;
 import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
-import org.indunet.fastproto.util.TypeUtils;
 
 import java.text.MessageFormat;
 import java.util.List;
@@ -47,7 +46,7 @@ public class ListEncoder implements TypeEncoder {
         val type = context.getTypeAnnotation(ListType.class);
 
         this.encode(context.getDatagram(), type.value(), type.length(),
-                type.protocolType(), context.getEndianPolicy(), (List<?>) context.getValue());
+                type.genericType(), context.getEndianPolicy(), (List<?>) context.getValue());
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, int length,

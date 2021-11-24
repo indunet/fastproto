@@ -14,34 +14,34 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto;
+package org.indunet.fastproto.util;
 
 import lombok.NonNull;
 import lombok.val;
-import org.indunet.fastproto.annotation.EnableProtocolVersion;
+import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.annotation.EnableVersion;
 import org.indunet.fastproto.annotation.type.IntegerType;
 import org.indunet.fastproto.annotation.type.UInteger16Type;
 import org.indunet.fastproto.annotation.type.UInteger8Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.ProtocolVersionException;
 import org.indunet.fastproto.graph.Reference;
-import org.indunet.fastproto.util.CodecUtils;
 
 /**
- * Protocol version assist.
+ * Protocol version utils.
  *
  * @author Deng Ran
  * @since 1.5.3
  */
-public class ProtocolVersionAssist {
+public class VersionUtils {
     public static boolean validate(@NonNull byte[] datagram, @NonNull Reference reference) {
         if (reference.getEnableProtocolVersion() == null) {
             return true;
         }
 
-        EnableProtocolVersion enableProtocolVersion = reference.getEnableProtocolVersion();
+        EnableVersion enableVersion = reference.getEnableProtocolVersion();
 
-        return enableProtocolVersion.version() == decode(datagram, reference);
+        return enableVersion.version() == decode(datagram, reference);
     }
 
     public static int decode(@NonNull byte[] datagram, @NonNull Reference reference) {
@@ -49,7 +49,7 @@ public class ProtocolVersionAssist {
             return -1;
         }
 
-        EnableProtocolVersion enableProtocolVersion = reference.getEnableProtocolVersion();
+        EnableVersion enableProtocolVersion = reference.getEnableProtocolVersion();
         EndianPolicy policy = endianPolicy(reference);
         int byteOffset = enableProtocolVersion.value();
 
@@ -70,7 +70,7 @@ public class ProtocolVersionAssist {
             return;
         }
 
-        EnableProtocolVersion versionAnnotation = reference.getEnableProtocolVersion();
+        EnableVersion versionAnnotation = reference.getEnableProtocolVersion();
         EndianPolicy policy = endianPolicy(reference);
         int byteOffset = versionAnnotation.value();
         int version = versionAnnotation.version();
@@ -91,7 +91,7 @@ public class ProtocolVersionAssist {
     }
 
     public static EndianPolicy endianPolicy(@NonNull Reference reference) {
-        EnableProtocolVersion enableProtocolVersion = reference.getEnableProtocolVersion();
+        EnableVersion enableProtocolVersion = reference.getEnableProtocolVersion();
 
         if (enableProtocolVersion.endianPolicy().length > 0) {
             return enableProtocolVersion.endianPolicy()[0];

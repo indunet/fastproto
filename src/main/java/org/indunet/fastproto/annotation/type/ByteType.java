@@ -47,7 +47,10 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ByteType {
-    Type[] JAVA_TYPES = {Byte.class, Byte.TYPE};
+    Type[] ALLOWED_JAVA_TYPES = {
+            byte.class,
+            Byte.class
+    };
     int SIZE = Byte.SIZE >> 3;
     int MAX_VALUE = Byte.MAX_VALUE;
     int MIN_VALUE = Byte.MIN_VALUE;

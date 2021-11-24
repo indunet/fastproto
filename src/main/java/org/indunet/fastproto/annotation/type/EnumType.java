@@ -28,10 +28,7 @@ import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.FieldValidator;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 import java.lang.reflect.Type;
 import java.util.function.Function;
 
@@ -49,13 +46,21 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EnumType {
-    Type[] JAVA_TYPES = {Enum.class};
+    Type[] ALLOWED_JAVA_TYPES = {
+            Enum.class
+    };
+
+    Class<?>[] ALLOWED_GENERIC_TYPES = {
+            ProtocolType.UINTEGER8,
+            ProtocolType.UINTEGER16,
+            ProtocolType.INTEGER
+    };
 
     int value();
 
-    String fieldName() default "";
+    String field() default "";
 
-    ProtocolType protocolType() default ProtocolType.UINTEGER8;
+    Class<? extends Annotation> genericType() default UInteger8Type.class;
 
     EndianPolicy[] endianPolicy() default {};
 

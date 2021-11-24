@@ -25,11 +25,9 @@ import org.indunet.fastproto.annotation.type.TimestampType;
 import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodingException;
-import org.indunet.fastproto.exception.SpaceNotEnoughException;
 import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 
-import java.sql.Timestamp;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -47,7 +45,7 @@ public class TimestampEncoder implements TypeEncoder {
         TimestampType type = context.getTypeAnnotation(TimestampType.class);
         val value = context.getValue(Date.class);
 
-        this.encode(context.getDatagram(), type.value(), type.protocolType(), policy, type.unit(), value);
+        this.encode(context.getDatagram(), type.value(), type.genericType(), policy, type.unit(), value);
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull ProtocolType dataType, @NonNull EndianPolicy policy, @NonNull TimeUnit unit, @NonNull Date value) {

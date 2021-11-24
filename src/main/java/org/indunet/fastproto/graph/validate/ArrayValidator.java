@@ -32,13 +32,13 @@ import java.util.Arrays;
 public class ArrayValidator extends TypeValidator {
     @Override
     public void process(ValidatorContext context) {
-        val typeAnnotation = context.getTypeAnnotation();
+        val protocolType = context.getProtocolType();
 
         if (typeAnnotation instanceof ArrayType) {
-            val protocolType = ((ArrayType) typeAnnotation).protocolType();
+            val protocolType = ((ArrayType) typeAnnotation).genericType();
             val protocolTypes = ProtocolType.valueOf(typeAnnotation).protocolTypes();
 
-            Arrays.stream(protocolTypes)
+            Arrays.stream(protocolType.)
                     .filter(t -> t == protocolType)
                     .findAny()
                     .orElseThrow(CodecException::new);

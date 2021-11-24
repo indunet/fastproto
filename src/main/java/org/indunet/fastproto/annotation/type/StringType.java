@@ -47,13 +47,15 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface StringType {
-    Type[] JAVA_TYPES = {String.class};
+    Type[] ALLOWED_JAVA_TYPES = {
+            String.class
+    };
 
     int value();
 
     int length() default -1;
 
-    String charsetName() default "UTF-8";
+    String charset() default "UTF-8";
 
     Class<? extends Function<String, ?>>[] decodingFormula() default {};
 

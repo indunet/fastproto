@@ -33,8 +33,8 @@ public class ListValidator extends TypeValidator {
     public void process(ValidatorContext context) {
         val type = (ListType) context.getTypeAnnotation();
 
-        if (!Arrays.stream(ListType.PROTOCOL_TYPES)
-                .anyMatch(t -> t == type.protocolType())) {
+        if (!Arrays.stream(ListType.ALLOWED_GENERIC_TYPES)
+                .anyMatch(t -> t == type.genericType())) {
             throw new DecodingException("Illegal protocol type.");
         }
     }

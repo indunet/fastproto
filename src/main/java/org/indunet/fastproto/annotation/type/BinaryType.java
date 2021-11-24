@@ -48,7 +48,9 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BinaryType {
-    Type[] JAVA_TYPES = {byte[].class};
+    Type[] ALLOWED_JAVA_TYPES = {
+            byte[].class
+    };
 
     int value();
 

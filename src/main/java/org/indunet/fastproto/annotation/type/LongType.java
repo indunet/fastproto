@@ -47,7 +47,10 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface LongType {
-    Type[] JAVA_TYPES = {Long.class, Long.TYPE};
+    Type[] ALLOWED_JAVA_TYPES = {
+            long.class,
+            Long.TYPE
+    };
     int SIZE = Long.SIZE >> 3;
     long MAX_VALUE = Long.MAX_VALUE;
     long MIN_VALUE = Long.MIN_VALUE;

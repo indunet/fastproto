@@ -17,8 +17,11 @@
 package org.indunet.fastproto.graph.resolve;
 
 import lombok.val;
-import org.indunet.fastproto.annotation.EnableProtocolVersion;
+import org.indunet.fastproto.annotation.EnableVersion;
+import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.graph.Reference;
+
+import java.util.Arrays;
 
 /**
  * Resolve enable protocol version flow.
@@ -26,15 +29,21 @@ import org.indunet.fastproto.graph.Reference;
  * @author Deng Ran
  * @since 2.5.0
  */
-public class EnableProtocolVersionFlow extends ResolvePipeline {
+public class EnableVersionFlow extends ResolvePipeline {
     @Override
     public void process(Reference reference) {
         val protocolClass = reference.getProtocolClass();
 
-        if (protocolClass.isAnnotationPresent(EnableProtocolVersion.class)) {
-            val enableProtocolVersion = protocolClass.getAnnotation(EnableProtocolVersion.class);
+        if (protocolClass.isAnnotationPresent(EnableVersion.class)) {
+            val enableVersion = protocolClass.getAnnotation(EnableVersion.class);
 
-            reference.setEnableProtocolVersion(enableProtocolVersion);
+            if (Arrays.stream(EnableVersion.PROTOCOL_TYPES)
+                    .anyMatch(t -> t == enableVersion.protocolType())) {
+                reference.setEnableProtocolVersion(enableVersion);
+            } else {
+                throw new ResolveException(
+                        String.format("Illegal protocol type for @EnableVersion of %s", protocolClass.getName()));
+            }
         }
 
         this.forward(reference);

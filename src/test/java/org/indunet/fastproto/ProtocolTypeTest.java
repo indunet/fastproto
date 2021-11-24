@@ -16,49 +16,31 @@
 
 package org.indunet.fastproto;
 
-import org.indunet.fastproto.annotation.type.ArrayType;
-import org.indunet.fastproto.annotation.type.TimestampType;
-import org.indunet.fastproto.annotation.type.UInteger16Type;
-import org.indunet.fastproto.util.AnnotationUtils;
+import lombok.SneakyThrows;
+import lombok.val;
+import org.indunet.fastproto.annotation.type.UInteger8Type;
 import org.junit.jupiter.api.Test;
 
-import java.sql.Timestamp;
-import java.util.Date;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Deng Ran
- * @since 1.3.0
+ * @since 3.2.0
  */
 public class ProtocolTypeTest {
     @Test
-    public void testJavaType() {
-        ProtocolType type = ProtocolType.valueOf(AnnotationUtils.mock(TimestampType.class, 0));
+    @SneakyThrows
+    public void testProxy() {
+        val field = TestObj.class.getDeclaredField("value");
+        val typeAnnotation = field.getAnnotation(UInteger8Type.class);
+        val proxy = ProtocolType.proxy(typeAnnotation);
 
-        assertArrayEquals(type.javaTypes(), new Class<?>[] {Timestamp.class, Date.class});
+        assertEquals(0, proxy.value());
+        assertEquals(UInteger8Type.SIZE, proxy.size());
     }
 
-    @Test
-    public void testSize() {
-        ProtocolType type = ProtocolType.valueOf(AnnotationUtils.mock(UInteger16Type.class, 0));
-
-        assertEquals(type.size(), 2);
-    }
-
-    @Test
-    public void testProtocolTypes() {
-        ProtocolType type = ProtocolType.valueOf(AnnotationUtils.mock(TimestampType.class, 0));
-
-        assertArrayEquals(type.protocolTypes(), new ProtocolType[] {ProtocolType.UINTEGER32, ProtocolType.LONG});
-    }
-
-    @Test
-    public void testIsSupported() {
-        assertTrue(ProtocolType.isSupported(Long.TYPE));
-        assertTrue(ProtocolType.isSupported(Integer.TYPE));
-        assertTrue(ProtocolType.isSupported(Timestamp.class));
-
-        assertFalse(ProtocolType.isSupported(Class.class));
+    public static class TestObj {
+        @UInteger8Type(0)
+        int value;
     }
 }

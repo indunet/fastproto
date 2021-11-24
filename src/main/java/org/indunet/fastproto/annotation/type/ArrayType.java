@@ -28,10 +28,7 @@ import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.FieldValidator;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 import java.lang.reflect.Type;
 import java.util.function.Function;
 
@@ -48,33 +45,41 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ArrayType {
-    Type[] JAVA_TYPES = {
-            char[].class, Character[].class,
-            byte[].class, Byte[].class,
-            short[].class, Short[].class,
-            int[].class, Integer[].class,
-            long[].class, Long[].class,
-            float[].class, Float[].class,
-            double[].class, Double[].class
+    Type[] ALLOWED_JAVA_TYPES = {
+            char[].class,
+            Character[].class,
+            byte[].class,
+            Byte[].class,
+            short[].class,
+            Short[].class,
+            int[].class,
+            Integer[].class,
+            long[].class,
+            Long[].class,
+            float[].class,
+            Float[].class,
+            double[].class,
+            Double[].class
     };
-    ProtocolType[] PROTOCOL_TYPES = {
-      ProtocolType.CHARACTER,
-      ProtocolType.BYTE,
-      ProtocolType.SHORT,
-      ProtocolType.INTEGER,
-      ProtocolType.LONG,
-      ProtocolType.FLOAT,
-      ProtocolType.DOUBLE,
-      ProtocolType.INTEGER8,
-      ProtocolType.INTEGER16,
-      ProtocolType.UINTEGER8,
-      ProtocolType.UINTEGER16,
-      ProtocolType.UINTEGER32,
+
+    Class<?>[] ALLOWED_GENERIC_TYPES = {
+            ProtocolType.CHARACTER,
+            ProtocolType.BYTE,
+            ProtocolType.SHORT,
+            ProtocolType.INTEGER,
+            ProtocolType.LONG,
+            ProtocolType.FLOAT,
+            ProtocolType.DOUBLE,
+            ProtocolType.INTEGER8,
+            ProtocolType.INTEGER16,
+            ProtocolType.UINTEGER8,
+            ProtocolType.UINTEGER16,
+            ProtocolType.UINTEGER32,
     };
 
     int value();
 
-    ProtocolType protocolType();
+    Class<? extends Annotation> genericType();
 
     int length();
 

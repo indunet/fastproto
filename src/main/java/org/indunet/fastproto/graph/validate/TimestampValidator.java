@@ -36,7 +36,7 @@ public class TimestampValidator extends TypeValidator {
         val typeAnnotation = context.getTypeAnnotation();
 
         if (typeAnnotation instanceof TimestampType) {
-            val protocolType = ((TimestampType) typeAnnotation).protocolType();
+            val protocolType = ((TimestampType) typeAnnotation).genericType();
             val unit = ((TimestampType) typeAnnotation).unit();
 
             val condition1 = protocolType == ProtocolType.UINTEGER32 && unit == TimeUnit.SECONDS;

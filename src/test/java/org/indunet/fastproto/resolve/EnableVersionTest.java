@@ -14,29 +14,31 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.graph.validate;
+package org.indunet.fastproto.resolve;
 
-import lombok.Builder;
-import lombok.Data;
+import lombok.val;
+import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.ProtocolType;
+import org.indunet.fastproto.annotation.EnableVersion;
+import org.indunet.fastproto.exception.ResolveException;
+import org.junit.jupiter.api.Test;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.util.function.Function;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Validation context.
- *
  * @author Deng Ran
- * @since 2.3.0
+ * @since 3.2.0
  */
-@Data
-@Builder
-public class ValidatorContext {
-    Field field;
-    Annotation typeAnnotation;
-    ProtocolType protocolType;
-    Class<? extends Annotation> typeAnnotationClass;
-    Class<? extends Function> decodingFormula;
-    Class<? extends Function> encodingFormula;
+public class EnableVersionTest {
+    @EnableVersion(value = 0, version = 2, protocolType = ProtocolType.UINTEGER32)
+    public static class Vehicle {
+
+    }
+
+    @Test
+    public void testResolve() {
+        val bytes = new byte[10];
+
+        assertThrows(ResolveException.class, () -> FastProto.parseFrom(bytes, Vehicle.class));
+    }
 }

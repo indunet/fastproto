@@ -26,7 +26,6 @@ import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
 import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
-import org.indunet.fastproto.util.TypeUtils;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -48,7 +47,7 @@ public class ListDecoder implements TypeDecoder<List<?>> {
         val type = context.getTypeAnnotation(ArrayType.class);
 
         return decode(context.getDatagram(), type.value(), type.length(),
-                type.protocolType(), context.getEndianPolicy());
+                type.genericType(), context.getEndianPolicy());
     }
 
     public List decode(@NonNull final byte[] datagram, int byteOffset, int length,
