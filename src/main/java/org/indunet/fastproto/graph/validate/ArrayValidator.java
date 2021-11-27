@@ -14,15 +14,12 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.pipeline.validate;
+package org.indunet.fastproto.graph.validate;
 
 import lombok.val;
+import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.ArrayType;
 import org.indunet.fastproto.exception.CodecException;
-import org.indunet.fastproto.pipeline.AbstractFlow;
-import org.indunet.fastproto.pipeline.FlowCode;
-import org.indunet.fastproto.pipeline.ValidationContext;
-import org.indunet.fastproto.util.TypeUtils;
 
 import java.util.Arrays;
 
@@ -32,14 +29,14 @@ import java.util.Arrays;
  * @author Deng Ran
  * @since 2.3.0
  */
-public class ArrayFlow extends AbstractFlow<ValidationContext> {
+public class ArrayValidator extends TypeValidator {
     @Override
-    public void process(ValidationContext context) {
+    public void process(ValidatorContext context) {
         val typeAnnotation = context.getTypeAnnotation();
 
         if (typeAnnotation instanceof ArrayType) {
             val protocolType = ((ArrayType) typeAnnotation).protocolType();
-            val protocolTypes = TypeUtils.protocolTypes(typeAnnotation);
+            val protocolTypes = ProtocolType.valueOf(typeAnnotation).protocolTypes();
 
             Arrays.stream(protocolTypes)
                     .filter(t -> t == protocolType)
@@ -47,11 +44,6 @@ public class ArrayFlow extends AbstractFlow<ValidationContext> {
                     .orElseThrow(CodecException::new);
         }
 
-        this.nextFlow(context);
-    }
-
-    @Override
-    public long getFlowCode() {
-        return FlowCode.ARRAY_FLOW_CODE;
+        this.forward(context);
     }
 }

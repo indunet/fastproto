@@ -19,8 +19,12 @@ package org.indunet.fastproto.annotation.type;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.BooleanDecoder;
 import org.indunet.fastproto.encoder.BooleanEncoder;
+import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
+import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
+import org.indunet.fastproto.graph.validate.FieldValidator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -40,12 +44,12 @@ import java.util.function.Function;
 @TypeFlag
 @Decoder(BooleanDecoder.class)
 @Encoder(BooleanEncoder.class)
+@Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BooleanType {
     Type[] JAVA_TYPES = {Boolean.class, Boolean.TYPE};
     int SIZE = 1;
-    boolean AUTO_TYPE = true;
     int MAX_BIT_OFFSET = 7;
     int MIN_BIT_OFFSET = 0;
 
@@ -56,4 +60,6 @@ public @interface BooleanType {
     Class<? extends Function<Boolean, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Boolean>>[] encodingFormula() default {};
+
+    String description() default "";
 }

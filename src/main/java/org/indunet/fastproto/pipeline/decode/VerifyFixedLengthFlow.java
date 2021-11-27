@@ -18,7 +18,7 @@ package org.indunet.fastproto.pipeline.decode;
 
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.FixedLengthException;
-import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.CodecContext;
 import org.indunet.fastproto.pipeline.FlowCode;
 
@@ -30,7 +30,7 @@ import java.text.MessageFormat;
  * @author Deng Ran
  * @since 2.4.0
  */
-public class VerifyFixedLengthFlow extends AbstractFlow<CodecContext> {
+public class VerifyFixedLengthFlow extends Pipeline<CodecContext> {
     @Override
     public void process(CodecContext context) {
         int fixedLength = context.getReferenceGraph()
@@ -44,11 +44,11 @@ public class VerifyFixedLengthFlow extends AbstractFlow<CodecContext> {
                     CodecError.FIXED_LENGTH_UNMATCH.getMessage(), fixedLength, length));
         }
 
-        this.nextFlow(context);
+        this.forward(context);
     }
 
     @Override
-    public long getFlowCode() {
+    public long getCode() {
         return FlowCode.VERIFY_FIXED_LENGTH_FLOW_CODE;
     }
 }

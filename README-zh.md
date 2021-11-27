@@ -4,12 +4,12 @@
 
 # *Fast Protocol*
 
-[![Build Status](https://travis-ci.com/indunet/fastproto.svg?branch=master)](https://travis-ci.com/indunet/fastproto)
+[![Build Status](https://app.travis-ci.com/indunet/fastproto.svg?branch=master)](https://app.travis-ci.com/indunet/fastproto)
 [![codecov](https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU)](https://codecov.io/gh/indunet/fastproto)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ed904d7aacd142f08b5cd50b16b1d74b)](https://www.codacy.com/gh/indunet/fastproto/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=indunet/fastproto&amp;utm_campaign=Badge_Grade)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![JetBrain Support](https://img.shields.io/badge/JetBrain-support-blue)](https://www.jetbrains.com/community/opensource)
-[![License](https://img.shields.io/badge/license-Apache%202-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+[![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 FastProto是一款采用Java编写的协议化二进制序列化和反序列化工具，不仅可以通过注解自定义二进制协议，而且支持数据压缩、加密、数据完整性校验和
 协议版本验证。FastProto使用一种全新的方式解决了Java跨语言和跨平台的数据交换问题，尤其适用于物联网（IoT）领域。
@@ -212,7 +212,7 @@ FastProto支持Java基础数据类型、Timestamp、String和字节数组，以�
 | `@UInteger64Type` | BigInteger        | unsigned long long | 8 字节  |  √ |    
 | `@BinaryType`     | byte[]             | char[]         | N 字节     |  √  |    
 | `@StringType`     | java.lang.String   | --             | N 字节     |  √ |    
-| `@TimestampType`  | java.sql.Timestamp | --             | 4 / 8 字节 |  √  |    
+| `@TimestampType`  | java.sql.Timestamp / java.util.Date | --             | 4 / 8 字节 |  √  |    
 | `@ArrayType`     | 基本数据类型数组   | 基本数据类型数组             | N 字节     |  √ |    
 | `@ListType`  | 基本数据类型列表 | --             | N 字节 |  √  |    
 | `@EnumType`     | 枚举   | 枚举             | N 字节     |  √ |
@@ -228,6 +228,7 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 | `@EnableProtocolVersion` | Class     |  启动协议版本校验  |
 | `@EnableChecksum`      |  Class      |  启动数据完整性校验              |
 | `@EnableCrypto`      |  Class      |    启动加密和解密             |
+| `@EnableFixedLength`      |  Class      |    启动固定报文长度             |
 
 ## *基准测试*
 

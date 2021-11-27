@@ -52,7 +52,7 @@ public class ListEncoder implements TypeEncoder {
 
     public void encode(@NonNull byte[] datagram, int byteOffset, int length,
                        @NonNull ProtocolType type, @NonNull EndianPolicy policy, List<?> values) {
-        int size = TypeUtils.size(type);
+        int size = type.size();
         int bo = ReverseUtils.offset(datagram.length, byteOffset);
 
         if (bo < 0) {

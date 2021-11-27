@@ -20,7 +20,7 @@ import lombok.NonNull;
 import org.indunet.fastproto.ProtocolVersionAssist;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.ProtocolVersionException;
-import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.CodecContext;
 import org.indunet.fastproto.pipeline.FlowCode;
 
@@ -30,18 +30,18 @@ import org.indunet.fastproto.pipeline.FlowCode;
  * @author Deng Ran
  * @since 1.7.0
  */
-public class VerifyProtocolVersionFlow extends AbstractFlow<CodecContext> {
+public class VerifyProtocolVersionFlow extends Pipeline<CodecContext> {
     @Override
     public void process(@NonNull CodecContext context) {
         if (!ProtocolVersionAssist.validate(context.getDatagram(), context.getReferenceGraph().root())) {
             throw new ProtocolVersionException(CodecError.PROTOCOL_VERSION_NOT_MATCH);
         } else {
-            this.nextFlow(context);
+            this.forward(context);
         }
     }
 
     @Override
-    public long getFlowCode() {
+    public long getCode() {
         return FlowCode.VERIFY_PROTOCOL_VERSION_FLOW_CODE;
     }
 }

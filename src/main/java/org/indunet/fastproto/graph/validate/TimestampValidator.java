@@ -14,16 +14,13 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.pipeline.validate;
+package org.indunet.fastproto.graph.validate;
 
 import lombok.val;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.TimestampType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
-import org.indunet.fastproto.pipeline.AbstractFlow;
-import org.indunet.fastproto.pipeline.FlowCode;
-import org.indunet.fastproto.pipeline.ValidationContext;
 
 import java.util.concurrent.TimeUnit;
 
@@ -33,9 +30,9 @@ import java.util.concurrent.TimeUnit;
  * @author Deng Ran
  * @since 2.3.0
  */
-public class TimestampFlow extends AbstractFlow<ValidationContext> {
+public class TimestampValidator extends TypeValidator {
     @Override
-    public void process(ValidationContext context) {
+    public void process(ValidatorContext context) {
         val typeAnnotation = context.getTypeAnnotation();
 
         if (typeAnnotation instanceof TimestampType) {
@@ -50,11 +47,6 @@ public class TimestampFlow extends AbstractFlow<ValidationContext> {
             }
         }
 
-        this.nextFlow(context);
-    }
-
-    @Override
-    public long getFlowCode() {
-        return FlowCode.TIMESTAMP_FLOW_CODE;
+        this.forward(context);
     }
 }

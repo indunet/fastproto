@@ -16,12 +16,16 @@
 
 package org.indunet.fastproto;
 
+import org.indunet.fastproto.annotation.type.ArrayType;
 import org.indunet.fastproto.annotation.type.TimestampType;
+import org.indunet.fastproto.annotation.type.UInteger16Type;
+import org.indunet.fastproto.util.AnnotationUtils;
 import org.junit.jupiter.api.Test;
 
 import java.sql.Timestamp;
+import java.util.Date;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Deng Ran
@@ -30,8 +34,31 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class ProtocolTypeTest {
     @Test
     public void testJavaType() {
-        ProtocolType type = ProtocolType.valueOf(TimestampType.class);
+        ProtocolType type = ProtocolType.valueOf(AnnotationUtils.mock(TimestampType.class, 0));
 
-        assertEquals(type.javaType(), Timestamp.class);
+        assertArrayEquals(type.javaTypes(), new Class<?>[] {Timestamp.class, Date.class});
+    }
+
+    @Test
+    public void testSize() {
+        ProtocolType type = ProtocolType.valueOf(AnnotationUtils.mock(UInteger16Type.class, 0));
+
+        assertEquals(type.size(), 2);
+    }
+
+    @Test
+    public void testProtocolTypes() {
+        ProtocolType type = ProtocolType.valueOf(AnnotationUtils.mock(TimestampType.class, 0));
+
+        assertArrayEquals(type.protocolTypes(), new ProtocolType[] {ProtocolType.UINTEGER32, ProtocolType.LONG});
+    }
+
+    @Test
+    public void testIsSupported() {
+        assertTrue(ProtocolType.isSupported(Long.TYPE));
+        assertTrue(ProtocolType.isSupported(Integer.TYPE));
+        assertTrue(ProtocolType.isSupported(Timestamp.class));
+
+        assertFalse(ProtocolType.isSupported(Class.class));
     }
 }

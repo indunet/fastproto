@@ -21,8 +21,10 @@ import lombok.var;
 import org.indunet.fastproto.annotation.Constructor;
 import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.graph.Reference;
-import org.indunet.fastproto.graph.AbstractFlow;
+import org.indunet.fastproto.graph.Reference.ConstructorType;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
 /**
@@ -31,7 +33,7 @@ import java.util.Arrays;
  * @author Deng Ran
  * @since 2.5.0
  */
-public class ConstructorFlow extends AbstractFlow<Reference> {
+public class ConstructorFlow extends ResolvePipeline {
     @Override
     public void process(Reference reference) {
         val protocolClass = reference.getProtocolClass();
@@ -40,9 +42,9 @@ public class ConstructorFlow extends AbstractFlow<Reference> {
         if (Arrays.stream(protocolClass.getConstructors())
                 .anyMatch(c -> c.isAnnotationPresent(Constructor.class))) {
             cnt = Arrays.stream(protocolClass.getConstructors())
-                .filter(c -> c.isAnnotationPresent(Constructor.class))
+                    .filter(c -> c.isAnnotationPresent(Constructor.class))
                     .findAny()
-                     .get()
+                    .get()
                     .getParameterCount();
         } else {
             cnt = Arrays.stream(protocolClass.getConstructors())
@@ -52,20 +54,24 @@ public class ConstructorFlow extends AbstractFlow<Reference> {
         }
 
         if (cnt == 0) {
-            reference.setConstructorType(Reference.ConstructorType.NO_ARGS);
-        } else if (protocolClass.getDeclaredFields().length != cnt) {
-                throw new ResolveException(String.format(
-                        "The number of constructor parameters of %s does not match the number of class fields.",
-                        protocolClass.getName()));
+            reference.setConstructorType(ConstructorType.NO_ARGS);
         } else {
-            reference.setConstructorType(Reference.ConstructorType.ALL_ARGS);
+            // Filter transient fields, jacoco would add it during test.
+            val paramTypes = Arrays.stream(protocolClass.getDeclaredFields())
+                    .filter(f -> !Modifier.isTransient(f.getModifiers()))
+                    .map(Field::getType)
+                    .toArray(Class<?>[]::new);
+
+            try {
+                protocolClass.getConstructor(paramTypes);
+                reference.setConstructorType(ConstructorType.ALL_ARGS);
+            } catch (NoSuchMethodException e) {
+                throw new ResolveException(String.format(
+                        "The type of constructor parameters and class fields does not match.",
+                        protocolClass.getName()), e);
+            }
         }
 
-        this.nextFlow(reference);
-    }
-
-    @Override
-    public long getFlowCode() {
-        return 0;
+        this.forward(reference);
     }
 }

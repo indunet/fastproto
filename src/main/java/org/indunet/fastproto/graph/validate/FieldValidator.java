@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.pipeline.validate;
+package org.indunet.fastproto.graph.validate;
 
 import lombok.val;
+import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.exception.DecodeFormulaException;
-import org.indunet.fastproto.pipeline.AbstractFlow;
-import org.indunet.fastproto.pipeline.FlowCode;
-import org.indunet.fastproto.pipeline.ValidationContext;
 import org.indunet.fastproto.util.TypeUtils;
 
 import java.text.MessageFormat;
@@ -35,9 +33,9 @@ import java.util.function.Function;
  * @author Deng Ran
  * @since 2.3.0
  */
-public class FieldFlow extends AbstractFlow<ValidationContext> {
+public class FieldValidator extends TypeValidator {
     @Override
-    public void process(ValidationContext context) {
+    public void process(ValidatorContext context) {
         val typeAnnotation = context.getTypeAnnotation();
         val typeAnnotationClass = context.getTypeAnnotationClass();
         val field = context.getField();
@@ -48,8 +46,8 @@ public class FieldFlow extends AbstractFlow<ValidationContext> {
             decodeFormula = TypeUtils.decodingFormula(typeAnnotation);
             encodeFormula = TypeUtils.encodingFormula(typeAnnotation);
 
-            context.setDecodeFormula(decodeFormula);
-            context.setEncodeFormula(encodeFormula);
+            context.setDecodingFormula(decodeFormula);
+            context.setEncodingFormula(encodeFormula);
         } catch (Exception e) {
             throw new DecodeFormulaException(
                     MessageFormat.format(
@@ -58,7 +56,7 @@ public class FieldFlow extends AbstractFlow<ValidationContext> {
         }
 
         if (decodeFormula == null && encodeFormula == null) {
-            Arrays.stream(TypeUtils.javaTypes(typeAnnotation))
+            Arrays.stream(ProtocolType.valueOf(typeAnnotation).javaTypes())
                     .filter(t -> t == field.getType()
                                 || (field.getType().isEnum() && (((Class<?>) t).isAssignableFrom(field.getType()))))
                     .findAny()
@@ -66,11 +64,6 @@ public class FieldFlow extends AbstractFlow<ValidationContext> {
                             CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
         }
 
-        this.nextFlow(context);
-    }
-
-    @Override
-    public long getFlowCode() {
-        return FlowCode.FIELD_FLOW_CODE;
+        this.forward(context);
     }
 }

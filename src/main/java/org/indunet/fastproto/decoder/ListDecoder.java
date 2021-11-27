@@ -53,7 +53,7 @@ public class ListDecoder implements TypeDecoder<List<?>> {
 
     public List decode(@NonNull final byte[] datagram, int byteOffset, int length,
                        @NonNull ProtocolType type, @NonNull EndianPolicy policy) {
-        int size = TypeUtils.size(type);
+        int size = type.size();
         int bo = ReverseUtils.offset(datagram.length, byteOffset);
 
         if (bo < 0) {

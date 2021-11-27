@@ -19,7 +19,6 @@ package org.indunet.fastproto.graph.resolve;
 import lombok.val;
 import org.indunet.fastproto.annotation.EnableCompress;
 import org.indunet.fastproto.graph.Reference;
-import org.indunet.fastproto.graph.AbstractFlow;
 
 /**
  * Resolve enable compress flow.
@@ -27,7 +26,7 @@ import org.indunet.fastproto.graph.AbstractFlow;
  * @author Deng Ran
  * @since 2.5.0
  */
-public class EnableCompressFlow extends AbstractFlow<Reference> {
+public class EnableCompressFlow extends ResolvePipeline {
     @Override
     public void process(Reference reference) {
         val protocolClass = reference.getProtocolClass();
@@ -38,11 +37,6 @@ public class EnableCompressFlow extends AbstractFlow<Reference> {
             reference.setEnableCompress(enableCompress);
         }
 
-        this.nextFlow(reference);
-    }
-
-    @Override
-    public long getFlowCode() {
-        return 0;
+        this.forward(reference);
     }
 }

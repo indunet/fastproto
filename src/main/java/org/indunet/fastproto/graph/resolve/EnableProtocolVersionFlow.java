@@ -19,7 +19,6 @@ package org.indunet.fastproto.graph.resolve;
 import lombok.val;
 import org.indunet.fastproto.annotation.EnableProtocolVersion;
 import org.indunet.fastproto.graph.Reference;
-import org.indunet.fastproto.graph.AbstractFlow;
 
 /**
  * Resolve enable protocol version flow.
@@ -27,7 +26,7 @@ import org.indunet.fastproto.graph.AbstractFlow;
  * @author Deng Ran
  * @since 2.5.0
  */
-public class EnableProtocolVersionFlow extends AbstractFlow<Reference> {
+public class EnableProtocolVersionFlow extends ResolvePipeline {
     @Override
     public void process(Reference reference) {
         val protocolClass = reference.getProtocolClass();
@@ -38,11 +37,6 @@ public class EnableProtocolVersionFlow extends AbstractFlow<Reference> {
             reference.setEnableProtocolVersion(enableProtocolVersion);
         }
 
-        this.nextFlow(reference);
-    }
-
-    @Override
-    public long getFlowCode() {
-        return 0;
+        this.forward(reference);
     }
 }

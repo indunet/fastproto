@@ -17,11 +17,9 @@
 package org.indunet.fastproto.graph.resolve;
 
 import lombok.val;
-import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.TypeFlag;
 import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.graph.Reference;
-import org.indunet.fastproto.graph.AbstractFlow;
 import org.indunet.fastproto.util.TypeUtils;
 
 import java.util.Arrays;
@@ -32,7 +30,7 @@ import java.util.Arrays;
  * @author Deng Ran
  * @since 2.5.0
  */
-public class TypeAnnotationFlow extends AbstractFlow<Reference> {
+public class TypeAnnotationFlow extends ResolvePipeline {
     @Override
     public void process(Reference reference) {
         val field = reference.getField();
@@ -45,16 +43,11 @@ public class TypeAnnotationFlow extends AbstractFlow<Reference> {
         reference.setTypeAnnotation(typeAnnotation);
         reference.setReferenceType(Reference.ReferenceType.FIELD);
 
-        reference.setDecoderClass(ProtocolType.decoderCLass(typeAnnotation));
-        reference.setEncoderClass(ProtocolType.encoderClass(typeAnnotation));
+        reference.setDecoderClass(TypeUtils.decoderClass(typeAnnotation));
+        reference.setEncoderClass(TypeUtils.encoderClass(typeAnnotation));
         reference.setDecodeFormula(TypeUtils.decodingFormula(typeAnnotation));
         reference.setEncodeFormula(TypeUtils.encodingFormula(typeAnnotation));
 
-        this.nextFlow(reference);
-    }
-
-    @Override
-    public long getFlowCode() {
-        return 0;
+        this.forward(reference);
     }
 }

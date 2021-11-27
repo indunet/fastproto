@@ -20,8 +20,13 @@ import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.ListDecoder;
 import org.indunet.fastproto.encoder.ListEncoder;
+import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
+import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
+import org.indunet.fastproto.graph.validate.FieldValidator;
+import org.indunet.fastproto.graph.validate.ListValidator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -41,6 +46,7 @@ import java.util.function.Function;
 @TypeFlag
 @Decoder(ListDecoder.class)
 @Encoder(ListEncoder.class)
+@Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class, ListValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ListType {
@@ -61,7 +67,6 @@ public @interface ListType {
             ProtocolType.UINTEGER16,
             ProtocolType.UINTEGER32,
     };
-    boolean AUTO_TYPE = true;
 
     int value();
 
@@ -72,4 +77,6 @@ public @interface ListType {
     Class<? extends Function<?, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, ?>>[] encodingFormula() default {};
+
+    String description() default "";
 }

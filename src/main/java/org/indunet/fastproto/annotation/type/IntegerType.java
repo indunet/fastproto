@@ -19,8 +19,12 @@ package org.indunet.fastproto.annotation.type;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.IntegerDecoder;
 import org.indunet.fastproto.encoder.IntegerEncoder;
+import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
+import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
+import org.indunet.fastproto.graph.validate.FieldValidator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -39,12 +43,12 @@ import java.util.function.Function;
 @TypeFlag
 @Decoder(IntegerDecoder.class)
 @Encoder(IntegerEncoder.class)
+@Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface IntegerType {
     Type[] JAVA_TYPES = {Integer.class, Integer.TYPE};
     int SIZE = Integer.SIZE >> 3;
-    boolean AUTO_TYPE = true;
     int MAX_VALUE = Integer.MAX_VALUE;
     int MIN_VALUE = Integer.MIN_VALUE;
 
@@ -53,4 +57,6 @@ public @interface IntegerType {
     Class<? extends Function<Integer, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Integer>>[] encodingFormula() default {};
+
+    String description() default "";
 }

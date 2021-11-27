@@ -19,7 +19,7 @@ package org.indunet.fastproto;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.graph.ReferenceResolver;
-import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.CodecContext;
 
 /**
@@ -32,8 +32,8 @@ public class FastProto {
     /**
      * Convert binary message into object.
      *
-     * @param datagram binary message
-     * @param protocolClass    deserialized object
+     * @param datagram      binary message
+     * @param protocolClass deserialized object
      * @return deserialize object instance
      */
     public static <T> T parseFrom(@NonNull byte[] datagram, @NonNull Class<T> protocolClass) {
@@ -43,27 +43,24 @@ public class FastProto {
     /**
      * Convert binary message into object.
      *
-     * @param datagram binary message
-     * @param protocolClass    deserialized object
+     * @param datagram      binary message
+     * @param protocolClass deserialized object
      * @param codecFeatures codec feature code
      * @return deserialize object instance
      */
     public static <T> T parseFrom(@NonNull byte[] datagram, @NonNull Class<T> protocolClass, long... codecFeatures) {
-        // val assist = TypeAssist.byClass(protocolClass);
-
         val graph = ReferenceResolver.resolve(protocolClass);
         val codecFeature = CodecFeature.of(codecFeatures);
         val context = CodecContext.builder()
                 .datagram(datagram)
                 .protocolClass(protocolClass)
                 .codecFeature(codecFeature)
-                // .typeAssist(assist)
                 .referenceGraph(graph)
                 .build();
 
         val feature = CodecFeature.of(graph.root());
 
-        AbstractFlow.getDecodeFlow(feature | codecFeature)
+        Pipeline.getDecodeFlow(feature | codecFeature)
                 .process(context);
 
         return context.getObject(protocolClass);
@@ -101,7 +98,7 @@ public class FastProto {
                 .build();
         val feature = CodecFeature.of(graph.root());
 
-        AbstractFlow.getEncodeFlow(feature | codecFeature)
+        Pipeline.getEncodeFlow(feature | codecFeature)
                 .process(context);
 
         return context.getDatagram();
@@ -119,7 +116,7 @@ public class FastProto {
                 .build();
         val feature = CodecFeature.of(graph.root());
 
-        AbstractFlow.getEncodeFlow(feature | CodecFeature.NON_INFER_LENGTH | codecFeature)
+        Pipeline.getEncodeFlow(feature | CodecFeature.NON_INFER_LENGTH | codecFeature)
                 .process(context);
 
         return context.getDatagram();

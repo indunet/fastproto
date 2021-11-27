@@ -23,7 +23,7 @@ import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.graph.ReferenceGraph;
-import org.indunet.fastproto.pipeline.AbstractFlow;
+import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.CodecContext;
 import org.indunet.fastproto.pipeline.FlowCode;
 
@@ -37,7 +37,7 @@ import java.util.function.Function;
  * @author Deng Ran
  * @since 1.7.0
  */
-public class DecodeFlow extends AbstractFlow<CodecContext> {
+public class DecodeFlow extends Pipeline<CodecContext> {
     @Override
     public void process(CodecContext context) {
         // val assist = context.getTypeAssist();
@@ -46,7 +46,7 @@ public class DecodeFlow extends AbstractFlow<CodecContext> {
 
         context.setObject(linearDecode(datagram, context.getReferenceGraph()));
 
-        this.nextFlow(context);
+        this.forward(context);
     }
 
     public Object linearDecode(byte[] datagram, ReferenceGraph graph) {
@@ -73,7 +73,7 @@ public class DecodeFlow extends AbstractFlow<CodecContext> {
     }
 
     @Override
-    public long getFlowCode() {
+    public long getCode() {
         return FlowCode.DECODE_FLOW_CODE;
     }
 }

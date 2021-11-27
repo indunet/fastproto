@@ -21,7 +21,6 @@ import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.Endian;
 import org.indunet.fastproto.graph.Reference;
-import org.indunet.fastproto.graph.AbstractFlow;
 
 import java.util.Optional;
 
@@ -31,7 +30,7 @@ import java.util.Optional;
  * @author Deng Ran
  * @since 2.5.0
  */
-public class EndianFlow extends AbstractFlow<Reference> {
+public class EndianFlow extends ResolvePipeline {
     protected final static EndianPolicy DEFAULT_ENDIAN_POLICY = EndianPolicy.LITTLE;
 
     @Override
@@ -48,18 +47,13 @@ public class EndianFlow extends AbstractFlow<Reference> {
             val endianPolicy = Optional.ofNullable(field.getAnnotation(Endian.class))
                     .map(Endian::value)
                     .orElseGet(() -> Optional.ofNullable(reference.getField().getDeclaringClass())
-                        .map(c -> c.getAnnotation(Endian.class))
-                        .map(Endian::value)
-                        .orElse(DEFAULT_ENDIAN_POLICY));     // Inherit endian of declaring class.
+                            .map(c -> c.getAnnotation(Endian.class))
+                            .map(Endian::value)
+                            .orElse(DEFAULT_ENDIAN_POLICY));     // Inherit endian of declaring class.
 
             reference.setEndianPolicy(endianPolicy);
         }
 
-        this.nextFlow(reference);
-    }
-
-    @Override
-    public long getFlowCode() {
-        return 0;
+        this.forward(reference);
     }
 }
