@@ -223,9 +223,15 @@ public class ReferenceGraph {
             val ref = queue.remove();
             val obj = ref.getValue(object);
 
+            // Ignore null object.
+            if (obj == null) {
+                continue;
+            }
+
             this.adj(ref).stream()
                     .filter(r -> r.getReferenceType() == ReferenceType.FIELD)
                     .filter(r -> !r.getEncodingIgnore())
+                    .filter(r -> r.getValue(obj) != null)   // Filter null object.
                     .map(r -> EncodeContext.builder()
                         .reference(r)
                         .value(r.getValue(obj))
