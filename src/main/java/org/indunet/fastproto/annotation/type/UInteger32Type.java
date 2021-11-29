@@ -49,7 +49,7 @@ import java.util.function.Function;
 public @interface UInteger32Type {
     Type[] ALLOWED_JAVA_TYPES = {
             long.class,
-            Long.TYPE
+            Long.class
     };
     int SIZE = Integer.SIZE >> 3;
     long MAX_VALUE = (long) Integer.MAX_VALUE - Integer.MIN_VALUE;

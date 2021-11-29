@@ -48,7 +48,7 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BooleanType {
-    Type[] JAVA_TYPES = {
+    Type[] ALLOWED_JAVA_TYPES = {
             boolean.class,
             Boolean.class
     };

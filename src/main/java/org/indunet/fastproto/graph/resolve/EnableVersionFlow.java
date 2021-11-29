@@ -38,8 +38,8 @@ public class EnableVersionFlow extends ResolvePipeline {
             val enableVersion = protocolClass.getAnnotation(EnableVersion.class);
 
             if (Arrays.stream(EnableVersion.PROTOCOL_TYPES)
-                    .anyMatch(t -> t == enableVersion.protocolType())) {
-                reference.setEnableProtocolVersion(enableVersion);
+                    .anyMatch(t -> t == enableVersion.genericType())) {
+                reference.setEnableVersion(enableVersion);
             } else {
                 throw new ResolveException(
                         String.format("Illegal protocol type for @EnableVersion of %s", protocolClass.getName()));

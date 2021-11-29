@@ -19,6 +19,7 @@ package org.indunet.fastproto.util;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.EnableVersion;
 import org.indunet.fastproto.annotation.type.IntegerType;
 import org.indunet.fastproto.annotation.type.UInteger16Type;
@@ -26,6 +27,8 @@ import org.indunet.fastproto.annotation.type.UInteger8Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.ProtocolVersionException;
 import org.indunet.fastproto.graph.Reference;
+
+import static org.indunet.fastproto.ProtocolType.*;
 
 /**
  * Protocol version utils.
@@ -35,63 +38,60 @@ import org.indunet.fastproto.graph.Reference;
  */
 public class VersionUtils {
     public static boolean validate(@NonNull byte[] datagram, @NonNull Reference reference) {
-        if (reference.getEnableProtocolVersion() == null) {
+        if (reference.getEnableVersion() == null) {
             return true;
         }
 
-        EnableVersion enableVersion = reference.getEnableProtocolVersion();
+        EnableVersion enableVersion = reference.getEnableVersion();
 
         return enableVersion.version() == decode(datagram, reference);
     }
 
     public static int decode(@NonNull byte[] datagram, @NonNull Reference reference) {
-        if (reference.getEnableProtocolVersion() == null) {
+        if (reference.getEnableVersion() == null) {
             return -1;
         }
 
-        EnableVersion enableProtocolVersion = reference.getEnableProtocolVersion();
+        EnableVersion enableVersion = reference.getEnableVersion();
         EndianPolicy policy = endianPolicy(reference);
-        int byteOffset = enableProtocolVersion.value();
+        int byteOffset = enableVersion.value();
+        val type = enableVersion.genericType();
 
-        switch (enableProtocolVersion.protocolType()) {
-            case UINTEGER8:
-                return CodecUtils.uinteger8Type(datagram, byteOffset);
-            case UINTEGER16:
-                return CodecUtils.uinteger16Type(datagram, byteOffset, policy);
-            case INTEGER:
-                return CodecUtils.integerType(datagram, byteOffset, policy);
-            default:
-                throw new ProtocolVersionException(CodecError.ILLEGAL_PROTOCOL_VERSION_TYPE);
+        if (type == ProtocolType.UINTEGER8) {
+            return CodecUtils.uinteger8Type(datagram, byteOffset);
+        } else if (type == ProtocolType.UINTEGER16) {
+            return CodecUtils.uinteger16Type(datagram, byteOffset, policy);
+        } else if (type == ProtocolType.INTEGER) {
+            return CodecUtils.integerType(datagram, byteOffset, policy);
+        } else {
+            throw new ProtocolVersionException(CodecError.ILLEGAL_PROTOCOL_VERSION_TYPE);
         }
     }
 
     public static void encode(@NonNull byte[] datagram, @NonNull Reference reference) {
-        if (reference.getEnableProtocolVersion() == null) {
+        if (reference.getEnableVersion() == null) {
             return;
         }
 
-        EnableVersion versionAnnotation = reference.getEnableProtocolVersion();
+        EnableVersion enableVersion = reference.getEnableVersion();
         EndianPolicy policy = endianPolicy(reference);
-        int byteOffset = versionAnnotation.value();
-        int version = versionAnnotation.version();
+        int byteOffset = enableVersion.value();
+        int version = enableVersion.version();
+        val type = enableVersion.genericType();
 
-        switch (versionAnnotation.protocolType()) {
-            case UINTEGER8:
-                CodecUtils.uinteger8Type(datagram, byteOffset, version);
-                break;
-            case UINTEGER16:
-                CodecUtils.uinteger16Type(datagram, byteOffset, policy, version);
-                break;
-            case INTEGER:
-                CodecUtils.integerType(datagram, byteOffset, policy, version);
-                break;
-            default:
-                throw new ProtocolVersionException(CodecError.ILLEGAL_PROTOCOL_VERSION_TYPE);
+        if (type == ProtocolType.UINTEGER8) {
+            CodecUtils.uinteger8Type(datagram, byteOffset, version);
+        } else if (type == ProtocolType.UINTEGER16) {
+            CodecUtils.uinteger16Type(datagram, byteOffset, policy, version);
+        } else if (type == ProtocolType.INTEGER) {
+            CodecUtils.integerType(datagram, byteOffset, policy, version);
+        } else {
+            throw new ProtocolVersionException(CodecError.ILLEGAL_PROTOCOL_VERSION_TYPE);
         }
     }
 
     public static EndianPolicy endianPolicy(@NonNull Reference reference) {
-        EnableVersion enableProtocolVersion = reference.getEnableProtocolVersion();
+        EnableVersion enableProtocolVersion = reference.getEnableVersion();
 
         if (enableProtocolVersion.endianPolicy().length > 0) {
             return enableProtocolVersion.endianPolicy()[0];
@@ -101,21 +101,20 @@ public class VersionUtils {
     }
 
     public static int size(@NonNull Reference reference) {
-        if (reference.getEnableProtocolVersion() == null) {
+        if (reference.getEnableVersion() == null) {
             return 0;
         }
 
-        val enableProtocolVersion = reference.getEnableProtocolVersion();
+        val type = reference.getEnableVersion().genericType();
 
-        switch (enableProtocolVersion.protocolType()) {
-            case UINTEGER8:
-                return UInteger8Type.SIZE;
-            case UINTEGER16:
-                return UInteger16Type.SIZE;
-            case INTEGER:
-                return IntegerType.SIZE;
-            default:
-                throw new ProtocolVersionException(CodecError.ILLEGAL_PROTOCOL_VERSION_TYPE);
+        if (type == ProtocolType.UINTEGER8) {
+            return UInteger8Type.SIZE;
+        } else if (type == ProtocolType.UINTEGER16) {
+            return UInteger16Type.SIZE;
+        } else if (type == ProtocolType.INTEGER) {
+            return IntegerType.SIZE;
+        } else {
+            throw new ProtocolVersionException(CodecError.ILLEGAL_PROTOCOL_VERSION_TYPE);
         }
     }
 }

@@ -57,7 +57,7 @@ public class Reference {
     Class<?> protocolClass;
     ConstructorType constructorType;
     EnableCompress enableCompress;
-    EnableVersion enableProtocolVersion;
+    EnableVersion enableVersion;
     EnableChecksum enableChecksum;
     EnableCrypto enableCrypto;
     EnableFixedLength enableFixedLength;

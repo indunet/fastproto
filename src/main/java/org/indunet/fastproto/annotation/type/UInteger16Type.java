@@ -49,7 +49,7 @@ import java.util.function.Function;
 public @interface UInteger16Type {
     Type[] ALLOWED_JAVA_TYPES = {
             int.class,
-            Integer.TYPE
+            Integer.class
     };
     int SIZE = Short.SIZE >> 3;
     int MAX_VALUE = Short.MAX_VALUE - Short.MIN_VALUE;

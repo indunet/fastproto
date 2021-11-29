@@ -49,7 +49,7 @@ import java.util.function.Function;
 public @interface LongType {
     Type[] ALLOWED_JAVA_TYPES = {
             long.class,
-            Long.TYPE
+            Long.class
     };
     int SIZE = Long.SIZE >> 3;
     long MAX_VALUE = Long.MAX_VALUE;

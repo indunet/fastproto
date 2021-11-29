@@ -40,7 +40,7 @@ public @interface EnableVersion {
 
     int version();
 
-    Class<? extends Annotation> protocolType() default UInteger16Type.class;
+    Class<? extends Annotation> genericType() default UInteger16Type.class;
 
     EndianPolicy[] endianPolicy() default {};
 }

@@ -49,7 +49,7 @@ import java.util.function.Function;
 public @interface ShortType {
     Type[] ALLOWED_JAVA_TYPES = {
             short.class,
-            Short.TYPE
+            Short.class
     };
     int SIZE = Short.SIZE >> 3;
     int MAX_VALUE = Short.MAX_VALUE;

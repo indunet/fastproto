@@ -20,13 +20,15 @@ import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.ProtocolType;
-import org.indunet.fastproto.annotation.type.ArrayType;
+import org.indunet.fastproto.annotation.type.ListType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
 import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
+import org.indunet.fastproto.util.TypeUtils;
 
+import java.lang.annotation.Annotation;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -44,15 +46,15 @@ import java.util.stream.IntStream;
 public class ListDecoder implements TypeDecoder<List<?>> {
     @Override
     public List<?> decode(DecodeContext context) {
-        val type = context.getTypeAnnotation(ArrayType.class);
+        val type = context.getTypeAnnotation(ListType.class);
 
         return decode(context.getDatagram(), type.value(), type.length(),
                 type.genericType(), context.getEndianPolicy());
     }
 
     public List decode(@NonNull final byte[] datagram, int byteOffset, int length,
-                       @NonNull ProtocolType type, @NonNull EndianPolicy policy) {
-        int size = type.size();
+                       @NonNull Class<? extends Annotation> type, @NonNull EndianPolicy policy) {
+        int size = TypeUtils.size(type);
         int bo = ReverseUtils.offset(datagram.length, byteOffset);
 
         if (bo < 0) {
@@ -75,34 +77,33 @@ public class ListDecoder implements TypeDecoder<List<?>> {
             return list;
         };
 
-        switch (type) {
-            case CHARACTER:
-                return codec.apply(b -> CodecUtils.characterType(datagram, b, policy), new ArrayList<Character>());
-            case BYTE:
-                return codec.apply(b -> CodecUtils.byteType(datagram, b), new ArrayList<Byte>());
-            case SHORT:
-                return codec.apply(b -> CodecUtils.shortType(datagram, b, policy), new ArrayList<Short>());
-            case INTEGER:
-                return codec.apply(b -> CodecUtils.integerType(datagram, b, policy), new ArrayList<Integer>());
-            case LONG:
-                return codec.apply(b -> CodecUtils.longType(datagram, b, policy), new ArrayList<Long>());
-            case UINTEGER8:
-                return codec.apply(b -> CodecUtils.uinteger8Type(datagram, b), new ArrayList<Integer>());
-            case UINTEGER16:
-                return codec.apply(b -> CodecUtils.uinteger16Type(datagram, b, policy), new ArrayList<Integer>());
-            case UINTEGER32:
-                return codec.apply(b -> CodecUtils.uinteger32Type(datagram, b, policy), new ArrayList<Long>());
-            case INTEGER8:
-                return codec.apply(b -> CodecUtils.integer8Type(datagram, b), new ArrayList<Integer>());
-            case INTEGER16:
-                return codec.apply(b -> CodecUtils.integer16Type(datagram, b, policy), new ArrayList<Integer>());
-            case FLOAT:
-                return codec.apply(b -> CodecUtils.floatType(datagram, b, policy), new ArrayList<Float>());
-            case DOUBLE:
-                return codec.apply(b -> CodecUtils.doubleType(datagram, b, policy), new ArrayList<Double>());
-            default:
-                throw new DecodingException(MessageFormat.format(
-                        CodecError.NOT_SUPPORT_ARRAY_TYPE.getMessage(), type.toString()));
+        if (type == ProtocolType.CHARACTER) {
+            return codec.apply(b -> CodecUtils.characterType(datagram, b, policy), new ArrayList<Character>());
+        } else if (type == ProtocolType.BYTE) {
+            return codec.apply(b -> CodecUtils.byteType(datagram, b), new ArrayList<Byte>());
+        } else if (type == ProtocolType.SHORT) {
+            return codec.apply(b -> CodecUtils.shortType(datagram, b, policy), new ArrayList<Short>());
+        } else if (type == ProtocolType.INTEGER) {
+            return codec.apply(b -> CodecUtils.integerType(datagram, b, policy), new ArrayList<Integer>());
+        } else if (type == ProtocolType.LONG) {
+            return codec.apply(b -> CodecUtils.longType(datagram, b, policy), new ArrayList<Long>());
+        } else if (type == ProtocolType.UINTEGER8) {
+            return codec.apply(b -> CodecUtils.uinteger8Type(datagram, b), new ArrayList<Integer>());
+        } else if (type == ProtocolType.UINTEGER16) {
+            return codec.apply(b -> CodecUtils.uinteger16Type(datagram, b, policy), new ArrayList<Integer>());
+        } else if (type == ProtocolType.UINTEGER32) {
+            return codec.apply(b -> CodecUtils.uinteger32Type(datagram, b, policy), new ArrayList<Long>());
+        } else if (type == ProtocolType.INTEGER8) {
+            return codec.apply(b -> CodecUtils.integer8Type(datagram, b), new ArrayList<Integer>());
+        } else if (type == ProtocolType.INTEGER16) {
+            return codec.apply(b -> CodecUtils.integer16Type(datagram, b, policy), new ArrayList<Integer>());
+        } else if (type == ProtocolType.FLOAT) {
+            return codec.apply(b -> CodecUtils.floatType(datagram, b, policy), new ArrayList<Float>());
+        } else if (type == ProtocolType.DOUBLE) {
+            return codec.apply(b -> CodecUtils.doubleType(datagram, b, policy), new ArrayList<Double>());
+        } else {
+            throw new DecodingException(MessageFormat.format(
+                    CodecError.NOT_SUPPORT_ARRAY_TYPE.getMessage(), type.toString()));
         }
     }
 }

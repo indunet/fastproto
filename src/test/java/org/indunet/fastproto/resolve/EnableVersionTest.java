@@ -18,27 +18,27 @@ package org.indunet.fastproto.resolve;
 
 import lombok.val;
 import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.EnableVersion;
+import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.exception.ResolveException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * @author Deng Ran
  * @since 3.2.0
  */
 public class EnableVersionTest {
-    @EnableVersion(value = 0, version = 2, protocolType = ProtocolType.UINTEGER32)
-    public static class Vehicle {
-
-    }
-
     @Test
     public void testResolve() {
         val bytes = new byte[10];
 
         assertThrows(ResolveException.class, () -> FastProto.parseFrom(bytes, Vehicle.class));
+    }
+
+    @EnableVersion(value = 0, version = 2, genericType = UInteger32Type.class)
+    public static class Vehicle {
+
     }
 }

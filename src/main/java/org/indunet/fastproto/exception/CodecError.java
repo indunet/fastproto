@@ -28,7 +28,7 @@ import lombok.Getter;
 public enum CodecError {
     INVALID_ENDIAN_POLICY("Invalid endian policy."),
     INVALID_COMPRESS_POLICY("Invalid compress policy."),
-    ANNOTATION_FIELD_NOT_MATCH("Annotation {0} and field {1} doesn't match."),
+    ANNOTATION_FIELD_NOT_MATCH("Annotation {0} and field {1} does not match."),
     UNSUPPORTED_TYPE("Unsupported type {0}"),
     UNABLE_RESOLVE_PROTOCOL_CLASS("Unable to resolve the protocol class"),
     NO_VALID_DECODER_FOUND("No valid decoder found for {0}."),

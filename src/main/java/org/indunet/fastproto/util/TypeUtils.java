@@ -146,6 +146,16 @@ public class TypeUtils {
         }
     }
 
+    public static Type[] javaTypes(@NonNull Class<? extends Annotation> type) {
+        try {
+            return (Type[]) type
+                    .getDeclaredField("ALLOWED_JAVA_TYPES")
+                    .get(null);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            return null;
+        }
+    }
+
     public static int size(@NonNull Class<? extends Annotation> type) {
         try {
             return type

@@ -16,9 +16,14 @@
 
 package org.indunet.fastproto;
 
+import com.sun.org.apache.bcel.internal.classfile.Field;
+import org.apache.kafka.common.protocol.Protocol;
 import org.indunet.fastproto.annotation.type.*;
+import org.indunet.fastproto.exception.ResolveException;
+import org.indunet.fastproto.util.TypeUtils;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -30,7 +35,7 @@ import java.util.function.Function;
  */
 public interface ProtocolType {
     final static Class<? extends Annotation> BINARY = BinaryType.class;
-    Class<? extends Annotation> BOOLEAN = BooleanType.class;
+    final Class<? extends Annotation> BOOLEAN = BooleanType.class;
     Class<? extends Annotation> CHARACTER = CharacterType.class;
     Class<? extends Annotation> BYTE = ByteType.class;
     Class<? extends Annotation> DOUBLE = DoubleType.class;
@@ -50,6 +55,19 @@ public interface ProtocolType {
     Class<? extends Annotation> LIST = ListType.class;
     Class<? extends Annotation> ARRAY = ArrayType.class;
 
+    static boolean isSupported(Type type) {
+        return Arrays.stream(ProtocolType.class.getDeclaredFields())
+                .map(f -> {
+                    try {
+                        return (Class<? extends Annotation>) f.get(null);
+                    } catch (IllegalAccessException e) {
+                        throw new ResolveException("Fail getting protocol type.", e);
+                    }
+                })
+                .flatMap(t -> Arrays.stream(TypeUtils.javaTypes(t)))
+                .anyMatch(t -> t == type);
+    }
+
     static ProtocolType proxy(Annotation typeAnnotation) {
         return (ProtocolType) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class<?>[]{ProtocolType.class, typeAnnotation.annotationType()}, (proxy, method, args) -> {
             switch (method.getName()) {
@@ -58,7 +76,7 @@ public interface ProtocolType {
                 case "javaTypes":
                     return typeAnnotation
                             .annotationType()
-                            .getDeclaredField("JAVA_TYPES")
+                            .getDeclaredField("ALLOWED_JAVA_TYPES")
                             .get(null);
                 case "size":
                     try {
@@ -69,11 +87,11 @@ public interface ProtocolType {
                     } catch (IllegalAccessException | NoSuchFieldException e) {
                         return 0;
                     }
-                case "protocolTypes":
-                    return typeAnnotation
-                            .annotationType()
-                            .getDeclaredField("PROTOCOL_TYPES")
-                            .get(null);
+                case "length":
+                    if (!Arrays.stream(typeAnnotation.getClass().getMethods())
+                            .anyMatch(m -> m.getName().equals("length"))) {
+                        return 0;
+                    }
                 default:
                     return Arrays.stream(typeAnnotation.getClass().getMethods())
                             .filter(m -> m.getName().equals(method.getName()))
@@ -100,8 +118,6 @@ public interface ProtocolType {
 
     String field();
 
-    ProtocolType protocolType();
-
     EndianPolicy[] endianPolicy();
 
     Class<? extends Annotation> getType();
@@ -109,6 +125,4 @@ public interface ProtocolType {
     Type[] javaTypes();
 
     int size();
-
-    ProtocolType[] protocolTypes();
 }

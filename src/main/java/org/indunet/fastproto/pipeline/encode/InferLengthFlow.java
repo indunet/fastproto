@@ -42,12 +42,12 @@ public class InferLengthFlow extends Pipeline<CodecContext> {
         int max = graph.stream()
                 .filter(r -> r.getReferenceType() == Reference.ReferenceType.FIELD)
                 .mapToInt(r -> {
-                    val type = r.getTypeAnnotation();
+                    val type = r.getProtocolType();
 
-                    if (TypeUtils.byteOffset(type) < 0 || TypeUtils.length(type) < 0) {
+                    if (type.value() < 0 || type.length() < 0) {
                         throw new AddressingException(CodecError.UNABLE_INFER_LENGTH);
                     } else {
-                        return TypeUtils.byteOffset(type) + ProtocolType.valueOf(type).size() + TypeUtils.length(type);
+                        return type.value() + type.size() + type.length();
                     }
                 }).max()
                 .orElse(0);

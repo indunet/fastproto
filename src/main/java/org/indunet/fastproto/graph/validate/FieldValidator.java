@@ -64,7 +64,7 @@ public class FieldValidator extends TypeValidator {
                                 || (field.getType().isEnum() && (((Class<?>) t).isAssignableFrom(field.getType()))))
                     .findAny()
                     .orElseThrow(() -> new CodecException(MessageFormat.format(
-                            CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), protocolType.getType().getName(), field.getName())));
+                            CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), protocolType.getType().getSimpleName(), field.toString())));  // Field name with class name.
         }
 
         this.forward(context);
