@@ -18,7 +18,7 @@ package org.indunet.fastproto.graph.validate;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.type.ListType;
-import org.indunet.fastproto.exception.DecodingException;
+import org.indunet.fastproto.exception.ResolveException;
 
 import java.util.Arrays;
 
@@ -35,7 +35,7 @@ public class ListValidator extends TypeValidator {
 
         if (!Arrays.stream(ListType.ALLOWED_GENERIC_TYPES)
                 .anyMatch(t -> t == type.genericType())) {
-            throw new DecodingException("Illegal protocol type.");
+            throw new ResolveException("Illegal generic type for list.");
         }
     }
 }

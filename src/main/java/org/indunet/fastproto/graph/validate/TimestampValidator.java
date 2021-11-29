@@ -33,14 +33,14 @@ import java.util.concurrent.TimeUnit;
 public class TimestampValidator extends TypeValidator {
     @Override
     public void process(ValidatorContext context) {
-        val typeAnnotation = context.getTypeAnnotation();
+        val protocolType = context.getProtocolType();
 
-        if (typeAnnotation instanceof TimestampType) {
-            val protocolType = ((TimestampType) typeAnnotation).genericType();
-            val unit = ((TimestampType) typeAnnotation).unit();
+        if (protocolType instanceof TimestampType) {
+            val unit = ((TimestampType) protocolType).unit();
+            val genericType = ((TimestampType) protocolType).genericType();
 
-            val condition1 = protocolType == ProtocolType.UINTEGER32 && unit == TimeUnit.SECONDS;
-            val condition2 = protocolType == ProtocolType.LONG && unit == TimeUnit.MILLISECONDS;
+            val condition1 = genericType == ProtocolType.UINTEGER32 && unit == TimeUnit.SECONDS;
+            val condition2 = genericType == ProtocolType.LONG && unit == TimeUnit.MILLISECONDS;
 
             if (!condition1 && !condition2) {
                 throw new DecodingException(CodecError.ILLEGAL_TIMESTAMP_PARAMETERS);

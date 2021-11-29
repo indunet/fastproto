@@ -17,9 +17,8 @@
 package org.indunet.fastproto.graph.validate;
 
 import lombok.val;
-import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.type.ArrayType;
-import org.indunet.fastproto.exception.CodecException;
+import org.indunet.fastproto.exception.ResolveException;
 
 import java.util.Arrays;
 
@@ -34,14 +33,13 @@ public class ArrayValidator extends TypeValidator {
     public void process(ValidatorContext context) {
         val protocolType = context.getProtocolType();
 
-        if (typeAnnotation instanceof ArrayType) {
-            val protocolType = ((ArrayType) typeAnnotation).genericType();
-            val protocolTypes = ProtocolType.valueOf(typeAnnotation).protocolTypes();
+        if (protocolType instanceof ArrayType) {
+            val genericType = ((ArrayType) protocolType).genericType();
 
-            Arrays.stream(protocolType.)
-                    .filter(t -> t == protocolType)
+            Arrays.stream(ArrayType.ALLOWED_GENERIC_TYPES)
+                    .filter(t -> t == genericType)
                     .findAny()
-                    .orElseThrow(CodecException::new);
+                    .orElseThrow(() -> new ResolveException("Illegal generic type for array"));
         }
 
         this.forward(context);
