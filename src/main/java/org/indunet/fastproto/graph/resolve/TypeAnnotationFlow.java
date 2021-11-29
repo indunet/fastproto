@@ -17,6 +17,7 @@
 package org.indunet.fastproto.graph.resolve;
 
 import lombok.val;
+import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.TypeFlag;
 import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.graph.Reference;
@@ -47,6 +48,8 @@ public class TypeAnnotationFlow extends ResolvePipeline {
         reference.setEncoderClass(TypeUtils.encoderClass(typeAnnotation));
         reference.setDecodeFormula(TypeUtils.decodingFormula(typeAnnotation));
         reference.setEncodeFormula(TypeUtils.encodingFormula(typeAnnotation));
+
+        reference.setProtocolType(ProtocolType.proxy(typeAnnotation));
 
         this.forward(reference);
     }

@@ -17,11 +17,9 @@
 package org.indunet.fastproto.graph.validate;
 
 import lombok.val;
-import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.exception.DecodeFormulaException;
-import org.indunet.fastproto.util.TypeUtils;
 
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -36,32 +34,37 @@ import java.util.function.Function;
 public class FieldValidator extends TypeValidator {
     @Override
     public void process(ValidatorContext context) {
-        val typeAnnotation = context.getTypeAnnotation();
+        val protocolType = context.getProtocolType();
         val typeAnnotationClass = context.getTypeAnnotationClass();
         val field = context.getField();
-        Class<? extends Function> decodeFormula;
-        Class<? extends Function> encodeFormula;
+        Class<? extends Function> decodingFormula = null;
+        Class<? extends Function> encodingFormula = null;
 
         try {
-            decodeFormula = TypeUtils.decodingFormula(typeAnnotation);
-            encodeFormula = TypeUtils.encodingFormula(typeAnnotation);
+            if (protocolType.decodingFormula().length > 0) {
+                decodingFormula = protocolType.decodingFormula()[0];
+            }
 
-            context.setDecodingFormula(decodeFormula);
-            context.setEncodingFormula(encodeFormula);
+            if (protocolType.encodingFormula().length > 0) {
+                encodingFormula = protocolType.encodingFormula()[0];
+            }
+
+            context.setDecodingFormula(decodingFormula);
+            context.setEncodingFormula(encodingFormula);
         } catch (Exception e) {
             throw new DecodeFormulaException(
                     MessageFormat.format(
                             CodecError.FAIL_GETTING_DECODE_FORMULA.getMessage(),
-                            typeAnnotation.annotationType().getName(), field.getName()), e);
+                            protocolType.getType().getName(), field.getName()), e);
         }
 
-        if (decodeFormula == null && encodeFormula == null) {
-            Arrays.stream(ProtocolType.valueOf(typeAnnotation).javaTypes())
+        if (decodingFormula == null && encodingFormula == null) {
+            Arrays.stream(protocolType.javaTypes())
                     .filter(t -> t == field.getType()
                                 || (field.getType().isEnum() && (((Class<?>) t).isAssignableFrom(field.getType()))))
                     .findAny()
                     .orElseThrow(() -> new CodecException(MessageFormat.format(
-                            CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
+                            CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), protocolType.getType().getSimpleName(), field.toString())));  // Field name with class name.
         }
 
         this.forward(context);

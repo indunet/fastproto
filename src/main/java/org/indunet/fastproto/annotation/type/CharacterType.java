@@ -47,7 +47,10 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CharacterType {
-    Type[] JAVA_TYPES = {Character.class, Character.TYPE};
+    Type[] ALLOWED_JAVA_TYPES = {
+            char.class,
+            Character.class
+    };
     int SIZE = Character.SIZE >> 3;
 
     int value();

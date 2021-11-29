@@ -14,28 +14,31 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.graph.validate;
+package org.indunet.fastproto.resolve;
 
 import lombok.val;
-import org.indunet.fastproto.annotation.type.ListType;
+import org.indunet.fastproto.FastProto;
+import org.indunet.fastproto.annotation.EnableVersion;
+import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.exception.ResolveException;
+import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
- * Abstract flow.
- *
  * @author Deng Ran
- * @since 2.3.0
+ * @since 3.2.0
  */
-public class ListValidator extends TypeValidator {
-    @Override
-    public void process(ValidatorContext context) {
-        val type = (ListType) context.getTypeAnnotation();
+public class EnableVersionTest {
+    @Test
+    public void testResolve() {
+        val bytes = new byte[10];
 
-        if (!Arrays.stream(ListType.ALLOWED_GENERIC_TYPES)
-                .anyMatch(t -> t == type.genericType())) {
-            throw new ResolveException("Illegal generic type for list.");
-        }
+        assertThrows(ResolveException.class, () -> FastProto.parseFrom(bytes, Vehicle.class));
+    }
+
+    @EnableVersion(value = 0, version = 2, genericType = UInteger32Type.class)
+    public static class Vehicle {
+
     }
 }

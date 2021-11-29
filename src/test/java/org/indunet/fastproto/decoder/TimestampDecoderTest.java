@@ -25,6 +25,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.lang.annotation.Annotation;
 import java.sql.Timestamp;
 import java.util.Date;
 import java.util.List;
@@ -44,7 +45,7 @@ public class TimestampDecoderTest {
 
     @ParameterizedTest
     @MethodSource
-    public void testDecode1(byte[] datagram, int byteOffset, ProtocolType type, EndianPolicy policy, TimeUnit unit, Class<?> clazz, Date expected) {
+    public void testDecode1(byte[] datagram, int byteOffset, Class<? extends Annotation> type, EndianPolicy policy, TimeUnit unit, Class<?> clazz, Date expected) {
         assertEquals(expected, decoder.decode(datagram, byteOffset, type, policy, unit, clazz));
     }
 

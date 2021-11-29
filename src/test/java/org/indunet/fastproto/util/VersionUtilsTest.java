@@ -1,10 +1,12 @@
-package org.indunet.fastproto;
+package org.indunet.fastproto.util;
 
 import lombok.val;
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.UInteger64Type;
 import org.indunet.fastproto.graph.ReferenceResolver;
 import org.indunet.fastproto.iot.Everything;
 import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.util.VersionUtils;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -17,7 +19,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
  * @author Deng Ran
  * @since 1.5.3
  */
-public class ProtocolVersionAssistTest {
+public class VersionUtilsTest {
     byte[] datagram = new byte[80];
     Everything everything = Everything.builder()
             .aBoolean(true)
@@ -40,7 +42,7 @@ public class ProtocolVersionAssistTest {
             .aUInteger64(new BigInteger(String.valueOf(UInteger64Type.MAX_VALUE)))
             .build();
 
-    public ProtocolVersionAssistTest() {
+    public VersionUtilsTest() {
         // Init datagram.
         CodecUtils.type(datagram, 0, 1, everything.getABoolean());
         CodecUtils.type(datagram, 1, everything.getAByte());
@@ -65,20 +67,20 @@ public class ProtocolVersionAssistTest {
     @Test
     public void testValidate() {
         val graph = ReferenceResolver.resolve(Everything.class);
-        assertTrue(ProtocolVersionAssist.validate(datagram, graph.root()));
+        assertTrue(VersionUtils.validate(datagram, graph.root()));
     }
 
     @Test
     public void testDecode() {
         val graph = ReferenceResolver.resolve(Everything.class);
-        assertEquals(17, ProtocolVersionAssist.decode(datagram, graph.root()));
+        assertEquals(17, VersionUtils.decode(datagram, graph.root()));
     }
 
     @Test
     public void testEncode() {
         byte[] datagram = new byte[80];
         val graph = ReferenceResolver.resolve(Everything.class);
-        ProtocolVersionAssist.encode(datagram, graph.root());
+        VersionUtils.encode(datagram, graph.root());
 
         assertEquals(17, datagram[78]);
     }

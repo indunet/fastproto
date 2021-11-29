@@ -38,13 +38,13 @@ public abstract class Pipeline<T> {
             UncompressFlow.class,
             VerifyFixedLengthFlow.class,
             VerifyChecksumFlow.class,
-            VerifyProtocolVersionFlow.class,
+            VerifyVersionFlow.class,
             DecodeFlow.class};
     protected static Class<? extends Pipeline>[] encodeFlowClasses = new Class[] {
             InferLengthFlow.class,
             FixedLengthFlow.class,
             EncodeFlow.class,
-            WriteProtocolVersionFlow.class,
+            WriteVersionFlow.class,
             WriteChecksumFlow.class,
             CompressFlow.class,
             EncryptFlow.class

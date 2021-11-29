@@ -14,34 +14,29 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.pipeline.decode;
+package org.indunet.fastproto.pipeline.encode;
 
-import lombok.NonNull;
-import org.indunet.fastproto.ProtocolVersionAssist;
-import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.ProtocolVersionException;
+import org.indunet.fastproto.util.VersionUtils;
 import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.CodecContext;
 import org.indunet.fastproto.pipeline.FlowCode;
 
 /**
- * Verify protocol version flow.
+ * Write protocol version flow.
  *
  * @author Deng Ran
  * @since 1.7.0
  */
-public class VerifyProtocolVersionFlow extends Pipeline<CodecContext> {
+public class WriteVersionFlow extends Pipeline<CodecContext> {
     @Override
-    public void process(@NonNull CodecContext context) {
-        if (!ProtocolVersionAssist.validate(context.getDatagram(), context.getReferenceGraph().root())) {
-            throw new ProtocolVersionException(CodecError.PROTOCOL_VERSION_NOT_MATCH);
-        } else {
-            this.forward(context);
-        }
+    public void process(CodecContext context) {
+        VersionUtils.encode(context.getDatagram(), context.getReferenceGraph().root());
+
+        this.forward(context);
     }
 
     @Override
     public long getCode() {
-        return FlowCode.VERIFY_PROTOCOL_VERSION_FLOW_CODE;
+        return FlowCode.WRITE_PROTOCOL_VERSION_FLOW_CODE;
     }
 }

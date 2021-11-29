@@ -28,10 +28,7 @@ import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.FieldValidator;
 import org.indunet.fastproto.graph.validate.ListValidator;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.function.Function;
@@ -50,10 +47,10 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface ListType {
-    Type[] JAVA_TYPES = {
+    Type[] ALLOWED_JAVA_TYPES = {
             List.class
     };
-    ProtocolType[] PROTOCOL_TYPES = {
+    Class<?>[] ALLOWED_GENERIC_TYPES = {
             ProtocolType.CHARACTER,
             ProtocolType.BYTE,
             ProtocolType.SHORT,
@@ -70,7 +67,7 @@ public @interface ListType {
 
     int value();
 
-    ProtocolType protocolType();
+    Class<? extends Annotation> genericType();
 
     int length();
 

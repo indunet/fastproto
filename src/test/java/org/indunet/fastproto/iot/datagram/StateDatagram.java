@@ -18,15 +18,13 @@ package org.indunet.fastproto.iot.datagram;
 
 import lombok.Data;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.Endian;
-import org.indunet.fastproto.annotation.type.BinaryType;
-import org.indunet.fastproto.annotation.type.TimestampType;
-import org.indunet.fastproto.annotation.type.UInteger16Type;
-import org.indunet.fastproto.annotation.type.UInteger8Type;
+import org.indunet.fastproto.annotation.type.*;
 
 import java.sql.Timestamp;
 import java.util.concurrent.TimeUnit;
+
+import static org.indunet.fastproto.ProtocolType.UINTEGER32;
 
 /**
  * @author Deng Ran
@@ -46,7 +44,7 @@ public class StateDatagram {
     Integer protocolVersion;
     Long datagramProtocolId;
 
-    @TimestampType(value = DatagramProtocol.EVENT_TIME_OFFSET, protocolType = ProtocolType.UINTEGER32, unit = TimeUnit.SECONDS)
+    @TimestampType(value = DatagramProtocol.EVENT_TIME_OFFSET, genericType = UInteger32Type.class, unit = TimeUnit.SECONDS)
     Timestamp eventTime;
     Timestamp receiveTime;
 

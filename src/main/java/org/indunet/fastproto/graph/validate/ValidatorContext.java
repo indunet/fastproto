@@ -18,6 +18,7 @@ package org.indunet.fastproto.graph.validate;
 
 import lombok.Builder;
 import lombok.Data;
+import org.indunet.fastproto.ProtocolType;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -34,6 +35,7 @@ import java.util.function.Function;
 public class ValidatorContext {
     Field field;
     Annotation typeAnnotation;
+    ProtocolType protocolType;
     Class<? extends Annotation> typeAnnotationClass;
     Class<? extends Function> decodingFormula;
     Class<? extends Function> encodingFormula;

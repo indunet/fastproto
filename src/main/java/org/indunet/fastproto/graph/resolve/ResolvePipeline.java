@@ -17,7 +17,7 @@ public abstract class ResolvePipeline extends Pipeline<Reference> {
     public static ResolvePipeline getClassPipeline() {
         val endianFlow = new EndianFlow();
         val enableFixedLength = new EnableFixedLengthFlow();
-        val enableProtocolVersionFlow = new EnableProtocolVersionFlow();
+        val enableProtocolVersionFlow = new EnableVersionFlow();
         val enableCryptoFlow = new EnableCryptoFlow();
         val enableCompressFlow = new EnableCompressFlow();
         val enableChecksumFlow = new EnableChecksumFlow();

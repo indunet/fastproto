@@ -18,6 +18,7 @@ package org.indunet.fastproto.graph;
 
 import lombok.*;
 import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.TypeDecoder;
@@ -32,7 +33,6 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.function.Consumer;
 import java.util.function.Function;
-import java.util.stream.Collectors;
 
 /**
  * Schema.
@@ -57,13 +57,14 @@ public class Reference {
     Class<?> protocolClass;
     ConstructorType constructorType;
     EnableCompress enableCompress;
-    EnableProtocolVersion enableProtocolVersion;
+    EnableVersion enableVersion;
     EnableChecksum enableChecksum;
     EnableCrypto enableCrypto;
     EnableFixedLength enableFixedLength;
 
     Field field;
     Annotation typeAnnotation;
+    ProtocolType protocolType;
     Class<? extends TypeDecoder> decoderClass;
     Class<? extends TypeEncoder> encoderClass;
     Class<? extends Function> decodeFormula;

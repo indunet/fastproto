@@ -53,6 +53,7 @@ public class CodecFlow extends ResolvePipeline {
         val context = ValidatorContext.builder()
                 .field(field)
                 .typeAnnotation(typeAnnotation)
+                .protocolType(reference.getProtocolType())
                 .build();
 
         try {

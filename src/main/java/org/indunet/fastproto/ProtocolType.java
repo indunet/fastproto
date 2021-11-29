@@ -16,84 +16,113 @@
 
 package org.indunet.fastproto;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NonNull;
-import lombok.SneakyThrows;
+import com.sun.org.apache.bcel.internal.classfile.Field;
+import org.apache.kafka.common.protocol.Protocol;
 import org.indunet.fastproto.annotation.type.*;
-import org.indunet.fastproto.exception.CodecException;
+import org.indunet.fastproto.exception.ResolveException;
+import org.indunet.fastproto.util.TypeUtils;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
+import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Arrays;
+import java.util.function.Function;
 
 /**
  * @author Deng Ran
- * @since 1.3.0
+ * @since 3.2.0
  */
-@AllArgsConstructor
-@Getter
-public enum ProtocolType {
-    BINARY(BinaryType.class),
-    BOOLEAN(BooleanType.class),
-    CHARACTER(CharacterType.class),
-    BYTE(ByteType.class),
-    DOUBLE(DoubleType.class),
-    FLOAT(FloatType.class),
-    INTEGER(IntegerType.class),
-    LONG(LongType.class),
-    SHORT(ShortType.class),
-    STRING(StringType.class),
-    TIMESTAMP(TimestampType.class),
-    INTEGER8(Integer8Type.class),
-    INTEGER16(Integer16Type.class),
-    UINTEGER8(UInteger8Type.class),
-    UINTEGER16(UInteger16Type.class),
-    UINTEGER32(UInteger32Type.class),
-    UINTEGER64(UInteger64Type.class),
-    ENUM(EnumType.class),
-    LIST(ListType.class),
-    ARRAY(ArrayType.class);
+public interface ProtocolType {
+    final static Class<? extends Annotation> BINARY = BinaryType.class;
+    final Class<? extends Annotation> BOOLEAN = BooleanType.class;
+    Class<? extends Annotation> CHARACTER = CharacterType.class;
+    Class<? extends Annotation> BYTE = ByteType.class;
+    Class<? extends Annotation> DOUBLE = DoubleType.class;
+    Class<? extends Annotation> FLOAT = FloatType.class;
+    Class<? extends Annotation> INTEGER = IntegerType.class;
+    Class<? extends Annotation> LONG = LongType.class;
+    Class<? extends Annotation> SHORT = ShortType.class;
+    Class<? extends Annotation> STRING = StringType.class;
+    Class<? extends Annotation> TIMESTAMP = TimestampType.class;
+    Class<? extends Annotation> INTEGER8 = Integer8Type.class;
+    Class<? extends Annotation> INTEGER16 = Integer16Type.class;
+    Class<? extends Annotation> UINTEGER8 = UInteger8Type.class;
+    Class<? extends Annotation> UINTEGER16 = UInteger16Type.class;
+    Class<? extends Annotation> UINTEGER32 = UInteger32Type.class;
+    Class<? extends Annotation> UINTEGER64 = UInteger64Type.class;
+    Class<? extends Annotation> ENUM = EnumType.class;
+    Class<? extends Annotation> LIST = ListType.class;
+    Class<? extends Annotation> ARRAY = ArrayType.class;
 
-    protected final static String SIZE_NAME = "SIZE";
-    protected final static String PROTOCOL_TYPES_NAME = "PROTOCOL_TYPES";
-    protected final static String JAVA_TYPES_NAME = "JAVA_TYPES";
-    Class<? extends Annotation> typeAnnotationClass;
-
-    public static ProtocolType valueOf(@NonNull Annotation typeAnnotation) {
-        return Arrays.stream(ProtocolType.values())
-                .filter(t -> t.typeAnnotationClass == typeAnnotation.annotationType())
-                .findFirst()
-                .orElseThrow(() -> new CodecException("Cannot find matching type."));
-    }
-
-    public static boolean isSupported(@NonNull Type type) {
-        return Arrays.stream(ProtocolType.values())
-                .flatMap(t -> Arrays.stream(t.javaTypes()))
+    static boolean isSupported(Type type) {
+        return Arrays.stream(ProtocolType.class.getDeclaredFields())
+                .map(f -> {
+                    try {
+                        return (Class<? extends Annotation>) f.get(null);
+                    } catch (IllegalAccessException e) {
+                        throw new ResolveException("Fail getting protocol type.", e);
+                    }
+                })
+                .flatMap(t -> Arrays.stream(TypeUtils.javaTypes(t)))
                 .anyMatch(t -> t == type);
     }
 
-    @SneakyThrows
-    public Type[] javaTypes() {
-        return (Type[]) typeAnnotationClass
-                .getDeclaredField(JAVA_TYPES_NAME)
-                .get(null);
+    static ProtocolType proxy(Annotation typeAnnotation) {
+        return (ProtocolType) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class<?>[]{ProtocolType.class, typeAnnotation.annotationType()}, (proxy, method, args) -> {
+            switch (method.getName()) {
+                case "getType":
+                    return typeAnnotation.annotationType();
+                case "javaTypes":
+                    return typeAnnotation
+                            .annotationType()
+                            .getDeclaredField("ALLOWED_JAVA_TYPES")
+                            .get(null);
+                case "size":
+                    try {
+                        return typeAnnotation
+                                .annotationType()
+                                .getDeclaredField("SIZE")
+                                .getInt(null);
+                    } catch (IllegalAccessException | NoSuchFieldException e) {
+                        return 0;
+                    }
+                case "length":
+                    if (!Arrays.stream(typeAnnotation.getClass().getMethods())
+                            .anyMatch(m -> m.getName().equals("length"))) {
+                        return 0;
+                    }
+                default:
+                    return Arrays.stream(typeAnnotation.getClass().getMethods())
+                            .filter(m -> m.getName().equals(method.getName()))
+                            .findAny()
+                            .get()
+                            .invoke(typeAnnotation, args);
+            }
+        });
     }
 
-    public int size() {
-        try {
-            return this.typeAnnotationClass
-                    .getDeclaredField(SIZE_NAME)
-                    .getInt(null);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            return 0;
-        }
-    }
+    int value();
 
-    @SneakyThrows
-    public ProtocolType[] protocolTypes() {
-        return (ProtocolType[]) this.typeAnnotationClass
-                .getDeclaredField(PROTOCOL_TYPES_NAME)
-                .get(null);
-    }
+    int byteOffset();
+
+    int bitOffset();
+
+    int length();
+
+    Class<? extends Function<?, ?>>[] decodingFormula();
+
+    Class<? extends Function<?, ?>>[] encodingFormula();
+
+    String description();
+
+    String field();
+
+    EndianPolicy[] endianPolicy();
+
+    Class<? extends Annotation> getType();
+
+    Type[] javaTypes();
+
+    int size();
 }

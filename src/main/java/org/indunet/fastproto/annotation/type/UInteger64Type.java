@@ -49,7 +49,9 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UInteger64Type {
-    Type[] JAVA_TYPES = {BigInteger.class};
+    Type[] ALLOWED_JAVA_TYPES = {
+            BigInteger.class
+    };
     int SIZE = Long.SIZE >> 3;
     BigInteger MAX_VALUE = new BigInteger(String.valueOf(Long.MAX_VALUE))
             .subtract(new BigInteger(String.valueOf(Long.MIN_VALUE)));

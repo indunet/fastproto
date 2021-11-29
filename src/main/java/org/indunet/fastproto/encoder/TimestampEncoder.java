@@ -25,11 +25,10 @@ import org.indunet.fastproto.annotation.type.TimestampType;
 import org.indunet.fastproto.annotation.type.UInteger32Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodingException;
-import org.indunet.fastproto.exception.SpaceNotEnoughException;
 import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.ReverseUtils;
 
-import java.sql.Timestamp;
+import java.lang.annotation.Annotation;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
 
@@ -47,21 +46,21 @@ public class TimestampEncoder implements TypeEncoder {
         TimestampType type = context.getTypeAnnotation(TimestampType.class);
         val value = context.getValue(Date.class);
 
-        this.encode(context.getDatagram(), type.value(), type.protocolType(), policy, type.unit(), value);
+        this.encode(context.getDatagram(), type.value(), type.genericType(), policy, type.unit(), value);
     }
 
-    public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull ProtocolType dataType, @NonNull EndianPolicy policy, @NonNull TimeUnit unit, @NonNull Date value) {
+    public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull Class<? extends Annotation> type, @NonNull EndianPolicy policy, @NonNull TimeUnit unit, @NonNull Date value) {
         int bo = ReverseUtils.offset(datagram.length, byteOffset);
 
         if (bo < 0) {
             throw new EncodingException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (dataType == ProtocolType.LONG && unit == TimeUnit.MILLISECONDS) {
+        } else if (type == ProtocolType.LONG && unit == TimeUnit.MILLISECONDS) {
             if (bo + LongType.SIZE > datagram.length) {
                 throw new EncodingException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 
             CodecUtils.longType(datagram, bo, policy, value.getTime());
-        } else if (dataType == ProtocolType.UINTEGER32 && unit == TimeUnit.SECONDS) {
+        } else if (type == ProtocolType.UINTEGER32 && unit == TimeUnit.SECONDS) {
             if (bo + UInteger32Type.SIZE > datagram.length) {
                 throw new EncodingException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }

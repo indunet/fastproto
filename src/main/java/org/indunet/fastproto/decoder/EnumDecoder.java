@@ -25,6 +25,7 @@ import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
+import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.text.MessageFormat;
 import java.util.Arrays;
@@ -47,11 +48,11 @@ public class EnumDecoder<T extends Enum> implements TypeDecoder<T> {
                 .getType();
 
         return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy(),
-                type.protocolType(), type.fieldName(), (Class<T>) enumClass);
+                type.genericType(), type.field(), (Class<T>) enumClass);
     }
 
     public T decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy policy,
-                    @NonNull ProtocolType type, @NonNull String fieldName, @NonNull Class<T> enumClass) {
+                    @NonNull Class<? extends Annotation> type, @NonNull String fieldName, @NonNull Class<T> enumClass) {
         val enums = enumClass.getEnumConstants();
         val code = getCode(datagram, byteOffset, policy, type);
 
@@ -83,7 +84,7 @@ public class EnumDecoder<T extends Enum> implements TypeDecoder<T> {
     }
 
     public int getCode(@NonNull final byte[] datagram, int offset, @NonNull EndianPolicy policy,
-                       @NonNull ProtocolType type) {
+                       @NonNull Class<? extends Annotation> type) {
         if (type == ProtocolType.UINTEGER8) {
             return CodecUtils.uinteger8Type(datagram, offset);
         } else if (type == ProtocolType.UINTEGER16) {

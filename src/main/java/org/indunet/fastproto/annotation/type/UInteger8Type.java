@@ -47,7 +47,10 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UInteger8Type {
-    Type[] JAVA_TYPES = {Integer.class, Integer.TYPE};
+    Type[] ALLOWED_JAVA_TYPES = {
+            Integer.class,
+            Integer.TYPE
+    };
     int SIZE = Byte.SIZE >> 3;
     int MAX_VALUE = Byte.MAX_VALUE - Byte.MIN_VALUE;
     int MIN_VALUE = 0;
