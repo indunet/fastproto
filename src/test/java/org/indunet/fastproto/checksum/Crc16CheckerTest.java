@@ -19,10 +19,13 @@ package org.indunet.fastproto.checksum;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.FastProto;
+import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.EnableChecksum;
+import org.indunet.fastproto.annotation.type.Integer8Type;
 import org.indunet.fastproto.util.CodecUtils;
 import org.junit.jupiter.api.Test;
 
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -55,9 +58,9 @@ class Crc16CheckerTest {
     @Test
     public void testToByteArray() {
         val testObject = new TestObject();
-        val datagram = FastProto.toByteArray(testObject, 30);
+         val datagram = FastProto.toByteArray(testObject, 30);
 
-        assertNotNull(datagram);
+         assertNotNull(datagram);
     }
 
     @EnableChecksum(value = -2, checkPolicy = CheckPolicy.CRC16, start = 0, length = -3, endianPolicy = EndianPolicy.BIG)

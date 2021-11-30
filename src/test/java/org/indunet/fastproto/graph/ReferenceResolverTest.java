@@ -63,7 +63,7 @@ public class ReferenceResolverTest {
     public void testResolve() {
         val graph = ReferenceResolver.resolve(TestObject1.class);
 
-        graph.print();
+        // graph.print();
         assertNotNull(graph);
     }
 
