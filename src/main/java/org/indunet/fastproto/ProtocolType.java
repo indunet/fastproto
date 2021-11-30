@@ -24,6 +24,7 @@ import org.indunet.fastproto.util.TypeUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -34,8 +35,8 @@ import java.util.function.Function;
  * @since 3.2.0
  */
 public interface ProtocolType {
-    final static Class<? extends Annotation> BINARY = BinaryType.class;
-    final Class<? extends Annotation> BOOLEAN = BooleanType.class;
+    Class<? extends Annotation> BINARY = BinaryType.class;
+    Class<? extends Annotation> BOOLEAN = BooleanType.class;
     Class<? extends Annotation> CHARACTER = CharacterType.class;
     Class<? extends Annotation> BYTE = ByteType.class;
     Class<? extends Annotation> DOUBLE = DoubleType.class;
@@ -57,6 +58,7 @@ public interface ProtocolType {
 
     static boolean isSupported(Type type) {
         return Arrays.stream(ProtocolType.class.getDeclaredFields())
+                .filter(f -> f.getType() != boolean[].class)    // Filter boolean[], jacoco would add it during test.
                 .map(f -> {
                     try {
                         return (Class<? extends Annotation>) f.get(null);
@@ -69,7 +71,7 @@ public interface ProtocolType {
     }
 
     static ProtocolType proxy(Annotation typeAnnotation) {
-        return (ProtocolType) Proxy.newProxyInstance(ClassLoader.getSystemClassLoader(), new Class<?>[]{ProtocolType.class, typeAnnotation.annotationType()}, (proxy, method, args) -> {
+        return (ProtocolType) Proxy.newProxyInstance(ProtocolType.class.getClassLoader(), new Class<?>[]{ProtocolType.class, typeAnnotation.annotationType()}, (proxy, method, args) -> {
             switch (method.getName()) {
                 case "getType":
                     return typeAnnotation.annotationType();

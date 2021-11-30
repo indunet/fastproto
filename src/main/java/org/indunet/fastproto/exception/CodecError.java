@@ -44,7 +44,7 @@ public enum CodecError {
     ILLEGAL_TIMESTAMP_PARAMETERS("Illgeal timestamp parameters."),
     FAIL_ASSIGN_VALUE("Fail assigning value for field {0}"),
     FAIL_UNCOMPRESS_DATAGRAM("Fail decompressing datagram with {0}"),
-    PROTOCOL_VERSION_NOT_MATCH("Protocol version and datagram version doesn't match."),
+    PROTOCOL_VERSION_NOT_MATCH("Protocol version and datagram version does not match."),
     ILLEGAL_PROTOCOL_VERSION_TYPE("Illegal protocol version type"),
     ILLEGAL_CHECK_SUM("Illegal check sum"),
     NO_VALID_ENCODER_FOUND("No valid encoder found for {0}"),
