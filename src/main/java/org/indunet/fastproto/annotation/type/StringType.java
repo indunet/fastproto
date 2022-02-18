@@ -18,7 +18,7 @@ package org.indunet.fastproto.annotation.type;
 
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
-import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.StringDecoder;
 import org.indunet.fastproto.encoder.StringEncoder;
@@ -37,10 +37,10 @@ import java.util.function.Function;
  * String type, corresponding to Java String.
  *
  * @author Deng Ran
- * @see TypeFlag
+ * @see DataType
  * @since 1.1.0
  */
-@TypeFlag
+@DataType
 @Decoder(StringDecoder.class)
 @Encoder(StringEncoder.class)
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})

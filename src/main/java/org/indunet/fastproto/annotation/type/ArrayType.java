@@ -19,7 +19,7 @@ package org.indunet.fastproto.annotation.type;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
-import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.ArrayDecoder;
 import org.indunet.fastproto.encoder.ArrayEncoder;
@@ -38,7 +38,7 @@ import java.util.function.Function;
  * @author Deng Ran
  * @since 2.2.0
  */
-@TypeFlag
+@DataType
 @Decoder(ArrayDecoder.class)
 @Encoder(ArrayEncoder.class)
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class, ArrayValidator.class})

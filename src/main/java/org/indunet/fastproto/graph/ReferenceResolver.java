@@ -19,7 +19,7 @@ package org.indunet.fastproto.graph;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.ProtocolType;
-import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.graph.Reference.ReferenceType;
 import org.indunet.fastproto.graph.resolve.ResolvePipeline;
 
@@ -133,7 +133,7 @@ public class ReferenceResolver {
     protected static boolean isData(@NonNull Field field) {
         Predicate<Field> isTypeFlag = f -> Arrays.stream(f.getAnnotations())
                 .map(Annotation::annotationType)
-                .anyMatch(t -> t.isAnnotationPresent(TypeFlag.class));
+                .anyMatch(t -> t.isAnnotationPresent(DataType.class));
 
         return isTypeFlag.test(field);
     }

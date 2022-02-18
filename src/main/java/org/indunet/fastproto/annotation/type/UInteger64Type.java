@@ -18,7 +18,7 @@ package org.indunet.fastproto.annotation.type;
 
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
-import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.UInteger64Decoder;
 import org.indunet.fastproto.encoder.UInteger64Encoder;
@@ -39,10 +39,10 @@ import java.util.function.Function;
  * uint64 type, corresponding to Java BigInteger.
  *
  * @author Deng Ran
- * @see TypeFlag
+ * @see DataType
  * @since 1.5.0
  */
-@TypeFlag
+@DataType
 @Decoder(UInteger64Decoder.class)
 @Encoder(UInteger64Encoder.class)
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})

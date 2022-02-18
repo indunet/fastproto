@@ -18,7 +18,7 @@ package org.indunet.fastproto.annotation.type;
 
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
-import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.LongDecoder;
 import org.indunet.fastproto.encoder.LongEncoder;
@@ -37,10 +37,10 @@ import java.util.function.Function;
  * Long type, corresponding to Java Long/long.
  *
  * @author Deng Ran
- * @see TypeFlag
+ * @see DataType
  * @since 1.0.0
  */
-@TypeFlag
+@DataType
 @Decoder(LongDecoder.class)
 @Encoder(LongEncoder.class)
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})

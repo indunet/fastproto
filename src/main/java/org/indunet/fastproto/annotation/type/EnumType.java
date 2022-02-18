@@ -20,7 +20,7 @@ import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
-import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.EnumDecoder;
 import org.indunet.fastproto.encoder.EnumEncoder;
@@ -36,10 +36,10 @@ import java.util.function.Function;
  * Float type, corresponding to Java Float/float.
  *
  * @author Deng Ran
- * @see TypeFlag
+ * @see DataType
  * @since 2.1.0
  */
-@TypeFlag
+@DataType
 @Decoder(EnumDecoder.class)
 @Encoder(EnumEncoder.class)
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})

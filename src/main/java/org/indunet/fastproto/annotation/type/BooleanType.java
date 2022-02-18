@@ -18,7 +18,7 @@ package org.indunet.fastproto.annotation.type;
 
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
-import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.BooleanDecoder;
 import org.indunet.fastproto.encoder.BooleanEncoder;
@@ -38,10 +38,10 @@ import java.util.function.Function;
  * Boolean type, corresponding to Java Boolean/boolean.
  *
  * @author Deng Ran
- * @see TypeFlag
+ * @see DataType
  * @since 1.0.0
  */
-@TypeFlag
+@DataType
 @Decoder(BooleanDecoder.class)
 @Encoder(BooleanEncoder.class)
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})

@@ -18,7 +18,7 @@ package org.indunet.fastproto.annotation.type;
 
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
-import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.UInteger8Decoder;
 import org.indunet.fastproto.encoder.UInteger8Encoder;
@@ -37,10 +37,10 @@ import java.util.function.Function;
  * Integer type, corresponding to Java Integer/int.
  *
  * @author Deng Ran
- * @see TypeFlag
+ * @see DataType
  * @since 1.2.0
  */
-@TypeFlag
+@DataType
 @Decoder(UInteger8Decoder.class)
 @Encoder(UInteger8Encoder.class)
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})

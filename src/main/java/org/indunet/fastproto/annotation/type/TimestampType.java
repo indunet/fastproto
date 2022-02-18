@@ -19,7 +19,7 @@ package org.indunet.fastproto.annotation.type;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
-import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.TimestampDecoder;
 import org.indunet.fastproto.encoder.TimestampEncoder;
@@ -36,10 +36,10 @@ import java.util.function.Function;
  * Timestamp type, corresponding to Java java.sql.Timestamp.
  *
  * @author Deng Ran
- * @see TypeFlag
+ * @see DataType
  * @since 1.1.0
  */
-@TypeFlag
+@DataType
 @Decoder(TimestampDecoder.class)
 @Encoder(TimestampEncoder.class)
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class, TimestampValidator.class})
