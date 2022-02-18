@@ -86,7 +86,7 @@ public class ArrayDecoder implements TypeDecoder<Object> {
                     });
         };
 
-        if (type == ProtocolType.CHARACTER) {
+        if (type == ProtocolType.CHAR) {
             codec.accept(b -> CodecUtils.characterType(datagram, b, policy));
             return primitive ? TypeUtils.listToArray(list, new char[length]) : list.toArray(new Character[length]);
         } else if (type == ProtocolType.BYTE) {

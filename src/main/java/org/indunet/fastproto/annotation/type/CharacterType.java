@@ -34,12 +34,13 @@ import java.lang.reflect.Type;
 import java.util.function.Function;
 
 /**
- * Character type, corresponding to Java Character/char.
+ * Char type(ASCII only), corresponding to Java Character/char
  *
  * @author Deng Ran
  * @see DataType
  * @since 1.0.0
  */
+@Deprecated
 @DataType
 @Decoder(CharacterDecoder.class)
 @Encoder(CharacterEncoder.class)

@@ -54,7 +54,7 @@ FastProto是一款采用Java编写的协议化二进制序列化和反序列化�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.0.0</version>
+    <version>3.1.1</version>
 </dependency>
 ```
 

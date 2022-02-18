@@ -40,6 +40,7 @@ import java.util.function.Function;
  * @see DataType
  * @since 1.0.0
  */
+@Deprecated
 @DataType
 @Decoder(IntegerDecoder.class)
 @Encoder(IntegerEncoder.class)

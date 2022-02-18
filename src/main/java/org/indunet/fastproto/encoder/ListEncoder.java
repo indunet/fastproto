@@ -74,7 +74,7 @@ public class ListEncoder implements TypeEncoder {
                     });
         };
 
-        if (type == ProtocolType.CHARACTER) {
+        if (type == ProtocolType.CHAR) {
             codec.accept((b, i) -> CodecUtils.type(datagram, b, policy, (Character) values.get(i)));
         } else if (type == ProtocolType.BYTE) {
             codec.accept((b, i) -> CodecUtils.type(datagram, b, policy, (Byte) values.get(i)));

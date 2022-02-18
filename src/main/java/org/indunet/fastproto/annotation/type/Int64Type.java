@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2022 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,12 +16,12 @@
 
 package org.indunet.fastproto.annotation.type;
 
+import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
-import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
-import org.indunet.fastproto.decoder.Integer8Decoder;
-import org.indunet.fastproto.encoder.Integer8Encoder;
+import org.indunet.fastproto.decoder.LongDecoder;
+import org.indunet.fastproto.encoder.LongEncoder;
 import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.FieldValidator;
@@ -34,33 +34,32 @@ import java.lang.reflect.Type;
 import java.util.function.Function;
 
 /**
- * Integer8 type, corresponding to Java Integer/int.
+ * Int64 type, corresponding to Java Long/long.
  *
  * @author Deng Ran
  * @see DataType
- * @since 1.2.0
+ * @since 3.2.0
  */
-@Deprecated
 @DataType
-@Decoder(Integer8Decoder.class)
-@Encoder(Integer8Encoder.class)
+@Decoder(LongDecoder.class)
+@Encoder(LongEncoder.class)
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Integer8Type {
+public @interface Int64Type {
     Type[] ALLOWED_JAVA_TYPES = {
-            int.class,
-            Integer.class
+            long.class,
+            Long.class
     };
-    int SIZE = Byte.SIZE >> 3;
-    int MAX_VALUE = Byte.MAX_VALUE;
-    int MIN_VALUE = Byte.MIN_VALUE;
+    int SIZE = Long.SIZE >> 3;
+    long MAX_VALUE = Long.MAX_VALUE;
+    long MIN_VALUE = Long.MIN_VALUE;
 
     int value();
 
-    Class<? extends Function<Integer, ?>>[] decodingFormula() default {};
+    Class<? extends Function<Long, ?>>[] decodingFormula() default {};
 
-    Class<? extends Function<?, Integer>>[] encodingFormula() default {};
+    Class<? extends Function<?, Long>>[] encodingFormula() default {};
 
     String description() default "";
 }

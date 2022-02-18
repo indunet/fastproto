@@ -39,6 +39,7 @@ import java.util.function.Function;
  * @see DataType
  * @since 1.1.0
  */
+@Deprecated
 @DataType
 @Decoder(TimestampDecoder.class)
 @Encoder(TimestampEncoder.class)

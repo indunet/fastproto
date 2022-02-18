@@ -16,31 +16,10 @@
 
 package org.indunet.fastproto.annotation
 
-import org.indunet.fastproto.annotation.`type`.{ArrayType => JavaArrayType}
-import org.indunet.fastproto.annotation.`type`.{BinaryType => JavaBinaryType}
-import org.indunet.fastproto.annotation.`type`.{BooleanType => JavaBooleanType}
-import org.indunet.fastproto.annotation.`type`.{ByteType => JavaByteType}
-import org.indunet.fastproto.annotation.`type`.{CharacterType => JavaCharacterType}
-import org.indunet.fastproto.annotation.`type`.{DoubleType => JavaDoubleType}
-import org.indunet.fastproto.annotation.`type`.{EnumType => JavaEnumType}
-import org.indunet.fastproto.annotation.`type`.{FloatType => JavaFloatType}
-import org.indunet.fastproto.annotation.`type`.{Integer8Type => JavaInteger8Type}
-import org.indunet.fastproto.annotation.`type`.{Integer16Type => JavaInteger16Type}
-import org.indunet.fastproto.annotation.`type`.{IntegerType => JavaIntegerType}
-import org.indunet.fastproto.annotation.`type`.{ListType => JavaListType}
-import org.indunet.fastproto.annotation.`type`.{LongType => JavaLongType}
-import org.indunet.fastproto.annotation.`type`.{ShortType => JavaShortType}
-import org.indunet.fastproto.annotation.`type`.{StringType => JavaStringType}
-import org.indunet.fastproto.annotation.`type`.{TimestampType => JavaTimestampType}
-import org.indunet.fastproto.annotation.`type`.{UInteger8Type => JavaUInteger8Type}
-import org.indunet.fastproto.annotation.`type`.{UInteger16Type => JavaUInteger16Type}
-import org.indunet.fastproto.annotation.`type`.{UInteger32Type => JavaUInteger32Type}
-import org.indunet.fastproto.annotation.`type`.{UInteger64Type => JavaUInteger64Type}
-
+import org.indunet.fastproto.annotation.`type`.{CharType => JavaCharType, ArrayType => JavaArrayType, BinaryType => JavaBinaryType, BoolType => JavaBoolType, BooleanType => JavaBooleanType, ByteType => JavaByteType, DoubleType => JavaDoubleType, EnumType => JavaEnumType, FloatType => JavaFloatType, Int16Type => JavaInt16Type, Int32Type => JavaInt32Type, Int64Type => JavaInt64Type, Int8Type => JavaInt8Type, ListType => JavaListType, ShortType => JavaShortType, StringType => JavaStringType, TimeType => JavaTimeType, UInt16Type => JavaUInt16Type, UInt32Type => JavaUInt32Type, UInt64Type => JavaUInt64Type, UInt8Type => JavaUInt8Type}
 import org.indunet.fastproto.annotation.{Endian => JavaEndian}
 import org.indunet.fastproto.annotation.{EncodingIgnore => JavaEncodingIgnore}
 import org.indunet.fastproto.annotation.{DecodingIgnore => JavaDecodingIgnore}
-
 import org.indunet.fastproto.annotation.{EnableChecksum => JavaEnableChecksum}
 import org.indunet.fastproto.annotation.{EnableCompress => JavaEnableCompress}
 import org.indunet.fastproto.annotation.{EnableCrypto => JavaEnableCrypto}
@@ -50,7 +29,7 @@ import org.indunet.fastproto.annotation.{EnableFixedLength => JavaEnableFixedLen
 import _root_.scala.annotation.meta.field
 
 /**
- * Scala annotations.
+ * Scala type annotations.
  *
  * @author Deng Ran
  * @since 2.5.0
@@ -58,24 +37,25 @@ import _root_.scala.annotation.meta.field
 package object scala {
   type ArrayType = JavaArrayType @field
   type BinaryType = JavaBinaryType @field
-  type BooleanType = JavaBooleanType @field
+  type BoolType = JavaBoolType @field
+  type BooleanType =  JavaBooleanType @field
   type ByteType = JavaByteType @field
-  type CharacterType = JavaCharacterType @field
+  type CharType = JavaCharType @field
   type DoubleType = JavaDoubleType @field
   type EnumType = JavaEnumType @field
   type FloatType = JavaFloatType @field
-  type Int8Type = JavaInteger8Type @field
-  type Int16Type = JavaInteger16Type @field
-  type IntType = JavaIntegerType @field
+  type Int8Type = JavaInt8Type @field
+  type Int16Type = JavaInt16Type @field
+  type Int32Type = JavaInt32Type @field
   type ListType = JavaListType @field
-  type LongType = JavaLongType @field
+  type Int64Type = JavaInt64Type @field
   type ShortType = JavaShortType @field
   type StringType = JavaStringType @field
-  type TimestampType = JavaTimestampType @field
-  type UInt8Type = JavaUInteger8Type @field
-  type UInt16Type = JavaUInteger16Type @field
-  type UInt32Type = JavaUInteger32Type @field
-  type UInt64Type = JavaUInteger64Type @field
+  type TimeType = JavaTimeType @field
+  type UInt8Type = JavaUInt8Type @field
+  type UInt16Type = JavaUInt16Type @field
+  type UInt32Type = JavaUInt32Type @field
+  type UInt64Type = JavaUInt64Type @field
 
   type Endian = JavaEndian @field
   type DecodingIgnore = JavaDecodingIgnore @field

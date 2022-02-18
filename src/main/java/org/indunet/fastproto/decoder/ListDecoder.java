@@ -77,7 +77,7 @@ public class ListDecoder implements TypeDecoder<List<?>> {
             return list;
         };
 
-        if (type == ProtocolType.CHARACTER) {
+        if (type == ProtocolType.CHAR) {
             return codec.apply(b -> CodecUtils.characterType(datagram, b, policy), new ArrayList<Character>());
         } else if (type == ProtocolType.BYTE) {
             return codec.apply(b -> CodecUtils.byteType(datagram, b), new ArrayList<Byte>());

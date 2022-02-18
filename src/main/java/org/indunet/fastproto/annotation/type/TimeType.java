@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2022 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,51 +16,57 @@
 
 package org.indunet.fastproto.annotation.type;
 
+import org.indunet.fastproto.ProtocolType;
+import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
-import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
-import org.indunet.fastproto.decoder.Integer8Decoder;
-import org.indunet.fastproto.encoder.Integer8Encoder;
+import org.indunet.fastproto.decoder.TimestampDecoder;
+import org.indunet.fastproto.encoder.TimestampEncoder;
 import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.FieldValidator;
+import org.indunet.fastproto.graph.validate.TimestampValidator;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 import java.lang.reflect.Type;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 /**
- * Integer8 type, corresponding to Java Integer/int.
+ * Time type, corresponding to Java java.sql.Timestamp and java.util.Date
  *
  * @author Deng Ran
  * @see DataType
- * @since 1.2.0
+ * @since 3.2.0
  */
-@Deprecated
 @DataType
-@Decoder(Integer8Decoder.class)
-@Encoder(Integer8Encoder.class)
-@Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
+@Decoder(TimestampDecoder.class)
+@Encoder(TimestampEncoder.class)
+@Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class, TimestampValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Integer8Type {
+public @interface TimeType {
     Type[] ALLOWED_JAVA_TYPES = {
-            int.class,
-            Integer.class
+            Timestamp.class,
+            Date.class
     };
-    int SIZE = Byte.SIZE >> 3;
-    int MAX_VALUE = Byte.MAX_VALUE;
-    int MIN_VALUE = Byte.MIN_VALUE;
+    Class<?>[] ALLOWED_GENERIC_TYPES = {
+            ProtocolType.UINTEGER32,
+            ProtocolType.LONG
+    };
 
     int value();
 
-    Class<? extends Function<Integer, ?>>[] decodingFormula() default {};
+    Class<? extends Annotation> genericType() default LongType.class;
 
-    Class<? extends Function<?, Integer>>[] encodingFormula() default {};
+    TimeUnit unit() default TimeUnit.MILLISECONDS;
+
+    Class<? extends Function<Timestamp, ?>>[] decodingFormula() default {};
+
+    Class<? extends Function<?, Timestamp>>[] encodingFormula() default {};
 
     String description() default "";
 }

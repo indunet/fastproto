@@ -42,6 +42,7 @@ import java.util.function.Function;
  * @see DataType
  * @since 1.5.0
  */
+@Deprecated
 @DataType
 @Decoder(UInteger64Decoder.class)
 @Encoder(UInteger64Encoder.class)

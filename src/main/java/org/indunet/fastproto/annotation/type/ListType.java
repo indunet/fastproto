@@ -51,7 +51,7 @@ public @interface ListType {
             List.class
     };
     Class<?>[] ALLOWED_GENERIC_TYPES = {
-            ProtocolType.CHARACTER,
+            ProtocolType.CHAR,
             ProtocolType.BYTE,
             ProtocolType.SHORT,
             ProtocolType.INTEGER,

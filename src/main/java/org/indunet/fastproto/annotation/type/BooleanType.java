@@ -41,6 +41,7 @@ import java.util.function.Function;
  * @see DataType
  * @since 1.0.0
  */
+@Deprecated
 @DataType
 @Decoder(BooleanDecoder.class)
 @Encoder(BooleanEncoder.class)
