@@ -18,7 +18,7 @@ package org.indunet.fastproto.encoder;
 
 import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.type.UInteger32Type;
+import org.indunet.fastproto.annotation.type.UInt32Type;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
@@ -26,13 +26,13 @@ import org.indunet.fastproto.util.CodecUtils;
  * UInteger32 type encoder.
  *
  * @author Deng Ran
- * @see TypeEncoder,UInteger32Type
+ * @see TypeEncoder, UInt32Type
  * @since 1.2.0
  */
 public class UInteger32Encoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
-        UInteger32Type type = context.getTypeAnnotation(UInteger32Type.class);
+        UInt32Type type = context.getTypeAnnotation(UInt32Type.class);
         EndianPolicy policy = context.getEndianPolicy();
         Long value = context.getValue(Long.class);
 

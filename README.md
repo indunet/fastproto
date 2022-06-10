@@ -27,8 +27,6 @@ which is especially suitable for the Internet of Things (IoT).
 *   Support [protocol version verification][protocol-version]
 *   Support [data integrity verification][checksum]
 *   Support data decrypt & encrypt
-*   Built-in [Kafka serializer & deserializer][kafka]
-*   Built-in Netty decoder & encoder
 
 ## *Under Developing*
 
@@ -58,7 +56,7 @@ FastProto is more recommended for the following scenarios:
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.0.0</version>
+    <version>3.1.2</version>
 </dependency>
 ```
 
@@ -93,28 +91,28 @@ It should be noted that the `value` attribute of any data type annotation corres
 
 ```java
 public class Weather {
-    @UInteger8Type(0)
+    @UInt8Type(0)
     int id;
 
-    @TimestampType(2)
+    @TimeType(2)
     Timestamp time;
 
-    @UInteger16Type(10)
+    @UInt16Type(10)
     int humidity;
 
-    @Integer16Type(12)
+    @Int16Type(12)
     int temperature;
 
-    @UInteger32Type(14)
+    @UInt32Type(14)
     long pressure;
 
-    @BooleanType(value = 18, bitOffset = 0)
+    @BoolType(value = 18, bitOffset = 0)
     boolean temperatureValid;
 
-    @BooleanType(value = 18, bitOffset = 1)
+    @BoolType(value = 18, bitOffset = 1)
     boolean humidityValid;
 
-    @BooleanType(value = 18, bitOffset = 2)
+    @BoolType(value = 18, bitOffset = 2)
     boolean pressureValid;
 }
 ```
@@ -157,7 +155,7 @@ public class PressureDecodeFormula implements Function<Long, Double> {
 public class Weather {
     ...
 
-    @UInteger32Type(value = 14, decodingFormula = DecodeSpeedFormula.class)
+    @UInt32Type(value = 14, decodingFormula = DecodeSpeedFormula.class)
     double pressure;
 }
 ```
@@ -178,7 +176,7 @@ public class PressureEncodeFormula implements Function<Double, Long> {
 public class Weather {
     ...
 
-    @UInteger32Type(value = 14, decodingFormula = PressureDecodeFormula.class, encodingFormula = PressureEncodeFormula.class)
+    @UInt32Type(value = 14, decodingFormula = PressureDecodeFormula.class, encodingFormula = PressureEncodeFormula.class)
     double pressure;
 }
 ```
@@ -203,41 +201,41 @@ public class Weather {
 FastProto supports Java primitive data types, Timestamp, String and byte array. The above types can be replaced by `@AutoType`.
 Taking into account cross-language and cross-platform data exchange, FastProto also introduces unsigned types. [more][types]
 
-| Annotation      | Java               | C/C++          | Size        |   AutoType |
-|:---------------:|:------------------:|:--------------:|:-----------:|:-----------:|
-| `@BooleanType`    | Boolean / boolean  | bool           | 1 bit       |  √ |    
-| `@CharacterType`  | Character / char   | --             | 2 bytes     |  √  |    
-| `@ByteType`       | Byte / byte        | char           | 1 byte      |  √  |    
-| `@ShortType`      | Short / short      | short          | 2 bytes     |  √  |    
-| `@IntegerType`    | Integer / int      | int            | 4 bytes     |  √ |    
-| `@LongType`       | Long / long        | long long      | 8 bytes     |  √ |    
-| `@FloatType`      | Float / float      | float          | 4 bytes     |  √  |    
-| `@DoubleType`     | Double / double    | double         | 8 bytes     |  √ |    
-| `@Integer8Type`   | Integer / int      | char           | 1 byte      |  ×  |    
-| `@Integer16Type`  | Integer / int      | short          | 2 bytes     |  × |    
-| `@UInteger8Type`  | Integer / int      | unsigned char  | 1 byte      |  ×  |    
-| `@UInteger16Type` | Integer / int      | unsigned short | 2 bytes     |  × |    
-| `@UInteger32Type` | Long / long        | unsigned long  | 4 bytes     |  × |    
-| `@UInteger64Type` | BigInteger        | unsigned long long | 8 bytes  |  √ |    
-| `@BinaryType`     | byte[]             | char[]         | N bytes     |  √  |    
-| `@StringType`     | java.lang.String   | --             | N bytes     |  √ |    
-| `@TimestampType`  | java.sql.Timestamp / java.util.Date | --             | 4 / 8 bytes |  √  |    
-| `@ArrayType`     | primitive type array   | primitive type array    | N 字节     |  √ |    
-| `@ListType`  | primitive type list | --             | N 字节 |  √  |    
-| `@EnumType`     | enum   | enum             | N 字节     |  √ |
+| Annotation  | Java               | C/C++          | Size        |
+|:-----------:|:------------------:|:--------------:|:-----------:|
+|  @BoolType  | Boolean / boolean  | bool           | 1 bit       |    
+| @CharType`  | Character / char   | --             | 2 bytes     |   
+|  @ByteType  | Byte / byte        | char           | 1 byte      |  
+| @ShortType  | Short / short      | short          | 2 bytes     |   
+| @Int32Type  | Integer / int      | int            | 4 bytes     | 
+| @Int64Type  | Long / long        | long long      | 8 bytes     |   
+| @FloatType  | Float / float      | float          | 4 bytes     |  
+| @DoubleType | Double / double    | double         | 8 bytes     |  
+|  @Int8Type  | Integer / int      | char           | 1 byte      |  
+| @Int16Type  | Integer / int      | short          | 2 bytes     |  
+| @UInt8Type  | Integer / int      | unsigned char  | 1 byte      |   
+| @UInt16Type | Integer / int      | unsigned short | 2 bytes     |   
+| @UInt32Type | Long / long        | unsigned long  | 4 bytes     |   
+| @UInt64Type | BigInteger        | unsigned long long | 8 bytes  |  
+| @BinaryType | byte[]             | char[]         | N bytes     |  
+| @StringType | java.lang.String   | --             | N bytes     |   
+|  @TimeType  | java.sql.Timestamp / java.util.Date | --             | 4 / 8 bytes |  
+| @ArrayType  | primitive type array   | primitive type array    | N 字节     |  
+|  @ListType  | primitive type list | --             | N 字节 |  
+|  @EnumType  | enum   | enum             | N 字节     |
 
 FastProto also provides some auxiliary annotations to help users further customize the binary format, decoding and encoding process.
 
-| Annotation    | Scope        | Description                           |
-|:-------------:|:------------:|:-------------------------------------:|
-| `@Endian`       | Class & Field | Endianness, default as little endian. |
-| `@DecodingIgnore` | Field        | Ignore the field when decoding.       |
-| `@EncodingIgnore` | Field        | Ignore the field when encoding.       |
-| `@EnableCompress` | Class        | Enable compress & decompress, default as deflate |
-| `@EnableProtocolVersion` | Class     |  Enable protocol version verification  |
-| `@EnableCheckSum`      |  Class      |  Enable checksum verification               |
-| `@EnableCrypto`   |  Class | Enable encrypt & decrypt |
-| `@EnableFixedLength`   |  Class | Enable fixed length of datagram |
+|       Annotation       | Scope        |                    Description                    |
+|:----------------------:|:------------:|:-------------------------------------------------:|
+|        @Endian         | Class & Field |       Endianness, default as little endian.       |
+|    @DecodingIgnore     | Field        |          Ignore the field when decoding.          |
+|    @EncodingIgnore     | Field        |          Ignore the field when encoding.          |
+|    @EnableCompress     | Class        | Enable compress & decompress, default as deflate. |
+| @EnableProtocolVersion | Class     |       Enable protocol version verification.       |
+|    @EnableCheckSum     |  Class      |           Enable checksum verification.           |
+|     @EnableCrypto      |  Class |             Enable encrypt & decrypt.             |
+|   @EnableFixedLength   |  Class |         Enable fixed length of datagram.          |
 
 ## *Benchmark*
 
@@ -260,7 +258,7 @@ FastProto also provides some auxiliary annotations to help users further customi
 FastProto has obtained the support of JetBrain Open Source Project, which can provide free license of all product pack for
 all core contributors.
 If you are interested in this project and want to join and undertake part of the work (development/testing/documentation),
-please feel free to contact me via email <deng_ran@foxmail.com>.
+please feel free to contact me via email <deng_ran@foxmail.com>
 
 ## *License*
 

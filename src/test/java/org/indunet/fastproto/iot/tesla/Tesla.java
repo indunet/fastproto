@@ -19,10 +19,10 @@ package org.indunet.fastproto.iot.tesla;
 import lombok.*;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.Endian;
-import org.indunet.fastproto.annotation.type.BooleanType;
+import org.indunet.fastproto.annotation.type.BoolType;
 import org.indunet.fastproto.annotation.type.FloatType;
-import org.indunet.fastproto.annotation.type.LongType;
-import org.indunet.fastproto.annotation.type.TimestampType;
+import org.indunet.fastproto.annotation.type.Int64Type;
+import org.indunet.fastproto.annotation.type.TimeType;
 
 import java.sql.Timestamp;
 
@@ -33,16 +33,16 @@ import java.sql.Timestamp;
 @Builder
 @Endian(EndianPolicy.LITTLE)
 public class Tesla {
-    @LongType(0)
+    @Int64Type(0)
     Long id;
 
-    @TimestampType(8)
+    @TimeType(8)
     Timestamp time;
 
     @FloatType(16)
     float speed;
 
-    @BooleanType(value = 20, bitOffset = 0)
+    @BoolType(value = 20, bitOffset = 0)
     boolean active;
 
     Battery battery;

@@ -20,9 +20,9 @@ import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.ProtocolType;
-import org.indunet.fastproto.annotation.type.LongType;
-import org.indunet.fastproto.annotation.type.TimestampType;
-import org.indunet.fastproto.annotation.type.UInteger32Type;
+import org.indunet.fastproto.annotation.type.Int64Type;
+import org.indunet.fastproto.annotation.type.TimeType;
+import org.indunet.fastproto.annotation.type.UInt32Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.CodecUtils;
@@ -46,7 +46,7 @@ public class TimestampDecoder<T extends Date> implements TypeDecoder<T> {
     @Override
     public T decode(@NonNull DecodeContext context) {
         EndianPolicy policy = context.getEndianPolicy();
-        TimestampType type = context.getTypeAnnotation(TimestampType.class);
+        TimeType type = context.getTypeAnnotation(TimeType.class);
         val clazz = context.getReference()
                 .getField().getType();
 
@@ -68,15 +68,15 @@ public class TimestampDecoder<T extends Date> implements TypeDecoder<T> {
         if (bo < 0) {
             throw new DecodingException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (genericType == ProtocolType.LONG && unit == TimeUnit.MILLISECONDS) {
-            if (bo + LongType.SIZE > datagram.length) {
+            if (bo + Int64Type.SIZE > datagram.length) {
                 throw new DecodingException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 
             val value = CodecUtils.longType(datagram, bo, policy);
 
             return newInstance.apply(value);
-        } else if (genericType == ProtocolType.UINTEGER32 && unit == TimeUnit.SECONDS) {
-            if (bo + UInteger32Type.SIZE > datagram.length) {
+        } else if (genericType == ProtocolType.UINT32 && unit == TimeUnit.SECONDS) {
+            if (bo + UInt32Type.SIZE > datagram.length) {
                 throw new DecodingException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 

@@ -18,7 +18,7 @@ package org.indunet.fastproto.iot.tesla;
 
 import lombok.*;
 import org.indunet.fastproto.annotation.type.FloatType;
-import org.indunet.fastproto.annotation.type.IntegerType;
+import org.indunet.fastproto.annotation.type.Int32Type;
 import org.indunet.fastproto.annotation.type.ShortType;
 
 @Data
@@ -32,7 +32,7 @@ public class Battery {
 
     boolean locked;
 
-    @IntegerType(26)
+    @Int32Type(26)
     int voltage;
 
     @FloatType(30)

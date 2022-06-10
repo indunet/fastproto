@@ -24,9 +24,7 @@ FastProto是一款采用Java编写的协议化二进制序列化和反序列化�
 *   支持数据[压缩 & 解压缩(gzip, deflate)][compression]  
 *   支持[协议版本校验][protocol-version]
 *   支持[数据完整性校验][checksum]
-*   支持数据对称加密 & 解密     
-*   内置[Kafka serializer & deserializer][kafka]
-*   内置Netty解码器 & 编码器
+*   支持数据对称加密 & 解密
 
 ## *Under Developing*
 
@@ -54,7 +52,7 @@ FastProto是一款采用Java编写的协议化二进制序列化和反序列化�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.0.0</version>
+    <version>3.1.2</version>
 </dependency>
 ```
 
@@ -88,28 +86,28 @@ FastProto是一款采用Java编写的协议化二进制序列化和反序列化�
 
 ```java
 public class Weather {
-    @UInteger8Type(0)
+    @UInt8Type(0)
     int id;
 
-    @TimestampType(2)
+    @TimeType(2)
     Timestamp time;
 
-    @UInteger16Type(10)
+    @UInt16Type(10)
     int humidity;
 
-    @Integer16Type(12)
+    @Int16Type(12)
     int temperature;
 
-    @UInteger32Type(14)
+    @UInt32Type(14)
     long pressure;
 
-    @BooleanType(value = 18, bitOffset = 0)
+    @BoolType(value = 18, bitOffset = 0)
     boolean temperatureValid;
 
-    @BooleanType(value = 18, bitOffset = 1)
+    @BoolType(value = 18, bitOffset = 1)
     boolean humidityValid;
 
-    @BooleanType(value = 18, bitOffset = 2)
+    @BoolType(value = 18, bitOffset = 2)
     boolean pressureValid;
 }
 ```
@@ -149,7 +147,7 @@ public class PressureDecodeFormula implements Function<Long, Double> {
 public class Weather {
     ...
     
-    @UInteger32Type(value = 14, decodingFormula = DecodeSpeedFormula.class)
+    @UInt32Type(value = 14, decodingFormula = DecodeSpeedFormula.class)
     double pressure;
 }
 ```
@@ -169,7 +167,7 @@ public class PressureEncodeFormula implements Function<Double, Long> {
 public class Weather {
     ...
 
-    @UInteger32Type(value = 14, decodingFormula = PressureDecodeFormula.class, encodingFormula = PressureEncodeFormula.class)
+    @UInt32Type(value = 14, decodingFormula = PressureDecodeFormula.class, encodingFormula = PressureEncodeFormula.class)
     double pressure;
 }
 ```
@@ -194,41 +192,41 @@ FastProto支持Java基础数据类型、Timestamp、String和字节数组，以�
 考虑到跨语言跨平台的数据交换，FastProto还引入了无符号类型。[更多][types]
 
 
-| 注解      | Java               | C/C++          | 大小        |   AutoType |
-|:---------------:|:------------------:|:--------------:|:-----------:|:-----------:|
-| `@BooleanType`    | Boolean / boolean  | bool           | 1 位       |  √ |    
-| `@CharacterType`  | Character / char   | --             | 2 字节     |  √  |    
-| `@ByteType`       | Byte / byte        | char           | 1 字节      |  √  |    
-| `@ShortType`      | Short / short      | short          | 2 字节     |  √  |    
-| `@IntegerType`    | Integer / int      | int            | 4 字节     |  √ |    
-| `@LongType`       | Long / long        | long long      | 8 字节     |  √ |    
-| `@FloatType`      | Float / float      | float          | 4 字节     |  √  |    
-| `@DoubleType`     | Double / double    | double         | 8 字节     |  √ |    
-| `@Integer8Type`   | Integer / int      | char           | 1 字节      |  ×  |    
-| `@Integer16Type`  | Integer / int      | short          | 2 字节     |  × |    
-| `@UInteger8Type`  | Integer / int      | unsigned char  | 1 字节      |  ×  |    
-| `@UInteger16Type` | Integer / int      | unsigned short | 2 字节     |  × |    
-| `@UInteger32Type` | Long / long        | unsigned long  | 4 字节     |  × |    
-| `@UInteger64Type` | BigInteger        | unsigned long long | 8 字节  |  √ |    
-| `@BinaryType`     | byte[]             | char[]         | N 字节     |  √  |    
-| `@StringType`     | java.lang.String   | --             | N 字节     |  √ |    
-| `@TimestampType`  | java.sql.Timestamp / java.util.Date | --             | 4 / 8 字节 |  √  |    
-| `@ArrayType`     | 基本数据类型数组   | 基本数据类型数组             | N 字节     |  √ |    
-| `@ListType`  | 基本数据类型列表 | --             | N 字节 |  √  |    
-| `@EnumType`     | 枚举   | 枚举             | N 字节     |  √ |
+|     注解      | Java               | C/C++          | 大小        |
+|:-----------:|:------------------:|:--------------:|:-----------:|
+|  @BoolType  | Boolean / boolean  | bool           | 1 位       |    
+|  @CharType  | Character / char   | --             | 2 字节     |  
+|  @ByteType  | Byte / byte        | char           | 1 字节      |
+| @ShortType  | Short / short      | short          | 2 字节     |  
+| @Int32Type  | Integer / int      | int            | 4 字节     |   
+| @Int64Type  | Long / long        | long long      | 8 字节     |  
+| @FloatType  | Float / float      | float          | 4 字节     | 
+| @DoubleType | Double / double    | double         | 8 字节     | 
+|  @Int8Type  | Integer / int      | char           | 1 字节      |  
+| @Int16Type  | Integer / int      | short          | 2 字节     |
+| @UInt8Type  | Integer / int      | unsigned char  | 1 字节      |  
+| @UInt16Type | Integer / int      | unsigned short | 2 字节     |  
+| @UInt32Type | Long / long        | unsigned long  | 4 字节     |  
+| @UInt64Type | BigInteger        | unsigned long long | 8 字节  |  
+| @BinaryType | byte[]             | char[]         | N 字节     |  
+| @StringType | java.lang.String   | --             | N 字节     |   
+|  @TimeType  | java.sql.Timestamp / java.util.Date | --             | 4 / 8 字节 |
+| @ArrayType  | 基本数据类型数组   | 基本数据类型数组             | N 字节     |
+|  @ListType  | 基本数据类型列表 | --             | N 字节 | 
+|  @EnumType  | 枚举   | 枚举             | N 字节     |
 
 FastProto还提供了一些辅助注解，帮助用户进一步自定义二进制格式、解码和编码流程。
 
-| 注解    | 作用域        | 描述                           |
-|:-------------:|:------------:|:-------------------------------------:|
-| `@Endian`       | Class & Field | 数据开端，默认小开端 |
-| `@DecodingIgnore` | Field        | 反序列化时忽略该字段       |
-| `@EncodingIgnore` | Field        | 序列化时忽略该字段       |
-| `@EnableCompress` | Class        | 启动压缩和解压缩  |
-| `@EnableProtocolVersion` | Class     |  启动协议版本校验  |
-| `@EnableChecksum`      |  Class      |  启动数据完整性校验              |
-| `@EnableCrypto`      |  Class      |    启动加密和解密             |
-| `@EnableFixedLength`      |  Class      |    启动固定报文长度             |
+|           注解           | 作用域        | 描述                           |
+|:----------------------:|:------------:|:-------------------------------------:|
+|        @Endian         | Class & Field | 数据开端，默认小开端 |
+|    @DecodingIgnore     | Field        | 反序列化时忽略该字段       |
+|    @EncodingIgnore     | Field        | 序列化时忽略该字段       |
+|    @EnableCompress     | Class        | 启动压缩和解压缩  |
+| @EnableProtocolVersion | Class     |  启动协议版本校验  |
+|    @EnableChecksum     |  Class      |  启动数据完整性校验              |
+|     @EnableCrypto      |  Class      |    启动加密和解密             |
+|   @EnableFixedLength   |  Class      |    启动固定报文长度             |
 
 ## *基准测试*
 

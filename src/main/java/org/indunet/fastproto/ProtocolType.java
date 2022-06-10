@@ -16,15 +16,11 @@
 
 package org.indunet.fastproto;
 
-import com.sun.org.apache.bcel.internal.classfile.Field;
-import org.apache.kafka.common.protocol.Protocol;
 import org.indunet.fastproto.annotation.type.*;
 import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.util.TypeUtils;
 
 import java.lang.annotation.Annotation;
-import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.lang.reflect.Proxy;
 import java.lang.reflect.Type;
 import java.util.Arrays;
@@ -36,22 +32,22 @@ import java.util.function.Function;
  */
 public interface ProtocolType {
     Class<? extends Annotation> BINARY = BinaryType.class;
-    Class<? extends Annotation> BOOLEAN = BooleanType.class;
-    Class<? extends Annotation> CHARACTER = CharacterType.class;
+    Class<? extends Annotation> BOOLEAN = BoolType.class;
+    Class<? extends Annotation> CHAR = CharType.class;
     Class<? extends Annotation> BYTE = ByteType.class;
     Class<? extends Annotation> DOUBLE = DoubleType.class;
     Class<? extends Annotation> FLOAT = FloatType.class;
-    Class<? extends Annotation> INTEGER = IntegerType.class;
-    Class<? extends Annotation> LONG = LongType.class;
+    Class<? extends Annotation> INT32 = Int32Type.class;
+    Class<? extends Annotation> LONG = Int64Type.class;
     Class<? extends Annotation> SHORT = ShortType.class;
     Class<? extends Annotation> STRING = StringType.class;
-    Class<? extends Annotation> TIMESTAMP = TimestampType.class;
-    Class<? extends Annotation> INTEGER8 = Integer8Type.class;
-    Class<? extends Annotation> INTEGER16 = Integer16Type.class;
-    Class<? extends Annotation> UINTEGER8 = UInteger8Type.class;
-    Class<? extends Annotation> UINTEGER16 = UInteger16Type.class;
-    Class<? extends Annotation> UINTEGER32 = UInteger32Type.class;
-    Class<? extends Annotation> UINTEGER64 = UInteger64Type.class;
+    Class<? extends Annotation> TIME = TimeType.class;
+    Class<? extends Annotation> INT8 = Int8Type.class;
+    Class<? extends Annotation> INT16 = Int16Type.class;
+    Class<? extends Annotation> UINT8 = UInt8Type.class;
+    Class<? extends Annotation> UINT16 = UInt16Type.class;
+    Class<? extends Annotation> UINT32 = UInt32Type.class;
+    Class<? extends Annotation> UINT64 = UInt64Type.class;
     Class<? extends Annotation> ENUM = EnumType.class;
     Class<? extends Annotation> LIST = ListType.class;
     Class<? extends Annotation> ARRAY = ArrayType.class;

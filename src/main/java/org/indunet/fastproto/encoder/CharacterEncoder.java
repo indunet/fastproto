@@ -17,7 +17,7 @@
 package org.indunet.fastproto.encoder;
 
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.type.CharacterType;
+import org.indunet.fastproto.annotation.type.CharType;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
@@ -25,13 +25,13 @@ import org.indunet.fastproto.util.CodecUtils;
  * Character type encoder.
  *
  * @author Deng Ran
- * @see TypeEncoder,CharacterType
+ * @see TypeEncoder, CharType
  * @since 1.1.0
  */
 public class CharacterEncoder implements TypeEncoder {
     @Override
     public void encode(EncodeContext context) {
-        CharacterType type = context.getTypeAnnotation(CharacterType.class);
+        CharType type = context.getTypeAnnotation(CharType.class);
         Character value = context.getValue(Character.class);
         EndianPolicy policy = context.getEndianPolicy();
 

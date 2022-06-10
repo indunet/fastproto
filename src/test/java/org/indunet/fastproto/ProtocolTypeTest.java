@@ -18,7 +18,7 @@ package org.indunet.fastproto;
 
 import lombok.SneakyThrows;
 import lombok.val;
-import org.indunet.fastproto.annotation.type.UInteger8Type;
+import org.indunet.fastproto.annotation.type.UInt8Type;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -32,15 +32,15 @@ public class ProtocolTypeTest {
     @SneakyThrows
     public void testProxy() {
         val field = TestObj.class.getDeclaredField("value");
-        val typeAnnotation = field.getAnnotation(UInteger8Type.class);
+        val typeAnnotation = field.getAnnotation(UInt8Type.class);
         val proxy = ProtocolType.proxy(typeAnnotation);
 
         assertEquals(0, proxy.value());
-        assertEquals(UInteger8Type.SIZE, proxy.size());
+        assertEquals(UInt8Type.SIZE, proxy.size());
     }
 
     public static class TestObj {
-        @UInteger8Type(0)
+        @UInt8Type(0)
         int value;
     }
 }

@@ -20,8 +20,8 @@ import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.annotation.TypeFlag;
 import org.indunet.fastproto.annotation.Validator;
-import org.indunet.fastproto.decoder.BooleanDecoder;
-import org.indunet.fastproto.encoder.BooleanEncoder;
+import org.indunet.fastproto.decoder.IntegerDecoder;
+import org.indunet.fastproto.encoder.IntegerEncoder;
 import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.FieldValidator;
@@ -33,36 +33,33 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Type;
 import java.util.function.Function;
 
-
 /**
- * Boolean type, corresponding to Java Boolean/boolean.
+ * Integer type, corresponding to Java Integer/int.
  *
  * @author Deng Ran
  * @see TypeFlag
  * @since 1.0.0
  */
 @TypeFlag
-@Decoder(BooleanDecoder.class)
-@Encoder(BooleanEncoder.class)
+@Decoder(IntegerDecoder.class)
+@Encoder(IntegerEncoder.class)
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface BooleanType {
+public @interface Int32Type {
     Type[] ALLOWED_JAVA_TYPES = {
-            boolean.class,
-            Boolean.class
+            int.class,
+            Integer.class
     };
-    int SIZE = 1;
-    int MAX_BIT_OFFSET = 7;
-    int MIN_BIT_OFFSET = 0;
+    int SIZE = Integer.SIZE >> 3;
+    int MAX_VALUE = Integer.MAX_VALUE;
+    int MIN_VALUE = Integer.MIN_VALUE;
 
     int value();
 
-    int bitOffset() default 0;
+    Class<? extends Function<Integer, ?>>[] decodingFormula() default {};
 
-    Class<? extends Function<Boolean, ?>>[] decodingFormula() default {};
-
-    Class<? extends Function<?, Boolean>>[] encodingFormula() default {};
+    Class<? extends Function<?, Integer>>[] encodingFormula() default {};
 
     String description() default "";
 }

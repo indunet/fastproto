@@ -46,7 +46,7 @@ import java.util.function.Function;
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UInteger8Type {
+public @interface UInt8Type {
     Type[] ALLOWED_JAVA_TYPES = {
             Integer.class,
             Integer.TYPE

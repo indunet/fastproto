@@ -66,11 +66,11 @@ public class EnumEncoder implements TypeEncoder {
             }
         }
 
-        if (type == ProtocolType.UINTEGER8) {
+        if (type == ProtocolType.UINT8) {
             CodecUtils.uinteger8Type(datagram, offset, code);
-        } else if (type == ProtocolType.UINTEGER16) {
+        } else if (type == ProtocolType.UINT16) {
             CodecUtils.uinteger16Type(datagram, offset, policy, code);
-        } else if (type == ProtocolType.INTEGER) {
+        } else if (type == ProtocolType.INT32) {
             CodecUtils.integerType(datagram, offset, policy, code);
         } else {
             throw new EncodingException(CodecError.INVALID_ENUM_PROTOCOL_TYPE);

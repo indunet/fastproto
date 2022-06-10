@@ -18,7 +18,7 @@ package org.indunet.fastproto.decoder;
 
 import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.type.Integer16Type;
+import org.indunet.fastproto.annotation.type.Int16Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
@@ -26,13 +26,13 @@ import org.indunet.fastproto.util.CodecUtils;
  * Integer type decoder.
  *
  * @author Deng Ran
- * @see TypeDecoder,Integer16Type
+ * @see TypeDecoder, Int16Type
  * @since 1.2.0
  */
 public class Integer16Decoder implements TypeDecoder<Integer> {
     @Override
     public Integer decode(@NonNull DecodeContext context) {
-        Integer16Type type = context.getTypeAnnotation(Integer16Type.class);
+        Int16Type type = context.getTypeAnnotation(Int16Type.class);
         EndianPolicy policy = context.getEndianPolicy();
 
         return this.decode(context.getDatagram(), type.value(), policy);

@@ -64,11 +64,11 @@ public class EnumDecoderTest {
         datagram[7] = 9;
 
         assertEquals(Color.GREEN, decoder.decode(datagram, 0, EndianPolicy.LITTLE,
-                ProtocolType.UINTEGER8, "", Color.class));
+                ProtocolType.UINT8, "", Color.class));
         assertEquals(Color.RED, decoder.decode(datagram, 2, EndianPolicy.BIG,
-                ProtocolType.UINTEGER16, "code", Color.class));
+                ProtocolType.UINT16, "code", Color.class));
         assertEquals(Color.YELLOW, decoder.decode(datagram, 4, EndianPolicy.BIG,
-                ProtocolType.INTEGER, "code", Color.class));
+                ProtocolType.INT32, "code", Color.class));
     }
 
     @Test
@@ -79,15 +79,15 @@ public class EnumDecoderTest {
 
         assertThrows(DecodingException.class, () -> {
             decoder.decode(datagram, 0, EndianPolicy.LITTLE,
-                    ProtocolType.UINTEGER8, "number", Color.class);
+                    ProtocolType.UINT8, "number", Color.class);
         });
         assertThrows(DecodingException.class, () -> {
             decoder.decode(datagram, 0, EndianPolicy.LITTLE,
-                    ProtocolType.UINTEGER32, "", Color.class);
+                    ProtocolType.UINT32, "", Color.class);
         });
         assertThrows(DecodingException.class, () -> {
             decoder.decode(datagram, 0, EndianPolicy.LITTLE,
-                    ProtocolType.UINTEGER8, "", Color.class);
+                    ProtocolType.UINT8, "", Color.class);
         });
     }
 }

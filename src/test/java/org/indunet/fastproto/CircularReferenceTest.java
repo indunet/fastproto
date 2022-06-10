@@ -18,7 +18,7 @@ package org.indunet.fastproto;
 
 import lombok.Data;
 import lombok.val;
-import org.indunet.fastproto.annotation.type.Integer8Type;
+import org.indunet.fastproto.annotation.type.Int8Type;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -34,7 +34,7 @@ public class CircularReferenceTest {
         Node1 node1;
         Node2 node2;
 
-        @Integer8Type(0)
+        @Int8Type(0)
         int id;
     }
 
@@ -44,7 +44,7 @@ public class CircularReferenceTest {
         Node2 node2;
         Node3 node3;
 
-        @Integer8Type(1)
+        @Int8Type(1)
         int id;
     }
 
@@ -53,7 +53,7 @@ public class CircularReferenceTest {
         Node1 node1;
         Node2 node2;
 
-        @Integer8Type(2)
+        @Int8Type(2)
         int id;
     }
 

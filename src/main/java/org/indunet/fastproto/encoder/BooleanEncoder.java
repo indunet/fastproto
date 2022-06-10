@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.encoder;
 
-import org.indunet.fastproto.annotation.type.BooleanType;
+import org.indunet.fastproto.annotation.type.BoolType;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
@@ -24,13 +24,13 @@ import org.indunet.fastproto.util.CodecUtils;
  * Boolean type encoder.
  *
  * @author Deng Ran
- * @see TypeEncoder,BooleanType
+ * @see TypeEncoder, BoolType
  * @since 1.0.0
  */
 public class BooleanEncoder implements TypeEncoder {
     @Override
     public void encode(EncodeContext context) {
-        BooleanType type = context.getTypeAnnotation(BooleanType.class);
+        BoolType type = context.getTypeAnnotation(BoolType.class);
         Boolean value = context.getValue(Boolean.class);
 
         this.encode(context.getDatagram(), type.value(), type.bitOffset(), value);

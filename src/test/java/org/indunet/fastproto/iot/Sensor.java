@@ -20,8 +20,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.indunet.fastproto.annotation.EnableFixedLength;
-import org.indunet.fastproto.annotation.type.Integer16Type;
-import org.indunet.fastproto.annotation.type.UInteger16Type;
+import org.indunet.fastproto.annotation.type.Int16Type;
+import org.indunet.fastproto.annotation.type.UInt16Type;
 
 /**
  * @author Deng Ran
@@ -32,8 +32,8 @@ import org.indunet.fastproto.annotation.type.UInteger16Type;
 @NoArgsConstructor
 @EnableFixedLength(10)
 public class Sensor {
-    @Integer16Type(0)
+    @Int16Type(0)
     int temperature;
-    @UInteger16Type(2)
+    @UInt16Type(2)
     int humidity;
 }

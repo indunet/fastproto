@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.benchmark;
 
-import org.indunet.fastproto.annotation.type.IntegerType;
+import org.indunet.fastproto.annotation.type.Int32Type;
 
 /**
  * @author Deng Ran
@@ -25,51 +25,51 @@ import org.indunet.fastproto.annotation.type.IntegerType;
 public class IntegerSample {
     protected static final int BYTE_OFFET = 4;
 
-    @IntegerType(value = BYTE_OFFET)
+    @Int32Type(value = BYTE_OFFET)
     Integer i01;
 
-    @IntegerType(value = BYTE_OFFET + 4)
+    @Int32Type(value = BYTE_OFFET + 4)
     Integer i02;
 
-    @IntegerType(value = BYTE_OFFET + 4 * 2)
+    @Int32Type(value = BYTE_OFFET + 4 * 2)
     Integer i03;
 
-    @IntegerType(value = BYTE_OFFET + 4 * 3)
+    @Int32Type(value = BYTE_OFFET + 4 * 3)
     Integer i04;
 
-    @IntegerType(value = BYTE_OFFET + 4 * 4)
+    @Int32Type(value = BYTE_OFFET + 4 * 4)
     Integer i05;
 
-    @IntegerType(value = BYTE_OFFET + 4 * 5)
+    @Int32Type(value = BYTE_OFFET + 4 * 5)
     Integer i06;
 
-    @IntegerType(value = BYTE_OFFET + 4 * 6)
+    @Int32Type(value = BYTE_OFFET + 4 * 6)
     Integer i07;
 
-    @IntegerType(value = BYTE_OFFET + 4 * 7)
+    @Int32Type(value = BYTE_OFFET + 4 * 7)
     Integer i08;
 
-    @IntegerType(value = BYTE_OFFET + 4 * 8)
+    @Int32Type(value = BYTE_OFFET + 4 * 8)
     Integer i09;
 
-    @IntegerType(value = BYTE_OFFET + 4 * 9)
+    @Int32Type(value = BYTE_OFFET + 4 * 9)
     Integer i10;
 
-    @IntegerType(value = BYTE_OFFET + 4 * 10)
+    @Int32Type(value = BYTE_OFFET + 4 * 10)
     Integer i11;
 
-    @IntegerType(value = BYTE_OFFET + 4 * 11)
+    @Int32Type(value = BYTE_OFFET + 4 * 11)
     Integer i12;
 
-    @IntegerType(value = BYTE_OFFET + 4 * 12)
+    @Int32Type(value = BYTE_OFFET + 4 * 12)
     Integer i13;
 
-    @IntegerType(value = BYTE_OFFET + 4 * 13)
+    @Int32Type(value = BYTE_OFFET + 4 * 13)
     Integer i14;
 
-    @IntegerType(value = BYTE_OFFET + 4 * 14)
+    @Int32Type(value = BYTE_OFFET + 4 * 14)
     Integer i15;
 
-    @IntegerType(value = BYTE_OFFET + 4 * 15)
+    @Int32Type(value = BYTE_OFFET + 4 * 15)
     Integer i16;
 }

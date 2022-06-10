@@ -20,8 +20,8 @@ import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.annotation.TypeFlag;
 import org.indunet.fastproto.annotation.Validator;
-import org.indunet.fastproto.decoder.CharacterDecoder;
-import org.indunet.fastproto.encoder.CharacterEncoder;
+import org.indunet.fastproto.decoder.LongDecoder;
+import org.indunet.fastproto.encoder.LongEncoder;
 import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.FieldValidator;
@@ -34,30 +34,32 @@ import java.lang.reflect.Type;
 import java.util.function.Function;
 
 /**
- * Character type, corresponding to Java Character/char.
+ * Long type, corresponding to Java Long/long.
  *
  * @author Deng Ran
  * @see TypeFlag
  * @since 1.0.0
  */
 @TypeFlag
-@Decoder(CharacterDecoder.class)
-@Encoder(CharacterEncoder.class)
+@Decoder(LongDecoder.class)
+@Encoder(LongEncoder.class)
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CharacterType {
+public @interface Int64Type {
     Type[] ALLOWED_JAVA_TYPES = {
-            char.class,
-            Character.class
+            long.class,
+            Long.class
     };
-    int SIZE = Character.SIZE >> 3;
+    int SIZE = Long.SIZE >> 3;
+    long MAX_VALUE = Long.MAX_VALUE;
+    long MIN_VALUE = Long.MIN_VALUE;
 
     int value();
 
-    Class<? extends Function<Character, ?>>[] decodingFormula() default {};
+    Class<? extends Function<Long, ?>>[] decodingFormula() default {};
 
-    Class<? extends Function<?, Character>>[] encodingFormula() default {};
+    Class<? extends Function<?, Long>>[] encodingFormula() default {};
 
     String description() default "";
 }

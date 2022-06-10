@@ -18,7 +18,7 @@ package org.indunet.fastproto.encoder;
 
 import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.type.Integer16Type;
+import org.indunet.fastproto.annotation.type.Int16Type;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
@@ -26,13 +26,13 @@ import org.indunet.fastproto.util.CodecUtils;
  * Integer16 type encoder.
  *
  * @author Deng Ran
- * @see TypeEncoder,Integer16Type
+ * @see TypeEncoder, Int16Type
  * @since 1.2.0
  */
 public class Integer16Encoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
-        Integer16Type type = context.getTypeAnnotation(Integer16Type.class);
+        Int16Type type = context.getTypeAnnotation(Int16Type.class);
         EndianPolicy policy = context.getEndianPolicy();
         Integer value = context.getValue(Integer.class);
 

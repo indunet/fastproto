@@ -49,9 +49,9 @@ public class ListDecoderTest {
         datagram[8] = 5;
 
         List<Integer> values1 = decoder.decode(datagram, 0, 5,
-                ProtocolType.UINTEGER16, EndianPolicy.LITTLE);
+                ProtocolType.UINT16, EndianPolicy.LITTLE);
         List<Integer> values2 = decoder.decode(datagram, 0, 5,
-                ProtocolType.INTEGER16, EndianPolicy.LITTLE);
+                ProtocolType.INT16, EndianPolicy.LITTLE);
         List<Short> values3 = decoder.decode(datagram, 0, 5,
                 ProtocolType.SHORT, EndianPolicy.LITTLE);
 
@@ -71,9 +71,9 @@ public class ListDecoderTest {
         datagram[9] = 5;
 
         List<Integer> values1 = decoder.decode(datagram, 0, 5,
-                ProtocolType.UINTEGER16, EndianPolicy.BIG);
+                ProtocolType.UINT16, EndianPolicy.BIG);
         List<Integer> values2 = decoder.decode(datagram, 0, 5,
-                ProtocolType.INTEGER16, EndianPolicy.BIG);
+                ProtocolType.INT16, EndianPolicy.BIG);
         List<Short> values3 = decoder.decode(datagram, 0, 5,
                 ProtocolType.SHORT, EndianPolicy.BIG);
 
@@ -89,13 +89,13 @@ public class ListDecoderTest {
         datagram[0] = 1;
 
         List<Integer> values1 = decoder.decode(datagram, 0, 4,
-                ProtocolType.UINTEGER8, EndianPolicy.BIG);
+                ProtocolType.UINT8, EndianPolicy.BIG);
         List<Integer> values2 = decoder.decode(datagram, 0, 1,
-                ProtocolType.INTEGER, EndianPolicy.BIG);
+                ProtocolType.INT32, EndianPolicy.BIG);
         List<Long> value3 = decoder.decode(datagram, 0, 1,
-                ProtocolType.UINTEGER32, EndianPolicy.LITTLE);
+                ProtocolType.UINT32, EndianPolicy.LITTLE);
         List<Integer> value4 = decoder.decode(datagram, 0, 4,
-                ProtocolType.INTEGER8, EndianPolicy.BIG);
+                ProtocolType.INT8, EndianPolicy.BIG);
         List<Byte> value5 = decoder.decode(datagram, 0, 4,
                 ProtocolType.BYTE, EndianPolicy.BIG);
 
@@ -134,7 +134,7 @@ public class ListDecoderTest {
             decoder.decode(datagram, 0, 11, ProtocolType.BYTE, EndianPolicy.LITTLE);
         });
         assertThrows(OutOfBoundsException.class, () -> {
-            decoder.decode(datagram, 0, 6, ProtocolType.UINTEGER16, EndianPolicy.LITTLE);
+            decoder.decode(datagram, 0, 6, ProtocolType.UINT16, EndianPolicy.LITTLE);
         });
         assertThrows(DecodingException.class, () -> {
             decoder.decode(datagram, 0, -2, ProtocolType.BYTE, EndianPolicy.LITTLE);

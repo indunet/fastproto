@@ -17,7 +17,7 @@
 package org.indunet.fastproto.decoder;
 
 import lombok.NonNull;
-import org.indunet.fastproto.annotation.type.BooleanType;
+import org.indunet.fastproto.annotation.type.BoolType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
@@ -25,13 +25,13 @@ import org.indunet.fastproto.util.CodecUtils;
  * Boolean type decoder.
  *
  * @author Deng Ran
- * @see TypeDecoder,BooleanType
+ * @see TypeDecoder, BoolType
  * @since 1.0.0
  */
 public class BooleanDecoder implements TypeDecoder<Boolean> {
     @Override
     public Boolean decode(DecodeContext context) {
-        BooleanType type = context.getTypeAnnotation(BooleanType.class);
+        BoolType type = context.getTypeAnnotation(BoolType.class);
 
         return this.decode(context.getDatagram(), type.value(), type.bitOffset());
     }

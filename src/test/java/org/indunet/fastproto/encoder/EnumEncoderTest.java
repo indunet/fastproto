@@ -51,9 +51,9 @@ public class EnumEncoderTest {
         expected[3] = 8;
         expected[7] = 9;
 
-        encoder.encode(datagram, 0, EndianPolicy.LITTLE, ProtocolType.UINTEGER8, "", Color.GREEN);
-        encoder.encode(datagram, 2, EndianPolicy.BIG, ProtocolType.UINTEGER16, "code", Color.RED);
-        encoder.encode(datagram, 4, EndianPolicy.BIG, ProtocolType.INTEGER, "code", Color.YELLOW);
+        encoder.encode(datagram, 0, EndianPolicy.LITTLE, ProtocolType.UINT8, "", Color.GREEN);
+        encoder.encode(datagram, 2, EndianPolicy.BIG, ProtocolType.UINT16, "code", Color.RED);
+        encoder.encode(datagram, 4, EndianPolicy.BIG, ProtocolType.INT32, "code", Color.YELLOW);
 
         assertArrayEquals(expected, datagram);
     }
@@ -66,11 +66,11 @@ public class EnumEncoderTest {
 
         assertThrows(EncodingException.class, () -> {
             encoder.encode(datagram, 0, EndianPolicy.LITTLE,
-                    ProtocolType.UINTEGER8, "number", Color.RED);
+                    ProtocolType.UINT8, "number", Color.RED);
         });
         assertThrows(EncodingException.class, () -> {
             encoder.encode(datagram, 0, EndianPolicy.LITTLE,
-                    ProtocolType.UINTEGER32, "", Color.GREEN);
+                    ProtocolType.UINT32, "", Color.GREEN);
         });
     }
 }

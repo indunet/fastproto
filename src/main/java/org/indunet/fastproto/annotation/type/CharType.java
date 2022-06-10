@@ -20,8 +20,8 @@ import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.annotation.TypeFlag;
 import org.indunet.fastproto.annotation.Validator;
-import org.indunet.fastproto.decoder.UInteger32Decoder;
-import org.indunet.fastproto.encoder.UInteger32Encoder;
+import org.indunet.fastproto.decoder.CharacterDecoder;
+import org.indunet.fastproto.encoder.CharacterEncoder;
 import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.FieldValidator;
@@ -34,32 +34,30 @@ import java.lang.reflect.Type;
 import java.util.function.Function;
 
 /**
- * Long type, corresponding to Java Long/long.
+ * Character type, corresponding to Java Character/char.
  *
  * @author Deng Ran
  * @see TypeFlag
- * @since 1.2.0
+ * @since 1.0.0
  */
 @TypeFlag
-@Decoder(UInteger32Decoder.class)
-@Encoder(UInteger32Encoder.class)
+@Decoder(CharacterDecoder.class)
+@Encoder(CharacterEncoder.class)
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UInteger32Type {
+public @interface CharType {
     Type[] ALLOWED_JAVA_TYPES = {
-            long.class,
-            Long.class
+            char.class,
+            Character.class
     };
-    int SIZE = Integer.SIZE >> 3;
-    long MAX_VALUE = (long) Integer.MAX_VALUE - Integer.MIN_VALUE;
-    int MIN_VALUE = 0;
+    int SIZE = Character.SIZE >> 3;
 
     int value();
 
-    Class<? extends Function<Long, ?>>[] decodingFormula() default {};
+    Class<? extends Function<Character, ?>>[] decodingFormula() default {};
 
-    Class<? extends Function<?, Long>>[] encodingFormula() default {};
+    Class<? extends Function<?, Character>>[] encodingFormula() default {};
 
     String description() default "";
 }

@@ -82,7 +82,7 @@ public class CodecUtils {
     }
 
     public static boolean booleanType(@NonNull final byte[] datagram, int byteOffset, int bitOffset) {
-        if (bitOffset < BooleanType.MIN_BIT_OFFSET || bitOffset > BooleanType.MAX_BIT_OFFSET) {
+        if (bitOffset < BoolType.MIN_BIT_OFFSET || bitOffset > BoolType.MAX_BIT_OFFSET) {
             throw new IllegalArgumentException("Out of byte range.");
         }
 
@@ -92,7 +92,7 @@ public class CodecUtils {
     }
 
     public static void booleanType(@NonNull final byte[] datagram, int byteOffset, int bitOffset, boolean value) {
-        if (bitOffset < BooleanType.MIN_BIT_OFFSET || bitOffset > BooleanType.MAX_BIT_OFFSET) {
+        if (bitOffset < BoolType.MIN_BIT_OFFSET || bitOffset > BoolType.MAX_BIT_OFFSET) {
             throw new IllegalArgumentException("Out of byte range.");
         }
 
@@ -169,7 +169,7 @@ public class CodecUtils {
     }
 
     public static void uinteger8Type(@NonNull byte[] datagram, int offset, @NonNull int value) {
-        if (value < UInteger8Type.MIN_VALUE || value > UInteger8Type.MAX_VALUE) {
+        if (value < UInt8Type.MIN_VALUE || value > UInt8Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of uinteger8 range.");
         }
 
@@ -185,7 +185,7 @@ public class CodecUtils {
     }
 
     public static void integer8Type(@NonNull byte[] datagram, int offset, @NonNull int value) {
-        if (value < Integer8Type.MIN_VALUE || value > Integer8Type.MAX_VALUE) {
+        if (value < Int8Type.MIN_VALUE || value > Int8Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of integer8 range.");
         }
 
@@ -209,7 +209,7 @@ public class CodecUtils {
     }
 
     public static void uinteger16Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull int value) {
-        if (value < UInteger16Type.MIN_VALUE || value > UInteger16Type.MAX_VALUE) {
+        if (value < UInt16Type.MIN_VALUE || value > UInt16Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of uinteger16 range.");
         }
 
@@ -248,7 +248,7 @@ public class CodecUtils {
     }
 
     public static void integer16Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull int value) {
-        if (value < Integer16Type.MIN_VALUE || value > Integer16Type.MAX_VALUE) {
+        if (value < Int16Type.MIN_VALUE || value > Int16Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of integer16 range.");
         }
 
@@ -377,7 +377,7 @@ public class CodecUtils {
     }
 
     public static void uinteger32Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull long value) {
-        if (value < UInteger32Type.MIN_VALUE || value > UInteger32Type.MAX_VALUE) {
+        if (value < UInt32Type.MIN_VALUE || value > UInt32Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of uinteger32 range.");
         }
 
@@ -428,7 +428,7 @@ public class CodecUtils {
         }
 
         return new BigInteger(String.valueOf(high))
-                .multiply(new BigInteger(String.valueOf(UInteger32Type.MAX_VALUE + 1)))
+                .multiply(new BigInteger(String.valueOf(UInt32Type.MAX_VALUE + 1)))
                 .add(new BigInteger(String.valueOf(low)));
     }
 
@@ -437,7 +437,7 @@ public class CodecUtils {
     }
 
     public static void uinteger64Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull BigInteger value) {
-        if (value.compareTo(UInteger64Type.MAX_VALUE) > 0 || value.compareTo(UInteger64Type.MIN_VALUE) < 0) {
+        if (value.compareTo(UInt64Type.MAX_VALUE) > 0 || value.compareTo(UInt64Type.MIN_VALUE) < 0) {
             throw new IllegalArgumentException("Out of uinteger64 range.");
         }
 

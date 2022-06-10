@@ -20,8 +20,8 @@ import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.annotation.TypeFlag;
 import org.indunet.fastproto.annotation.Validator;
-import org.indunet.fastproto.decoder.LongDecoder;
-import org.indunet.fastproto.encoder.LongEncoder;
+import org.indunet.fastproto.decoder.UInteger64Decoder;
+import org.indunet.fastproto.encoder.UInteger64Encoder;
 import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.FieldValidator;
@@ -31,35 +31,37 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.util.function.Function;
 
 /**
- * Long type, corresponding to Java Long/long.
+ * uint64 type, corresponding to Java BigInteger.
  *
  * @author Deng Ran
  * @see TypeFlag
- * @since 1.0.0
+ * @since 1.5.0
  */
 @TypeFlag
-@Decoder(LongDecoder.class)
-@Encoder(LongEncoder.class)
+@Decoder(UInteger64Decoder.class)
+@Encoder(UInteger64Encoder.class)
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface LongType {
+public @interface UInt64Type {
     Type[] ALLOWED_JAVA_TYPES = {
-            long.class,
-            Long.class
+            BigInteger.class
     };
     int SIZE = Long.SIZE >> 3;
-    long MAX_VALUE = Long.MAX_VALUE;
-    long MIN_VALUE = Long.MIN_VALUE;
+    BigInteger MAX_VALUE = new BigInteger(String.valueOf(Long.MAX_VALUE))
+            .subtract(new BigInteger(String.valueOf(Long.MIN_VALUE)));
+    BigInteger MIN_VALUE = new BigInteger("0");
 
     int value();
 
-    Class<? extends Function<Long, ?>>[] decodingFormula() default {};
+    Class<? extends Function<BigDecimal, ?>>[] decodingFormula() default {};
 
-    Class<? extends Function<?, Long>>[] encodingFormula() default {};
+    Class<? extends Function<?, BigDecimal>>[] encodingFormula() default {};
 
     String description() default "";
 }

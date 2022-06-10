@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@ import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.annotation.TypeFlag;
 import org.indunet.fastproto.annotation.Validator;
-import org.indunet.fastproto.decoder.UInteger16Decoder;
-import org.indunet.fastproto.encoder.UInteger16Encoder;
+import org.indunet.fastproto.decoder.BooleanDecoder;
+import org.indunet.fastproto.encoder.BooleanEncoder;
 import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.FieldValidator;
@@ -33,33 +33,36 @@ import java.lang.annotation.Target;
 import java.lang.reflect.Type;
 import java.util.function.Function;
 
+
 /**
- * Integer type, corresponding to Java Integer/int.
+ * Boolean type, corresponding to Java Boolean/boolean.
  *
  * @author Deng Ran
  * @see TypeFlag
- * @since 1.2.0
+ * @since 1.0.0
  */
 @TypeFlag
-@Decoder(UInteger16Decoder.class)
-@Encoder(UInteger16Encoder.class)
+@Decoder(BooleanDecoder.class)
+@Encoder(BooleanEncoder.class)
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UInteger16Type {
+public @interface BoolType {
     Type[] ALLOWED_JAVA_TYPES = {
-            int.class,
-            Integer.class
+            boolean.class,
+            Boolean.class
     };
-    int SIZE = Short.SIZE >> 3;
-    int MAX_VALUE = Short.MAX_VALUE - Short.MIN_VALUE;
-    int MIN_VALUE = 0;
+    int SIZE = 1;
+    int MAX_BIT_OFFSET = 7;
+    int MIN_BIT_OFFSET = 0;
 
     int value();
 
-    Class<? extends Function<Integer, ?>>[] decodingFormula() default {};
+    int bitOffset() default 0;
 
-    Class<? extends Function<?, Integer>>[] encodingFormula() default {};
+    Class<? extends Function<Boolean, ?>>[] decodingFormula() default {};
+
+    Class<? extends Function<?, Boolean>>[] encodingFormula() default {};
 
     String description() default "";
 }

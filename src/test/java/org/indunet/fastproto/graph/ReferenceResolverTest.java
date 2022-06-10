@@ -17,10 +17,10 @@
 package org.indunet.fastproto.graph;
 
 import lombok.val;
-import org.indunet.fastproto.annotation.type.BooleanType;
+import org.indunet.fastproto.annotation.type.BoolType;
 import org.indunet.fastproto.annotation.type.DoubleType;
-import org.indunet.fastproto.annotation.type.Integer8Type;
-import org.indunet.fastproto.annotation.type.UInteger8Type;
+import org.indunet.fastproto.annotation.type.Int8Type;
+import org.indunet.fastproto.annotation.type.UInt8Type;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class ReferenceResolverTest {
     public static class TestObject1 {
-        @UInteger8Type(0)
+        @UInt8Type(0)
         int value1;
 
         @DoubleType(2)
@@ -48,14 +48,14 @@ public class ReferenceResolverTest {
     public static class TestObject2 {
         TestObject3 value1;
 
-        @Integer8Type(3)
+        @Int8Type(3)
         int value2;
     }
 
     public static class TestObject3 {
         TestObject2 value1;
 
-        @BooleanType(value = 3, bitOffset = 1)
+        @BoolType(value = 3, bitOffset = 1)
         boolean value2;
     }
 

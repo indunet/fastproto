@@ -2,11 +2,9 @@ package org.indunet.fastproto.util;
 
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.type.UInteger64Type;
+import org.indunet.fastproto.annotation.type.UInt64Type;
 import org.indunet.fastproto.graph.ReferenceResolver;
 import org.indunet.fastproto.iot.Everything;
-import org.indunet.fastproto.util.CodecUtils;
-import org.indunet.fastproto.util.VersionUtils;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -39,7 +37,7 @@ public class VersionUtilsTest {
             .aUInteger16(16)
             .aUInteger32(32l)
             .speed(10.1f)
-            .aUInteger64(new BigInteger(String.valueOf(UInteger64Type.MAX_VALUE)))
+            .aUInteger64(new BigInteger(String.valueOf(UInt64Type.MAX_VALUE)))
             .build();
 
     public VersionUtilsTest() {

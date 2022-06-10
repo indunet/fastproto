@@ -46,8 +46,8 @@ public class ListEncoderTest {
         datagram[6] = 4;
         datagram[8] = 5;
 
-        encoder.encode(datagram, 0, 5, ProtocolType.INTEGER16, EndianPolicy.LITTLE, values1);
-        encoder.encode(datagram, 0, 5, ProtocolType.UINTEGER16, EndianPolicy.LITTLE, values1);
+        encoder.encode(datagram, 0, 5, ProtocolType.INT16, EndianPolicy.LITTLE, values1);
+        encoder.encode(datagram, 0, 5, ProtocolType.UINT16, EndianPolicy.LITTLE, values1);
         encoder.encode(datagram, 0, 5, ProtocolType.SHORT, EndianPolicy.LITTLE, values2);
     }
 
@@ -57,11 +57,11 @@ public class ListEncoderTest {
         val datagram = new byte[4];
 
         datagram[0] = 1;
-        encoder.encode(datagram, 0, 1, ProtocolType.INTEGER, EndianPolicy.LITTLE, values1);
+        encoder.encode(datagram, 0, 1, ProtocolType.INT32, EndianPolicy.LITTLE, values1);
 
         List<Long> values2 = Arrays.asList(1L);
         datagram[0] = 1;
-        encoder.encode(datagram, 0, 1, ProtocolType.UINTEGER32, EndianPolicy.LITTLE, values2);
+        encoder.encode(datagram, 0, 1, ProtocolType.UINT32, EndianPolicy.LITTLE, values2);
     }
 
     @Test

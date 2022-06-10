@@ -18,7 +18,7 @@ package org.indunet.fastproto.decoder;
 
 import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.type.LongType;
+import org.indunet.fastproto.annotation.type.Int64Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
@@ -32,7 +32,7 @@ import org.indunet.fastproto.util.CodecUtils;
 public class LongDecoder implements TypeDecoder<Long> {
     @Override
     public Long decode(@NonNull DecodeContext context) {
-        LongType type = context.getTypeAnnotation(LongType.class);
+        Int64Type type = context.getTypeAnnotation(Int64Type.class);
 
         return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }

@@ -18,7 +18,7 @@ package org.indunet.fastproto.encoder;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.Encoder;
-import org.indunet.fastproto.annotation.type.BooleanType;
+import org.indunet.fastproto.annotation.type.BoolType;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class EncoderFactoryTest {
     @Test
     public void testGetEncoder() {
-        val clazz = Optional.of(BooleanType.class)
+        val clazz = Optional.of(BoolType.class)
                 .map(c -> c.getAnnotation(Encoder.class))
                 .map(Encoder::value)
                 .get();

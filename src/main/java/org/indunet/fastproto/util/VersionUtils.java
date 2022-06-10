@@ -21,14 +21,12 @@ import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.EnableVersion;
-import org.indunet.fastproto.annotation.type.IntegerType;
-import org.indunet.fastproto.annotation.type.UInteger16Type;
-import org.indunet.fastproto.annotation.type.UInteger8Type;
+import org.indunet.fastproto.annotation.type.Int32Type;
+import org.indunet.fastproto.annotation.type.UInt16Type;
+import org.indunet.fastproto.annotation.type.UInt8Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.ProtocolVersionException;
 import org.indunet.fastproto.graph.Reference;
-
-import static org.indunet.fastproto.ProtocolType.*;
 
 /**
  * Protocol version utils.
@@ -57,11 +55,11 @@ public class VersionUtils {
         int byteOffset = enableVersion.value();
         val type = enableVersion.genericType();
 
-        if (type == ProtocolType.UINTEGER8) {
+        if (type == ProtocolType.UINT8) {
             return CodecUtils.uinteger8Type(datagram, byteOffset);
-        } else if (type == ProtocolType.UINTEGER16) {
+        } else if (type == ProtocolType.UINT16) {
             return CodecUtils.uinteger16Type(datagram, byteOffset, policy);
-        } else if (type == ProtocolType.INTEGER) {
+        } else if (type == ProtocolType.INT32) {
             return CodecUtils.integerType(datagram, byteOffset, policy);
         } else {
             throw new ProtocolVersionException(CodecError.ILLEGAL_PROTOCOL_VERSION_TYPE);
@@ -79,11 +77,11 @@ public class VersionUtils {
         int version = enableVersion.version();
         val type = enableVersion.genericType();
 
-        if (type == ProtocolType.UINTEGER8) {
+        if (type == ProtocolType.UINT8) {
             CodecUtils.uinteger8Type(datagram, byteOffset, version);
-        } else if (type == ProtocolType.UINTEGER16) {
+        } else if (type == ProtocolType.UINT16) {
             CodecUtils.uinteger16Type(datagram, byteOffset, policy, version);
-        } else if (type == ProtocolType.INTEGER) {
+        } else if (type == ProtocolType.INT32) {
             CodecUtils.integerType(datagram, byteOffset, policy, version);
         } else {
             throw new ProtocolVersionException(CodecError.ILLEGAL_PROTOCOL_VERSION_TYPE);
@@ -107,12 +105,12 @@ public class VersionUtils {
 
         val type = reference.getEnableVersion().genericType();
 
-        if (type == ProtocolType.UINTEGER8) {
-            return UInteger8Type.SIZE;
-        } else if (type == ProtocolType.UINTEGER16) {
-            return UInteger16Type.SIZE;
-        } else if (type == ProtocolType.INTEGER) {
-            return IntegerType.SIZE;
+        if (type == ProtocolType.UINT8) {
+            return UInt8Type.SIZE;
+        } else if (type == ProtocolType.UINT16) {
+            return UInt16Type.SIZE;
+        } else if (type == ProtocolType.INT32) {
+            return Int32Type.SIZE;
         } else {
             throw new ProtocolVersionException(CodecError.ILLEGAL_PROTOCOL_VERSION_TYPE);
         }

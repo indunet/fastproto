@@ -18,7 +18,7 @@ package org.indunet.fastproto.annotation;
 
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.ProtocolType;
-import org.indunet.fastproto.annotation.type.UInteger16Type;
+import org.indunet.fastproto.annotation.type.UInt16Type;
 
 import java.lang.annotation.*;
 
@@ -31,16 +31,16 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EnableVersion {
     Class<?>[] PROTOCOL_TYPES = {
-            ProtocolType.UINTEGER8,
-            ProtocolType.UINTEGER16,
-            ProtocolType.INTEGER
+            ProtocolType.UINT8,
+            ProtocolType.UINT16,
+            ProtocolType.INT32
     };
 
     int value();
 
     int version();
 
-    Class<? extends Annotation> genericType() default UInteger16Type.class;
+    Class<? extends Annotation> genericType() default UInt16Type.class;
 
     EndianPolicy[] endianPolicy() default {};
 }

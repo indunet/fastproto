@@ -51,16 +51,16 @@ public @interface EnumType {
     };
 
     Class<?>[] ALLOWED_GENERIC_TYPES = {
-            ProtocolType.UINTEGER8,
-            ProtocolType.UINTEGER16,
-            ProtocolType.INTEGER
+            ProtocolType.UINT8,
+            ProtocolType.UINT16,
+            ProtocolType.INT32
     };
 
     int value();
 
     String field() default "";
 
-    Class<? extends Annotation> genericType() default UInteger8Type.class;
+    Class<? extends Annotation> genericType() default UInt8Type.class;
 
     EndianPolicy[] endianPolicy() default {};
 

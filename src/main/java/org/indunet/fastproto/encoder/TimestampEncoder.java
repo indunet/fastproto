@@ -20,9 +20,9 @@ import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.ProtocolType;
-import org.indunet.fastproto.annotation.type.LongType;
-import org.indunet.fastproto.annotation.type.TimestampType;
-import org.indunet.fastproto.annotation.type.UInteger32Type;
+import org.indunet.fastproto.annotation.type.Int64Type;
+import org.indunet.fastproto.annotation.type.TimeType;
+import org.indunet.fastproto.annotation.type.UInt32Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
@@ -43,7 +43,7 @@ public class TimestampEncoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
         EndianPolicy policy = context.getEndianPolicy();
-        TimestampType type = context.getTypeAnnotation(TimestampType.class);
+        TimeType type = context.getTypeAnnotation(TimeType.class);
         val value = context.getValue(Date.class);
 
         this.encode(context.getDatagram(), type.value(), type.genericType(), policy, type.unit(), value);
@@ -55,13 +55,13 @@ public class TimestampEncoder implements TypeEncoder {
         if (bo < 0) {
             throw new EncodingException(CodecError.ILLEGAL_BYTE_OFFSET);
         } else if (type == ProtocolType.LONG && unit == TimeUnit.MILLISECONDS) {
-            if (bo + LongType.SIZE > datagram.length) {
+            if (bo + Int64Type.SIZE > datagram.length) {
                 throw new EncodingException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 
             CodecUtils.longType(datagram, bo, policy, value.getTime());
-        } else if (type == ProtocolType.UINTEGER32 && unit == TimeUnit.SECONDS) {
-            if (bo + UInteger32Type.SIZE > datagram.length) {
+        } else if (type == ProtocolType.UINT32 && unit == TimeUnit.SECONDS) {
+            if (bo + UInt32Type.SIZE > datagram.length) {
                 throw new EncodingException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 

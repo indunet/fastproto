@@ -74,25 +74,25 @@ public class ListEncoder implements TypeEncoder {
                     });
         };
 
-        if (type == ProtocolType.CHARACTER) {
+        if (type == ProtocolType.CHAR) {
             codec.accept((b, i) -> CodecUtils.type(datagram, b, policy, (Character) values.get(i)));
         } else if (type == ProtocolType.BYTE) {
             codec.accept((b, i) -> CodecUtils.type(datagram, b, policy, (Byte) values.get(i)));
         } else if (type == ProtocolType.SHORT) {
             codec.accept((b, i) -> CodecUtils.type(datagram, b, policy, (Short) values.get(i)));
-        } else if (type == ProtocolType.INTEGER) {
+        } else if (type == ProtocolType.INT32) {
             codec.accept((b, i) -> CodecUtils.type(datagram, b, policy, (Integer) values.get(i)));
         } else if (type == ProtocolType.LONG) {
             codec.accept((b, i) -> CodecUtils.type(datagram, b, policy, (Long) values.get(i)));
-        } else if (type == ProtocolType.UINTEGER8) {
+        } else if (type == ProtocolType.UINT8) {
             codec.accept((b, i) -> CodecUtils.uinteger8Type(datagram, b, (Integer) values.get(i)));
-        } else if (type == ProtocolType.UINTEGER16) {
+        } else if (type == ProtocolType.UINT16) {
             codec.accept((b, i) -> CodecUtils.uinteger16Type(datagram, b, policy, (Integer) values.get(i)));
-        } else if (type == ProtocolType.UINTEGER32) {
+        } else if (type == ProtocolType.UINT32) {
             codec.accept((b, i) -> CodecUtils.uinteger32Type(datagram, b, policy, (Long) values.get(i)));
-        } else if (type == ProtocolType.INTEGER8) {
+        } else if (type == ProtocolType.INT8) {
             codec.accept((b, i) -> CodecUtils.integer8Type(datagram, b, (Integer) values.get(i)));
-        } else if (type == ProtocolType.INTEGER16) {
+        } else if (type == ProtocolType.INT16) {
             codec.accept((b, i) -> CodecUtils.integer16Type(datagram, b, policy, (Integer) values.get(i)));
         } else if (type == ProtocolType.FLOAT) {
             codec.accept((b, i) -> CodecUtils.type(datagram, b, policy, (Float) values.get(i)));

@@ -18,7 +18,7 @@ package org.indunet.fastproto.graph.validate;
 
 import lombok.val;
 import org.indunet.fastproto.ProtocolType;
-import org.indunet.fastproto.annotation.type.TimestampType;
+import org.indunet.fastproto.annotation.type.TimeType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
 
@@ -35,11 +35,11 @@ public class TimestampValidator extends TypeValidator {
     public void process(ValidatorContext context) {
         val protocolType = context.getProtocolType();
 
-        if (protocolType instanceof TimestampType) {
-            val unit = ((TimestampType) protocolType).unit();
-            val genericType = ((TimestampType) protocolType).genericType();
+        if (protocolType instanceof TimeType) {
+            val unit = ((TimeType) protocolType).unit();
+            val genericType = ((TimeType) protocolType).genericType();
 
-            val condition1 = genericType == ProtocolType.UINTEGER32 && unit == TimeUnit.SECONDS;
+            val condition1 = genericType == ProtocolType.UINT32 && unit == TimeUnit.SECONDS;
             val condition2 = genericType == ProtocolType.LONG && unit == TimeUnit.MILLISECONDS;
 
             if (!condition1 && !condition2) {

@@ -17,7 +17,7 @@
 package org.indunet.fastproto.decoder;
 
 import lombok.NonNull;
-import org.indunet.fastproto.annotation.type.UInteger8Type;
+import org.indunet.fastproto.annotation.type.UInt8Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
@@ -25,13 +25,13 @@ import org.indunet.fastproto.util.CodecUtils;
  * UInteger8 type decoder.
  *
  * @author Deng Ran
- * @see TypeDecoder,UInteger8Type
+ * @see TypeDecoder, UInt8Type
  * @since 1.2.0
  */
 public class UInteger8Decoder implements TypeDecoder<Integer> {
     @Override
     public Integer decode(@NonNull DecodeContext context) {
-        UInteger8Type type = context.getTypeAnnotation(UInteger8Type.class);
+        UInt8Type type = context.getTypeAnnotation(UInt8Type.class);
 
         return this.decode(context.getDatagram(), type.value());
     }

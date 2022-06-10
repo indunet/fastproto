@@ -51,18 +51,18 @@ public @interface ListType {
             List.class
     };
     Class<?>[] ALLOWED_GENERIC_TYPES = {
-            ProtocolType.CHARACTER,
+            ProtocolType.CHAR,
             ProtocolType.BYTE,
             ProtocolType.SHORT,
-            ProtocolType.INTEGER,
+            ProtocolType.INT32,
             ProtocolType.LONG,
             ProtocolType.FLOAT,
             ProtocolType.DOUBLE,
-            ProtocolType.INTEGER8,
-            ProtocolType.INTEGER16,
-            ProtocolType.UINTEGER8,
-            ProtocolType.UINTEGER16,
-            ProtocolType.UINTEGER32,
+            ProtocolType.INT8,
+            ProtocolType.INT16,
+            ProtocolType.UINT8,
+            ProtocolType.UINT16,
+            ProtocolType.UINT32,
     };
 
     int value();

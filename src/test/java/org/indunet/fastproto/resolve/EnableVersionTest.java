@@ -19,7 +19,7 @@ package org.indunet.fastproto.resolve;
 import lombok.val;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.EnableVersion;
-import org.indunet.fastproto.annotation.type.UInteger32Type;
+import org.indunet.fastproto.annotation.type.UInt32Type;
 import org.indunet.fastproto.exception.ResolveException;
 import org.junit.jupiter.api.Test;
 
@@ -37,7 +37,7 @@ public class EnableVersionTest {
         assertThrows(ResolveException.class, () -> FastProto.parseFrom(bytes, Vehicle.class));
     }
 
-    @EnableVersion(value = 0, version = 2, genericType = UInteger32Type.class)
+    @EnableVersion(value = 0, version = 2, genericType = UInt32Type.class)
     public static class Vehicle {
 
     }

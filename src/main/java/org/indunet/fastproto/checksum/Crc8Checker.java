@@ -19,7 +19,7 @@ package org.indunet.fastproto.checksum;
 import lombok.Getter;
 import lombok.val;
 import org.indunet.fastproto.annotation.EnableChecksum;
-import org.indunet.fastproto.annotation.type.UInteger8Type;
+import org.indunet.fastproto.annotation.type.UInt8Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.OutOfBoundsException;
@@ -88,7 +88,7 @@ public class Crc8Checker implements Checker {
 
     @Override
     public int getSize() {
-        return UInteger8Type.SIZE;
+        return UInt8Type.SIZE;
     }
 
     public void setValue(byte[] datagram, int byteOffset, int start, int length) {

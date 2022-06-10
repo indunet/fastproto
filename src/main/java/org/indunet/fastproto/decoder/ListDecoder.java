@@ -77,25 +77,25 @@ public class ListDecoder implements TypeDecoder<List<?>> {
             return list;
         };
 
-        if (type == ProtocolType.CHARACTER) {
+        if (type == ProtocolType.CHAR) {
             return codec.apply(b -> CodecUtils.characterType(datagram, b, policy), new ArrayList<Character>());
         } else if (type == ProtocolType.BYTE) {
             return codec.apply(b -> CodecUtils.byteType(datagram, b), new ArrayList<Byte>());
         } else if (type == ProtocolType.SHORT) {
             return codec.apply(b -> CodecUtils.shortType(datagram, b, policy), new ArrayList<Short>());
-        } else if (type == ProtocolType.INTEGER) {
+        } else if (type == ProtocolType.INT32) {
             return codec.apply(b -> CodecUtils.integerType(datagram, b, policy), new ArrayList<Integer>());
         } else if (type == ProtocolType.LONG) {
             return codec.apply(b -> CodecUtils.longType(datagram, b, policy), new ArrayList<Long>());
-        } else if (type == ProtocolType.UINTEGER8) {
+        } else if (type == ProtocolType.UINT8) {
             return codec.apply(b -> CodecUtils.uinteger8Type(datagram, b), new ArrayList<Integer>());
-        } else if (type == ProtocolType.UINTEGER16) {
+        } else if (type == ProtocolType.UINT16) {
             return codec.apply(b -> CodecUtils.uinteger16Type(datagram, b, policy), new ArrayList<Integer>());
-        } else if (type == ProtocolType.UINTEGER32) {
+        } else if (type == ProtocolType.UINT32) {
             return codec.apply(b -> CodecUtils.uinteger32Type(datagram, b, policy), new ArrayList<Long>());
-        } else if (type == ProtocolType.INTEGER8) {
+        } else if (type == ProtocolType.INT8) {
             return codec.apply(b -> CodecUtils.integer8Type(datagram, b), new ArrayList<Integer>());
-        } else if (type == ProtocolType.INTEGER16) {
+        } else if (type == ProtocolType.INT16) {
             return codec.apply(b -> CodecUtils.integer16Type(datagram, b, policy), new ArrayList<Integer>());
         } else if (type == ProtocolType.FLOAT) {
             return codec.apply(b -> CodecUtils.floatType(datagram, b, policy), new ArrayList<Float>());

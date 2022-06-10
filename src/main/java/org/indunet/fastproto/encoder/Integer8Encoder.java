@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.encoder;
 
-import org.indunet.fastproto.annotation.type.Integer8Type;
+import org.indunet.fastproto.annotation.type.Int8Type;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
@@ -24,13 +24,13 @@ import org.indunet.fastproto.util.CodecUtils;
  * Integer8 type encoder.
  *
  * @author Deng Ran
- * @see TypeEncoder,Integer8Type
+ * @see TypeEncoder, Int8Type
  * @since 1.2.0
  */
 public class Integer8Encoder implements TypeEncoder {
     @Override
     public void encode(EncodeContext context) {
-        Integer8Type type = context.getTypeAnnotation(Integer8Type.class);
+        Int8Type type = context.getTypeAnnotation(Int8Type.class);
         Integer value = context.getValue(Integer.class);
 
         this.encode(context.getDatagram(), type.value(), value);

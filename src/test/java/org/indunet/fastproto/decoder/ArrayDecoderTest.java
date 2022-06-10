@@ -48,16 +48,16 @@ public class ArrayDecoderTest {
         datagram[8] = 5;
 
         Integer[] values1 = (Integer[]) (decoder.decode(datagram, 0, 5,
-                        ProtocolType.UINTEGER16, EndianPolicy.LITTLE));
+                        ProtocolType.UINT16, EndianPolicy.LITTLE));
         Integer[] values2 = (Integer[]) (decoder.decode(datagram, 0, 5,
-                ProtocolType.INTEGER16, EndianPolicy.LITTLE));
+                ProtocolType.INT16, EndianPolicy.LITTLE));
         Short[] values3 = (Short[]) (decoder.decode(datagram, 0, 5,
                 ProtocolType.SHORT, EndianPolicy.LITTLE));
 
         int[] values4 = (int[]) (decoder.decode(datagram, 0, 5,
-                ProtocolType.UINTEGER16, EndianPolicy.LITTLE, true));
+                ProtocolType.UINT16, EndianPolicy.LITTLE, true));
         int[] values5 = (int[]) (decoder.decode(datagram, 0, 5,
-                ProtocolType.INTEGER16, EndianPolicy.LITTLE, true));
+                ProtocolType.INT16, EndianPolicy.LITTLE, true));
         short[] values6 = (short[]) (decoder.decode(datagram, 0, 5,
                 ProtocolType.SHORT, EndianPolicy.LITTLE, true));
 
@@ -81,9 +81,9 @@ public class ArrayDecoderTest {
         datagram[9] = 5;
 
         Integer[] values1 = (Integer[]) (decoder.decode(datagram, 0, 5,
-                ProtocolType.UINTEGER16, EndianPolicy.BIG));
+                ProtocolType.UINT16, EndianPolicy.BIG));
         Integer[] values2 = (Integer[]) (decoder.decode(datagram, 0, 5,
-                ProtocolType.INTEGER16, EndianPolicy.BIG));
+                ProtocolType.INT16, EndianPolicy.BIG));
         Short[] values3 = (Short[]) (decoder.decode(datagram, 0, 5,
                 ProtocolType.SHORT, EndianPolicy.BIG));
 
@@ -99,13 +99,13 @@ public class ArrayDecoderTest {
         datagram[0] = 1;
 
         Integer[] values1 = (Integer[]) (decoder.decode(datagram, 0, 4,
-                ProtocolType.UINTEGER8, EndianPolicy.BIG));
+                ProtocolType.UINT8, EndianPolicy.BIG));
         Integer[] values2 = (Integer[]) (decoder.decode(datagram, 0, 1,
-                ProtocolType.INTEGER, EndianPolicy.BIG));
+                ProtocolType.INT32, EndianPolicy.BIG));
         Long[] value3 = (Long[]) (decoder.decode(datagram, 0, 1,
-                ProtocolType.UINTEGER32, EndianPolicy.LITTLE));
+                ProtocolType.UINT32, EndianPolicy.LITTLE));
         Integer[] value4 = (Integer[]) (decoder.decode(datagram, 0, 4,
-                ProtocolType.INTEGER8, EndianPolicy.BIG));
+                ProtocolType.INT8, EndianPolicy.BIG));
         Byte[] value5 = (Byte[]) (decoder.decode(datagram, 0, 4,
                 ProtocolType.BYTE, EndianPolicy.BIG));
 
@@ -144,7 +144,7 @@ public class ArrayDecoderTest {
             decoder.decode(datagram, 0, 11, ProtocolType.BYTE, EndianPolicy.LITTLE);
         });
         assertThrows(OutOfBoundsException.class, () -> {
-            decoder.decode(datagram, 0, 6, ProtocolType.UINTEGER16, EndianPolicy.LITTLE);
+            decoder.decode(datagram, 0, 6, ProtocolType.UINT16, EndianPolicy.LITTLE);
         });
         assertThrows(DecodingException.class, () -> {
             decoder.decode(datagram, 0, -2, ProtocolType.BYTE, EndianPolicy.LITTLE);

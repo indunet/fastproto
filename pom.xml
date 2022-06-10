@@ -6,7 +6,7 @@
 
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.1.2</version>
+    <version>3.2.0</version>
     <packaging>jar</packaging>
     <name>FastProto</name>
     <description>FastProto is a protocolized binary serialization &amp; deserialization tool written in Java, which allows developers to customize binary format through annotations.</description>
@@ -191,28 +191,6 @@
         </dependency>
 
         <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka_2.11</artifactId>
-            <version>${kafka.version}</version>
-            <scope>test</scope>
-        </dependency>
-
-
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-            <version>${kafka.version}</version>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>com.salesforce.kafka.test</groupId>
-            <artifactId>kafka-junit5</artifactId>
-            <version>${kafka.junit5}</version>
-            <scope>test</scope>
-        </dependency>
-
-        <dependency>
             <groupId>org.openjdk.jmh</groupId>
             <artifactId>jmh-core</artifactId>
             <version>${jmh-core}</version>
@@ -224,13 +202,6 @@
             <artifactId>jmh-generator-annprocess</artifactId>
             <version>${jmh-generator-annprocess}</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>io.netty</groupId>
-            <artifactId>netty-all</artifactId>
-            <version>${netty.version}</version>
-            <optional>true</optional>
         </dependency>
 
         <dependency>
@@ -265,6 +236,13 @@
                     <source>8</source>
                     <target>8</target>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.codehaus.groovy</groupId>
+                        <artifactId>groovy-eclipse-batch</artifactId>
+                        <version>2.5.6-01</version>
+                    </dependency>
+                </dependencies>
             </plugin>
 
             <plugin>

@@ -16,50 +16,54 @@
 
 package org.indunet.fastproto.annotation.type;
 
+import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.Decoder;
 import org.indunet.fastproto.annotation.Encoder;
 import org.indunet.fastproto.annotation.TypeFlag;
 import org.indunet.fastproto.annotation.Validator;
-import org.indunet.fastproto.decoder.Integer16Decoder;
-import org.indunet.fastproto.encoder.Integer16Encoder;
-import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
-import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
-import org.indunet.fastproto.graph.validate.FieldValidator;
+import org.indunet.fastproto.decoder.TimestampDecoder;
+import org.indunet.fastproto.encoder.TimestampEncoder;
+import org.indunet.fastproto.graph.validate.*;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.annotation.*;
 import java.lang.reflect.Type;
+import java.sql.Timestamp;
+import java.util.Date;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 /**
- * Integer16 type, corresponding to Java Integer/int.
+ * Timestamp type, corresponding to Java java.sql.Timestamp.
  *
  * @author Deng Ran
  * @see TypeFlag
- * @since 1.2.0
+ * @since 1.1.0
  */
 @TypeFlag
-@Decoder(Integer16Decoder.class)
-@Encoder(Integer16Encoder.class)
-@Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
+@Decoder(TimestampDecoder.class)
+@Encoder(TimestampEncoder.class)
+@Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class, TimestampValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Integer16Type {
+public @interface TimeType {
     Type[] ALLOWED_JAVA_TYPES = {
-            int.class,
-            Integer.class
+            Timestamp.class,
+            Date.class
     };
-    int SIZE = Short.SIZE >> 3;
-    int MAX_VALUE = Short.MAX_VALUE;
-    int MIN_VALUE = Short.MIN_VALUE;
+    Class<?>[] ALLOWED_GENERIC_TYPES = {
+            ProtocolType.UINT32,
+            ProtocolType.LONG
+    };
 
     int value();
 
-    Class<? extends Function<Integer, ?>>[] decodingFormula() default {};
+    Class<? extends Annotation> genericType() default Int64Type.class;
 
-    Class<? extends Function<?, Integer>>[] encodingFormula() default {};
+    TimeUnit unit() default TimeUnit.MILLISECONDS;
+
+    Class<? extends Function<Timestamp, ?>>[] decodingFormula() default {};
+
+    Class<? extends Function<?, Timestamp>>[] encodingFormula() default {};
 
     String description() default "";
 }

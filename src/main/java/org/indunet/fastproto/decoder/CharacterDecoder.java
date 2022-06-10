@@ -18,7 +18,7 @@ package org.indunet.fastproto.decoder;
 
 import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.type.CharacterType;
+import org.indunet.fastproto.annotation.type.CharType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
@@ -26,13 +26,13 @@ import org.indunet.fastproto.util.CodecUtils;
  * Character type decoder.
  *
  * @author Deng Ran
- * @see TypeDecoder,CharacterType
+ * @see TypeDecoder, CharType
  * @since 1.1.0
  */
 public class CharacterDecoder implements TypeDecoder<Character> {
     @Override
     public Character decode(DecodeContext context) {
-        CharacterType type = context.getTypeAnnotation(CharacterType.class);
+        CharType type = context.getTypeAnnotation(CharType.class);
         EndianPolicy policy = context.getEndianPolicy();
 
         return this.decode(context.getDatagram(), type.value(), policy);

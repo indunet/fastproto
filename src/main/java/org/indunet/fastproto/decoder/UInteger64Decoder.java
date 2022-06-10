@@ -19,7 +19,7 @@ package org.indunet.fastproto.decoder;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.type.UInteger64Type;
+import org.indunet.fastproto.annotation.type.UInt64Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
@@ -32,7 +32,7 @@ import java.math.BigInteger;
 public class UInteger64Decoder implements TypeDecoder<BigInteger> {
     @Override
     public BigInteger decode(DecodeContext context) {
-        val type = context.getTypeAnnotation(UInteger64Type.class);
+        val type = context.getTypeAnnotation(UInt64Type.class);
 
         return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }

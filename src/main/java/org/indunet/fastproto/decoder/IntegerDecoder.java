@@ -18,7 +18,7 @@ package org.indunet.fastproto.decoder;
 
 import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.type.IntegerType;
+import org.indunet.fastproto.annotation.type.Int32Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
@@ -26,13 +26,13 @@ import org.indunet.fastproto.util.CodecUtils;
  * Integer type decoder.
  *
  * @author Deng Ran
- * @see TypeDecoder,IntegerType
+ * @see TypeDecoder, Int32Type
  * @since 1.0.0
  */
 public class IntegerDecoder implements TypeDecoder<Integer> {
     @Override
     public Integer decode(@NonNull DecodeContext context) {
-        IntegerType type = context.getTypeAnnotation(IntegerType.class);
+        Int32Type type = context.getTypeAnnotation(Int32Type.class);
 
         return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
     }

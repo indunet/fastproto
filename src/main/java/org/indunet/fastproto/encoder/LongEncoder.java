@@ -18,7 +18,7 @@ package org.indunet.fastproto.encoder;
 
 import lombok.NonNull;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.type.LongType;
+import org.indunet.fastproto.annotation.type.Int64Type;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
@@ -32,7 +32,7 @@ import org.indunet.fastproto.util.CodecUtils;
 public class LongEncoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
-        LongType type = context.getTypeAnnotation(LongType.class);
+        Int64Type type = context.getTypeAnnotation(Int64Type.class);
         Long value = context.getValue(Long.class);
 
         this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);

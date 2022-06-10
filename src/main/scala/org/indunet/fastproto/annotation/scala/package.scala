@@ -18,24 +18,24 @@ package org.indunet.fastproto.annotation
 
 import org.indunet.fastproto.annotation.`type`.{ArrayType => JavaArrayType}
 import org.indunet.fastproto.annotation.`type`.{BinaryType => JavaBinaryType}
-import org.indunet.fastproto.annotation.`type`.{BooleanType => JavaBooleanType}
+import org.indunet.fastproto.annotation.`type`.{BoolType => JavaBooleanType}
 import org.indunet.fastproto.annotation.`type`.{ByteType => JavaByteType}
-import org.indunet.fastproto.annotation.`type`.{CharacterType => JavaCharacterType}
+import org.indunet.fastproto.annotation.`type`.{CharType => JavaCharacterType}
 import org.indunet.fastproto.annotation.`type`.{DoubleType => JavaDoubleType}
 import org.indunet.fastproto.annotation.`type`.{EnumType => JavaEnumType}
 import org.indunet.fastproto.annotation.`type`.{FloatType => JavaFloatType}
-import org.indunet.fastproto.annotation.`type`.{Integer8Type => JavaInteger8Type}
-import org.indunet.fastproto.annotation.`type`.{Integer16Type => JavaInteger16Type}
-import org.indunet.fastproto.annotation.`type`.{IntegerType => JavaIntegerType}
+import org.indunet.fastproto.annotation.`type`.{Int8Type => JavaInteger8Type}
+import org.indunet.fastproto.annotation.`type`.{Int16Type => JavaInteger16Type}
+import org.indunet.fastproto.annotation.`type`.{Int32Type => JavaIntegerType}
 import org.indunet.fastproto.annotation.`type`.{ListType => JavaListType}
-import org.indunet.fastproto.annotation.`type`.{LongType => JavaLongType}
+import org.indunet.fastproto.annotation.`type`.{Int64Type => JavaLongType}
 import org.indunet.fastproto.annotation.`type`.{ShortType => JavaShortType}
 import org.indunet.fastproto.annotation.`type`.{StringType => JavaStringType}
-import org.indunet.fastproto.annotation.`type`.{TimestampType => JavaTimestampType}
-import org.indunet.fastproto.annotation.`type`.{UInteger8Type => JavaUInteger8Type}
-import org.indunet.fastproto.annotation.`type`.{UInteger16Type => JavaUInteger16Type}
-import org.indunet.fastproto.annotation.`type`.{UInteger32Type => JavaUInteger32Type}
-import org.indunet.fastproto.annotation.`type`.{UInteger64Type => JavaUInteger64Type}
+import org.indunet.fastproto.annotation.`type`.{TimeType => JavaTimestampType}
+import org.indunet.fastproto.annotation.`type`.{UInt8Type => JavaUInteger8Type}
+import org.indunet.fastproto.annotation.`type`.{UInt16Type => JavaUInteger16Type}
+import org.indunet.fastproto.annotation.`type`.{UInt32Type => JavaUInteger32Type}
+import org.indunet.fastproto.annotation.`type`.{UInt64Type => JavaUInteger64Type}
 
 import org.indunet.fastproto.annotation.{Endian => JavaEndian}
 import org.indunet.fastproto.annotation.{EncodingIgnore => JavaEncodingIgnore}

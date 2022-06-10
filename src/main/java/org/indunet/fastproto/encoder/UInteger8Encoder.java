@@ -17,7 +17,7 @@
 package org.indunet.fastproto.encoder;
 
 import lombok.NonNull;
-import org.indunet.fastproto.annotation.type.UInteger8Type;
+import org.indunet.fastproto.annotation.type.UInt8Type;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
@@ -25,13 +25,13 @@ import org.indunet.fastproto.util.CodecUtils;
  * UInteger8 type encoder.
  *
  * @author Deng Ran
- * @see TypeEncoder,UInteger8Type
+ * @see TypeEncoder, UInt8Type
  * @since 1.2.0
  */
 public class UInteger8Encoder implements TypeEncoder {
     @Override
     public void encode(@NonNull EncodeContext context) {
-        UInteger8Type type = context.getTypeAnnotation(UInteger8Type.class);
+        UInt8Type type = context.getTypeAnnotation(UInt8Type.class);
         Integer value = context.getValue(Integer.class);
 
         this.encode(context.getDatagram(), type.value(), value);

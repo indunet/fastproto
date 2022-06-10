@@ -24,8 +24,6 @@ import org.indunet.fastproto.annotation.type.*;
 import java.sql.Timestamp;
 import java.util.concurrent.TimeUnit;
 
-import static org.indunet.fastproto.ProtocolType.UINTEGER32;
-
 /**
  * @author Deng Ran
  * @since 1.6.2
@@ -33,37 +31,37 @@ import static org.indunet.fastproto.ProtocolType.UINTEGER32;
 @Data
 @Endian(EndianPolicy.LITTLE)
 public class StateDatagram {
-    @UInteger8Type(DatagramProtocol.VEHICLE_MODEL_NUMBER_OFFSET)
+    @UInt8Type(DatagramProtocol.VEHICLE_MODEL_NUMBER_OFFSET)
     Integer vehicleModelNumber;
     Long vehicleModelId;
 
-    @UInteger8Type(DatagramProtocol.SERIAL_NUMBER_OFFSET)
+    @UInt8Type(DatagramProtocol.SERIAL_NUMBER_OFFSET)
     Integer serialNumber;
 
-    @UInteger8Type(DatagramProtocol.PROTOCOL_VERSION_OFFSET)
+    @UInt8Type(DatagramProtocol.PROTOCOL_VERSION_OFFSET)
     Integer protocolVersion;
     Long datagramProtocolId;
 
-    @TimestampType(value = DatagramProtocol.EVENT_TIME_OFFSET, genericType = UInteger32Type.class, unit = TimeUnit.SECONDS)
+    @TimeType(value = DatagramProtocol.EVENT_TIME_OFFSET, genericType = UInt32Type.class, unit = TimeUnit.SECONDS)
     Timestamp eventTime;
     Timestamp receiveTime;
 
-    @UInteger16Type(DatagramProtocol.VEHICLE_NUMBER_OFFSET)
+    @UInt16Type(DatagramProtocol.VEHICLE_NUMBER_OFFSET)
     Integer vehicleNumber;
     Long vehicleId;
     String vehicleCode;
 
-    @UInteger16Type(DatagramProtocol.DATAGRAM_TYPE_NUMBER_OFFSET)
+    @UInt16Type(DatagramProtocol.DATAGRAM_TYPE_NUMBER_OFFSET)
     Integer datagramTypeNumber;
 
-    @UInteger16Type(DatagramProtocol.DATAGRAM_NUMBER_OFFSET)
+    @UInt16Type(DatagramProtocol.DATAGRAM_NUMBER_OFFSET)
     Integer datagramNumber;
     Long datagramId;
 
-    @UInteger16Type(DatagramProtocol.SECURITY_CODE_OFFSET)
+    @UInt16Type(DatagramProtocol.SECURITY_CODE_OFFSET)
     Integer securityCode;
 
-    @UInteger16Type(DatagramProtocol.CRC16_CODE_OFFSET)
+    @UInt16Type(DatagramProtocol.CRC16_CODE_OFFSET)
     Integer crc16Code;
 
     @BinaryType(value = 0, length = -1)

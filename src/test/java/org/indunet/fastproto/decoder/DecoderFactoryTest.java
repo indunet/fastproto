@@ -18,7 +18,7 @@ package org.indunet.fastproto.decoder;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.Decoder;
-import org.indunet.fastproto.annotation.type.BooleanType;
+import org.indunet.fastproto.annotation.type.BoolType;
 import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
@@ -33,7 +33,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class DecoderFactoryTest {
     @Test
     public void testGetDecoder1() {
-        val clazz = Optional.of(BooleanType.class)
+        val clazz = Optional.of(BoolType.class)
                 .map(c -> c.getAnnotation(Decoder.class))
                 .map(Decoder::value)
                 .get();
@@ -44,7 +44,7 @@ public class DecoderFactoryTest {
 
     @Test
     public void testGetDecoder2() {
-        Class<? extends TypeDecoder> clazz = Optional.of(BooleanType.class)
+        Class<? extends TypeDecoder> clazz = Optional.of(BoolType.class)
                 .map(c -> c.getAnnotation(Decoder.class))
                 .map(Decoder::value)
                 .get();

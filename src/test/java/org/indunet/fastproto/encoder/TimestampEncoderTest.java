@@ -60,9 +60,9 @@ public class TimestampEncoderTest {
                         EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, new Timestamp(current), BinaryUtils.valueOf(current)),
                 Arguments.arguments(new byte[8], -8, ProtocolType.LONG,
                         EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, new Date(current), BinaryUtils.valueOf(current)),
-                Arguments.arguments(new byte[4], 0, ProtocolType.UINTEGER32,
+                Arguments.arguments(new byte[4], 0, ProtocolType.UINT32,
                         EndianPolicy.LITTLE, TimeUnit.SECONDS, new Timestamp(current), BinaryUtils.uint32of(current / 1000)),
-                Arguments.arguments(new byte[4], 0, ProtocolType.UINTEGER32,
+                Arguments.arguments(new byte[4], 0, ProtocolType.UINT32,
                         EndianPolicy.LITTLE, TimeUnit.SECONDS, new Date(current), BinaryUtils.uint32of(current / 1000))
         ).collect(Collectors.toList());
     }

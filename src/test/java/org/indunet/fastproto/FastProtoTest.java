@@ -24,8 +24,8 @@ import org.indunet.fastproto.annotation.EnableCrypto;
 import org.indunet.fastproto.annotation.EnableVersion;
 import org.indunet.fastproto.annotation.Endian;
 import org.indunet.fastproto.annotation.type.ArrayType;
-import org.indunet.fastproto.annotation.type.UInteger16Type;
-import org.indunet.fastproto.annotation.type.UInteger64Type;
+import org.indunet.fastproto.annotation.type.UInt16Type;
+import org.indunet.fastproto.annotation.type.UInt64Type;
 import org.indunet.fastproto.checksum.Crc32Checker;
 import org.indunet.fastproto.compress.DeflateCompressor;
 import org.indunet.fastproto.crypto.Crypto;
@@ -201,7 +201,7 @@ public class FastProtoTest {
                 .aUInteger16(16)
                 .aUInteger32(32L)
                 .speed(10.1f)
-                .aUInteger64(new BigInteger(String.valueOf(UInteger64Type.MAX_VALUE)))
+                .aUInteger64(new BigInteger(String.valueOf(UInt64Type.MAX_VALUE)))
                 .build();
 
         // Init datagram.
@@ -356,7 +356,7 @@ public class FastProtoTest {
 
     @Data
     public static class ArrayObject {
-        @ArrayType(value = 0, length = 5, genericType = UInteger16Type.class)
+        @ArrayType(value = 0, length = 5, genericType = UInt16Type.class)
         int[] ints;
     }
 }

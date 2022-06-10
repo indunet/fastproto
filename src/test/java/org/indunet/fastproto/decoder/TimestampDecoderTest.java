@@ -55,9 +55,9 @@ public class TimestampDecoderTest {
         return Stream.of(
                 Arguments.arguments(BinaryUtils.valueOf(current), 0, ProtocolType.LONG, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, Timestamp.class, new Timestamp(current)),
                 Arguments.arguments(BinaryUtils.valueOf(current), 0, ProtocolType.LONG, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, Date.class, new Date(current)),
-                Arguments.arguments(BinaryUtils.uint32of(current / 1000), 0, ProtocolType.UINTEGER32, EndianPolicy.LITTLE, TimeUnit.SECONDS, Timestamp.class, new Timestamp(current / 1000 * 1000)),
-                Arguments.arguments(BinaryUtils.uint32of(current / 1000), -4, ProtocolType.UINTEGER32, EndianPolicy.LITTLE, TimeUnit.SECONDS, Timestamp.class, new Timestamp(current / 1000 * 1000)),
-                Arguments.arguments(BinaryUtils.uint32of(current / 1000), -4, ProtocolType.UINTEGER32, EndianPolicy.LITTLE, TimeUnit.SECONDS, Date.class, new Date(current / 1000 * 1000))
+                Arguments.arguments(BinaryUtils.uint32of(current / 1000), 0, ProtocolType.UINT32, EndianPolicy.LITTLE, TimeUnit.SECONDS, Timestamp.class, new Timestamp(current / 1000 * 1000)),
+                Arguments.arguments(BinaryUtils.uint32of(current / 1000), -4, ProtocolType.UINT32, EndianPolicy.LITTLE, TimeUnit.SECONDS, Timestamp.class, new Timestamp(current / 1000 * 1000)),
+                Arguments.arguments(BinaryUtils.uint32of(current / 1000), -4, ProtocolType.UINT32, EndianPolicy.LITTLE, TimeUnit.SECONDS, Date.class, new Date(current / 1000 * 1000))
         ).collect(Collectors.toList());
     }
 
