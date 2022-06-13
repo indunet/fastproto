@@ -40,7 +40,7 @@ public class UInteger16Decoder implements TypeDecoder<Integer> {
 
     public int decode(@NonNull final byte[] datagram, int offset, @NonNull EndianPolicy policy) {
         try {
-            return CodecUtils.uinteger16Type(datagram, offset, policy);
+            return CodecUtils.uint16Type(datagram, offset, policy);
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding the uinteger16 type.", e);
         } catch (IllegalArgumentException e) {

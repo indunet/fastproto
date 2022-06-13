@@ -17,8 +17,7 @@
 package org.indunet.fastproto.pipeline.encode;
 
 import lombok.val;
-import org.indunet.fastproto.ProtocolType;
-import org.indunet.fastproto.util.VersionUtils;
+import org.indunet.fastproto.annotation.EnableProtocolVersion;
 import org.indunet.fastproto.checksum.CheckerUtils;
 import org.indunet.fastproto.exception.AddressingException;
 import org.indunet.fastproto.exception.CodecError;
@@ -26,7 +25,6 @@ import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.CodecContext;
 import org.indunet.fastproto.pipeline.FlowCode;
-import org.indunet.fastproto.util.TypeUtils;
 
 /**
  * Infer length flow.
@@ -56,7 +54,18 @@ public class InferLengthFlow extends Pipeline<CodecContext> {
             throw new AddressingException(CodecError.UNABLE_INFER_LENGTH);
         } else {
             max += CheckerUtils.getSize(context.getProtocolClass());
-            max += VersionUtils.size(graph.root());
+
+
+            // Protocol version offset.
+            val offset = graph.root().getEnableProtocolVersions()
+                    .stream().mapToInt(EnableProtocolVersion::offset)
+                    .max()
+                    .orElse(0);
+
+            if (offset > max) {
+                max = offset + 1;
+            }
+
             context.setDatagram(new byte[max]);
         }
 

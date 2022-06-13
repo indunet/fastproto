@@ -39,7 +39,7 @@ public class IntegerDecoder implements TypeDecoder<Integer> {
 
     public int decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {
         try {
-            return CodecUtils.integerType(datagram, byteOffset, endian);
+            return CodecUtils.int32Type(datagram, byteOffset, endian);
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding integer type.", e);
         }

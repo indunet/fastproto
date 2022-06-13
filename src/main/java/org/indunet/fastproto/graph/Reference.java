@@ -31,6 +31,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
+import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -57,7 +58,9 @@ public class Reference {
     Class<?> protocolClass;
     ConstructorType constructorType;
     EnableCompress enableCompress;
-    EnableVersion enableVersion;
+
+    List<EnableProtocolVersion> enableProtocolVersions;
+
     EnableChecksum enableChecksum;
     EnableCrypto enableCrypto;
     EnableFixedLength enableFixedLength;

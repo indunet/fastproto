@@ -40,7 +40,7 @@ public class CharacterEncoder implements TypeEncoder {
 
     public void encode(byte[] datagram, int offset, EndianPolicy policy, char value) {
         try {
-            CodecUtils.characterType(datagram, offset, policy, value);
+            CodecUtils.charType(datagram, offset, policy, value);
         } catch (IndexOutOfBoundsException e) {
             throw new EncodingException("Fail encoding the character type.", e);
         }

@@ -85,15 +85,15 @@ public class ListEncoder implements TypeEncoder {
         } else if (type == ProtocolType.LONG) {
             codec.accept((b, i) -> CodecUtils.type(datagram, b, policy, (Long) values.get(i)));
         } else if (type == ProtocolType.UINT8) {
-            codec.accept((b, i) -> CodecUtils.uinteger8Type(datagram, b, (Integer) values.get(i)));
+            codec.accept((b, i) -> CodecUtils.uint8Type(datagram, b, (Integer) values.get(i)));
         } else if (type == ProtocolType.UINT16) {
-            codec.accept((b, i) -> CodecUtils.uinteger16Type(datagram, b, policy, (Integer) values.get(i)));
+            codec.accept((b, i) -> CodecUtils.uint16Type(datagram, b, policy, (Integer) values.get(i)));
         } else if (type == ProtocolType.UINT32) {
-            codec.accept((b, i) -> CodecUtils.uinteger32Type(datagram, b, policy, (Long) values.get(i)));
+            codec.accept((b, i) -> CodecUtils.uint32Type(datagram, b, policy, (Long) values.get(i)));
         } else if (type == ProtocolType.INT8) {
-            codec.accept((b, i) -> CodecUtils.integer8Type(datagram, b, (Integer) values.get(i)));
+            codec.accept((b, i) -> CodecUtils.int8Type(datagram, b, (Integer) values.get(i)));
         } else if (type == ProtocolType.INT16) {
-            codec.accept((b, i) -> CodecUtils.integer16Type(datagram, b, policy, (Integer) values.get(i)));
+            codec.accept((b, i) -> CodecUtils.int16Type(datagram, b, policy, (Integer) values.get(i)));
         } else if (type == ProtocolType.FLOAT) {
             codec.accept((b, i) -> CodecUtils.type(datagram, b, policy, (Float) values.get(i)));
         } else if (type == ProtocolType.DOUBLE) {

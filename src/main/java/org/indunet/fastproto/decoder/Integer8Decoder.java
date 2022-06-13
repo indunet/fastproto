@@ -38,7 +38,7 @@ public class Integer8Decoder implements TypeDecoder<Integer> {
 
     public int decode(@NonNull final byte[] datagram, int offset) {
         try {
-            return CodecUtils.integer8Type(datagram, offset);
+            return CodecUtils.int8Type(datagram, offset);
         } catch(ArrayIndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding the integer8 type.", e);
         } catch (IllegalArgumentException e) {

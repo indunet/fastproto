@@ -50,7 +50,7 @@ public final class CodecFeature {
             codecFeature |= DISABLE_CHECKSUM;
         }
 
-        if (reference.getEnableVersion() == null) {
+        if (reference.getEnableProtocolVersions().isEmpty()) {
             codecFeature |= DISABLE_PROTOCOL_VERSION;
         }
 

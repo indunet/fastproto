@@ -44,7 +44,8 @@ import org.indunet.fastproto.annotation.{DecodingIgnore => JavaDecodingIgnore}
 import org.indunet.fastproto.annotation.{EnableChecksum => JavaEnableChecksum}
 import org.indunet.fastproto.annotation.{EnableCompress => JavaEnableCompress}
 import org.indunet.fastproto.annotation.{EnableCrypto => JavaEnableCrypto}
-import org.indunet.fastproto.annotation.{EnableVersion => JavaEnableProtocolVersion}
+import org.indunet.fastproto.annotation.{EnableProtocolVersion => JavaEnableProtocolVersion}
+import org.indunet.fastproto.annotation.{EnableProtocolVersions => JavaEnableProtocolVersions}
 import org.indunet.fastproto.annotation.{EnableFixedLength => JavaEnableFixedLength}
 
 import _root_.scala.annotation.meta.field
@@ -85,5 +86,6 @@ package object scala {
   type EnableCompress = JavaEnableCompress
   type EnableCrypto = JavaEnableCrypto
   type EnableProtocolVersion = JavaEnableProtocolVersion
+  type EnableProtocolVersions = JavaEnableProtocolVersions
   type EnableFixedLength = JavaEnableFixedLength
 }

@@ -40,7 +40,7 @@ public class CharacterDecoder implements TypeDecoder<Character> {
 
     public Character decode(final byte[] datagram, int offset, @NonNull EndianPolicy policy) {
         try {
-            return CodecUtils.characterType(datagram, offset, policy);
+            return CodecUtils.charType(datagram, offset, policy);
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding the character type.", e);
         }

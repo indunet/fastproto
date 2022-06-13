@@ -59,13 +59,13 @@ public class TimestampEncoder implements TypeEncoder {
                 throw new EncodingException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 
-            CodecUtils.longType(datagram, bo, policy, value.getTime());
+            CodecUtils.int64Type(datagram, bo, policy, value.getTime());
         } else if (type == ProtocolType.UINT32 && unit == TimeUnit.SECONDS) {
             if (bo + UInt32Type.SIZE > datagram.length) {
                 throw new EncodingException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 
-            CodecUtils.integerType(datagram, bo, policy, (int) (value.getTime() / 1000));
+            CodecUtils.int32Type(datagram, bo, policy, (int) (value.getTime() / 1000));
         } else {
             throw new EncodingException(CodecError.ILLEGAL_TIMESTAMP_PARAMETERS);
         }

@@ -41,7 +41,7 @@ public class UInteger32Encoder implements TypeEncoder {
 
     public void encode(@NonNull byte[] datagram, int offset, @NonNull EndianPolicy policy, long value) {
         try {
-            CodecUtils.uinteger32Type(datagram, offset, policy, value);
+            CodecUtils.uint32Type(datagram, offset, policy, value);
         } catch (IndexOutOfBoundsException e) {
             throw new EncodingException("Fail encoding the uinteger32 type.", e);
         } catch (IllegalArgumentException e) {

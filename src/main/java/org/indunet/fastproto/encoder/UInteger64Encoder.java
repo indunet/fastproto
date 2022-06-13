@@ -40,7 +40,7 @@ public class UInteger64Encoder implements TypeEncoder {
 
     public void encode(@NonNull byte[] datagram, int offset, @NonNull EndianPolicy policy, BigInteger value) {
         try {
-            CodecUtils.uinteger64Type(datagram, offset, policy, value);
+            CodecUtils.uint64Type(datagram, offset, policy, value);
         } catch (IndexOutOfBoundsException e) {
             throw new EncodingException("Fail encoding the uinteger64 type.", e);
         } catch (IllegalArgumentException e) {

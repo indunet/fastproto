@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,7 +21,7 @@ import lombok.SneakyThrows;
 import lombok.val;
 import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.annotation.EnableCrypto;
-import org.indunet.fastproto.annotation.EnableVersion;
+import org.indunet.fastproto.annotation.EnableProtocolVersion;
 import org.indunet.fastproto.annotation.Endian;
 import org.indunet.fastproto.annotation.type.ArrayType;
 import org.indunet.fastproto.annotation.type.UInt16Type;
@@ -121,15 +121,15 @@ public class FastProtoTest {
                 .build();
 
         // Init datagram.
-        CodecUtils.uinteger8Type(datagram, 0, metrics.getId());
+        CodecUtils.uint8Type(datagram, 0, metrics.getId());
         CodecUtils.type(datagram, 2, EndianPolicy.LITTLE, metrics.getTime().getTime());
-        CodecUtils.uinteger16Type(datagram, 10, EndianPolicy.LITTLE, metrics.getHumidity());
-        CodecUtils.integer16Type(datagram, 12, EndianPolicy.LITTLE, metrics.getTemperature());
-        CodecUtils.uinteger32Type(datagram, 14, EndianPolicy.LITTLE, metrics.getPressure());
+        CodecUtils.uint16Type(datagram, 10, EndianPolicy.LITTLE, metrics.getHumidity());
+        CodecUtils.int16Type(datagram, 12, EndianPolicy.LITTLE, metrics.getTemperature());
+        CodecUtils.uint32Type(datagram, 14, EndianPolicy.LITTLE, metrics.getPressure());
         CodecUtils.type(datagram, 18, 0, metrics.isHumidityValid());
         CodecUtils.type(datagram, 18, 1, metrics.isTemperatureValid());
         CodecUtils.type(datagram, 18, 2, metrics.isPressureValid());
-        CodecUtils.uinteger32Type(datagram, 26, EndianPolicy.BIG, Crc32Checker.getInstance().getValue(datagram, 0, -5));
+        CodecUtils.uint32Type(datagram, 26, EndianPolicy.BIG, Crc32Checker.getInstance().getValue(datagram, 0, -5));
 
         // Test decode.
         assertEquals(
@@ -156,15 +156,15 @@ public class FastProtoTest {
         val compressor = DeflateCompressor.getInstance(2);
 
         // Init datagram.
-        CodecUtils.uinteger8Type(datagram, 0, weather.getId());
+        CodecUtils.uint8Type(datagram, 0, weather.getId());
         CodecUtils.type(datagram, 2, EndianPolicy.LITTLE, weather.getTime().getTime());
-        CodecUtils.uinteger16Type(datagram, 10, EndianPolicy.LITTLE, weather.getHumidity());
-        CodecUtils.integer16Type(datagram, 12, EndianPolicy.LITTLE, weather.getTemperature());
-        CodecUtils.uinteger32Type(datagram, 14, EndianPolicy.LITTLE, weather.getPressure());
+        CodecUtils.uint16Type(datagram, 10, EndianPolicy.LITTLE, weather.getHumidity());
+        CodecUtils.int16Type(datagram, 12, EndianPolicy.LITTLE, weather.getTemperature());
+        CodecUtils.uint32Type(datagram, 14, EndianPolicy.LITTLE, weather.getPressure());
         CodecUtils.type(datagram, 18, 0, weather.isHumidityValid());
         CodecUtils.type(datagram, 18, 1, weather.isTemperatureValid());
         CodecUtils.type(datagram, 18, 2, weather.isPressureValid());
-        CodecUtils.uinteger32Type(datagram, 19, EndianPolicy.BIG, Crc32Checker.getInstance().getValue(datagram, 0, -5));
+        CodecUtils.uint32Type(datagram, 19, EndianPolicy.BIG, Crc32Checker.getInstance().getValue(datagram, 0, -5));
 
         // Compress the datagram.
         datagram = compressor.compress(datagram);
@@ -212,20 +212,20 @@ public class FastProtoTest {
         CodecUtils.type(datagram, 8, EndianPolicy.LITTLE, everything.getALong());
         CodecUtils.type(datagram, 16, EndianPolicy.LITTLE, everything.getAFloat());
         CodecUtils.type(datagram, 20, EndianPolicy.LITTLE, everything.getADouble());
-        CodecUtils.integer8Type(datagram, 28, everything.getAInteger8());
-        CodecUtils.integer16Type(datagram, 30, EndianPolicy.LITTLE, everything.getAInteger16());
-        CodecUtils.uinteger8Type(datagram, 32, everything.getAUInteger8());
-        CodecUtils.uinteger16Type(datagram, 34, EndianPolicy.LITTLE, everything.getAUInteger16());
-        CodecUtils.uinteger32Type(datagram, 36, EndianPolicy.LITTLE, everything.getAUInteger32());
+        CodecUtils.int8Type(datagram, 28, everything.getAInteger8());
+        CodecUtils.int16Type(datagram, 30, EndianPolicy.LITTLE, everything.getAInteger16());
+        CodecUtils.uint8Type(datagram, 32, everything.getAUInteger8());
+        CodecUtils.uint16Type(datagram, 34, EndianPolicy.LITTLE, everything.getAUInteger16());
+        CodecUtils.uint32Type(datagram, 36, EndianPolicy.LITTLE, everything.getAUInteger32());
         CodecUtils.type(datagram, 40, everything.getAByteArray());
         CodecUtils.type(datagram, 50, everything.getAString().getBytes());
         CodecUtils.type(datagram, 56, EndianPolicy.LITTLE, everything.getATimestamp().getTime());
         CodecUtils.type(datagram, 64, EndianPolicy.LITTLE, everything.getACharacter());
         CodecUtils.type(datagram, 70, EndianPolicy.LITTLE, everything.getAUInteger64());
-        CodecUtils.uinteger16Type(datagram, 78, EndianPolicy.LITTLE, 17);
+        CodecUtils.uint8Type(datagram, 79, 17);
 
         // There is a formula.
-        CodecUtils.uinteger8Type(datagram, 66, (int) (everything.getSpeed() * 10));
+        CodecUtils.uint8Type(datagram, 66, (int) (everything.getSpeed() * 10));
 
         val crypto = Crypto.getInstance(CryptoPolicy.AES_ECB_PKCS5PADDING);
         val afterEncrypted = crypto.encrypt("330926".getBytes(StandardCharsets.UTF_8), datagram);
@@ -235,7 +235,7 @@ public class FastProtoTest {
 
         // Test encode.
         byte[] cache = FastProto.toByteArray(everything, CodecFeature.DISABLE_COMPRESS);
-        assertArrayEquals(cache, afterEncrypted);
+        assertArrayEquals(afterEncrypted, cache);
 
         // Test with gzip
         byte[] compressed = FastProto.toByteArray(everything, 80, CodecFeature.DISABLE_CRYPTO);
@@ -344,7 +344,7 @@ public class FastProtoTest {
 
     }
 
-    @EnableVersion(value = 2, version = 10)
+    @EnableProtocolVersion(offset = 2, version = 10)
     public static class ProtocolVersionObject {
 
     }

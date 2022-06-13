@@ -17,11 +17,12 @@
 package org.indunet.fastproto.pipeline.decode;
 
 import lombok.NonNull;
-import org.indunet.fastproto.util.VersionUtils;
+import lombok.val;
+import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.ProtocolVersionException;
 import org.indunet.fastproto.pipeline.Pipeline;
-import org.indunet.fastproto.pipeline.CodecContext;
 import org.indunet.fastproto.pipeline.FlowCode;
 
 /**
@@ -33,7 +34,14 @@ import org.indunet.fastproto.pipeline.FlowCode;
 public class VerifyVersionFlow extends Pipeline<CodecContext> {
     @Override
     public void process(@NonNull CodecContext context) {
-        if (!VersionUtils.validate(context.getDatagram(), context.getReferenceGraph().root())) {
+        val reference = context.getReferenceGraph().root();
+        val versions = reference.getEnableProtocolVersions();
+        val bytes = context.getDatagram();
+        
+        val flag = versions.stream()
+                .anyMatch(v -> v.version() != CodecUtils.uint8Type(bytes, v.offset()));
+        
+        if (flag) {
             throw new ProtocolVersionException(CodecError.PROTOCOL_VERSION_NOT_MATCH);
         } else {
             this.forward(context);

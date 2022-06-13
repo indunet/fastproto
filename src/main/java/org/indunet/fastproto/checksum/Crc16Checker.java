@@ -76,7 +76,7 @@ public class Crc16Checker implements Checker {
         }
 
         int actual = this.getValue(datagram, start, length);
-        int expected = CodecUtils.uinteger16Type(datagram, ReverseUtils.offset(datagram.length, byteOffset), policy);
+        int expected = CodecUtils.uint16Type(datagram, ReverseUtils.offset(datagram.length, byteOffset), policy);
 
         return actual == expected;
     }
@@ -142,6 +142,6 @@ public class Crc16Checker implements Checker {
     public void setValue(byte[] datagram, int byteOffset, int start, int length, EndianPolicy policy) {
         int value = this.getValue(datagram, start, length);
 
-        CodecUtils.uinteger16Type(datagram, ReverseUtils.offset(datagram.length, byteOffset), policy, value);
+        CodecUtils.uint16Type(datagram, ReverseUtils.offset(datagram.length, byteOffset), policy, value);
     }
 }

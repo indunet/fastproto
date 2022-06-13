@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2022 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,31 +16,19 @@
 
 package org.indunet.fastproto.annotation;
 
-import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.ProtocolType;
-import org.indunet.fastproto.annotation.type.UInt16Type;
-
-import java.lang.annotation.*;
-
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * Enable versions annotation.
+ *
  * @author Deng Ran
  * @since 1.5.3
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface EnableVersion {
-    Class<?>[] PROTOCOL_TYPES = {
-            ProtocolType.UINT8,
-            ProtocolType.UINT16,
-            ProtocolType.INT32
-    };
-
-    int value();
-
-    int version();
-
-    Class<? extends Annotation> genericType() default UInt16Type.class;
-
-    EndianPolicy[] endianPolicy() default {};
+public @interface EnableProtocolVersions {
+    EnableProtocolVersion[] value();
 }

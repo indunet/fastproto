@@ -72,7 +72,7 @@ public class TimestampDecoder<T extends Date> implements TypeDecoder<T> {
                 throw new DecodingException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 
-            val value = CodecUtils.longType(datagram, bo, policy);
+            val value = CodecUtils.int64Type(datagram, bo, policy);
 
             return newInstance.apply(value);
         } else if (genericType == ProtocolType.UINT32 && unit == TimeUnit.SECONDS) {
@@ -80,7 +80,7 @@ public class TimestampDecoder<T extends Date> implements TypeDecoder<T> {
                 throw new DecodingException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }
 
-            val value = CodecUtils.uinteger32Type(datagram, bo, policy);
+            val value = CodecUtils.uint32Type(datagram, bo, policy);
 
             return newInstance.apply(value * 1000);
         } else {

@@ -47,7 +47,7 @@ class Crc16CheckerTest {
 
         String tmp = CRC16Util.getCRC(Arrays.copyOfRange(datagram, 0, 8));
         int x = Integer.parseInt(tmp, 16);
-        CodecUtils.uinteger16Type(datagram, 8, EndianPolicy.BIG, value);
+        CodecUtils.uint16Type(datagram, 8, EndianPolicy.BIG, value);
         assertEquals(value, x);
         assertTrue(checker.validate(datagram, TestObject.class));
     }

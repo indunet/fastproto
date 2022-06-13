@@ -91,19 +91,19 @@ public class ArrayEncoder implements TypeEncoder {
             codec.accept((b, i) -> CodecUtils.type(datagram, b, policy,
                     primitive ? ((long[]) values)[i] : ((Long[]) values)[i]));
         } else if (type == ProtocolType.UINT8) {
-            codec.accept((b, i) -> CodecUtils.uinteger8Type(datagram, b,
+            codec.accept((b, i) -> CodecUtils.uint8Type(datagram, b,
                     primitive ? ((int[]) values)[i] : ((Integer[]) values)[i]));
         } else if (type == ProtocolType.UINT16) {
-            codec.accept((b, i) -> CodecUtils.uinteger16Type(datagram, b, policy,
+            codec.accept((b, i) -> CodecUtils.uint16Type(datagram, b, policy,
                     primitive ? ((int[]) values)[i] : ((Integer[]) values)[i]));
         } else if (type == ProtocolType.UINT32) {
-            codec.accept((b, i) -> CodecUtils.uinteger32Type(datagram, b, policy,
+            codec.accept((b, i) -> CodecUtils.uint32Type(datagram, b, policy,
                     primitive ? ((long[]) values)[i] : ((Long[]) values)[i]));
         } else if (type == ProtocolType.INT8) {
-            codec.accept((b, i) -> CodecUtils.integer8Type(datagram, b,
+            codec.accept((b, i) -> CodecUtils.int8Type(datagram, b,
                     primitive ? ((int[]) values)[i] : ((Integer[]) values)[i]));
         } else if (type == ProtocolType.INT16) {
-            codec.accept((b, i) -> CodecUtils.integer16Type(datagram, b, policy,
+            codec.accept((b, i) -> CodecUtils.int16Type(datagram, b, policy,
                     primitive ? ((int[]) values)[i] : ((Integer[]) values)[i]));
         } else if (type == ProtocolType.FLOAT) {
             codec.accept((b, i) -> CodecUtils.type(datagram, b, policy,

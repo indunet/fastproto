@@ -16,9 +16,10 @@
 
 package org.indunet.fastproto.pipeline.encode;
 
-import org.indunet.fastproto.util.VersionUtils;
-import org.indunet.fastproto.pipeline.Pipeline;
+import lombok.val;
 import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.FlowCode;
 
 /**
@@ -30,8 +31,13 @@ import org.indunet.fastproto.pipeline.FlowCode;
 public class WriteVersionFlow extends Pipeline<CodecContext> {
     @Override
     public void process(CodecContext context) {
-        VersionUtils.encode(context.getDatagram(), context.getReferenceGraph().root());
-
+        val reference = context.getReferenceGraph().root();
+        val versions = reference.getEnableProtocolVersions();
+        val bytes = context.getDatagram();
+        
+        versions.stream()
+            .forEach(v -> CodecUtils.uint8Type(bytes, v.offset(), v.version()));
+        
         this.forward(context);
     }
 

@@ -39,7 +39,7 @@ public class UInteger64Decoder implements TypeDecoder<BigInteger> {
 
     public BigInteger decode(@NonNull final byte[] datagram, int offset, @NonNull EndianPolicy policy) {
         try {
-            return CodecUtils.uinteger64Type(datagram, offset, policy);
+            return CodecUtils.uint64Type(datagram, offset, policy);
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding the uinteger64 type.", e);
         }

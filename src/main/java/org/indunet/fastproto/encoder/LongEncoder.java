@@ -40,7 +40,7 @@ public class LongEncoder implements TypeEncoder {
 
     public void encode(@NonNull byte[] datagram, int offset, @NonNull EndianPolicy policy, long value) {
         try {
-            CodecUtils.longType(datagram, offset, policy, value);
+            CodecUtils.int64Type(datagram, offset, policy, value);
         } catch (IndexOutOfBoundsException e) {
             throw new EncodingException("Fail encoding the long type.", e);
         }

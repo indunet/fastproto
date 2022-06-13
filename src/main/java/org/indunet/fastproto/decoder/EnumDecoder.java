@@ -86,11 +86,11 @@ public class EnumDecoder<T extends Enum> implements TypeDecoder<T> {
     public int getCode(@NonNull final byte[] datagram, int offset, @NonNull EndianPolicy policy,
                        @NonNull Class<? extends Annotation> type) {
         if (type == ProtocolType.UINT8) {
-            return CodecUtils.uinteger8Type(datagram, offset);
+            return CodecUtils.uint8Type(datagram, offset);
         } else if (type == ProtocolType.UINT16) {
-            return CodecUtils.uinteger16Type(datagram, offset, policy);
+            return CodecUtils.uint16Type(datagram, offset, policy);
         } else if (type == ProtocolType.INT32) {
-            return CodecUtils.integerType(datagram, offset, policy);
+            return CodecUtils.int32Type(datagram, offset, policy);
         } else {
             throw new DecodingException(CodecError.INVALID_ENUM_PROTOCOL_TYPE);
         }

@@ -38,7 +38,7 @@ public class BooleanDecoder implements TypeDecoder<Boolean> {
 
     public boolean decode(@NonNull final byte[] datagram, int byteOffset, int bitOffset) {
         try {
-            return CodecUtils.booleanType(datagram, byteOffset, bitOffset);
+            return CodecUtils.boolType(datagram, byteOffset, bitOffset);
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding the boolean type.", e);
         } catch (IllegalArgumentException e) {

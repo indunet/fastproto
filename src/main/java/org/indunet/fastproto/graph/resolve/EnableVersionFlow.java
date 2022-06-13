@@ -17,11 +17,16 @@
 package org.indunet.fastproto.graph.resolve;
 
 import lombok.val;
-import org.indunet.fastproto.annotation.EnableVersion;
+import org.indunet.fastproto.annotation.EnableProtocolVersion;
+import org.indunet.fastproto.annotation.EnableProtocolVersions;
+import org.indunet.fastproto.annotation.type.UInt8Type;
 import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.graph.Reference;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+import java.util.function.IntPredicate;
 
 /**
  * Resolve enable protocol version flow.
@@ -33,19 +38,32 @@ public class EnableVersionFlow extends ResolvePipeline {
     @Override
     public void process(Reference reference) {
         val protocolClass = reference.getProtocolClass();
+        List<EnableProtocolVersion> versions = new ArrayList<>();
 
-        if (protocolClass.isAnnotationPresent(EnableVersion.class)) {
-            val enableVersion = protocolClass.getAnnotation(EnableVersion.class);
+        // @EnableVersions
+        if (protocolClass.isAnnotationPresent(EnableProtocolVersions.class)) {
+            val enableProtocolVersions = protocolClass.getAnnotation(EnableProtocolVersions.class);
 
-            if (Arrays.stream(EnableVersion.PROTOCOL_TYPES)
-                    .anyMatch(t -> t == enableVersion.genericType())) {
-                reference.setEnableVersion(enableVersion);
-            } else {
-                throw new ResolveException(
-                        String.format("Illegal protocol type for @EnableVersion of %s", protocolClass.getName()));
-            }
+            Arrays.stream(enableProtocolVersions.value())
+                    .forEach(versions::add);
         }
 
+        // @EnableVersion
+        if (protocolClass.isAnnotationPresent(EnableProtocolVersion.class)) {
+            versions.add(protocolClass.getAnnotation(EnableProtocolVersion.class));
+        }
+
+        IntPredicate validator = v -> v < UInt8Type.MIN_VALUE || v > UInt8Type.MAX_VALUE;
+        val flag = versions.stream()
+                .mapToInt(EnableProtocolVersion::version)
+                .anyMatch(validator);
+
+        if (flag) {
+            throw new ResolveException(
+                    String.format("Illegal protocol version for %s which must be uint8.", protocolClass.getName()));
+        }
+
+        reference.setEnableProtocolVersions(versions);
         this.forward(reference);
     }
 }

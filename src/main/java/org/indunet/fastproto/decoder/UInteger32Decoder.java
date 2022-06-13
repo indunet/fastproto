@@ -40,7 +40,7 @@ public class UInteger32Decoder implements TypeDecoder<Long> {
 
     public long decode(@NonNull final byte[] datagram, int offset, @NonNull EndianPolicy policy) {
         try {
-            return CodecUtils.uinteger32Type(datagram, offset, policy);
+            return CodecUtils.uint32Type(datagram, offset, policy);
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding the uinteger32 type.", e);
         }

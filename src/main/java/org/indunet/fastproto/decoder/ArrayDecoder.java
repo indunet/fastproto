@@ -87,7 +87,7 @@ public class ArrayDecoder implements TypeDecoder<Object> {
         };
 
         if (type == ProtocolType.CHAR) {
-            codec.accept(b -> CodecUtils.characterType(datagram, b, policy));
+            codec.accept(b -> CodecUtils.charType(datagram, b, policy));
             return primitive ? TypeUtils.listToArray(list, new char[length]) : list.toArray(new Character[length]);
         } else if (type == ProtocolType.BYTE) {
             codec.accept(b -> CodecUtils.byteType(datagram, b));
@@ -96,25 +96,25 @@ public class ArrayDecoder implements TypeDecoder<Object> {
             codec.accept(b -> CodecUtils.shortType(datagram, b, policy));
             return primitive ? TypeUtils.listToArray(list, new short[length]) : list.toArray(new Short[length]);
         } else if (type == ProtocolType.INT32) {
-            codec.accept(b -> CodecUtils.integerType(datagram, b, policy));
+            codec.accept(b -> CodecUtils.int32Type(datagram, b, policy));
             return primitive ? TypeUtils.listToArray(list, new int[length]) : list.toArray(new Integer[length]);
         } else if (type == ProtocolType.LONG) {
-            codec.accept(b -> CodecUtils.longType(datagram, b, policy));
+            codec.accept(b -> CodecUtils.int64Type(datagram, b, policy));
             return primitive ? TypeUtils.listToArray(list, new long[length]) : list.toArray(new Long[length]);
         } else if (type == ProtocolType.UINT8) {
-            codec.accept(b -> CodecUtils.uinteger8Type(datagram, b));
+            codec.accept(b -> CodecUtils.uint8Type(datagram, b));
             return primitive ? TypeUtils.listToArray(list, new int[length]) : list.toArray(new Integer[length]);
         } else if (type == ProtocolType.UINT16) {
-            codec.accept(b -> CodecUtils.uinteger16Type(datagram, b, policy));
+            codec.accept(b -> CodecUtils.uint16Type(datagram, b, policy));
             return primitive ? TypeUtils.listToArray(list, new int[length]) : list.toArray(new Integer[length]);
         } else if (type == ProtocolType.UINT32) {
-            codec.accept(b -> CodecUtils.uinteger32Type(datagram, b, policy));
+            codec.accept(b -> CodecUtils.uint32Type(datagram, b, policy));
             return primitive ? TypeUtils.listToArray(list, new long[length]) : list.toArray(new Long[length]);
         } else if (type == ProtocolType.INT8) {
-            codec.accept(b -> CodecUtils.integer8Type(datagram, b));
+            codec.accept(b -> CodecUtils.int8Type(datagram, b));
             return primitive ? TypeUtils.listToArray(list, new int[length]) : list.toArray(new Integer[length]);
         } else if (type == ProtocolType.INT16) {
-            codec.accept(b -> CodecUtils.integer16Type(datagram, b, policy));
+            codec.accept(b -> CodecUtils.int16Type(datagram, b, policy));
             return primitive ? TypeUtils.listToArray(list, new int[length]) : list.toArray(new Integer[length]);
         } else if (type == ProtocolType.FLOAT) {
             codec.accept(b -> CodecUtils.floatType(datagram, b, policy));

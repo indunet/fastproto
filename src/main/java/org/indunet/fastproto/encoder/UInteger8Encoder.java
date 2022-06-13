@@ -39,7 +39,7 @@ public class UInteger8Encoder implements TypeEncoder {
 
     public void encode(@NonNull byte[] datagram, int offset, int value) {
         try {
-            CodecUtils.uinteger8Type(datagram, offset, value);
+            CodecUtils.uint8Type(datagram, offset, value);
         } catch (IndexOutOfBoundsException e) {
             throw new EncodingException("Fail encoding the uinteger8 type.", e);
         } catch (IllegalArgumentException e) {

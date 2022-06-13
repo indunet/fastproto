@@ -22,7 +22,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.indunet.fastproto.annotation.EnableCompress;
 import org.indunet.fastproto.annotation.EnableCrypto;
-import org.indunet.fastproto.annotation.EnableVersion;
+import org.indunet.fastproto.annotation.EnableProtocolVersion;
 import org.indunet.fastproto.annotation.type.*;
 import org.indunet.fastproto.compress.CompressPolicy;
 import org.indunet.fastproto.crypto.CryptoPolicy;
@@ -42,7 +42,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @EnableCrypto(value = CryptoPolicy.AES_ECB_PKCS5PADDING, key = "330926")
 @EnableCompress(CompressPolicy.GZIP)
-@EnableVersion(value = 78, version = 17)
+@EnableProtocolVersion(offset = 79, version = 17)
 public class Everything {
     @BoolType(value = 0, bitOffset = 1)
     Boolean aBoolean;

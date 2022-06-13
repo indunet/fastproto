@@ -39,7 +39,7 @@ public class LongDecoder implements TypeDecoder<Long> {
 
     public long decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {
         try {
-            return CodecUtils.longType(datagram, byteOffset, endian);
+            return CodecUtils.int64Type(datagram, byteOffset, endian);
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding the long type.", e);
         }

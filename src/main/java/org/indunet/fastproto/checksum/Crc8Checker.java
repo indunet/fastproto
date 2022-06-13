@@ -67,7 +67,7 @@ public class Crc8Checker implements Checker {
         int length = checkSum.length();
 
         int actual = this.getValue(datagram, start, length);
-        int expected = CodecUtils.uinteger8Type(datagram, ReverseUtils.offset(datagram.length, byteOffset));
+        int expected = CodecUtils.uint8Type(datagram, ReverseUtils.offset(datagram.length, byteOffset));
 
         return actual == expected;
     }
@@ -94,7 +94,7 @@ public class Crc8Checker implements Checker {
     public void setValue(byte[] datagram, int byteOffset, int start, int length) {
         int value = this.getValue(datagram, start, length);
 
-        CodecUtils.uinteger8Type(datagram, byteOffset, value);
+        CodecUtils.uint8Type(datagram, byteOffset, value);
     }
 
     public int getValue(byte[] datagram, int start, int length) {

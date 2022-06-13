@@ -47,7 +47,7 @@ class Crc32CheckerTest {
 
         crc32.update(datagram, 0, 6);
         long value = crc32.getValue();
-        CodecUtils.uinteger32Type(datagram, 6, EndianPolicy.LITTLE, value);
+        CodecUtils.uint32Type(datagram, 6, EndianPolicy.LITTLE, value);
 
         assertTrue(checker.validate(datagram, TestObject.class));
     }

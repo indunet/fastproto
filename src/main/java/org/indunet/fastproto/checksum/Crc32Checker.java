@@ -59,7 +59,7 @@ public class Crc32Checker implements Checker {
         }
 
         long actual = this.getValue(datagram, checksum.start(), checksum.length());
-        long expected = CodecUtils.uinteger32Type(datagram, ReverseUtils.offset(datagram.length, checksum.value()), policy);
+        long expected = CodecUtils.uint32Type(datagram, ReverseUtils.offset(datagram.length, checksum.value()), policy);
 
         return actual == expected;
     }
@@ -113,6 +113,6 @@ public class Crc32Checker implements Checker {
     public void setValue(byte[] datagram, int byteOffset, int start, int length, EndianPolicy policy) {
         long value = this.getValue(datagram, start, length);
 
-        CodecUtils.uinteger32Type(datagram, ReverseUtils.offset(datagram.length, byteOffset), policy, value);
+        CodecUtils.uint32Type(datagram, ReverseUtils.offset(datagram.length, byteOffset), policy, value);
     }
 }

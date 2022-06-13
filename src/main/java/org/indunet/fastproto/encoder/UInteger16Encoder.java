@@ -41,7 +41,7 @@ public class UInteger16Encoder implements TypeEncoder {
 
     public void encode(@NonNull byte[] datagram, int offset, @NonNull EndianPolicy policy, int value) {
         try {
-            CodecUtils.uinteger16Type(datagram, offset, policy, value);
+            CodecUtils.uint16Type(datagram, offset, policy, value);
         } catch (IndexOutOfBoundsException e) {
             throw new EncodingException("Fail encoding the uinteger16 type.", e);
         } catch (IllegalArgumentException e) {

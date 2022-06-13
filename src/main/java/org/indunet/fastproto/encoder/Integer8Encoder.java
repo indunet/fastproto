@@ -38,7 +38,7 @@ public class Integer8Encoder implements TypeEncoder {
 
     public void encode(byte[] datagram, int offset, int value) {
         try {
-            CodecUtils.integer8Type(datagram, offset, value);
+            CodecUtils.int8Type(datagram, offset, value);
         } catch (IndexOutOfBoundsException e) {
             throw new EncodingException("Fail encoding the integer8 type.", e);
         } catch (IllegalArgumentException e) {

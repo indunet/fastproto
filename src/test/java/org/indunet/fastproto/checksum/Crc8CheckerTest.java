@@ -43,7 +43,7 @@ public class Crc8CheckerTest {
         IntStream.range(0, 10)
                 .forEach(i -> datagram[i] = (byte) random.nextInt());
         int value = checker.getValue(datagram, 0, 9);
-        CodecUtils.uinteger8Type(datagram, 9, value);
+        CodecUtils.uint8Type(datagram, 9, value);
 
         assertTrue(checker.validate(datagram, TestObject1.class));
     }
@@ -57,7 +57,7 @@ public class Crc8CheckerTest {
         IntStream.range(0, 10)
                 .forEach(i -> datagram[i] = (byte) random.nextInt());
         int value = checker.getValue(datagram, 0, 9);
-        CodecUtils.uinteger8Type(datagram, 9, value);
+        CodecUtils.uint8Type(datagram, 9, value);
 
         assertTrue(checker.validate(datagram, TestObject1.class));
     }

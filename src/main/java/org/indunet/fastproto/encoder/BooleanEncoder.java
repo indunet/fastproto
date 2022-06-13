@@ -38,7 +38,7 @@ public class BooleanEncoder implements TypeEncoder {
 
     public void encode(byte[] datagram, int byteOffset, int bitOffset, boolean value) {
         try {
-            CodecUtils.booleanType(datagram, byteOffset, bitOffset, value);
+            CodecUtils.boolType(datagram, byteOffset, bitOffset, value);
         } catch (IndexOutOfBoundsException e) {
             throw new EncodingException("Fail encoding the boolean type.", e);
         } catch (IllegalArgumentException e) {

@@ -40,7 +40,7 @@ public class IntegerEncoder implements TypeEncoder {
 
     public void encode(@NonNull byte[] datagram, int offset, @NonNull EndianPolicy policy, int value) {
         try {
-            CodecUtils.integerType(datagram, offset, policy, value);
+            CodecUtils.int32Type(datagram, offset, policy, value);
         } catch (IndexOutOfBoundsException e) {
             throw new EncodingException("Fail encoding the integer type.", e);
         }
