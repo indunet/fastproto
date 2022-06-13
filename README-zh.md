@@ -52,7 +52,7 @@ FastProto是一款采用Java编写的协议化二进制序列化和反序列化�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.1.2</version>
+    <version>3.2.1</version>
 </dependency>
 ```
 
@@ -217,16 +217,16 @@ FastProto支持Java基础数据类型、Timestamp、String和字节数组，以�
 
 FastProto还提供了一些辅助注解，帮助用户进一步自定义二进制格式、解码和编码流程。
 
-|           注解           | 作用域        | 描述                           |
-|:----------------------:|:------------:|:-------------------------------------:|
-|        @Endian         | Class & Field | 数据开端，默认小开端 |
-|    @DecodingIgnore     | Field        | 反序列化时忽略该字段       |
-|    @EncodingIgnore     | Field        | 序列化时忽略该字段       |
-|    @EnableCompress     | Class        | 启动压缩和解压缩  |
-| @EnableProtocolVersion | Class     |  启动协议版本校验  |
-|    @EnableChecksum     |  Class      |  启动数据完整性校验              |
-|     @EnableCrypto      |  Class      |    启动加密和解密             |
-|   @EnableFixedLength   |  Class      |    启动固定报文长度             |
+|                        注解                        | 作用域        | 描述                           |
+|:------------------------------------------------:|:------------:|:-------------------------------------:|
+|                     @Endian                      | Class & Field | 数据开端，默认小开端 |
+|                 @DecodingIgnore                  | Field        | 反序列化时忽略该字段       |
+|                 @EncodingIgnore                  | Field        | 序列化时忽略该字段       |
+|                 @EnableCompress                  | Class        | 启动压缩和解压缩  |
+| @EnableProtocolVersions / @EnableProtocolVersion | Class     |  启动协议版本校验  |
+|                 @EnableChecksum                  |  Class      |  启动数据完整性校验              |
+|                  @EnableCrypto                   |  Class      |    启动加密和解密             |
+|                @EnableFixedLength                |  Class      |    启动固定报文长度             |
 
 ## *基准测试*
 
