@@ -69,7 +69,10 @@ public enum CodecError {
     ILLEGAL_ENUM_CODE_FIELD("Illegal filed name of enum code {0}"),
     NOT_SUPPORT_ARRAY_TYPE("Don't support array type of {0}"),
     ILLEGAL_LENGTH("Binary message must be fixed length of {0}"),
-    FIXED_LENGTH_UNMATCH("Fixed length {0} and {1} does not match.");
+    FIXED_LENGTH_UNMATCH("Fixed length {0} and {1} does not match."),
+
+    FAIL_INIT_CODEC("Fail initializing codec {0}"),
+    FAIL_INIT_FORMULA("Fail initializing formula {0}");
 
     String message;
 }

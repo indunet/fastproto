@@ -36,7 +36,7 @@ public class Integer16Encoder implements TypeEncoder {
         EndianPolicy policy = context.getEndianPolicy();
         Integer value = context.getValue(Integer.class);
 
-        this.encode(context.getDatagram(), type.value(), policy, value);
+        this.encode(context.getDatagram(), type.offset(), policy, value);
     }
 
     public void encode(@NonNull byte[] datagram, int offset, @NonNull EndianPolicy policy, int value) {

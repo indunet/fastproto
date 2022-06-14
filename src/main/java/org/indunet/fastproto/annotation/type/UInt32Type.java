@@ -55,7 +55,7 @@ public @interface UInt32Type {
     long MAX_VALUE = (long) Integer.MAX_VALUE - Integer.MIN_VALUE;
     int MIN_VALUE = 0;
 
-    int value();
+    int offset();
 
     Class<? extends Function<Long, ?>>[] decodingFormula() default {};
 

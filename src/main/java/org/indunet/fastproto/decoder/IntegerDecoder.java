@@ -34,7 +34,7 @@ public class IntegerDecoder implements TypeDecoder<Integer> {
     public Integer decode(@NonNull DecodeContext context) {
         Int32Type type = context.getTypeAnnotation(Int32Type.class);
 
-        return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
+        return this.decode(context.getDatagram(), type.offset(), context.getEndianPolicy());
     }
 
     public int decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {

@@ -48,10 +48,10 @@ public class EnumDecoderTest {
 
     @Data
     public static class EnumObject {
-        @EnumType(0)
+        @EnumType(offset = 0)
         Color color1;
 
-        @EnumType(value = 1, field = "code")
+        @EnumType(offset = 1, field = "code")
         Color color2;
     }
 

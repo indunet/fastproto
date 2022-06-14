@@ -34,7 +34,7 @@ public class UInteger64Decoder implements TypeDecoder<BigInteger> {
     public BigInteger decode(DecodeContext context) {
         val type = context.getTypeAnnotation(UInt64Type.class);
 
-        return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
+        return this.decode(context.getDatagram(), type.offset(), context.getEndianPolicy());
     }
 
     public BigInteger decode(@NonNull final byte[] datagram, int offset, @NonNull EndianPolicy policy) {

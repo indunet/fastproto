@@ -50,7 +50,7 @@ public class TimestampDecoder<T extends Date> implements TypeDecoder<T> {
         val clazz = context.getReference()
                 .getField().getType();
 
-        return this.decode(context.getDatagram(), type.value(), type.genericType(), policy, type.unit(), (Class<T>) clazz);
+        return this.decode(context.getDatagram(), type.offset(), type.genericType(), policy, type.unit(), (Class<T>) clazz);
     }
 
     public T decode(@NonNull final byte[] datagram, int byteOffset, @NonNull Class<? extends Annotation> genericType,
@@ -67,7 +67,7 @@ public class TimestampDecoder<T extends Date> implements TypeDecoder<T> {
 
         if (bo < 0) {
             throw new DecodingException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (genericType == ProtocolType.LONG && unit == TimeUnit.MILLISECONDS) {
+        } else if (genericType == ProtocolType.INT64 && unit == TimeUnit.MILLISECONDS) {
             if (bo + Int64Type.SIZE > datagram.length) {
                 throw new DecodingException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }

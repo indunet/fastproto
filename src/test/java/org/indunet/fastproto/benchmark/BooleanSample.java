@@ -25,75 +25,75 @@ import org.indunet.fastproto.annotation.type.BoolType;
 public class BooleanSample {
     protected static final int BYTE_OFFET = 0;
 
-    @BoolType(value = BYTE_OFFET, bitOffset = 0)
+    @BoolType(byteOffset = BYTE_OFFET, bitOffset = 0)
     Boolean b01;
 
-    @BoolType(value = BYTE_OFFET, bitOffset = 1)
+    @BoolType(byteOffset = BYTE_OFFET, bitOffset = 1)
     Boolean b02;
 
-    @BoolType(value = BYTE_OFFET, bitOffset = 2)
+    @BoolType(byteOffset = BYTE_OFFET, bitOffset = 2)
     Boolean b03;
 
-    @BoolType(value = BYTE_OFFET, bitOffset = 3)
+    @BoolType(byteOffset = BYTE_OFFET, bitOffset = 3)
     Boolean b04;
 
-    @BoolType(value = BYTE_OFFET, bitOffset = 4)
+    @BoolType(byteOffset = BYTE_OFFET, bitOffset = 4)
     Boolean b05;
 
-    @BoolType(value = BYTE_OFFET, bitOffset = 5)
+    @BoolType(byteOffset = BYTE_OFFET, bitOffset = 5)
     Boolean b06;
 
-    @BoolType(value = BYTE_OFFET, bitOffset = 6)
+    @BoolType(byteOffset = BYTE_OFFET, bitOffset = 6)
     Boolean b07;
 
-    @BoolType(value = BYTE_OFFET, bitOffset = 7)
+    @BoolType(byteOffset = BYTE_OFFET, bitOffset = 7)
     Boolean b08;
 
-    @BoolType(value = BYTE_OFFET + 1, bitOffset = 0)
+    @BoolType(byteOffset = BYTE_OFFET + 1, bitOffset = 0)
     Boolean b09;
 
-    @BoolType(value = BYTE_OFFET + 1, bitOffset = 1)
+    @BoolType(byteOffset = BYTE_OFFET + 1, bitOffset = 1)
     Boolean b10;
 
-    @BoolType(value = BYTE_OFFET + 1, bitOffset = 2)
+    @BoolType(byteOffset = BYTE_OFFET + 1, bitOffset = 2)
     Boolean b11;
 
-    @BoolType(value = BYTE_OFFET + 1, bitOffset = 3)
+    @BoolType(byteOffset = BYTE_OFFET + 1, bitOffset = 3)
     Boolean b12;
 
-    @BoolType(value = BYTE_OFFET + 1, bitOffset = 4)
+    @BoolType(byteOffset = BYTE_OFFET + 1, bitOffset = 4)
     Boolean b13;
 
-    @BoolType(value = BYTE_OFFET + 1, bitOffset = 5)
+    @BoolType(byteOffset = BYTE_OFFET + 1, bitOffset = 5)
     Boolean b14;
 
-    @BoolType(value = BYTE_OFFET + 1, bitOffset = 6)
+    @BoolType(byteOffset = BYTE_OFFET + 1, bitOffset = 6)
     Boolean b15;
 
-    @BoolType(value = BYTE_OFFET + 1, bitOffset = 7)
+    @BoolType(byteOffset = BYTE_OFFET + 1, bitOffset = 7)
     Boolean b16;
 
-    @BoolType(value = BYTE_OFFET + 2, bitOffset = 0)
+    @BoolType(byteOffset = BYTE_OFFET + 2, bitOffset = 0)
     Boolean b17;
 
-    @BoolType(value = BYTE_OFFET + 2, bitOffset = 1)
+    @BoolType(byteOffset = BYTE_OFFET + 2, bitOffset = 1)
     Boolean b18;
 
-    @BoolType(value = BYTE_OFFET + 2, bitOffset = 2)
+    @BoolType(byteOffset = BYTE_OFFET + 2, bitOffset = 2)
     Boolean b19;
 
-    @BoolType(value = BYTE_OFFET + 2, bitOffset = 3)
+    @BoolType(byteOffset = BYTE_OFFET + 2, bitOffset = 3)
     Boolean b20;
 
-    @BoolType(value = BYTE_OFFET + 2, bitOffset = 4)
+    @BoolType(byteOffset = BYTE_OFFET + 2, bitOffset = 4)
     Boolean b21;
 
-    @BoolType(value = BYTE_OFFET + 2, bitOffset = 5)
+    @BoolType(byteOffset = BYTE_OFFET + 2, bitOffset = 5)
     Boolean b22;
 
-    @BoolType(value = BYTE_OFFET + 2, bitOffset = 6)
+    @BoolType(byteOffset = BYTE_OFFET + 2, bitOffset = 6)
     Boolean b23;
 
-    @BoolType(value = BYTE_OFFET + 2, bitOffset = 7)
+    @BoolType(byteOffset = BYTE_OFFET + 2, bitOffset = 7)
     Boolean b24;
 }

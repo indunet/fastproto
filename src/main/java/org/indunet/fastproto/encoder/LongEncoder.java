@@ -35,7 +35,7 @@ public class LongEncoder implements TypeEncoder {
         Int64Type type = context.getTypeAnnotation(Int64Type.class);
         Long value = context.getValue(Long.class);
 
-        this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);
+        this.encode(context.getDatagram(), type.offset(), context.getEndianPolicy(), value);
     }
 
     public void encode(@NonNull byte[] datagram, int offset, @NonNull EndianPolicy policy, long value) {

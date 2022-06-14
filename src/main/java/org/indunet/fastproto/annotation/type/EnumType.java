@@ -56,7 +56,7 @@ public @interface EnumType {
             ProtocolType.INT32
     };
 
-    int value();
+    int offset();
 
     String field() default "";
 

@@ -25,27 +25,27 @@ import org.indunet.fastproto.annotation.type.DoubleType;
 public class DoubleSample {
     protected static final int BYTE_OFFET = 64;
 
-    @DoubleType(value = BYTE_OFFET)
+    @DoubleType(offset = BYTE_OFFET)
     Double d01;
 
-    @DoubleType(value = BYTE_OFFET + 8)
+    @DoubleType(offset = BYTE_OFFET + 8)
     Double d02;
 
-    @DoubleType(value = BYTE_OFFET + 8 * 2)
+    @DoubleType(offset = BYTE_OFFET + 8 * 2)
     Double d03;
 
-    @DoubleType(value = BYTE_OFFET + 8 * 3)
+    @DoubleType(offset = BYTE_OFFET + 8 * 3)
     Double d04;
 
-    @DoubleType(value = BYTE_OFFET + 8 * 4)
+    @DoubleType(offset = BYTE_OFFET + 8 * 4)
     Double d05;
 
-    @DoubleType(value = BYTE_OFFET + 8 * 5)
+    @DoubleType(offset = BYTE_OFFET + 8 * 5)
     Double d06;
 
-    @DoubleType(value = BYTE_OFFET + 8 * 6)
+    @DoubleType(offset = BYTE_OFFET + 8 * 6)
     Double d07;
 
-    @DoubleType(value = BYTE_OFFET + 8 * 7)
+    @DoubleType(offset = BYTE_OFFET + 8 * 7)
     Double d08;
 }

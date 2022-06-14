@@ -34,7 +34,7 @@ public class LongDecoder implements TypeDecoder<Long> {
     public Long decode(@NonNull DecodeContext context) {
         Int64Type type = context.getTypeAnnotation(Int64Type.class);
 
-        return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
+        return this.decode(context.getDatagram(), type.offset(), context.getEndianPolicy());
     }
 
     public long decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {

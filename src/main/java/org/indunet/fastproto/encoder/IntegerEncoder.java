@@ -35,7 +35,7 @@ public class IntegerEncoder implements TypeEncoder {
         Int32Type type = context.getTypeAnnotation(Int32Type.class);
         Integer value = context.getValue(Integer.class);
 
-        this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);
+        this.encode(context.getDatagram(), type.offset(), context.getEndianPolicy(), value);
     }
 
     public void encode(@NonNull byte[] datagram, int offset, @NonNull EndianPolicy policy, int value) {

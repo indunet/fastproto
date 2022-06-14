@@ -44,58 +44,58 @@ import java.sql.Timestamp;
 @EnableCompress(CompressPolicy.GZIP)
 @EnableProtocolVersion(offset = 79, version = 17)
 public class Everything {
-    @BoolType(value = 0, bitOffset = 1)
+    @BoolType(byteOffset = 0, bitOffset = 1)
     Boolean aBoolean;
 
-    @ByteType(1)
+    @ByteType(offset = 1)
     Byte aByte;
 
-    @ShortType(2)
+    @ShortType(offset = 2)
     Short aShort;
 
-    @Int32Type(4)
+    @Int32Type(offset = 4)
     Integer aInteger;
 
-    @Int64Type(8)
+    @Int64Type(offset = 8)
     Long aLong;
 
-    @FloatType(16)
+    @FloatType(offset = 16)
     Float aFloat;
 
-    @DoubleType(20)
+    @DoubleType(offset = 20)
     Double aDouble;
 
-    @Int8Type(28)
+    @Int8Type(offset = 28)
     Integer aInteger8;
 
-    @Int16Type(30)
+    @Int16Type(offset = 30)
     Integer aInteger16;
 
-    @UInt8Type(32)
+    @UInt8Type(offset = 32)
     Integer aUInteger8;
 
-    @UInt16Type(34)
+    @UInt16Type(offset = 34)
     Integer aUInteger16;
 
-    @UInt32Type(36)
+    @UInt32Type(offset = 36)
     Long aUInteger32;
 
-    @BinaryType(value = 40, length = 10)
+    @BinaryType(offset = 40, length = 10)
     byte[] aByteArray;
 
-    @StringType(value = 50, length = 6)
+    @StringType(offset = 50, length = 6)
     String aString;
 
-    @TimeType(56)
+    @TimeType(offset = 56)
     Timestamp aTimestamp;
 
-    @CharType(64)
+    @CharType(offset = 64)
     Character aCharacter;
 
-    @UInt8Type(value = 66, decodingFormula = DecodeSpeedFormula.class, encodingFormula = EncodeSpeedFormula.class)
+    @UInt8Type(offset = 66, decodingFormula = DecodeSpeedFormula.class, encodingFormula = EncodeSpeedFormula.class)
     float speed;
 
-    @UInt64Type(70)
+    @UInt64Type(offset = 70)
     BigInteger aUInteger64;
 }
 

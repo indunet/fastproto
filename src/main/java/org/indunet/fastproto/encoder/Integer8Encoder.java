@@ -33,7 +33,7 @@ public class Integer8Encoder implements TypeEncoder {
         Int8Type type = context.getTypeAnnotation(Int8Type.class);
         Integer value = context.getValue(Integer.class);
 
-        this.encode(context.getDatagram(), type.value(), value);
+        this.encode(context.getDatagram(), type.offset(), value);
     }
 
     public void encode(byte[] datagram, int offset, int value) {

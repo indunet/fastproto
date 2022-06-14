@@ -33,7 +33,7 @@ public class UInteger8Decoder implements TypeDecoder<Integer> {
     public Integer decode(@NonNull DecodeContext context) {
         UInt8Type type = context.getTypeAnnotation(UInt8Type.class);
 
-        return this.decode(context.getDatagram(), type.value());
+        return this.decode(context.getDatagram(), type.offset());
     }
 
     public int decode(@NonNull final byte[] datagram, int offset) {

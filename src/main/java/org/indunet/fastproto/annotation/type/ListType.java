@@ -53,9 +53,9 @@ public @interface ListType {
     Class<?>[] ALLOWED_GENERIC_TYPES = {
             ProtocolType.CHAR,
             ProtocolType.BYTE,
-            ProtocolType.SHORT,
+            ProtocolType.INT16,
             ProtocolType.INT32,
-            ProtocolType.LONG,
+            ProtocolType.INT64,
             ProtocolType.FLOAT,
             ProtocolType.DOUBLE,
             ProtocolType.INT8,
@@ -65,7 +65,7 @@ public @interface ListType {
             ProtocolType.UINT32,
     };
 
-    int value();
+    int offset();
 
     Class<? extends Annotation> genericType();
 

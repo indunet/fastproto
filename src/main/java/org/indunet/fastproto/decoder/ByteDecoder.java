@@ -33,7 +33,7 @@ public class ByteDecoder implements TypeDecoder<Byte> {
     public Byte decode(DecodeContext context) {
         ByteType type = context.getTypeAnnotation(ByteType.class);
 
-        return this.decode(context.getDatagram(), type.value());
+        return this.decode(context.getDatagram(), type.offset());
     }
 
     public byte decode(@NonNull final byte[] datagram, int offset) {

@@ -53,8 +53,8 @@ public class TimestampDecoderTest {
         long current = System.currentTimeMillis();
 
         return Stream.of(
-                Arguments.arguments(BinaryUtils.valueOf(current), 0, ProtocolType.LONG, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, Timestamp.class, new Timestamp(current)),
-                Arguments.arguments(BinaryUtils.valueOf(current), 0, ProtocolType.LONG, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, Date.class, new Date(current)),
+                Arguments.arguments(BinaryUtils.valueOf(current), 0, ProtocolType.INT64, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, Timestamp.class, new Timestamp(current)),
+                Arguments.arguments(BinaryUtils.valueOf(current), 0, ProtocolType.INT64, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, Date.class, new Date(current)),
                 Arguments.arguments(BinaryUtils.uint32of(current / 1000), 0, ProtocolType.UINT32, EndianPolicy.LITTLE, TimeUnit.SECONDS, Timestamp.class, new Timestamp(current / 1000 * 1000)),
                 Arguments.arguments(BinaryUtils.uint32of(current / 1000), -4, ProtocolType.UINT32, EndianPolicy.LITTLE, TimeUnit.SECONDS, Timestamp.class, new Timestamp(current / 1000 * 1000)),
                 Arguments.arguments(BinaryUtils.uint32of(current / 1000), -4, ProtocolType.UINT32, EndianPolicy.LITTLE, TimeUnit.SECONDS, Date.class, new Date(current / 1000 * 1000))
@@ -66,9 +66,9 @@ public class TimestampDecoderTest {
         byte[] datagram = new byte[10];
 
         assertThrows(NullPointerException.class, () -> this.decoder.decode(null));
-        assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 0, ProtocolType.LONG, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, Timestamp.class));
+        assertThrows(NullPointerException.class, () -> this.decoder.decode(null, 0, ProtocolType.UINT64, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, Timestamp.class));
 
-        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, -1, ProtocolType.LONG, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, Timestamp.class));
-        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, 10, ProtocolType.LONG, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, Timestamp.class));
+        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, -1, ProtocolType.UINT64, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, Timestamp.class));
+        assertThrows(DecodingException.class, () -> this.decoder.decode(datagram, 10, ProtocolType.UINT64, EndianPolicy.LITTLE, TimeUnit.MILLISECONDS, Timestamp.class));
     }
 }

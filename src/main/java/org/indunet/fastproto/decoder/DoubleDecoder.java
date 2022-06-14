@@ -34,7 +34,7 @@ public class DoubleDecoder implements TypeDecoder<Double> {
     public Double decode(DecodeContext context) {
         DoubleType type = context.getTypeAnnotation(DoubleType.class);
 
-        return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
+        return this.decode(context.getDatagram(), type.offset(), context.getEndianPolicy());
     }
 
     public double decode(@NonNull final byte[] datagram, int offset, @NonNull EndianPolicy endian) {

@@ -37,7 +37,7 @@ public class StringEncoder implements TypeEncoder {
         val dataType = context.getTypeAnnotation(StringType.class);
         val value = context.getValue(String.class);
 
-        this.encode(context.getDatagram(), dataType.value(), dataType.length(), Charset.defaultCharset(), value);
+        this.encode(context.getDatagram(), dataType.offset(), dataType.length(), Charset.defaultCharset(), value);
     }
 
     public void encode(@NonNull byte[] datagram, int offset, int length, @NonNull Charset set, @NonNull String value) {

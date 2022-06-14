@@ -98,7 +98,7 @@ public class ArrayDecoder implements TypeDecoder<Object> {
         } else if (type == ProtocolType.INT32) {
             codec.accept(b -> CodecUtils.int32Type(datagram, b, policy));
             return primitive ? TypeUtils.listToArray(list, new int[length]) : list.toArray(new Integer[length]);
-        } else if (type == ProtocolType.LONG) {
+        } else if (type == ProtocolType.UINT64) {
             codec.accept(b -> CodecUtils.int64Type(datagram, b, policy));
             return primitive ? TypeUtils.listToArray(list, new long[length]) : list.toArray(new Long[length]);
         } else if (type == ProtocolType.UINT8) {

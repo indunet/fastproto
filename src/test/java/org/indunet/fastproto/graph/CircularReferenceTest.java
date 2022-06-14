@@ -35,7 +35,7 @@ public class CircularReferenceTest {
         Node1 node1;
         Node2 node2;
 
-        @Int8Type(0)
+        @Int8Type(offset = 0)
         int id;
     }
 
@@ -45,7 +45,7 @@ public class CircularReferenceTest {
         Node2 node2;
         Node3 node3;
 
-        @Int8Type(1)
+        @Int8Type(offset = 1)
         int id;
     }
 
@@ -54,7 +54,7 @@ public class CircularReferenceTest {
         Node1 node1;
         Node2 node2;
 
-        @Int8Type(2)
+        @Int8Type(offset = 2)
         int id;
     }
 

@@ -35,7 +35,7 @@ public class UInteger64Encoder implements TypeEncoder {
         val type = context.getTypeAnnotation(UInt64Type.class);
         val value = context.getValue(BigInteger.class);
 
-        this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);
+        this.encode(context.getDatagram(), type.offset(), context.getEndianPolicy(), value);
     }
 
     public void encode(@NonNull byte[] datagram, int offset, @NonNull EndianPolicy policy, BigInteger value) {

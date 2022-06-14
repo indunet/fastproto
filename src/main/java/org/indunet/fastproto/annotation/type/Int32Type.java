@@ -55,7 +55,7 @@ public @interface Int32Type {
     int MAX_VALUE = Integer.MAX_VALUE;
     int MIN_VALUE = Integer.MIN_VALUE;
 
-    int value();
+    int offset();
 
     Class<? extends Function<Integer, ?>>[] decodingFormula() default {};
 

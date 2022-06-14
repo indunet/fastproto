@@ -27,14 +27,14 @@ import org.indunet.fastproto.annotation.type.ShortType;
 @NoArgsConstructor
 @Builder
 public class Battery {
-    @ShortType(22)
+    @ShortType(offset = 22)
     short capacity;
 
     boolean locked;
 
-    @Int32Type(26)
+    @Int32Type(offset = 26)
     int voltage;
 
-    @FloatType(30)
+    @FloatType(offset = 30)
     float temperature;
 }

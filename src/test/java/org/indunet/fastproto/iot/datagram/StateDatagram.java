@@ -31,40 +31,40 @@ import java.util.concurrent.TimeUnit;
 @Data
 @Endian(EndianPolicy.LITTLE)
 public class StateDatagram {
-    @UInt8Type(DatagramProtocol.VEHICLE_MODEL_NUMBER_OFFSET)
+    @UInt8Type(offset = DatagramProtocol.VEHICLE_MODEL_NUMBER_OFFSET)
     Integer vehicleModelNumber;
     Long vehicleModelId;
 
-    @UInt8Type(DatagramProtocol.SERIAL_NUMBER_OFFSET)
+    @UInt8Type(offset = DatagramProtocol.SERIAL_NUMBER_OFFSET)
     Integer serialNumber;
 
-    @UInt8Type(DatagramProtocol.PROTOCOL_VERSION_OFFSET)
+    @UInt8Type(offset = DatagramProtocol.PROTOCOL_VERSION_OFFSET)
     Integer protocolVersion;
     Long datagramProtocolId;
 
-    @TimeType(value = DatagramProtocol.EVENT_TIME_OFFSET, genericType = UInt32Type.class, unit = TimeUnit.SECONDS)
+    @TimeType(offset = DatagramProtocol.EVENT_TIME_OFFSET, genericType = UInt32Type.class, unit = TimeUnit.SECONDS)
     Timestamp eventTime;
     Timestamp receiveTime;
 
-    @UInt16Type(DatagramProtocol.VEHICLE_NUMBER_OFFSET)
+    @UInt16Type(offset = DatagramProtocol.VEHICLE_NUMBER_OFFSET)
     Integer vehicleNumber;
     Long vehicleId;
     String vehicleCode;
 
-    @UInt16Type(DatagramProtocol.DATAGRAM_TYPE_NUMBER_OFFSET)
+    @UInt16Type(offset = DatagramProtocol.DATAGRAM_TYPE_NUMBER_OFFSET)
     Integer datagramTypeNumber;
 
-    @UInt16Type(DatagramProtocol.DATAGRAM_NUMBER_OFFSET)
+    @UInt16Type(offset = DatagramProtocol.DATAGRAM_NUMBER_OFFSET)
     Integer datagramNumber;
     Long datagramId;
 
-    @UInt16Type(DatagramProtocol.SECURITY_CODE_OFFSET)
+    @UInt16Type(offset = DatagramProtocol.SECURITY_CODE_OFFSET)
     Integer securityCode;
 
-    @UInt16Type(DatagramProtocol.CRC16_CODE_OFFSET)
+    @UInt16Type(offset = DatagramProtocol.CRC16_CODE_OFFSET)
     Integer crc16Code;
 
-    @BinaryType(value = 0, length = -1)
+    @BinaryType(offset = 0, length = -1)
     byte[] bytes;
 
     CheckCode checkCode;

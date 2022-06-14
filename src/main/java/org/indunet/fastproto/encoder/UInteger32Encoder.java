@@ -36,7 +36,7 @@ public class UInteger32Encoder implements TypeEncoder {
         EndianPolicy policy = context.getEndianPolicy();
         Long value = context.getValue(Long.class);
 
-        this.encode(context.getDatagram(), type.value(), policy, value);
+        this.encode(context.getDatagram(), type.offset(), policy, value);
     }
 
     public void encode(@NonNull byte[] datagram, int offset, @NonNull EndianPolicy policy, long value) {

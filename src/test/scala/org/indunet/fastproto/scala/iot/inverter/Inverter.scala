@@ -24,8 +24,8 @@ import org.indunet.fastproto.annotation.scala._
  * @since 2.4.0
  */
 case class Inverter(
-                     @UInt8Type(0) voltage: Int,
-                     @UInt8Type(2) current: Int,
+                     @UInt8Type(offset = 0) voltage: Int,
+                     @UInt8Type(offset = 2) current: Int,
                      fan: Fan,
-                     @Endian(EndianPolicy.BIG) @UInt16Type(8) power: Int
+                     @Endian(EndianPolicy.BIG) @UInt16Type(offset = 8) power: Int
                    )

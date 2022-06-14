@@ -55,7 +55,7 @@ public @interface FloatType {
     float MAX_VALUE = Float.MAX_VALUE;
     float MIN_VALUE = Float.MIN_VALUE;
 
-    int value();
+    int offset();
 
     Class<? extends Function<Float, ?>>[] decodingFormula() default {};
 

@@ -52,10 +52,10 @@ public @interface TimeType {
     };
     Class<?>[] ALLOWED_GENERIC_TYPES = {
             ProtocolType.UINT32,
-            ProtocolType.LONG
+            ProtocolType.INT64
     };
 
-    int value();
+    int offset();
 
     Class<? extends Annotation> genericType() default Int64Type.class;
 

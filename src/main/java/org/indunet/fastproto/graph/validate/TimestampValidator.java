@@ -40,7 +40,7 @@ public class TimestampValidator extends TypeValidator {
             val genericType = ((TimeType) protocolType).genericType();
 
             val condition1 = genericType == ProtocolType.UINT32 && unit == TimeUnit.SECONDS;
-            val condition2 = genericType == ProtocolType.LONG && unit == TimeUnit.MILLISECONDS;
+            val condition2 = genericType == ProtocolType.INT64 && unit == TimeUnit.MILLISECONDS;
 
             if (!condition1 && !condition2) {
                 throw new DecodingException(CodecError.ILLEGAL_TIMESTAMP_PARAMETERS);

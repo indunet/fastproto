@@ -36,7 +36,7 @@ public class StringDecoder implements TypeDecoder<String> {
     public String decode(@NonNull DecodeContext context) {
         StringType type = context.getTypeAnnotation(StringType.class);
 
-        return this.decode(context.getDatagram(), type.value(), type.length(), Charset.forName(type.charset()));
+        return this.decode(context.getDatagram(), type.offset(), type.length(), Charset.forName(type.charset()));
     }
 
     public String decode(@NonNull byte[] datagram, int offset, int length, @NonNull Charset charset) {

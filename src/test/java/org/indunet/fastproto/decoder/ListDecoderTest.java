@@ -111,7 +111,7 @@ public class ListDecoderTest {
         // Long
         var datagram = BinaryUtils.valueOf(10L, EndianPolicy.BIG);
         List<Long> value = decoder.decode(datagram, 0, 1,
-                ProtocolType.LONG, EndianPolicy.BIG);
+                ProtocolType.UINT64, EndianPolicy.BIG);
         assertArrayEquals(new Long[] {10L}, value.toArray(new Long[1]));
 
         // Float

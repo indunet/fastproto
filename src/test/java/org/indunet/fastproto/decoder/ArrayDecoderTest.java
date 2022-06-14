@@ -121,7 +121,7 @@ public class ArrayDecoderTest {
         // Long
         var datagram = BinaryUtils.valueOf(10L, EndianPolicy.BIG);
         Long[] value = (Long[]) (decoder.decode(datagram, 0, 1,
-                ProtocolType.LONG, EndianPolicy.BIG));
+                ProtocolType.UINT64, EndianPolicy.BIG));
         assertArrayEquals(new Long[] {10L}, value);
 
         // Float

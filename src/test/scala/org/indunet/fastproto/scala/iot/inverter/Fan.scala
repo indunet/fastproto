@@ -23,6 +23,6 @@ import org.indunet.fastproto.annotation.scala._
  * @since 2.4.0
  */
 case class Fan(
-                @FloatType(4) speed: Float,
-                @BooleanType(value = 8, bitOffset = 0) state: Boolean
+                @FloatType(offset = 4) speed: Float,
+                @BooleanType(byteOffset = 8, bitOffset = 0) state: Boolean
               )

@@ -55,7 +55,7 @@ public @interface DoubleType {
     double MAX_VALUE = Double.MAX_VALUE;
     double MIN_VALUE = Double.MIN_VALUE;
 
-    int value();
+    int offset();
 
     Class<? extends Function<Double, ?>>[] decodingFormula() default {};
 

@@ -22,7 +22,6 @@ import org.indunet.fastproto.annotation.TypeFlag;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.BinaryDecoder;
 import org.indunet.fastproto.encoder.BinaryEncoder;
-import org.indunet.fastproto.graph.validate.ArrayValidator;
 import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
 import org.indunet.fastproto.graph.validate.FieldValidator;
@@ -52,7 +51,7 @@ public @interface BinaryType {
             byte[].class
     };
 
-    int value();
+    int offset();
 
     int length() default -1;
 

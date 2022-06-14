@@ -55,7 +55,7 @@ public @interface ByteType {
     int MAX_VALUE = Byte.MAX_VALUE;
     int MIN_VALUE = Byte.MIN_VALUE;
 
-    int value();
+    int offset();
 
     Class<? extends Function<Byte, ?>>[] decodingFormula() default {};
 

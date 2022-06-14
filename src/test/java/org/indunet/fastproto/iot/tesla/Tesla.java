@@ -33,16 +33,16 @@ import java.sql.Timestamp;
 @Builder
 @Endian(EndianPolicy.LITTLE)
 public class Tesla {
-    @Int64Type(0)
+    @Int64Type(offset = 0)
     Long id;
 
-    @TimeType(8)
+    @TimeType(offset = 8)
     Timestamp time;
 
-    @FloatType(16)
+    @FloatType(offset = 16)
     float speed;
 
-    @BoolType(value = 20, bitOffset = 0)
+    @BoolType(byteOffset = 20, bitOffset = 0)
     boolean active;
 
     Battery battery;

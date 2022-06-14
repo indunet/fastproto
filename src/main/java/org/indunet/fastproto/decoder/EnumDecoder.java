@@ -47,7 +47,7 @@ public class EnumDecoder<T extends Enum> implements TypeDecoder<T> {
                 .getField()
                 .getType();
 
-        return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy(),
+        return this.decode(context.getDatagram(), type.offset(), context.getEndianPolicy(),
                 type.genericType(), type.field(), (Class<T>) enumClass);
     }
 

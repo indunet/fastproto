@@ -32,16 +32,17 @@ import java.util.function.Function;
  */
 public interface ProtocolType {
     Class<? extends Annotation> BINARY = BinaryType.class;
-    Class<? extends Annotation> BOOLEAN = BoolType.class;
+    Class<? extends Annotation> BOOL = BoolType.class;
     Class<? extends Annotation> CHAR = CharType.class;
     Class<? extends Annotation> BYTE = ByteType.class;
     Class<? extends Annotation> DOUBLE = DoubleType.class;
     Class<? extends Annotation> FLOAT = FloatType.class;
     Class<? extends Annotation> INT32 = Int32Type.class;
-    Class<? extends Annotation> LONG = Int64Type.class;
-    Class<? extends Annotation> SHORT = ShortType.class;
+    Class<? extends Annotation> INT64 = Int64Type.class;
     Class<? extends Annotation> STRING = StringType.class;
     Class<? extends Annotation> TIME = TimeType.class;
+
+    Class<? extends Annotation> SHORT = ShortType.class;
     Class<? extends Annotation> INT8 = Int8Type.class;
     Class<? extends Annotation> INT16 = Int16Type.class;
     Class<? extends Annotation> UINT8 = UInt8Type.class;
@@ -91,16 +92,24 @@ public interface ProtocolType {
                         return 0;
                     }
                 default:
-                    return Arrays.stream(typeAnnotation.getClass().getMethods())
-                            .filter(m -> m.getName().equals(method.getName()))
-                            .findAny()
-                            .get()
-                            .invoke(typeAnnotation, args);
+                    if (typeAnnotation.annotationType() == BoolType.class && method.getName().equals("offset")) {
+                        return Arrays.stream(typeAnnotation.getClass().getMethods())
+                                .filter(m -> m.getName().equals("byteOffset"))
+                                .findAny()
+                                .get()
+                                .invoke(typeAnnotation, args);
+                    } else {
+                        return Arrays.stream(typeAnnotation.getClass().getMethods())
+                                .filter(m -> m.getName().equals(method.getName()))
+                                .findAny()
+                                .get()
+                                .invoke(typeAnnotation, args);
+                    }
             }
         });
     }
 
-    int value();
+    int offset();
 
     int byteOffset();
 

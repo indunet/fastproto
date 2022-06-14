@@ -35,7 +35,7 @@ public class ShortEncoder implements TypeEncoder {
         ShortType type = context.getTypeAnnotation(ShortType.class);
         Short value = context.getValue(Short.class);
 
-        this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);
+        this.encode(context.getDatagram(), type.offset(), context.getEndianPolicy(), value);
     }
 
     public void encode(@NonNull byte[] datagram, int offset, @NonNull EndianPolicy policy, short value) {

@@ -34,7 +34,7 @@ public class FloatEncoder implements TypeEncoder {
         FloatType type = context.getTypeAnnotation(FloatType.class);
         Float value = context.getValue(Float.class);
 
-        this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);
+        this.encode(context.getDatagram(), type.offset(), context.getEndianPolicy(), value);
     }
 
     public void encode(byte[] datagram, int offset, EndianPolicy policy, float value) {

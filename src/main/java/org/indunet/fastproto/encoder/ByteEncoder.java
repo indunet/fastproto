@@ -35,7 +35,7 @@ public class ByteEncoder implements TypeEncoder {
         ByteType type = context.getTypeAnnotation(ByteType.class);
         Byte value = context.getValue(Byte.class);
 
-        this.encode(context.getDatagram(), type.value(), value);
+        this.encode(context.getDatagram(), type.offset(), value);
     }
 
     public void encode(@NonNull byte[] datagram, int offset, byte value) {

@@ -46,7 +46,7 @@ public class TimestampEncoder implements TypeEncoder {
         TimeType type = context.getTypeAnnotation(TimeType.class);
         val value = context.getValue(Date.class);
 
-        this.encode(context.getDatagram(), type.value(), type.genericType(), policy, type.unit(), value);
+        this.encode(context.getDatagram(), type.offset(), type.genericType(), policy, type.unit(), value);
     }
 
     public void encode(@NonNull byte[] datagram, int byteOffset, @NonNull Class<? extends Annotation> type, @NonNull EndianPolicy policy, @NonNull TimeUnit unit, @NonNull Date value) {
@@ -54,7 +54,7 @@ public class TimestampEncoder implements TypeEncoder {
 
         if (bo < 0) {
             throw new EncodingException(CodecError.ILLEGAL_BYTE_OFFSET);
-        } else if (type == ProtocolType.LONG && unit == TimeUnit.MILLISECONDS) {
+        } else if (type == ProtocolType.INT64 && unit == TimeUnit.MILLISECONDS) {
             if (bo + Int64Type.SIZE > datagram.length) {
                 throw new EncodingException(CodecError.EXCEEDED_DATAGRAM_SIZE);
             }

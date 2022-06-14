@@ -35,7 +35,7 @@ public class CharacterEncoder implements TypeEncoder {
         Character value = context.getValue(Character.class);
         EndianPolicy policy = context.getEndianPolicy();
 
-        this.encode(context.getDatagram(), type.value(), policy, value);
+        this.encode(context.getDatagram(), type.offset(), policy, value);
     }
 
     public void encode(byte[] datagram, int offset, EndianPolicy policy, char value) {

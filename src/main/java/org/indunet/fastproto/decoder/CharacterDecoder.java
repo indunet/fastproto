@@ -35,7 +35,7 @@ public class CharacterDecoder implements TypeDecoder<Character> {
         CharType type = context.getTypeAnnotation(CharType.class);
         EndianPolicy policy = context.getEndianPolicy();
 
-        return this.decode(context.getDatagram(), type.value(), policy);
+        return this.decode(context.getDatagram(), type.offset(), policy);
     }
 
     public Character decode(final byte[] datagram, int offset, @NonNull EndianPolicy policy) {

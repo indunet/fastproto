@@ -51,7 +51,7 @@ public @interface StringType {
             String.class
     };
 
-    int value();
+    int offset();
 
     int length() default -1;
 

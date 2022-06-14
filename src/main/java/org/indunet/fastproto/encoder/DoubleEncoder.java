@@ -34,7 +34,7 @@ public class DoubleEncoder implements TypeEncoder {
         DoubleType type = context.getTypeAnnotation(DoubleType.class);
         Double value = context.getValue(Double.class);
 
-        this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(), value);
+        this.encode(context.getDatagram(), type.offset(), context.getEndianPolicy(), value);
     }
 
     public void encode(byte[] datagram, int offset, EndianPolicy policy, double value) {

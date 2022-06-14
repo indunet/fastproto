@@ -40,28 +40,28 @@ import java.sql.Timestamp;
 @EnableCompress(value = CompressPolicy.DEFLATE, level = 2)
 @EnableChecksum(value = -4, start = 0, length = -5, checkPolicy = CheckPolicy.CRC32, endianPolicy = EndianPolicy.BIG)
 public class Weather {
-    @UInt8Type(0)
+    @UInt8Type(offset = 0)
     int id;
 
-    @TimeType(2)
+    @TimeType(offset = 2)
     Timestamp time;
 
-    @UInt16Type(10)
+    @UInt16Type(offset = 10)
     int humidity;
 
-    @Int16Type(12)
+    @Int16Type(offset = 12)
     int temperature;
 
-    @UInt32Type(14)
+    @UInt32Type(offset = 14)
     long pressure;
 
-    @BoolType(value = 18, bitOffset = 0)
+    @BoolType(byteOffset = 18, bitOffset = 0)
     boolean temperatureValid;
 
-    @BoolType(value = 18, bitOffset = 1)
+    @BoolType(byteOffset = 18, bitOffset = 1)
     boolean humidityValid;
 
-    @BoolType(value = 18, bitOffset = 2)
+    @BoolType(byteOffset = 18, bitOffset = 2)
     boolean pressureValid;
 
     public static Weather newInstance() {

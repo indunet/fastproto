@@ -53,7 +53,7 @@ public @interface CharType {
     };
     int SIZE = Character.SIZE >> 3;
 
-    int value();
+    int offset();
 
     Class<? extends Function<Character, ?>>[] decodingFormula() default {};
 

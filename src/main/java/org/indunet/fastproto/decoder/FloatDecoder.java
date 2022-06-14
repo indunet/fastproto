@@ -34,7 +34,7 @@ public class FloatDecoder implements TypeDecoder<Float> {
     public Float decode(DecodeContext context) {
         FloatType type = context.getTypeAnnotation(FloatType.class);
 
-        return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
+        return this.decode(context.getDatagram(), type.offset(), context.getEndianPolicy());
     }
 
     public float decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy endian) {

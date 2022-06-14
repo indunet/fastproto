@@ -25,51 +25,51 @@ import org.indunet.fastproto.annotation.type.Int32Type;
 public class IntegerSample {
     protected static final int BYTE_OFFET = 4;
 
-    @Int32Type(value = BYTE_OFFET)
+    @Int32Type(offset = BYTE_OFFET)
     Integer i01;
 
-    @Int32Type(value = BYTE_OFFET + 4)
+    @Int32Type(offset = BYTE_OFFET + 4)
     Integer i02;
 
-    @Int32Type(value = BYTE_OFFET + 4 * 2)
+    @Int32Type(offset = BYTE_OFFET + 4 * 2)
     Integer i03;
 
-    @Int32Type(value = BYTE_OFFET + 4 * 3)
+    @Int32Type(offset = BYTE_OFFET + 4 * 3)
     Integer i04;
 
-    @Int32Type(value = BYTE_OFFET + 4 * 4)
+    @Int32Type(offset = BYTE_OFFET + 4 * 4)
     Integer i05;
 
-    @Int32Type(value = BYTE_OFFET + 4 * 5)
+    @Int32Type(offset = BYTE_OFFET + 4 * 5)
     Integer i06;
 
-    @Int32Type(value = BYTE_OFFET + 4 * 6)
+    @Int32Type(offset = BYTE_OFFET + 4 * 6)
     Integer i07;
 
-    @Int32Type(value = BYTE_OFFET + 4 * 7)
+    @Int32Type(offset = BYTE_OFFET + 4 * 7)
     Integer i08;
 
-    @Int32Type(value = BYTE_OFFET + 4 * 8)
+    @Int32Type(offset = BYTE_OFFET + 4 * 8)
     Integer i09;
 
-    @Int32Type(value = BYTE_OFFET + 4 * 9)
+    @Int32Type(offset = BYTE_OFFET + 4 * 9)
     Integer i10;
 
-    @Int32Type(value = BYTE_OFFET + 4 * 10)
+    @Int32Type(offset = BYTE_OFFET + 4 * 10)
     Integer i11;
 
-    @Int32Type(value = BYTE_OFFET + 4 * 11)
+    @Int32Type(offset = BYTE_OFFET + 4 * 11)
     Integer i12;
 
-    @Int32Type(value = BYTE_OFFET + 4 * 12)
+    @Int32Type(offset = BYTE_OFFET + 4 * 12)
     Integer i13;
 
-    @Int32Type(value = BYTE_OFFET + 4 * 13)
+    @Int32Type(offset = BYTE_OFFET + 4 * 13)
     Integer i14;
 
-    @Int32Type(value = BYTE_OFFET + 4 * 14)
+    @Int32Type(offset = BYTE_OFFET + 4 * 14)
     Integer i15;
 
-    @Int32Type(value = BYTE_OFFET + 4 * 15)
+    @Int32Type(offset = BYTE_OFFET + 4 * 15)
     Integer i16;
 }

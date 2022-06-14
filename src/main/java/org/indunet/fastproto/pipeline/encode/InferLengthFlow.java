@@ -42,10 +42,10 @@ public class InferLengthFlow extends Pipeline<CodecContext> {
                 .mapToInt(r -> {
                     val type = r.getProtocolType();
 
-                    if (type.value() < 0 || type.length() < 0) {
+                    if (type.offset() < 0 || type.length() < 0) {
                         throw new AddressingException(CodecError.UNABLE_INFER_LENGTH);
                     } else {
-                        return type.value() + type.size() + type.length();
+                        return type.offset() + type.size() + type.length();
                     }
                 }).max()
                 .orElse(0);

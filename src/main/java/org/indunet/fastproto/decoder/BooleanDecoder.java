@@ -33,7 +33,7 @@ public class BooleanDecoder implements TypeDecoder<Boolean> {
     public Boolean decode(DecodeContext context) {
         BoolType type = context.getTypeAnnotation(BoolType.class);
 
-        return this.decode(context.getDatagram(), type.value(), type.bitOffset());
+        return this.decode(context.getDatagram(), type.byteOffset(), type.bitOffset());
     }
 
     public boolean decode(@NonNull final byte[] datagram, int byteOffset, int bitOffset) {

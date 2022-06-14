@@ -25,10 +25,10 @@ public class NullTest {
 
     @Data
     public static class Motor {
-        @Int8Type(0)
+        @Int8Type(offset = 0)
         Integer speed;
 
-        @Int8Type(2)
+        @Int8Type(offset = 2)
         Integer voltage;
     }
 }

@@ -226,16 +226,17 @@ Taking into account cross-language and cross-platform data exchange, FastProto a
 
 FastProto also provides some auxiliary annotations to help users further customize the binary format, decoding and encoding process.
 
-|                    Annotation                    | Scope        |                    Description                    |
-|:------------------------------------------------:|:------------:|:-------------------------------------------------:|
-|                     @Endian                      | Class & Field |       Endianness, default as little endian.       |
-|                 @DecodingIgnore                  | Field        |          Ignore the field when decoding.          |
-|                 @EncodingIgnore                  | Field        |          Ignore the field when encoding.          |
-|                 @EnableCompress                  | Class        | Enable compress & decompress, default as deflate. |
-| @EnableProtocolVersions / @EnableProtocolVersion | Class     |       Enable protocol version verification.       |
-|                 @EnableCheckSum                  |  Class      |           Enable checksum verification.           |
-|                  @EnableCrypto                   |  Class |             Enable encrypt & decrypt.             |
-|                @EnableFixedLength                |  Class |         Enable fixed length of datagram.          |
+|                  Annotation                  | Scope        |                    Description                    |
+|:--------------------------------------------:|:------------:|:-------------------------------------------------:|
+|                   @Endian                    | Class & Field |       Endianness, default as little endian.       |
+|               @DecodingIgnore                | Field        |          Ignore the field when decoding.          |
+|               @EncodingIgnore                | Field        |          Ignore the field when encoding.          |
+|               @EnableCompress                | Class        | Enable compress & decompress, default as deflate. |
+|           @EnableProtocolVersions            | Class     |       Enable protocol version verification.       |
+|            @EnableProtocolVersion            | Class     |       Enable protocol version verification.       |
+|               @EnableCheckSum                |  Class      |           Enable checksum verification.           |
+|                @EnableCrypto                 |  Class |             Enable encrypt & decrypt.             |
+|              @EnableFixedLength              |  Class |         Enable fixed length of datagram.          |
 
 ## *Benchmark*
 

@@ -43,7 +43,7 @@ public class EnumEncoder implements TypeEncoder {
         val type = context.getTypeAnnotation(EnumType.class);
         val value = context.getValue(Enum.class);
 
-        this.encode(context.getDatagram(), type.value(), context.getEndianPolicy(),
+        this.encode(context.getDatagram(), type.offset(), context.getEndianPolicy(),
                 type.genericType(), type.field(), value);
     }
 

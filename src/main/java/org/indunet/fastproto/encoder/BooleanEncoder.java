@@ -33,7 +33,7 @@ public class BooleanEncoder implements TypeEncoder {
         BoolType type = context.getTypeAnnotation(BoolType.class);
         Boolean value = context.getValue(Boolean.class);
 
-        this.encode(context.getDatagram(), type.value(), type.bitOffset(), value);
+        this.encode(context.getDatagram(), type.byteOffset(), type.bitOffset(), value);
     }
 
     public void encode(byte[] datagram, int byteOffset, int bitOffset, boolean value) {

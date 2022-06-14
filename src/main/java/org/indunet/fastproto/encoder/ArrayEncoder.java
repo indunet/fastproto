@@ -87,7 +87,7 @@ public class ArrayEncoder implements TypeEncoder {
         } else if (type == ProtocolType.INT32) {
             codec.accept((b, i) -> CodecUtils.type(datagram, b, policy,
                     primitive ? ((int[]) values)[i] : ((Integer[]) values)[i]));
-        } else if (type == ProtocolType.LONG) {
+        } else if (type == ProtocolType.UINT64) {
             codec.accept((b, i) -> CodecUtils.type(datagram, b, policy,
                     primitive ? ((long[]) values)[i] : ((Long[]) values)[i]));
         } else if (type == ProtocolType.UINT8) {

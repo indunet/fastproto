@@ -35,7 +35,7 @@ public class UInteger32Decoder implements TypeDecoder<Long> {
         UInt32Type type = context.getTypeAnnotation(UInt32Type.class);
         EndianPolicy policy = context.getEndianPolicy();
 
-        return this.decode(context.getDatagram(), type.value(), policy);
+        return this.decode(context.getDatagram(), type.offset(), policy);
     }
 
     public long decode(@NonNull final byte[] datagram, int offset, @NonNull EndianPolicy policy) {

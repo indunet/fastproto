@@ -32,8 +32,8 @@ import org.indunet.fastproto.annotation.type.UInt16Type;
 @NoArgsConstructor
 @EnableFixedLength(10)
 public class Sensor {
-    @Int16Type(0)
+    @Int16Type(offset = 0)
     int temperature;
-    @UInt16Type(2)
+    @UInt16Type(offset = 2)
     int humidity;
 }

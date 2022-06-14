@@ -34,7 +34,7 @@ public class UInteger8Encoder implements TypeEncoder {
         UInt8Type type = context.getTypeAnnotation(UInt8Type.class);
         Integer value = context.getValue(Integer.class);
 
-        this.encode(context.getDatagram(), type.value(), value);
+        this.encode(context.getDatagram(), type.offset(), value);
     }
 
     public void encode(@NonNull byte[] datagram, int offset, int value) {

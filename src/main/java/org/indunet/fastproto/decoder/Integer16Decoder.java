@@ -35,7 +35,7 @@ public class Integer16Decoder implements TypeDecoder<Integer> {
         Int16Type type = context.getTypeAnnotation(Int16Type.class);
         EndianPolicy policy = context.getEndianPolicy();
 
-        return this.decode(context.getDatagram(), type.value(), policy);
+        return this.decode(context.getDatagram(), type.offset(), policy);
     }
 
     public int decode(@NonNull final byte[] datagram, int byteOffset, @NonNull EndianPolicy policy) {

@@ -55,7 +55,7 @@ public @interface ShortType {
     int MAX_VALUE = Short.MAX_VALUE;
     int MIN_VALUE = Short.MIN_VALUE;
 
-    int value();
+    int offset();
 
     Class<? extends Function<Short, ?>>[] decodingFormula() default {};
 

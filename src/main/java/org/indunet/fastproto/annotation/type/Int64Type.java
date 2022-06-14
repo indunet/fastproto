@@ -55,7 +55,7 @@ public @interface Int64Type {
     long MAX_VALUE = Long.MAX_VALUE;
     long MIN_VALUE = Long.MIN_VALUE;
 
-    int value();
+    int offset();
 
     Class<? extends Function<Long, ?>>[] decodingFormula() default {};
 

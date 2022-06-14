@@ -67,7 +67,7 @@ public @interface ArrayType {
             ProtocolType.BYTE,
             ProtocolType.SHORT,
             ProtocolType.INT32,
-            ProtocolType.LONG,
+            ProtocolType.INT64,
             ProtocolType.FLOAT,
             ProtocolType.DOUBLE,
             ProtocolType.INT8,

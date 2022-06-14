@@ -33,10 +33,10 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class ReferenceResolverTest {
     public static class TestObject1 {
-        @UInt8Type(0)
+        @UInt8Type(offset = 0)
         int value1;
 
-        @DoubleType(2)
+        @DoubleType(offset = 2)
         double value2;
 
         TestObject2 value3;
@@ -48,14 +48,14 @@ public class ReferenceResolverTest {
     public static class TestObject2 {
         TestObject3 value1;
 
-        @Int8Type(3)
+        @Int8Type(offset = 3)
         int value2;
     }
 
     public static class TestObject3 {
         TestObject2 value1;
 
-        @BoolType(value = 3, bitOffset = 1)
+        @BoolType(byteOffset = 3, bitOffset = 1)
         boolean value2;
     }
 

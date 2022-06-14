@@ -35,7 +35,7 @@ public class BinaryEncoder implements TypeEncoder {
         val type = context.getTypeAnnotation(BinaryType.class);
         val bytes = context.getValue(byte[].class);
 
-        this.encode(context.getDatagram(), type.value(), type.length(), bytes);
+        this.encode(context.getDatagram(), type.offset(), type.length(), bytes);
     }
 
     public void encode(@NonNull byte[] datagram, int offset, int length, @NonNull byte[] bytes) {

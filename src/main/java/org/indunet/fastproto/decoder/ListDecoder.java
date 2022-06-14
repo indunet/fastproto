@@ -48,7 +48,7 @@ public class ListDecoder implements TypeDecoder<List<?>> {
     public List<?> decode(DecodeContext context) {
         val type = context.getTypeAnnotation(ListType.class);
 
-        return decode(context.getDatagram(), type.value(), type.length(),
+        return decode(context.getDatagram(), type.offset(), type.length(),
                 type.genericType(), context.getEndianPolicy());
     }
 
@@ -85,7 +85,7 @@ public class ListDecoder implements TypeDecoder<List<?>> {
             return codec.apply(b -> CodecUtils.shortType(datagram, b, policy), new ArrayList<Short>());
         } else if (type == ProtocolType.INT32) {
             return codec.apply(b -> CodecUtils.int32Type(datagram, b, policy), new ArrayList<Integer>());
-        } else if (type == ProtocolType.LONG) {
+        } else if (type == ProtocolType.UINT64) {
             return codec.apply(b -> CodecUtils.int64Type(datagram, b, policy), new ArrayList<Long>());
         } else if (type == ProtocolType.UINT8) {
             return codec.apply(b -> CodecUtils.uint8Type(datagram, b), new ArrayList<Integer>());

@@ -57,7 +57,7 @@ public @interface UInt64Type {
             .subtract(new BigInteger(String.valueOf(Long.MIN_VALUE)));
     BigInteger MIN_VALUE = new BigInteger("0");
 
-    int value();
+    int offset();
 
     Class<? extends Function<BigDecimal, ?>>[] decodingFormula() default {};
 

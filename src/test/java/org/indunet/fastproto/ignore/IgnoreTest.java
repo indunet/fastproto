@@ -19,11 +19,11 @@ public class IgnoreTest {
     @Data
     public static class Vehicle {
         @EncodingIgnore
-        @Int8Type(0)
+        @Int8Type(offset = 0)
         Integer speed;
 
         @DecodingIgnore
-        @Int16Type(2)
+        @Int16Type(offset = 2)
         Integer mileage;
     }
 

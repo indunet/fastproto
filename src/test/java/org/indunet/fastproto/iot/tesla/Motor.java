@@ -27,12 +27,12 @@ import org.indunet.fastproto.annotation.type.ShortType;
 @NoArgsConstructor
 @Builder
 public class Motor {
-    @ShortType(34)
+    @ShortType(offset = 34)
     short voltage;
 
-    @Int32Type(36)
+    @Int32Type(offset = 36)
     int current;
 
-    @FloatType(40)
+    @FloatType(offset = 40)
     float temperature;
 }

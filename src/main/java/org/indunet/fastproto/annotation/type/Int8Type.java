@@ -55,7 +55,7 @@ public @interface Int8Type {
     int MAX_VALUE = Byte.MAX_VALUE;
     int MIN_VALUE = Byte.MIN_VALUE;
 
-    int value();
+    int offset();
 
     Class<? extends Function<Integer, ?>>[] decodingFormula() default {};
 

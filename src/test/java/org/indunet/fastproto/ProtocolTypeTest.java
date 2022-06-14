@@ -35,12 +35,12 @@ public class ProtocolTypeTest {
         val typeAnnotation = field.getAnnotation(UInt8Type.class);
         val proxy = ProtocolType.proxy(typeAnnotation);
 
-        assertEquals(0, proxy.value());
+        assertEquals(0, proxy.offset());
         assertEquals(UInt8Type.SIZE, proxy.size());
     }
 
     public static class TestObj {
-        @UInt8Type(0)
+        @UInt8Type(offset = 0)
         int value;
     }
 }

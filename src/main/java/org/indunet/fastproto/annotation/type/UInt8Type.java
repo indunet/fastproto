@@ -55,7 +55,7 @@ public @interface UInt8Type {
     int MAX_VALUE = Byte.MAX_VALUE - Byte.MIN_VALUE;
     int MIN_VALUE = 0;
 
-    int value();
+    int offset();
 
     Class<? extends Function<Integer, ?>>[] decodingFormula() default {};
 

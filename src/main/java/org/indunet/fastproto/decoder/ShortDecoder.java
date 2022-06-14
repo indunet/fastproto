@@ -34,7 +34,7 @@ public class ShortDecoder implements TypeDecoder<Short> {
     public Short decode(@NonNull DecodeContext context) {
         ShortType type = context.getTypeAnnotation(ShortType.class);
 
-        return this.decode(context.getDatagram(), type.value(), context.getEndianPolicy());
+        return this.decode(context.getDatagram(), type.offset(), context.getEndianPolicy());
     }
 
     public short decode(@NonNull final byte[] datagram, int offset, @NonNull EndianPolicy policy) {

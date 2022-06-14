@@ -47,7 +47,7 @@ public class ListEncoder implements TypeEncoder {
     public void encode(@NonNull EncodeContext context) {
         val type = context.getTypeAnnotation(ListType.class);
 
-        this.encode(context.getDatagram(), type.value(), type.length(),
+        this.encode(context.getDatagram(), type.offset(), type.length(),
                 type.genericType(), context.getEndianPolicy(), (List<?>) context.getValue());
     }
 
@@ -82,7 +82,7 @@ public class ListEncoder implements TypeEncoder {
             codec.accept((b, i) -> CodecUtils.type(datagram, b, policy, (Short) values.get(i)));
         } else if (type == ProtocolType.INT32) {
             codec.accept((b, i) -> CodecUtils.type(datagram, b, policy, (Integer) values.get(i)));
-        } else if (type == ProtocolType.LONG) {
+        } else if (type == ProtocolType.UINT64) {
             codec.accept((b, i) -> CodecUtils.type(datagram, b, policy, (Long) values.get(i)));
         } else if (type == ProtocolType.UINT8) {
             codec.accept((b, i) -> CodecUtils.uint8Type(datagram, b, (Integer) values.get(i)));

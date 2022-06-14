@@ -36,7 +36,7 @@ public class BinaryDecoder implements TypeDecoder<byte[]> {
     public byte[] decode(@NonNull DecodeContext context) {
         val type = context.getTypeAnnotation(BinaryType.class);
 
-        return this.decode(context.getDatagram(), type.value(), type.length());
+        return this.decode(context.getDatagram(), type.offset(), type.length());
     }
 
     public byte[] decode(@NonNull final byte[] datagram, int byteOffset, int length) {

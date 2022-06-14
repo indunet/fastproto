@@ -55,7 +55,7 @@ public @interface UInt16Type {
     int MAX_VALUE = Short.MAX_VALUE - Short.MIN_VALUE;
     int MIN_VALUE = 0;
 
-    int value();
+    int offset();
 
     Class<? extends Function<Integer, ?>>[] decodingFormula() default {};
 
