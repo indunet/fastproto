@@ -19,6 +19,7 @@ package org.indunet.fastproto.resolve;
 import lombok.val;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.EnableProtocolVersion;
+import org.indunet.fastproto.annotation.EnableProtocolVersions;
 import org.indunet.fastproto.exception.ResolveException;
 import org.junit.jupiter.api.Test;
 
@@ -33,11 +34,18 @@ public class EnableProtocolVersionTest {
     public void testResolve() {
         val bytes = new byte[10];
 
-        assertThrows(ResolveException.class, () -> FastProto.parseFrom(bytes, Vehicle.class));
+        assertThrows(ResolveException.class, () -> FastProto.parseFrom(bytes, TestObject1.class));
+        assertThrows(ResolveException.class, () -> FastProto.parseFrom(bytes, TestObject2.class));
     }
 
     @EnableProtocolVersion(offset = 0, version = -10)
-    public static class Vehicle {
+    public static class TestObject1 {
+
+    }
+
+    @EnableProtocolVersions({@EnableProtocolVersion(offset = 0, version = 16)})
+    @EnableProtocolVersion(offset = 0, version = 32)
+    public static class TestObject2 {
 
     }
 }

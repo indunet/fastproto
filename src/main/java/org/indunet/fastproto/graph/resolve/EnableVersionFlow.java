@@ -40,16 +40,15 @@ public class EnableVersionFlow extends ResolvePipeline {
         val protocolClass = reference.getProtocolClass();
         List<EnableProtocolVersion> versions = new ArrayList<>();
 
-        // @EnableVersions
-        if (protocolClass.isAnnotationPresent(EnableProtocolVersions.class)) {
+        if (protocolClass.isAnnotationPresent(EnableProtocolVersions.class) &&
+               protocolClass.isAnnotationPresent(EnableProtocolVersion.class)) {
+            throw new ResolveException("Class cannot be annotated by EnableProtocolVersions and EnableProtocolVersion at the same time");
+        } else if (protocolClass.isAnnotationPresent(EnableProtocolVersions.class)) {
             val enableProtocolVersions = protocolClass.getAnnotation(EnableProtocolVersions.class);
 
             Arrays.stream(enableProtocolVersions.value())
                     .forEach(versions::add);
-        }
-
-        // @EnableVersion
-        if (protocolClass.isAnnotationPresent(EnableProtocolVersion.class)) {
+        } else if (protocolClass.isAnnotationPresent(EnableProtocolVersion.class)) {
             versions.add(protocolClass.getAnnotation(EnableProtocolVersion.class));
         }
 
