@@ -49,7 +49,7 @@ public class FormulaTest {
     @Test
     public void testEncodeFormula() {
         val object = new TestObject1(101);
-        assertThrows(EncodeFormulaException.class, () -> FastProto.toByteArray(object, 10));
+        assertThrows(EncodeFormulaException.class, () -> FastProto.toBytes(object, 10));
     }
 
     @AllArgsConstructor
@@ -69,6 +69,6 @@ public class FormulaTest {
     public void testDecodeFormula() {
         val datagram = new byte[10];
 
-        assertThrows(DecodeFormulaException.class, () -> FastProto.parseFrom(datagram, TestObject2.class));
+        assertThrows(DecodeFormulaException.class, () -> FastProto.parse(datagram, TestObject2.class));
     }
 }

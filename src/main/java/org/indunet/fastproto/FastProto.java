@@ -36,8 +36,8 @@ public class FastProto {
      * @param protocolClass deserialized object
      * @return deserialize object instance
      */
-    public static <T> T parseFrom(@NonNull byte[] datagram, @NonNull Class<T> protocolClass) {
-        return parseFrom(datagram, protocolClass, CodecFeature.DEFAULT);
+    public static <T> T parse(@NonNull byte[] datagram, @NonNull Class<T> protocolClass) {
+        return parse(datagram, protocolClass, CodecFeature.DEFAULT);
     }
 
     /**
@@ -48,7 +48,7 @@ public class FastProto {
      * @param codecFeatures codec feature code
      * @return deserialize object instance
      */
-    public static <T> T parseFrom(@NonNull byte[] datagram, @NonNull Class<T> protocolClass, long... codecFeatures) {
+    public static <T> T parse(@NonNull byte[] datagram, @NonNull Class<T> protocolClass, long... codecFeatures) {
         val graph = ReferenceResolver.resolve(protocolClass);
         val codecFeature = CodecFeature.of(codecFeatures);
         val context = CodecContext.builder()
@@ -72,8 +72,8 @@ public class FastProto {
      * @param object serialized object
      * @return binary datagram.
      */
-    public static byte[] toByteArray(@NonNull Object object) {
-        return toByteArray(object, CodecFeature.DEFAULT);
+    public static byte[] toBytes(@NonNull Object object) {
+        return toBytes(object, CodecFeature.DEFAULT);
     }
 
     /**
@@ -83,11 +83,11 @@ public class FastProto {
      * @param length the length of the datagram.
      * @return binary datagram.
      */
-    public static byte[] toByteArray(@NonNull Object object, int length) {
-        return toByteArray(object, length, CodecFeature.DEFAULT);
+    public static byte[] toBytes(@NonNull Object object, int length) {
+        return toBytes(object, length, CodecFeature.DEFAULT);
     }
 
-    public static byte[] toByteArray(@NonNull Object object, long... codecFeatures) {
+    public static byte[] toBytes(@NonNull Object object, long... codecFeatures) {
         val graph = ReferenceResolver.resolve(object.getClass());
         val codecFeature = CodecFeature.of(codecFeatures);
         val context = CodecContext.builder()
@@ -104,7 +104,7 @@ public class FastProto {
         return context.getDatagram();
     }
 
-    public static byte[] toByteArray(@NonNull Object object, int length, long... codecFeatures) {
+    public static byte[] toBytes(@NonNull Object object, int length, long... codecFeatures) {
         val graph = ReferenceResolver.resolve(object.getClass());
         val codecFeature = CodecFeature.of(codecFeatures);
         val context = CodecContext.builder()

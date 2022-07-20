@@ -55,7 +55,7 @@ class Crc16CheckerTest {
     @Test
     public void testToByteArray() {
         val testObject = new TestObject();
-         val datagram = FastProto.toByteArray(testObject, 30);
+         val datagram = FastProto.toBytes(testObject, 30);
 
          assertNotNull(datagram);
     }
