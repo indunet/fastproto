@@ -22,6 +22,7 @@ import org.indunet.fastproto.exception.CodecException;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.time.Instant;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
@@ -109,9 +110,11 @@ public class CodecFactory {
         val dateCodec = new DateCodec();
         val timestampCodec = new TimestampCodec();
         val calendarCodec = new CalendarCodec();
+        val instantCodec = new InstantCodec();
         codecMap.get(TimeType.class).put(Date.class, dateCodec);
         codecMap.get(TimeType.class).put(Timestamp.class, timestampCodec);
         codecMap.get(TimeType.class).put(Calendar.class, calendarCodec);
+        codecMap.get(TimeType.class).put(Calendar.class, instantCodec);
 
         val stringCodec = new StringCodec();
         val stringBufferCodec = new StringBufferCodec();
