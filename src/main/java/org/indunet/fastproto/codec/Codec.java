@@ -16,9 +16,11 @@
 
 package org.indunet.fastproto.codec;
 
+import org.indunet.fastproto.annotation.type.Int8Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
 
+import java.text.Annotation;
 import java.text.MessageFormat;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -32,6 +34,7 @@ import java.util.function.Function;
 public interface Codec<T> {
     ConcurrentHashMap<Class<? extends Codec>, Codec> codecs = new ConcurrentHashMap<>();
     ConcurrentHashMap<Class<? extends Function>, Function> formulas = new ConcurrentHashMap<>();
+
 
     static Codec getCodec(Class<? extends Codec> clazz) {
         return codecs.computeIfAbsent(clazz, __ -> {

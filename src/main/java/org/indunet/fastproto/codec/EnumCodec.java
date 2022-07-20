@@ -68,7 +68,7 @@ public class EnumCodec<T extends Enum> implements Codec<T> {
         }
     }
 
-    public <T extends Enum> void encode(byte[] bytes, int offset, String fieldName, T value) {
+        public <T extends Enum> void encode(byte[] bytes, int offset, String fieldName, T value) {
         var code = 0;
 
         if (fieldName == null || fieldName.isEmpty()) {

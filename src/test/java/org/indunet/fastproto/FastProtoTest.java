@@ -95,13 +95,13 @@ public class FastProtoTest {
         // Test decode with multi-thread.
         IntStream.range(0, 10).parallel()
                 .forEach(__ -> {
-                    assertEquals(FastProto.parseFrom(datagram, Tesla.class).toString(), tesla.toString());
+                    assertEquals(FastProto.parse(datagram, Tesla.class).toString(), tesla.toString());
                 });
 
         // Test encode with multi-thread.
         IntStream.range(0, 10).parallel()
                 .forEach(__ -> {
-                    byte[] cache = FastProto.toByteArray(tesla, 44);
+                    byte[] cache = FastProto.toBytes(tesla, 44);
                     assertArrayEquals(cache, datagram);
                 });
     }
@@ -133,10 +133,10 @@ public class FastProtoTest {
 
         // Test decode.
         assertEquals(
-                FastProto.parseFrom(datagram, Weather.class, CodecFeature.DISABLE_COMPRESS).toString(), metrics.toString());
+                FastProto.parse(datagram, Weather.class, CodecFeature.DISABLE_COMPRESS).toString(), metrics.toString());
 
         // Test encode.
-        byte[] cache = FastProto.toByteArray(metrics, 30, CodecFeature.DISABLE_COMPRESS);
+        byte[] cache = FastProto.toBytes(metrics, 30, CodecFeature.DISABLE_COMPRESS);
         assertArrayEquals(cache, datagram);
     }
 
@@ -171,12 +171,12 @@ public class FastProtoTest {
 
         // Test decode.
         assertEquals(
-                FastProto.parseFrom(datagram, Weather.class).toString(), weather.toString());
+                FastProto.parse(datagram, Weather.class).toString(), weather.toString());
         assertEquals(
-                FastProto.parseFrom(datagram, Weather.class, CodecFeature.DEFAULT).toString(), weather.toString());
+                FastProto.parse(datagram, Weather.class, CodecFeature.DEFAULT).toString(), weather.toString());
 
         // Test encode.
-        byte[] cache = FastProto.toByteArray(weather);
+        byte[] cache = FastProto.toBytes(weather);
         assertArrayEquals(cache, datagram);
     }
 
@@ -231,15 +231,15 @@ public class FastProtoTest {
         val afterEncrypted = crypto.encrypt("330926".getBytes(StandardCharsets.UTF_8), datagram);
 
         // Test decode.
-        assertEquals(FastProto.parseFrom(afterEncrypted, Everything.class, CodecFeature.DISABLE_COMPRESS).toString(), everything.toString());
+        assertEquals(FastProto.parse(afterEncrypted, Everything.class, CodecFeature.DISABLE_COMPRESS).toString(), everything.toString());
 
         // Test encode.
-        byte[] cache = FastProto.toByteArray(everything, CodecFeature.DISABLE_COMPRESS);
+        byte[] cache = FastProto.toBytes(everything, CodecFeature.DISABLE_COMPRESS);
         assertArrayEquals(afterEncrypted, cache);
 
         // Test with gzip
-        byte[] compressed = FastProto.toByteArray(everything, 80, CodecFeature.DISABLE_CRYPTO);
-        assertEquals(FastProto.parseFrom(compressed, Everything.class, CodecFeature.DISABLE_CRYPTO).toString(), everything.toString());
+        byte[] compressed = FastProto.toBytes(everything, 80, CodecFeature.DISABLE_CRYPTO);
+        assertEquals(FastProto.parse(compressed, Everything.class, CodecFeature.DISABLE_CRYPTO).toString(), everything.toString());
     }
 
     @Test
@@ -250,17 +250,17 @@ public class FastProtoTest {
                 .voltage((short) 24)
                 .build();
 
-        byte[] datagram = FastProto.toByteArray(motor);
+        byte[] datagram = FastProto.toBytes(motor);
         assertEquals(44, datagram.length);
-        assertEquals(motor.toString(), FastProto.parseFrom(datagram, Motor.class).toString());
+        assertEquals(motor.toString(), FastProto.parse(datagram, Motor.class).toString());
     }
 
     @Test
     public void testSensor() {
-        assertThrows(FixedLengthException.class, () -> FastProto.parseFrom(new byte[8], Sensor.class));
+        assertThrows(FixedLengthException.class, () -> FastProto.parse(new byte[8], Sensor.class));
 
         val sensor = new Sensor(10, 11);
-        val datagram = FastProto.toByteArray(sensor);
+        val datagram = FastProto.toBytes(sensor);
 
         assertEquals(10, datagram.length);
     }
@@ -270,18 +270,18 @@ public class FastProtoTest {
     public void testStateDatagram() {
         byte[] datagram = new byte[600];
 
-        StateDatagram stateDatagram = FastProto.parseFrom(datagram, StateDatagram.class);
+        StateDatagram stateDatagram = FastProto.parse(datagram, StateDatagram.class);
         assertNotNull(stateDatagram);
     }
 
     @Test
     public void testNonObject() {
         val datagram = new byte[10];
-        val nonObject = FastProto.parseFrom(datagram, NonObject.class);
+        val nonObject = FastProto.parse(datagram, NonObject.class);
 
         assertNotNull(nonObject);
 
-        val bytes = FastProto.toByteArray(nonObject, 10);
+        val bytes = FastProto.toBytes(nonObject, 10);
 
         assertNotNull(bytes);
     }
@@ -290,21 +290,21 @@ public class FastProtoTest {
     public void testChecksumException() {
         val datagram = new byte[]{0, 1, 2, 3, 4, 5, 6, 7};
 
-        assertThrows(CheckSumException.class, () -> FastProto.parseFrom(datagram, ChecksumObject.class));
+        assertThrows(CheckSumException.class, () -> FastProto.parse(datagram, ChecksumObject.class));
     }
 
     @Test
     public void testProtocolVersionException() {
         val datagram = new byte[]{0, 1, 2, 3, 4, 5, 6, 7};
 
-        assertThrows(ProtocolVersionException.class, () -> FastProto.parseFrom(datagram, ProtocolVersionObject.class));
+        assertThrows(ProtocolVersionException.class, () -> FastProto.parse(datagram, ProtocolVersionObject.class));
     }
 
     @Test
     public void testCryptoException() {
         val datagram = new byte[100];
 
-        assertThrows(CryptoException.class, () -> FastProto.parseFrom(datagram, CryptoObject.class));
+        assertThrows(CryptoException.class, () -> FastProto.parse(datagram, CryptoObject.class));
     }
 
     @SneakyThrows
@@ -313,8 +313,8 @@ public class FastProtoTest {
         val datagram = Phone.getDatagram();
         val phone = Phone.getDefault();
 
-        assertEquals(phone.toString(), FastProto.parseFrom(datagram, Phone.class).toString());
-        assertArrayEquals(datagram, FastProto.toByteArray(phone, Phone.getLength()));
+        assertEquals(phone.toString(), FastProto.parse(datagram, Phone.class).toString());
+        assertArrayEquals(datagram, FastProto.toBytes(phone, Phone.getLength()));
     }
 
     @Test
@@ -330,8 +330,8 @@ public class FastProtoTest {
         val expected = new ArrayObject();
         expected.setInts(new int[]{1, 2, 3, 4, 5});
 
-        assertEquals(expected.toString(), FastProto.parseFrom(datagram, ArrayObject.class).toString());
-        assertArrayEquals(datagram, FastProto.toByteArray(expected, 10));
+        assertEquals(expected.toString(), FastProto.parse(datagram, ArrayObject.class).toString());
+        assertArrayEquals(datagram, FastProto.toBytes(expected, 10));
     }
 
     @Endian(EndianPolicy.BIG)

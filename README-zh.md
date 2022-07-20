@@ -112,19 +112,19 @@ public class Weather {
 }
 ```
 
-调用`FastProto::parseFrom()`方法将二进制数据反序列化成Java数据对象`Weather`
+调用`FastProto::parse()`方法将二进制数据反序列化成Java数据对象`Weather`
 
 ```java
 byte[] datagram = ...   // Datagram sent by monitoring device.
 
-Weather weather = FastProto.parseFrom(datagram, Weather.class);
+Weather weather = FastProto.parse(datagram, Weather.class);
 ```
 
-调用`FastProto::toByteArray()`方法将Java数据对象`Weather`序列成二进制数据。
+调用`FastProto::toBytes()`方法将Java数据对象`Weather`序列成二进制数据。
 该方法的第二个参数是数据报文长度，如果用户不指定，那么FastProto会自动推测长度。
 
 ```java
-byte[] datagram = FastProto.toByteArray(weather, 20);
+byte[] datagram = FastProto.toBytes(weather, 20);
 ```
 
 2. **编码公式 & 解码公式**
@@ -237,8 +237,8 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 
 |Benchmark |    模式  | 样本数量  |  评分  |   误差   |   单位   |
 |:--------:|:--------:|:--------:|:-------:|:---------:|:---------:|
-| `FastProto::parseFrom` |  吞吐量   |   10  |   291.2 | ± 1.6    |  次/毫秒   |
-| `FastProto::toByteArray` | 吞吐量  |   10  |   285.7 | ± 1.5    |  次/毫秒   |
+| `FastProto::parse` |  吞吐量   |   10  |   291.2 | ± 1.6    |  次/毫秒   |
+| `FastProto::toBytes` | 吞吐量  |   10  |   285.7 | ± 1.5    |  次/毫秒   |
 
 ## *Build Requirements*
 

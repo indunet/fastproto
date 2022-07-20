@@ -56,7 +56,7 @@ FastProto is more recommended for the following scenarios:
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.2.1</version>
+    <version>${fastproto.version}</version>
 </dependency>
 ```
 
@@ -117,20 +117,20 @@ public class Weather {
 }
 ```
 
-Invoke the `FastProto::parseFrom()` method to deserialize the binary data into the Java data object `Weather`
+Invoke the `FastProto::parse()` method to deserialize the binary data into the Java data object `Weather`
 
 ```java
 byte[] datagram = ...   // Datagram sent by monitoring device.
 
-Weather weather = FastProto.parseFrom(datagram, Weather.class);
+Weather weather = FastProto.parse(datagram, Weather.class);
 ```
 
-Invoke the `FastProto::toByteArray()` method to serialize the Java data object `Weather` into binary data.
+Invoke the `FastProto::toBytes()` method to serialize the Java data object `Weather` into binary data.
 The second parameter of this method is the length of the binary data. 
 If the user does not specify it, FastProto will automatically guess the length.
 
 ```java
-byte[] datagram = FastProto.toByteArray(weather, 20);
+byte[] datagram = FastProto.toBytes(weather, 20);
 ```
 
 2. **Decoding Formula & Encoding Formula**
@@ -246,8 +246,8 @@ FastProto also provides some auxiliary annotations to help users further customi
 
 |Benchmark |    Mode  | Samples  |  Score  |   Error   |   Units   |
 |:--------:|:--------:|:--------:|:-------:|:---------:|:---------:|
-| `FastProto::parseFrom` |  throughput   |   10  |   291.2 | ± 1.6    |  ops/ms   |
-| `FastProto::toByteArray` | throughput  |   10  |   285.7 | ± 1.5    |  ops/ms   |
+| `FastProto::parse` |  throughput   |   10  |   291.2 | ± 1.6    |  ops/ms   |
+| `FastProto::toBytes` | throughput  |   10  |   285.7 | ± 1.5    |  ops/ms   |
 
 ## *Build Requirements*
 

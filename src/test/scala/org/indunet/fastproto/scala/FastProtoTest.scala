@@ -38,7 +38,7 @@ class FastProtoTest {
     CodecUtils.uint16Type(datagram, 8, EndianPolicy.BIG, 192)
 
     val expected = Inverter(1, 2, Fan(10.2f, false), 192)
-    val inverter = FastProto.parseFrom(datagram, classOf[Inverter])
+    val inverter = FastProto.parse(datagram, classOf[Inverter])
 
     assertEquals(expected.toString, inverter.toString)
   }

@@ -34,8 +34,8 @@ public class EnableProtocolVersionTest {
     public void testResolve() {
         val bytes = new byte[10];
 
-        assertThrows(ResolveException.class, () -> FastProto.parseFrom(bytes, TestObject1.class));
-        assertThrows(ResolveException.class, () -> FastProto.parseFrom(bytes, TestObject2.class));
+        assertThrows(ResolveException.class, () -> FastProto.parse(bytes, TestObject1.class));
+        assertThrows(ResolveException.class, () -> FastProto.parse(bytes, TestObject2.class));
     }
 
     @EnableProtocolVersion(offset = 0, version = -10)

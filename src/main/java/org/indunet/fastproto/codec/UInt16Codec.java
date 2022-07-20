@@ -16,7 +16,6 @@
 
 package org.indunet.fastproto.codec;
 
-import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.UInt16Type;

@@ -65,7 +65,7 @@ public class Crc8CheckerTest {
     @Test
     public void testtoByteArray() {
         val testObject = new TestObject();
-        byte[] datagram = FastProto.toByteArray(testObject, 30);
+        byte[] datagram = FastProto.toBytes(testObject, 30);
 
         assertNotNull(datagram);
     }

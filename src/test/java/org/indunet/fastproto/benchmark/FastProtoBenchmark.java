@@ -50,13 +50,13 @@ public class FastProtoBenchmark {
     @Benchmark
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void parseFrom() {
-        FastProto.parseFrom(datagram, Sample.class);
+        FastProto.parse(datagram, Sample.class);
     }
 
     @Benchmark
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void toByteArray() {
-        byte[] datagram = FastProto.toByteArray(sample, 128);
+        byte[] datagram = FastProto.toBytes(sample, 128);
     }
 
     @Setup
@@ -70,6 +70,6 @@ public class FastProtoBenchmark {
                 });
 
         this.datagram = tmp;
-        this.sample = FastProto.parseFrom(this.datagram, Sample.class);
+        this.sample = FastProto.parse(this.datagram, Sample.class);
     }
 }
