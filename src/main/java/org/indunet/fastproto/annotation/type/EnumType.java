@@ -24,9 +24,9 @@ import org.indunet.fastproto.annotation.TypeFlag;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.EnumDecoder;
 import org.indunet.fastproto.encoder.EnumEncoder;
-import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
-import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
-import org.indunet.fastproto.graph.validate.FieldValidator;
+import org.indunet.fastproto.reference.resolve.validate.DecodingFormulaValidator;
+import org.indunet.fastproto.reference.resolve.validate.EncodingFormulaValidator;
+import org.indunet.fastproto.reference.resolve.validate.FieldValidator;
 
 import java.lang.annotation.*;
 import java.lang.reflect.Type;

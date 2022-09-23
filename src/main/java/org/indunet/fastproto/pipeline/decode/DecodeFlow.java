@@ -21,8 +21,8 @@ import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.decoder.DecoderFactory;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
-import org.indunet.fastproto.graph.Reference;
-import org.indunet.fastproto.graph.ReferenceGraph;
+import org.indunet.fastproto.reference.Reference;
+import org.indunet.fastproto.reference.Graph;
 import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.CodecContext;
 import org.indunet.fastproto.pipeline.FlowCode;
@@ -41,15 +41,15 @@ public class DecodeFlow extends Pipeline<CodecContext> {
     @Override
     public void process(CodecContext context) {
         // val assist = context.getTypeAssist();
-        val reference = context.getReferenceGraph().root();
+        val reference = context.getGraph().root();
         val datagram = context.getDatagram();
 
-        context.setObject(linearDecode(datagram, context.getReferenceGraph()));
+        context.setObject(linearDecode(datagram, context.getGraph()));
 
         this.forward(context);
     }
 
-    public Object linearDecode(byte[] datagram, ReferenceGraph graph) {
+    public Object linearDecode(byte[] datagram, Graph graph) {
         List<DecodeContext> decodeContexts = graph.decodeContexts(datagram);
 
         decodeContexts

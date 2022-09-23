@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.graph;
+package org.indunet.fastproto.reference;
 
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.TypeFlag;
-import org.indunet.fastproto.graph.Reference.ReferenceType;
-import org.indunet.fastproto.graph.resolve.ResolvePipeline;
+import org.indunet.fastproto.reference.Reference.ReferenceType;
+import org.indunet.fastproto.reference.resolve.ResolvePipeline;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -36,14 +36,14 @@ import java.util.function.Predicate;
  * @author Deng Ran
  * @since 2.5.0
  */
-public class ReferenceResolver {
-    protected static ConcurrentHashMap<Class<?>, ReferenceGraph> graphs = new ConcurrentHashMap<>();
+public class Resolver {
+    protected static ConcurrentHashMap<Class<?>, Graph> graphs = new ConcurrentHashMap<>();
     protected static ResolvePipeline resolveClassFlow = ResolvePipeline.getClassPipeline();
     protected static ResolvePipeline resolveFieldFlow = ResolvePipeline.getFieldPipeline();
 
-    public static ReferenceGraph resolve(@NonNull Class<?> protocolClass) {
+    public static Graph resolve(@NonNull Class<?> protocolClass) {
         return graphs.computeIfAbsent(protocolClass, __ -> {
-            val graph = new ReferenceGraph();
+            val graph = new Graph();
             val deque = new ArrayDeque<Field>();
 
             // Root.
@@ -107,26 +107,16 @@ public class ReferenceResolver {
 
     protected static boolean isClass(@NonNull Field field) {
         Predicate<Field> isProtocolType = f -> ProtocolType.isSupported(f.getType());
-        Predicate<Field> isTransient = f -> Modifier.isTransient(f.getModifiers());
-        Predicate<Field> isEnum = f -> f.isEnumConstant()
-                || Enum.class.isAssignableFrom(f.getType());
-        Predicate<Field> isEnumSet = f -> EnumSet.class.isAssignableFrom(f.getType());
-        Predicate<Field> isArray = f -> f.getType().isArray();
-        Predicate<Field> isClass = f -> f.getType() == Class.class;
-        Predicate<Field> isObject = f -> f.getType() == Object.class;
-        Predicate<Field> isList = f -> List.class.isAssignableFrom(f.getType());
-        Predicate<Field> isMap = f -> Map.class.isAssignableFrom(f.getType());
-        Predicate<Field> isSet = f -> Set.class.isAssignableFrom(f.getType());
 
-        return !isProtocolType.or(isTransient)
-                .or(isEnum)
-                .or(isEnumSet)
-                .or(isArray)
-                .or(isClass)
-                .or(isObject)
-                .or(isList)
-                .or(isMap)
-                .or(isSet)
+        return !isProtocolType.or(f -> Modifier.isTransient(f.getModifiers()))
+                .or(f -> f.isEnumConstant() || Enum.class.isAssignableFrom(f.getType()))
+                .or(f -> EnumSet.class.isAssignableFrom(f.getType()))
+                .or(f -> f.getType().isArray())
+                .or(f -> f.getType() == Class.class)
+                .or(f -> f.getType() == Object.class)
+                .or(f -> List.class.isAssignableFrom(f.getType()))
+                .or(f -> Map.class.isAssignableFrom(f.getType()))
+                .or(f -> Set.class.isAssignableFrom(f.getType()))
                 .test(field);
     }
 

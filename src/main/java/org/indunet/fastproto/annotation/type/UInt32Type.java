@@ -22,9 +22,9 @@ import org.indunet.fastproto.annotation.TypeFlag;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.UInteger32Decoder;
 import org.indunet.fastproto.encoder.UInteger32Encoder;
-import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
-import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
-import org.indunet.fastproto.graph.validate.FieldValidator;
+import org.indunet.fastproto.reference.resolve.validate.DecodingFormulaValidator;
+import org.indunet.fastproto.reference.resolve.validate.EncodingFormulaValidator;
+import org.indunet.fastproto.reference.resolve.validate.FieldValidator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

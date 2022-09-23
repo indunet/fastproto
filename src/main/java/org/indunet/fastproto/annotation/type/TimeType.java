@@ -23,7 +23,10 @@ import org.indunet.fastproto.annotation.TypeFlag;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.TimestampDecoder;
 import org.indunet.fastproto.encoder.TimestampEncoder;
-import org.indunet.fastproto.graph.validate.*;
+import org.indunet.fastproto.reference.resolve.validate.DecodingFormulaValidator;
+import org.indunet.fastproto.reference.resolve.validate.EncodingFormulaValidator;
+import org.indunet.fastproto.reference.resolve.validate.FieldValidator;
+import org.indunet.fastproto.reference.resolve.validate.TimestampValidator;
 
 import java.lang.annotation.*;
 import java.lang.reflect.Type;

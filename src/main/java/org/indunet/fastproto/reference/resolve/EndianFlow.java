@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.graph.resolve;
+package org.indunet.fastproto.reference.resolve;
 
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.Endian;
-import org.indunet.fastproto.graph.Reference;
+import org.indunet.fastproto.reference.Reference;
 
 import java.util.Optional;
 

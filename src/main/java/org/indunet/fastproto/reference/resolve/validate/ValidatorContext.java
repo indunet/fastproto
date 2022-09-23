@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.graph.validate;
+package org.indunet.fastproto.reference.resolve.validate;
 
 import lombok.Builder;
 import lombok.Data;

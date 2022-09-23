@@ -19,7 +19,7 @@ package org.indunet.fastproto.decoder;
 import lombok.Builder;
 import lombok.Data;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.graph.Reference;
+import org.indunet.fastproto.reference.Reference;
 
 import java.lang.annotation.Annotation;
 

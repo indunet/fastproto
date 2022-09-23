@@ -31,7 +31,7 @@ import org.indunet.fastproto.pipeline.FlowCode;
 public class WriteVersionFlow extends Pipeline<CodecContext> {
     @Override
     public void process(CodecContext context) {
-        val reference = context.getReferenceGraph().root();
+        val reference = context.getGraph().root();
         val versions = reference.getEnableProtocolVersions();
         val bytes = context.getDatagram();
         
