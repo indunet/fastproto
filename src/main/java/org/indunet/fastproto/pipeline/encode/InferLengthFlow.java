@@ -21,7 +21,7 @@ import org.indunet.fastproto.annotation.EnableProtocolVersion;
 import org.indunet.fastproto.checksum.CheckerUtils;
 import org.indunet.fastproto.exception.AddressingException;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.graph.Reference;
+import org.indunet.fastproto.reference.Reference;
 import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.CodecContext;
 import org.indunet.fastproto.pipeline.FlowCode;
@@ -35,7 +35,7 @@ import org.indunet.fastproto.pipeline.FlowCode;
 public class InferLengthFlow extends Pipeline<CodecContext> {
     @Override
     public void process(CodecContext context) {
-        val graph = context.getReferenceGraph();
+        val graph = context.getGraph();
 
         int max = graph.stream()
                 .filter(r -> r.getReferenceType() == Reference.ReferenceType.FIELD)

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,7 @@ package org.indunet.fastproto;
 
 import lombok.NonNull;
 import lombok.val;
-import org.indunet.fastproto.graph.ReferenceResolver;
+import org.indunet.fastproto.reference.Resolver;
 import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.CodecContext;
 
@@ -49,13 +49,13 @@ public class FastProto {
      * @return deserialize object instance
      */
     public static <T> T parse(@NonNull byte[] datagram, @NonNull Class<T> protocolClass, long... codecFeatures) {
-        val graph = ReferenceResolver.resolve(protocolClass);
+        val graph = Resolver.resolve(protocolClass);
         val codecFeature = CodecFeature.of(codecFeatures);
         val context = CodecContext.builder()
                 .datagram(datagram)
                 .protocolClass(protocolClass)
                 .codecFeature(codecFeature)
-                .referenceGraph(graph)
+                .graph(graph)
                 .build();
 
         val feature = CodecFeature.of(graph.root());
@@ -88,13 +88,13 @@ public class FastProto {
     }
 
     public static byte[] toBytes(@NonNull Object object, long... codecFeatures) {
-        val graph = ReferenceResolver.resolve(object.getClass());
+        val graph = Resolver.resolve(object.getClass());
         val codecFeature = CodecFeature.of(codecFeatures);
         val context = CodecContext.builder()
                 .object(object)
                 .protocolClass(object.getClass())
                 .codecFeature(codecFeature)
-                .referenceGraph(graph)
+                .graph(graph)
                 .build();
         val feature = CodecFeature.of(graph.root());
 
@@ -105,14 +105,14 @@ public class FastProto {
     }
 
     public static byte[] toBytes(@NonNull Object object, int length, long... codecFeatures) {
-        val graph = ReferenceResolver.resolve(object.getClass());
+        val graph = Resolver.resolve(object.getClass());
         val codecFeature = CodecFeature.of(codecFeatures);
         val context = CodecContext.builder()
                 .object(object)
                 .protocolClass(object.getClass())
                 .codecFeature(codecFeature)
                 .datagram(new byte[length])
-                .referenceGraph(graph)
+                .graph(graph)
                 .build();
         val feature = CodecFeature.of(graph.root());
 

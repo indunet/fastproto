@@ -33,7 +33,7 @@ import java.text.MessageFormat;
 public class VerifyFixedLengthFlow extends Pipeline<CodecContext> {
     @Override
     public void process(CodecContext context) {
-        int fixedLength = context.getReferenceGraph()
+        int fixedLength = context.getGraph()
                 .root()
                 .getEnableFixedLength()
                 .value();

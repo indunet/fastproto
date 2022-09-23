@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.graph.resolve;
+package org.indunet.fastproto.reference.resolve;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.EnableProtocolVersion;
 import org.indunet.fastproto.annotation.EnableProtocolVersions;
 import org.indunet.fastproto.annotation.type.UInt8Type;
 import org.indunet.fastproto.exception.ResolveException;
-import org.indunet.fastproto.graph.Reference;
+import org.indunet.fastproto.reference.Reference;
 
 import java.util.ArrayList;
 import java.util.Arrays;

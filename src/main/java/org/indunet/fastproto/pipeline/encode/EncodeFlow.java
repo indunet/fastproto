@@ -39,7 +39,7 @@ public class EncodeFlow extends Pipeline<CodecContext> {
     @Override
     public void process(CodecContext context) {
         // val assist = context.getTypeAssist();
-        val graph = context.getReferenceGraph();
+        val graph = context.getGraph();
         val object = context.getObject();
         val datagram = context.getDatagram();
 

@@ -34,7 +34,7 @@ import org.indunet.fastproto.pipeline.FlowCode;
 public class VerifyVersionFlow extends Pipeline<CodecContext> {
     @Override
     public void process(@NonNull CodecContext context) {
-        val reference = context.getReferenceGraph().root();
+        val reference = context.getGraph().root();
         val versions = reference.getEnableProtocolVersions();
         val bytes = context.getDatagram();
         

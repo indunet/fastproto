@@ -23,10 +23,10 @@ import org.indunet.fastproto.annotation.TypeFlag;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.decoder.ListDecoder;
 import org.indunet.fastproto.encoder.ListEncoder;
-import org.indunet.fastproto.graph.validate.DecodingFormulaValidator;
-import org.indunet.fastproto.graph.validate.EncodingFormulaValidator;
-import org.indunet.fastproto.graph.validate.FieldValidator;
-import org.indunet.fastproto.graph.validate.ListValidator;
+import org.indunet.fastproto.reference.resolve.validate.DecodingFormulaValidator;
+import org.indunet.fastproto.reference.resolve.validate.EncodingFormulaValidator;
+import org.indunet.fastproto.reference.resolve.validate.FieldValidator;
+import org.indunet.fastproto.reference.resolve.validate.ListValidator;
 
 import java.lang.annotation.*;
 import java.lang.reflect.Type;

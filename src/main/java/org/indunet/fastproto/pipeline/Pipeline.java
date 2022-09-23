@@ -18,7 +18,7 @@ package org.indunet.fastproto.pipeline;
 
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
-import org.indunet.fastproto.graph.validate.ValidatorContext;
+import org.indunet.fastproto.reference.resolve.validate.ValidatorContext;
 import org.indunet.fastproto.pipeline.decode.*;
 import org.indunet.fastproto.pipeline.encode.*;
 
@@ -130,7 +130,7 @@ public abstract class Pipeline<T> {
         return array[0];
     }
 
-    public static Pipeline create(Class<? extends Pipeline>[] pipelines) {
+    public static <T> Pipeline<T> create(Class<? extends Pipeline<T>>[] pipelines) {
         return create(pipelines, 0);
     }
 }

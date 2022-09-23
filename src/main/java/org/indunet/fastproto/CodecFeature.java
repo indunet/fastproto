@@ -17,7 +17,7 @@
 package org.indunet.fastproto;
 
 import lombok.val;
-import org.indunet.fastproto.graph.Reference;
+import org.indunet.fastproto.reference.Reference;
 import org.indunet.fastproto.pipeline.FlowCode;
 
 /**

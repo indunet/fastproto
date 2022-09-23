@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.graph.resolve;
+package org.indunet.fastproto.reference.resolve;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.EnableCrypto;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CryptoException;
-import org.indunet.fastproto.graph.Reference;
+import org.indunet.fastproto.reference.Reference;
 
 /**
  * Resolve enable crypto flow.

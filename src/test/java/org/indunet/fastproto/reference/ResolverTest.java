@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.graph;
+package org.indunet.fastproto.reference;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.type.BoolType;
@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @author Deng Ran
  * @since 3.0.0
  */
-public class ReferenceResolverTest {
+public class ResolverTest {
     public static class TestObject1 {
         @UInt8Type(offset = 0)
         int value1;
@@ -61,7 +61,7 @@ public class ReferenceResolverTest {
 
     @Test
     public void testResolve() {
-        val graph = ReferenceResolver.resolve(TestObject1.class);
+        val graph = Resolver.resolve(TestObject1.class);
 
         // graph.print();
         assertNotNull(graph);
@@ -69,7 +69,7 @@ public class ReferenceResolverTest {
 
     @Test
     public void testDecodeContext() {
-        val graph = ReferenceResolver.resolve(TestObject1.class);
+        val graph = Resolver.resolve(TestObject1.class);
         val contexts = graph.decodeContexts(new byte[10]);
 
         assertTrue(contexts.size() > 3);
@@ -77,7 +77,7 @@ public class ReferenceResolverTest {
 
     @Test
     public void testEncodeContext() {
-        val graph = ReferenceResolver.resolve(TestObject1.class);
+        val graph = Resolver.resolve(TestObject1.class);
         val contexts = graph.encodeContexts(new TestObject1(), new byte[10]);
 
         // No encode context would be generate while null object.

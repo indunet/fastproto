@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.annotation;
 
-import org.indunet.fastproto.graph.validate.TypeValidator;
+import org.indunet.fastproto.reference.resolve.validate.TypeValidator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

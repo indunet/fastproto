@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.graph;
+package org.indunet.fastproto.reference;
 
 import lombok.*;
 import org.indunet.fastproto.EndianPolicy;

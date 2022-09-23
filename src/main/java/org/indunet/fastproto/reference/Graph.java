@@ -14,15 +14,15 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.graph;
+package org.indunet.fastproto.reference;
 
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.decoder.DecodeContext;
 import org.indunet.fastproto.encoder.EncodeContext;
 import org.indunet.fastproto.exception.ResolveException;
-import org.indunet.fastproto.graph.Reference.ConstructorType;
-import org.indunet.fastproto.graph.Reference.ReferenceType;
+import org.indunet.fastproto.reference.Reference.ConstructorType;
+import org.indunet.fastproto.reference.Reference.ReferenceType;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -35,10 +35,10 @@ import java.util.stream.Stream;
  * @author Deng Ran
  * @since 2.5.0
  */
-public class ReferenceGraph {
+public class Graph {
     protected LinkedHashMap<Reference, ArrayList<Reference>> adj = new LinkedHashMap<>();
 
-    protected ReferenceGraph() {
+    protected Graph() {
 
     }
 

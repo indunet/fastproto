@@ -1,8 +1,8 @@
-package org.indunet.fastproto.graph.resolve;
+package org.indunet.fastproto.reference.resolve;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.EnableFixedLength;
-import org.indunet.fastproto.graph.Reference;
+import org.indunet.fastproto.reference.Reference;
 
 /**
  * @author Deng Ran

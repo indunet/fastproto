@@ -36,7 +36,7 @@ import java.util.Optional;
 public class EncryptFlow extends Pipeline<CodecContext> {
     @Override
     public void process(CodecContext context) {
-        val graph = context.getReferenceGraph();
+        val graph = context.getGraph();
         val ref = graph.root();
 
         if (ref.getEnableCrypto() == null) {

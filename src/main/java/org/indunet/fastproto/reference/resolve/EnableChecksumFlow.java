@@ -14,30 +14,27 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.graph.resolve;
+package org.indunet.fastproto.reference.resolve;
 
 import lombok.val;
-import org.indunet.fastproto.annotation.DecodingIgnore;
-import org.indunet.fastproto.annotation.EncodingIgnore;
-import org.indunet.fastproto.graph.Reference;
+import org.indunet.fastproto.annotation.EnableChecksum;
+import org.indunet.fastproto.reference.Reference;
 
 /**
- * Resolve decode ignore and encode ignore flow.
+ * Resolve enable checksum flow.
  *
  * @author Deng Ran
  * @since 2.5.0
  */
-public class CodecIgnoreFlow extends ResolvePipeline {
+public class EnableChecksumFlow extends ResolvePipeline {
     @Override
     public void process(Reference reference) {
-        val field = reference.getField();
+        val protocolClass = reference.getProtocolClass();
 
-        if (field != null) {
-            val decodeIgnore = field.isAnnotationPresent(DecodingIgnore.class);
-            val encodeIngore = field.isAnnotationPresent(EncodingIgnore.class);
+        if (protocolClass.isAnnotationPresent(EnableChecksum.class)) {
+            val enableChecksum = protocolClass.getAnnotation(EnableChecksum.class);
 
-            reference.setDecodingIgnore(decodeIgnore);
-            reference.setEncodingIgnore(encodeIngore);
+            reference.setEnableChecksum(enableChecksum);
         }
 
         this.forward(reference);

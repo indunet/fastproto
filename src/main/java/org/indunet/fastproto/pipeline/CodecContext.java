@@ -18,7 +18,7 @@ package org.indunet.fastproto.pipeline;
 
 import lombok.Builder;
 import lombok.Data;
-import org.indunet.fastproto.graph.ReferenceGraph;
+import org.indunet.fastproto.reference.Graph;
 
 /**
  * Codec Context.
@@ -30,7 +30,7 @@ import org.indunet.fastproto.graph.ReferenceGraph;
 @Builder
 public class CodecContext {
     byte[] datagram;
-    ReferenceGraph referenceGraph;
+    Graph graph;
     Object object;
     Class<?> protocolClass;
     long codecFeature;
