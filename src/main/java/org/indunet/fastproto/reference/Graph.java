@@ -18,8 +18,6 @@ package org.indunet.fastproto.reference;
 
 import lombok.NonNull;
 import lombok.val;
-import org.indunet.fastproto.decoder.DecodeContext;
-import org.indunet.fastproto.encoder.EncodeContext;
 import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.reference.Reference.ConstructorType;
 import org.indunet.fastproto.reference.Reference.ReferenceType;
@@ -130,15 +128,11 @@ public class Graph {
                 });
     }
 
-    public List<DecodeContext> decodeContexts(@NonNull byte[] datagram) {
+    public List<Reference> decodeReferences() {
         return this.adj.values().stream()
                 .flatMap(Collection::stream)
                 .filter(r -> r.referenceType == Reference.ReferenceType.FIELD)
                 .filter(r -> !r.decodingIgnore)
-                .map(r -> DecodeContext.builder()
-                        .datagram(datagram)
-                        .reference(r)
-                        .build())
                 .collect(Collectors.toList());
     }
 
@@ -211,10 +205,10 @@ public class Graph {
         }
     }
 
-    public List<EncodeContext> encodeContexts(@NonNull Object object, @NonNull byte[] datagram) {
+    public List<Reference> encodeReferences(@NonNull Object object) {
         Set<Reference> marks = new HashSet<>();
         Deque<Reference> queue = new ArrayDeque<>();
-        List<EncodeContext> list = new ArrayList<>();
+        List<Reference> list = new ArrayList<>();
 
         marks.add(this.root());
         queue.add(this.root());
@@ -232,13 +226,9 @@ public class Graph {
                     .filter(r -> r.getReferenceType() == ReferenceType.FIELD)
                     .filter(r -> !r.getEncodingIgnore())
                     .filter(r -> r.getValue(obj) != null)   // Filter null object.
-                    .map(r -> EncodeContext.builder()
-                        .reference(r)
-                        .value(r.getValue(obj))
-                        .datagram(datagram)
-                        .build())
-                    .forEach(c -> {
-                        list.add(c);
+                    .forEach(r -> {
+                        r.setValue(r.getValue(obj));
+                        list.add(r);
                     });
 
             for (val r: this.adj(ref)) {

@@ -91,7 +91,7 @@ public class EnumCodec<T extends Enum> implements Codec<T> {
 
     @Override
     public T decode(CodecContext context, byte[] bytes) {
-        val dataType = context.getDataType(EnumType.class);
+        val dataType = context.getDataTypeAnnotation(EnumType.class);
         val fieldType = context.getFieldType();
 
         return this.decode(bytes, dataType.offset(), dataType.field(), (Class<T>) fieldType);
@@ -99,7 +99,7 @@ public class EnumCodec<T extends Enum> implements Codec<T> {
 
     @Override
     public void encode(CodecContext context, byte[] bytes, T value) {
-        val dataType = context.getDataType(EnumType.class);
+        val dataType = context.getDataTypeAnnotation(EnumType.class);
 
         this.encode(bytes, dataType.offset(), dataType.field(), value);
     }

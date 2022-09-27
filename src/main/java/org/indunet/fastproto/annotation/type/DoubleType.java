@@ -16,12 +16,8 @@
 
 package org.indunet.fastproto.annotation.type;
 
-import org.indunet.fastproto.annotation.Decoder;
-import org.indunet.fastproto.annotation.Encoder;
-import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
-import org.indunet.fastproto.decoder.DoubleDecoder;
-import org.indunet.fastproto.encoder.DoubleEncoder;
 import org.indunet.fastproto.reference.resolve.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.reference.resolve.validate.EncodingFormulaValidator;
 import org.indunet.fastproto.reference.resolve.validate.FieldValidator;
@@ -37,12 +33,10 @@ import java.util.function.Function;
  * Double type, corresponding to Java Double/double.
  *
  * @author Deng Ran
- * @see TypeFlag
+ * @see DataType
  * @since 1.0.0
  */
-@TypeFlag
-@Decoder(DoubleDecoder.class)
-@Encoder(DoubleEncoder.class)
+@DataType
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

@@ -16,12 +16,8 @@
 
 package org.indunet.fastproto.annotation.type;
 
-import org.indunet.fastproto.annotation.Decoder;
-import org.indunet.fastproto.annotation.Encoder;
-import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
-import org.indunet.fastproto.decoder.FloatDecoder;
-import org.indunet.fastproto.encoder.FloatEncoder;
 import org.indunet.fastproto.reference.resolve.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.reference.resolve.validate.EncodingFormulaValidator;
 import org.indunet.fastproto.reference.resolve.validate.FieldValidator;
@@ -37,12 +33,10 @@ import java.util.function.Function;
  * Float type, corresponding to Java Float/float.
  *
  * @author Deng Ran
- * @see TypeFlag
+ * @see DataType
  * @since 1.0.0
  */
-@TypeFlag
-@Decoder(FloatDecoder.class)
-@Encoder(FloatEncoder.class)
+@DataType
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

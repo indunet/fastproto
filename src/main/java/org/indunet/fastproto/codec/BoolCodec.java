@@ -47,14 +47,14 @@ public class BoolCodec implements Codec<Boolean> {
     
     @Override
     public Boolean decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataType(BoolType.class);
+        val type = context.getDataTypeAnnotation(BoolType.class);
     
         return this.decode(bytes, type.byteOffset(), type.bitOffset());
     }
     
     @Override
     public void encode(CodecContext context, byte[] bytes, Boolean value) {
-        val type = context.getDataType(BoolType.class);
+        val type = context.getDataTypeAnnotation(BoolType.class);
         
         this.encode(bytes, type.byteOffset(), type.bitOffset(), value);
     }

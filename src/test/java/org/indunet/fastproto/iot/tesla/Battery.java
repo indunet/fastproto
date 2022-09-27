@@ -18,8 +18,8 @@ package org.indunet.fastproto.iot.tesla;
 
 import lombok.*;
 import org.indunet.fastproto.annotation.type.FloatType;
+import org.indunet.fastproto.annotation.type.Int16Type;
 import org.indunet.fastproto.annotation.type.Int32Type;
-import org.indunet.fastproto.annotation.type.ShortType;
 
 @Data
 @ToString
@@ -27,7 +27,7 @@ import org.indunet.fastproto.annotation.type.ShortType;
 @NoArgsConstructor
 @Builder
 public class Battery {
-    @ShortType(offset = 22)
+    @Int16Type(offset = 22)
     short capacity;
 
     boolean locked;

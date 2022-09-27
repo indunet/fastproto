@@ -192,28 +192,24 @@ FastProto支持Java基础数据类型、Timestamp、String和字节数组，以�
 考虑到跨语言跨平台的数据交换，FastProto还引入了无符号类型。[更多][types]
 
 
-|     注解      | Java               | C/C++          | 大小        |
-|:-----------:|:------------------:|:--------------:|:-----------:|
-|  @BoolType  | Boolean / boolean  | bool           | 1 位       |    
-|  @CharType  | Character / char   | --             | 2 字节     |  
-|  @ByteType  | Byte / byte        | char           | 1 字节      |
-| @ShortType  | Short / short      | short          | 2 字节     |  
-| @Int32Type  | Integer / int      | int            | 4 字节     |   
-| @Int64Type  | Long / long        | long long      | 8 字节     |  
-| @FloatType  | Float / float      | float          | 4 字节     | 
-| @DoubleType | Double / double    | double         | 8 字节     | 
-|  @Int8Type  | Integer / int      | char           | 1 字节      |  
-| @Int16Type  | Integer / int      | short          | 2 字节     |
-| @UInt8Type  | Integer / int      | unsigned char  | 1 字节      |  
-| @UInt16Type | Integer / int      | unsigned short | 2 字节     |  
-| @UInt32Type | Long / long        | unsigned long  | 4 字节     |  
-| @UInt64Type | BigInteger        | unsigned long long | 8 字节  |  
-| @BinaryType | byte[]             | char[]         | N 字节     |  
-| @StringType | java.lang.String   | --             | N 字节     |   
-|  @TimeType  | java.sql.Timestamp / java.util.Date | --             | 4 / 8 字节 |
-| @ArrayType  | 基本数据类型数组   | 基本数据类型数组             | N 字节     |
-|  @ListType  | 基本数据类型列表 | --             | N 字节 | 
-|  @EnumType  | 枚举   | 枚举             | N 字节     |
+|     注解      |                 Java                  | C/C++          |    大小    |
+|:-----------:|:-------------------------------------:|:--------------:|:--------:|
+|  @BoolType  |           Boolean / boolean           | bool           |   1 位    |    
+| @CharType`  |           Character / char            | --             |   2 字节   |   
+| @Int32Type  |             Integer / int             | int            |   4 字节   | 
+| @Int64Type  |              Long / long              | long long      |   8 字节   |   
+| @FloatType  |             Float / float             | float          |   4 字节   |  
+| @DoubleType |            Double / double            | double         |   8 字节   |  
+|  @Int8Type  |      Byte / byte / Integer / int      | char           |   1 字节   |  
+| @Int16Type  |     Short / short / Integer / int     | short          |   2 字节   |  
+| @UInt8Type  |             Integer / int             | unsigned char  |   1 字节   |   
+| @UInt16Type |             Integer / int             | unsigned short |   2 字节   |   
+| @UInt32Type |              Long / long              | unsigned long  |   4 字节   |   
+| @UInt64Type |              BigInteger               | unsigned long long |   8 字节   |  
+| @BinaryType |                byte[]                 | char[]         |   N 字节   |  
+| @StringType | String / StringBuilder / StringBuffer | --             |   N 字节   |   
+|  @TimeType  |      Timestamp / Date / Calendar      | --             | 4 / 8 字节 |  
+|  @EnumType  |                 enum                  | enum             |   1 字节   |
 
 FastProto还提供了一些辅助注解，帮助用户进一步自定义二进制格式、解码和编码流程。
 

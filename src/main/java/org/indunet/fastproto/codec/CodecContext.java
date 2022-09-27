@@ -33,9 +33,9 @@ import java.lang.annotation.Annotation;
 public class CodecContext {
     EndianPolicy endianPolicy;
     Class<?> fieldType;
-    Annotation dataType;
+    Annotation dataTypeAnnotation;
 
-    public <T> T getDataType(Class<T> clazz) {
-        return (T) this.dataType;
+    public <T> T getDataTypeAnnotation(Class<T> clazz) {
+        return (T) this.dataTypeAnnotation;
     }
 }

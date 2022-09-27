@@ -16,10 +16,8 @@
 
 package org.indunet.fastproto.annotation
 
-import org.indunet.fastproto.annotation.`type`.{ArrayType => JavaArrayType}
 import org.indunet.fastproto.annotation.`type`.{BinaryType => JavaBinaryType}
 import org.indunet.fastproto.annotation.`type`.{BoolType => JavaBoolType}
-import org.indunet.fastproto.annotation.`type`.{ByteType => JavaByteType}
 import org.indunet.fastproto.annotation.`type`.{CharType => JavaCharType}
 import org.indunet.fastproto.annotation.`type`.{DoubleType => JavaDoubleType}
 import org.indunet.fastproto.annotation.`type`.{EnumType => JavaEnumType}
@@ -27,9 +25,7 @@ import org.indunet.fastproto.annotation.`type`.{FloatType => JavaFloatType}
 import org.indunet.fastproto.annotation.`type`.{Int8Type => JavaInt8Type}
 import org.indunet.fastproto.annotation.`type`.{Int16Type => JavaInt16Type}
 import org.indunet.fastproto.annotation.`type`.{Int32Type => JavaInt32Type}
-import org.indunet.fastproto.annotation.`type`.{ListType => JavaListType}
 import org.indunet.fastproto.annotation.`type`.{Int64Type => JavaInt64Type}
-import org.indunet.fastproto.annotation.`type`.{ShortType => JavaShortType}
 import org.indunet.fastproto.annotation.`type`.{StringType => JavaStringType}
 import org.indunet.fastproto.annotation.`type`.{TimeType => JavaTimestampType}
 import org.indunet.fastproto.annotation.`type`.{UInt8Type => JavaUInt8Type}
@@ -57,10 +53,8 @@ import _root_.scala.annotation.meta.field
  * @since 2.5.0
  */
 package object scala {
-  type ArrayType = JavaArrayType @field
   type BinaryType = JavaBinaryType @field
   type BooleanType = JavaBoolType @field
-  type ByteType = JavaByteType @field
   type CharacterType = JavaCharType @field
   type DoubleType = JavaDoubleType @field
   type EnumType = JavaEnumType @field
@@ -68,9 +62,7 @@ package object scala {
   type Int8Type = JavaInt8Type @field
   type Int16Type = JavaInt16Type @field
   type IntType = JavaInt32Type @field
-  type ListType = JavaListType @field
   type LongType = JavaInt64Type @field
-  type ShortType = JavaShortType @field
   type StringType = JavaStringType @field
   type TimestampType = JavaTimestampType @field
   type UInt8Type = JavaUInt8Type @field

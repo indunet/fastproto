@@ -58,14 +58,14 @@ public class FieldValidator extends TypeValidator {
                             protocolType.getType().getName(), field.getName()), e);
         }
 
-        if (decodingFormula == null && encodingFormula == null) {
-            Arrays.stream(protocolType.javaTypes())
-                    .filter(t -> t == field.getType()
-                                || (field.getType().isEnum() && (((Class<?>) t).isAssignableFrom(field.getType()))))
-                    .findAny()
-                    .orElseThrow(() -> new CodecException(MessageFormat.format(
-                            CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), protocolType.getType().getSimpleName(), field.toString())));  // Field name with class name.
-        }
+//        if (decodingFormula == null && encodingFormula == null) {
+//            Arrays.stream(protocolType.javaTypes())
+//                    .filter(t -> t == field.getType()
+//                                || (field.getType().isEnum() && (((Class<?>) t).isAssignableFrom(field.getType()))))
+//                    .findAny()
+//                    .orElseThrow(() -> new CodecException(MessageFormat.format(
+//                            CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), protocolType.getType().getSimpleName(), field.toString())));  // Field name with class name.
+//        }
 
         this.forward(context);
     }

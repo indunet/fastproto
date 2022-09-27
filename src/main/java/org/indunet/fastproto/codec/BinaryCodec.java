@@ -47,14 +47,14 @@ public class BinaryCodec implements Codec<byte[]> {
     
     @Override
     public byte[] decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataType(BinaryType.class);
+        val type = context.getDataTypeAnnotation(BinaryType.class);
     
         return this.decode(bytes, type.offset(), type.length());
     }
     
     @Override
     public void encode(CodecContext context, byte[] bytes, byte[] value) {
-        val type = context.getDataType(BinaryType.class);
+        val type = context.getDataTypeAnnotation(BinaryType.class);
     
         this.encode(bytes, type.offset(), type.length(), value);
     }

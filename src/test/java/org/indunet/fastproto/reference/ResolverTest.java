@@ -70,7 +70,7 @@ public class ResolverTest {
     @Test
     public void testDecodeContext() {
         val graph = Resolver.resolve(TestObject1.class);
-        val contexts = graph.decodeContexts(new byte[10]);
+        val contexts = graph.decodeReferences();
 
         assertTrue(contexts.size() > 3);
     }
@@ -78,7 +78,7 @@ public class ResolverTest {
     @Test
     public void testEncodeContext() {
         val graph = Resolver.resolve(TestObject1.class);
-        val contexts = graph.encodeContexts(new TestObject1(), new byte[10]);
+        val contexts = graph.encodeReferences(new TestObject1());
 
         // No encode context would be generate while null object.
         assertNotNull(contexts);

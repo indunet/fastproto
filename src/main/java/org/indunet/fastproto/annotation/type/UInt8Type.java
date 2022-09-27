@@ -16,12 +16,8 @@
 
 package org.indunet.fastproto.annotation.type;
 
-import org.indunet.fastproto.annotation.Decoder;
-import org.indunet.fastproto.annotation.Encoder;
-import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
-import org.indunet.fastproto.decoder.UInteger8Decoder;
-import org.indunet.fastproto.encoder.UInteger8Encoder;
 import org.indunet.fastproto.reference.resolve.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.reference.resolve.validate.EncodingFormulaValidator;
 import org.indunet.fastproto.reference.resolve.validate.FieldValidator;
@@ -37,12 +33,10 @@ import java.util.function.Function;
  * Integer type, corresponding to Java Integer/int.
  *
  * @author Deng Ran
- * @see TypeFlag
+ * @see DataType
  * @since 1.2.0
  */
-@TypeFlag
-@Decoder(UInteger8Decoder.class)
-@Encoder(UInteger8Encoder.class)
+@DataType
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

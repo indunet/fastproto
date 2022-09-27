@@ -48,7 +48,7 @@ public class Int64Codec implements Codec<Long> {
 
     @Override
     public Long decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataType(Int64Type.class);
+        val type = context.getDataTypeAnnotation(Int64Type.class);
         val policy = context.getEndianPolicy();
 
         return this.decode(bytes, type.offset(), policy);
@@ -56,7 +56,7 @@ public class Int64Codec implements Codec<Long> {
 
     @Override
     public void encode(CodecContext context, byte[] bytes, Long value) {
-        val type = context.getDataType(Int64Type.class);
+        val type = context.getDataTypeAnnotation(Int64Type.class);
         val policy = context.getEndianPolicy();
 
         this.encode(bytes, type.offset(), policy, value);

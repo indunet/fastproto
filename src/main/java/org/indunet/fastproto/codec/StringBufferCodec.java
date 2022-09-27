@@ -52,14 +52,14 @@ public class StringBufferCodec implements Codec<StringBuffer> {
 
     @Override
     public StringBuffer decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataType(StringType.class);
+        val type = context.getDataTypeAnnotation(StringType.class);
 
         return this.decode(bytes, type.offset(), type.length(), Charset.forName(type.charset()));
     }
 
     @Override
     public void encode(CodecContext context, byte[] bytes, StringBuffer value) {
-        val type = context.getDataType(StringType.class);
+        val type = context.getDataTypeAnnotation(StringType.class);
         val charset = Charset.forName(type.charset());
 
         this.encode(bytes, type.offset(), type.length(), charset, value);

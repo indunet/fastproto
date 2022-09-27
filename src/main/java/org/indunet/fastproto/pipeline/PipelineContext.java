@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,13 +14,28 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.decoder;
+package org.indunet.fastproto.pipeline;
+
+import lombok.Builder;
+import lombok.Data;
+import org.indunet.fastproto.reference.Graph;
 
 /**
+ * Codec Context.
+ *
  * @author Deng Ran
- * @since 1.0.0
+ * @since 1.7.0
  */
-@FunctionalInterface
-public interface TypeDecoder<T> {
-    T decode(DecodeContext context);
+@Data
+@Builder
+public class PipelineContext {
+    byte[] datagram;
+    Graph graph;
+    Object object;
+    Class<?> protocolClass;
+    long codecFeature;
+
+    public <T> T getObject(Class<T> clazz) {
+        return (T) object;
+    }
 }

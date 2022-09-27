@@ -60,14 +60,14 @@ public class CharCodec implements Codec<Character> {
     
     @Override
     public Character decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataType(CharType.class);
+        val type = context.getDataTypeAnnotation(CharType.class);
     
         return this.decode(bytes, type.offset());
     }
     
     @Override
     public void encode(CodecContext context, byte[] bytes, Character value) {
-        val type = context.getDataType(CharType.class);
+        val type = context.getDataTypeAnnotation(CharType.class);
     
         this.encode(bytes, type.offset(), value);
     }

@@ -47,14 +47,14 @@ public class UInt8Codec implements Codec<Integer> {
 
     @Override
     public Integer decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataType(UInt8Type.class);
+        val type = context.getDataTypeAnnotation(UInt8Type.class);
 
         return this.decode(bytes, type.offset());
     }
 
     @Override
     public void encode(CodecContext context, byte[] bytes, Integer value) {
-        val type = context.getDataType(UInt8Type.class);
+        val type = context.getDataTypeAnnotation(UInt8Type.class);
 
         this.encode(bytes, type.offset(), value);
     }

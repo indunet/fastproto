@@ -34,7 +34,6 @@ public interface ProtocolType {
     Class<? extends Annotation> BINARY = BinaryType.class;
     Class<? extends Annotation> BOOL = BoolType.class;
     Class<? extends Annotation> CHAR = CharType.class;
-    Class<? extends Annotation> BYTE = ByteType.class;
     Class<? extends Annotation> DOUBLE = DoubleType.class;
     Class<? extends Annotation> FLOAT = FloatType.class;
     Class<? extends Annotation> INT32 = Int32Type.class;
@@ -42,7 +41,6 @@ public interface ProtocolType {
     Class<? extends Annotation> STRING = StringType.class;
     Class<? extends Annotation> TIME = TimeType.class;
 
-    Class<? extends Annotation> SHORT = ShortType.class;
     Class<? extends Annotation> INT8 = Int8Type.class;
     Class<? extends Annotation> INT16 = Int16Type.class;
     Class<? extends Annotation> UINT8 = UInt8Type.class;
@@ -50,8 +48,6 @@ public interface ProtocolType {
     Class<? extends Annotation> UINT32 = UInt32Type.class;
     Class<? extends Annotation> UINT64 = UInt64Type.class;
     Class<? extends Annotation> ENUM = EnumType.class;
-    Class<? extends Annotation> LIST = ListType.class;
-    Class<? extends Annotation> ARRAY = ArrayType.class;
 
     static boolean isSupported(Type type) {
         return Arrays.stream(ProtocolType.class.getDeclaredFields())

@@ -48,7 +48,7 @@ public class DoubleCodec implements Codec<Double> {
     
     @Override
     public Double decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataType(DoubleType.class);
+        val type = context.getDataTypeAnnotation(DoubleType.class);
         val policy = context.getEndianPolicy();
     
         return this.decode(bytes, type.offset(), policy);
@@ -56,7 +56,7 @@ public class DoubleCodec implements Codec<Double> {
     
     @Override
     public void encode(CodecContext context, byte[] bytes, Double value) {
-        val type = context.getDataType(DoubleType.class);
+        val type = context.getDataTypeAnnotation(DoubleType.class);
         val policy = context.getEndianPolicy();
     
         this.encode(bytes, type.offset(), policy, value);

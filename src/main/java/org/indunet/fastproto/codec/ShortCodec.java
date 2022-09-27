@@ -48,7 +48,7 @@ public class ShortCodec implements Codec<Short> {
 
     @Override
     public Short decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataType(Int16Type.class);
+        val type = context.getDataTypeAnnotation(Int16Type.class);
         val policy = context.getEndianPolicy();
 
         return this.decode(bytes, type.offset(), policy);
@@ -56,7 +56,7 @@ public class ShortCodec implements Codec<Short> {
 
     @Override
     public void encode(CodecContext context, byte[] bytes, Short value) {
-        val type = context.getDataType(Int16Type.class);
+        val type = context.getDataTypeAnnotation(Int16Type.class);
         val policy = context.getEndianPolicy();
 
         this.encode(bytes, type.offset(), policy, value);

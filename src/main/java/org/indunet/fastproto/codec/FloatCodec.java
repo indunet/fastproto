@@ -48,7 +48,7 @@ public class FloatCodec implements Codec<Float> {
 
     @Override
     public Float decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataType(FloatType.class);
+        val type = context.getDataTypeAnnotation(FloatType.class);
         val policy = context.getEndianPolicy();
 
         return this.decode(bytes, type.offset(), policy);
@@ -56,7 +56,7 @@ public class FloatCodec implements Codec<Float> {
 
     @Override
     public void encode(CodecContext context, byte[] bytes, Float value) {
-        val type = context.getDataType(FloatType.class);
+        val type = context.getDataTypeAnnotation(FloatType.class);
         val policy = context.getEndianPolicy();
 
         this.encode(bytes, type.offset(), policy, value);

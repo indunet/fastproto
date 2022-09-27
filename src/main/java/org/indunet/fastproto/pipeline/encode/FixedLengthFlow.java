@@ -18,7 +18,7 @@ package org.indunet.fastproto.pipeline.encode;
 
 import lombok.val;
 import org.indunet.fastproto.pipeline.Pipeline;
-import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.pipeline.PipelineContext;
 import org.indunet.fastproto.pipeline.FlowCode;
 
 /**
@@ -27,9 +27,9 @@ import org.indunet.fastproto.pipeline.FlowCode;
  * @author Deng Ran
  * @since 2.4.0
  */
-public class FixedLengthFlow extends Pipeline<CodecContext> {
+public class FixedLengthFlow extends Pipeline<PipelineContext> {
     @Override
-    public void process(CodecContext context) {
+    public void process(PipelineContext context) {
         val ref = context.getGraph().root();
         val len = ref.getEnableFixedLength().value();
 

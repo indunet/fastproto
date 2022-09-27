@@ -20,9 +20,6 @@ import lombok.*;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.*;
-import org.indunet.fastproto.decoder.DecodeContext;
-import org.indunet.fastproto.decoder.TypeDecoder;
-import org.indunet.fastproto.encoder.TypeEncoder;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 
@@ -32,7 +29,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.List;
-import java.util.function.Consumer;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 /**
@@ -66,19 +63,27 @@ public class Reference {
     EnableFixedLength enableFixedLength;
 
     Field field;
-    Annotation typeAnnotation;
+    Annotation dataTypeAnnotation;
     ProtocolType protocolType;
-    Class<? extends TypeDecoder> decoderClass;
-    Class<? extends TypeEncoder> encoderClass;
-    Class<? extends Function> decodeFormula;
-    Class<? extends Function> encodeFormula;
-    Function<DecodeContext, ?> decoder;
-    Consumer<?> encoder;
+
+    Class<? extends Function> decodeFormulaClass;
+    Class<? extends Function> encodeFormulaClass;
+    Function<byte[], ?> decoder;
+    BiConsumer<byte[], ? super Object> encoder;
 
     Integer byteOffset;
     Integer bitOffset;
     Integer size;
     Integer length;
+
+    public void decode(byte[] bytes) {
+        val value = this.decoder.apply(bytes);
+        this.setValue(value);
+    }
+
+    public void encode(byte[] bytes) {
+        this.encoder.accept(bytes, this.getValue().get());
+    }
 
     @Builder.Default
     ThreadLocal<Object> value = new ThreadLocal<>();

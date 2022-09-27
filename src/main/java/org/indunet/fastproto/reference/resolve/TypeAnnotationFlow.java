@@ -18,7 +18,7 @@ package org.indunet.fastproto.reference.resolve;
 
 import lombok.val;
 import org.indunet.fastproto.ProtocolType;
-import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.reference.Reference;
 import org.indunet.fastproto.util.TypeUtils;
@@ -37,17 +37,15 @@ public class TypeAnnotationFlow extends ResolvePipeline {
         val field = reference.getField();
 
         val typeAnnotation = Arrays.stream(field.getAnnotations())
-                .filter(a -> a.annotationType().isAnnotationPresent(TypeFlag.class))
+                .filter(a -> a.annotationType().isAnnotationPresent(DataType.class))
                 .findAny()
                 .orElseThrow(ResolveException::new);
 
-        reference.setTypeAnnotation(typeAnnotation);
+        reference.setDataTypeAnnotation(typeAnnotation);
         reference.setReferenceType(Reference.ReferenceType.FIELD);
 
-        reference.setDecoderClass(TypeUtils.decoderClass(typeAnnotation));
-        reference.setEncoderClass(TypeUtils.encoderClass(typeAnnotation));
-        reference.setDecodeFormula(TypeUtils.decodingFormula(typeAnnotation));
-        reference.setEncodeFormula(TypeUtils.encodingFormula(typeAnnotation));
+        reference.setDecodeFormulaClass(TypeUtils.decodingFormula(typeAnnotation));
+        reference.setEncodeFormulaClass(TypeUtils.encodingFormula(typeAnnotation));
 
         reference.setProtocolType(ProtocolType.proxy(typeAnnotation));
 
