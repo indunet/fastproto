@@ -57,7 +57,7 @@ public class CalendarCodec implements Codec<Calendar> {
 
     @Override
     public Calendar decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataType(TimeType.class);
+        val type = context.getDataTypeAnnotation(TimeType.class);
         val policy = context.getEndianPolicy();
 
         return this.decode(bytes, type.offset(), policy);
@@ -65,7 +65,7 @@ public class CalendarCodec implements Codec<Calendar> {
 
     @Override
     public void encode(CodecContext context, byte[] bytes, Calendar value) {
-        val type = context.getDataType(TimeType.class);
+        val type = context.getDataTypeAnnotation(TimeType.class);
         val policy = context.getEndianPolicy();
 
         this.encode(bytes, type.offset(), policy, value);

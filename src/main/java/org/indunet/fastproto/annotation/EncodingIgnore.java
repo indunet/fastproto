@@ -23,7 +23,6 @@ import java.lang.annotation.Target;
 
 /**
  * @author Deng Ran
- * @see Encoder
  * @since 1.0.0
  */
 @Target(ElementType.FIELD)

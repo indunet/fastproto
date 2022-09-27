@@ -23,7 +23,7 @@ import org.indunet.fastproto.exception.AddressingException;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.reference.Reference;
 import org.indunet.fastproto.pipeline.Pipeline;
-import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.pipeline.PipelineContext;
 import org.indunet.fastproto.pipeline.FlowCode;
 
 /**
@@ -32,9 +32,9 @@ import org.indunet.fastproto.pipeline.FlowCode;
  * @author Deng Ran
  * @since 1.7.0
  */
-public class InferLengthFlow extends Pipeline<CodecContext> {
+public class InferLengthFlow extends Pipeline<PipelineContext> {
     @Override
-    public void process(CodecContext context) {
+    public void process(PipelineContext context) {
         val graph = context.getGraph();
 
         int max = graph.stream()

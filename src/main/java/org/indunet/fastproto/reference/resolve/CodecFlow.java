@@ -18,16 +18,14 @@ package org.indunet.fastproto.reference.resolve;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.Validator;
-import org.indunet.fastproto.decoder.TypeDecoder;
-import org.indunet.fastproto.encoder.TypeEncoder;
+import org.indunet.fastproto.codec.CodecContext;
+import org.indunet.fastproto.codec.CodecFactory;
 import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.reference.Reference;
 import org.indunet.fastproto.reference.resolve.validate.TypeValidator;
 import org.indunet.fastproto.reference.resolve.validate.ValidatorContext;
-import org.indunet.fastproto.util.TypeUtils;
 
 import java.text.MessageFormat;
-import java.util.function.Function;
 
 /**
  * Resolve decoder and encoder flow.
@@ -38,32 +36,32 @@ import java.util.function.Function;
 public class CodecFlow extends ResolvePipeline {
     @Override
     public void process(Reference reference) {
-        val typeAnnotation = reference.getTypeAnnotation();
-        Class<? extends TypeDecoder> decoderClass = TypeUtils.decoderClass(typeAnnotation);
-        Class<? extends TypeEncoder> encoderClass = TypeUtils.encoderClass(typeAnnotation);
-        Class<? extends Function> afterDecode = TypeUtils.decodingFormula(typeAnnotation);
-        Class<? extends Function> beforeEncode = TypeUtils.encodingFormula(typeAnnotation);
-
-        reference.setDecoderClass(decoderClass);
-        reference.setEncoderClass(encoderClass);
-        reference.setDecodeFormula(afterDecode);
-        reference.setEncodeFormula(beforeEncode);
-
-        val field = reference.getField();
-        val context = ValidatorContext.builder()
-                .field(field)
-                .typeAnnotation(typeAnnotation)
-                .protocolType(reference.getProtocolType())
+        val context = CodecContext.builder()
+                .dataTypeAnnotation(reference.getDataTypeAnnotation())
+                .fieldType(reference.getField().getType())
+                .endianPolicy(reference.getEndianPolicy())
                 .build();
 
+        reference.setDecoder(CodecFactory
+                .createDecoder(context, reference.getDecodeFormulaClass()));
+        reference.setEncoder(CodecFactory
+                .createEncoder(context, reference.getEncodeFormulaClass()));
+
         try {
-            val validator = typeAnnotation.annotationType().getAnnotation(Validator.class);
+            val ctx = ValidatorContext.builder()
+                    .field(reference.getField())
+                    .typeAnnotation(reference.getDataTypeAnnotation())
+                    .protocolType(reference.getProtocolType())
+                    .build();
+            val validator = reference.getDataTypeAnnotation()
+                    .annotationType()
+                    .getAnnotation(Validator.class);
 
             TypeValidator.create(validator.value())
-                    .process(context);
+                    .process(ctx);
         } catch (ResolveException e) {
             throw new ResolveException(MessageFormat.format(
-                    "Fail resolving the filed of %s", field.toString()
+                    "Fail resolving the filed of %s", reference.getField().toString()
             ), e);
         }
 

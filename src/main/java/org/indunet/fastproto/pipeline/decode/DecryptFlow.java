@@ -23,7 +23,7 @@ import org.indunet.fastproto.crypto.Crypto;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CryptoException;
 import org.indunet.fastproto.pipeline.Pipeline;
-import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.pipeline.PipelineContext;
 import org.indunet.fastproto.pipeline.FlowCode;
 
 import java.util.Optional;
@@ -34,9 +34,9 @@ import java.util.Optional;
  * @author Deng Ran
  * @since 2.0.0
  */
-public class DecryptFlow extends Pipeline<CodecContext> {
+public class DecryptFlow extends Pipeline<PipelineContext> {
     @Override
-    public void process(CodecContext context) {
+    public void process(PipelineContext context) {
         val graph = context.getGraph();
         val ref = graph.root();
 

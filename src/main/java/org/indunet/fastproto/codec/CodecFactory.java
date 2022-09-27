@@ -18,14 +18,20 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.type.*;
+import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
+import org.indunet.fastproto.exception.DecodingException;
 
+import java.lang.reflect.ParameterizedType;
 import java.math.BigInteger;
 import java.sql.Timestamp;
-import java.time.Instant;
+import java.text.MessageFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.function.BiConsumer;
+import java.util.function.Function;
 
 /**
  * Codec factory.
@@ -35,6 +41,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class CodecFactory {
     protected static ConcurrentHashMap<Class, ConcurrentHashMap<Class, Codec>> codecMap = new ConcurrentHashMap<>();
+    protected static ConcurrentHashMap<Class<? extends Function>, Function> formulas = new ConcurrentHashMap<>();
 
     static {
         codecMap.put(Int8Type.class, new ConcurrentHashMap<>());
@@ -73,8 +80,8 @@ public class CodecFactory {
         codecMap.get(Int32Type.class).put(Integer.class, int32Codec);
 
         val int64Codec = new Int64Codec();
-        codecMap.get(Int64Type.class).put(int.class, int64Codec);
-        codecMap.get(Int64Type.class).put(Integer.class, int64Codec);
+        codecMap.get(Int64Type.class).put(long.class, int64Codec);
+        codecMap.get(Int64Type.class).put(Long.class, int64Codec);
 
         val uint8Codec = new UInt8Codec();
         codecMap.get(UInt8Type.class).put(int.class, uint8Codec);
@@ -85,8 +92,8 @@ public class CodecFactory {
         codecMap.get(UInt16Type.class).put(Integer.class, uint16Codec);
 
         val uint32Codec = new UInt32Codec();
-        codecMap.get(UInt16Type.class).put(long.class, uint32Codec);
-        codecMap.get(UInt16Type.class).put(Long.class, uint32Codec);
+        codecMap.get(UInt32Type.class).put(long.class, uint32Codec);
+        codecMap.get(UInt32Type.class).put(Long.class, uint32Codec);
 
         val uint64Codec = new UInt64Codec();
         codecMap.get(UInt64Type.class).put(BigInteger.class, uint64Codec);
@@ -130,17 +137,67 @@ public class CodecFactory {
         codecMap.get(BinaryType.class).put(byte[].class, binaryCodec);
     }
 
-    public static Codec create(Class type, Class fieldClass) {
-        if (!codecMap.contains(type)) {
+    public static Codec createCodec(Class type, Class fieldClass) {
+        if (!codecMap.containsKey(type)) {
             throw new CodecException(String.format("%s is not supported.", type.toString()));
         }
 
         val map = codecMap.get(type);
 
-        if (!map.contains(fieldClass)) {
+        if (Enum.class.isAssignableFrom(fieldClass)) {
+            return map.get(Enum.class);
+        } else if (!map.containsKey(fieldClass)) {
             throw new CodecException(String.format("Codec of %s cannot be found.", fieldClass.toString()));
         } else {
             return map.get(fieldClass);
+        }
+    }
+
+    public static <T, R> Function<T, R> createFormula(Class<? extends Function> clazz) {
+        return formulas.computeIfAbsent(clazz, c -> {
+            try {
+                return c.newInstance();
+            } catch (InstantiationException | IllegalAccessException e) {
+                e.printStackTrace();
+                throw new DecodingException(
+                        MessageFormat.format(CodecError.FAIL_INITIALIZING_DECODE_FORMULA.getMessage(), clazz.getName()), e);
+            }
+        });
+    }
+
+    public static Function<byte[], ?> createDecoder(CodecContext context, Class<? extends Function> clazz) {
+        if (clazz != null) {
+            val type = Arrays.stream(clazz.getGenericInterfaces())
+                    .filter(i -> i instanceof ParameterizedType)
+                    .map(i -> ((ParameterizedType) i).getActualTypeArguments())
+                    .map(a -> a[0])
+                    .findAny()
+                    .get();
+
+            Function<byte[], ?> func = (byte[] bytes) -> createCodec(context.getDataTypeAnnotation().annotationType(), (Class) type)
+                    .decode(context, bytes);
+
+            return func.andThen(createFormula(clazz));
+        } else {
+            return (byte[] bytes) -> createCodec(context.getDataTypeAnnotation().annotationType(), context.getFieldType())
+                    .decode(context, bytes);
+        }
+    }
+
+    public static BiConsumer<byte[], ? super Object> createEncoder(CodecContext context, Class<? extends Function> clazz) {
+        if (clazz != null) {
+            val type = Arrays.stream(clazz.getGenericInterfaces())
+                    .filter(i -> i instanceof ParameterizedType)
+                    .map(i -> ((ParameterizedType) i).getActualTypeArguments())
+                    .map(a -> a[1])
+                    .findAny()
+                    .get();
+
+            return (bytes, value) -> createCodec(context.getDataTypeAnnotation().annotationType(), (Class) type)
+                    .encode(context, bytes, createFormula(clazz).apply(value));
+        } else {
+            return (bytes, value) -> createCodec(context.getDataTypeAnnotation().annotationType(), context.getFieldType())
+                    .encode(context, bytes, value);
         }
     }
 }

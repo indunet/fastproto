@@ -18,7 +18,7 @@ package org.indunet.fastproto.pipeline.decode;
 
 import lombok.NonNull;
 import lombok.val;
-import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.pipeline.PipelineContext;
 import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.ProtocolVersionException;
@@ -31,9 +31,9 @@ import org.indunet.fastproto.pipeline.FlowCode;
  * @author Deng Ran
  * @since 1.7.0
  */
-public class VerifyVersionFlow extends Pipeline<CodecContext> {
+public class VerifyVersionFlow extends Pipeline<PipelineContext> {
     @Override
-    public void process(@NonNull CodecContext context) {
+    public void process(@NonNull PipelineContext context) {
         val reference = context.getGraph().root();
         val versions = reference.getEnableProtocolVersions();
         val bytes = context.getDatagram();

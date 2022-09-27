@@ -23,7 +23,6 @@ import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.annotation.EnableCrypto;
 import org.indunet.fastproto.annotation.EnableProtocolVersion;
 import org.indunet.fastproto.annotation.Endian;
-import org.indunet.fastproto.annotation.type.ArrayType;
 import org.indunet.fastproto.annotation.type.UInt16Type;
 import org.indunet.fastproto.annotation.type.UInt64Type;
 import org.indunet.fastproto.checksum.Crc32Checker;
@@ -317,23 +316,6 @@ public class FastProtoTest {
         assertArrayEquals(datagram, FastProto.toBytes(phone, Phone.getLength()));
     }
 
-    @Test
-    public void testArray() {
-        val datagram = new byte[10];
-
-        datagram[0] = 1;
-        datagram[2] = 2;
-        datagram[4] = 3;
-        datagram[6] = 4;
-        datagram[8] = 5;
-
-        val expected = new ArrayObject();
-        expected.setInts(new int[]{1, 2, 3, 4, 5});
-
-        assertEquals(expected.toString(), FastProto.parse(datagram, ArrayObject.class).toString());
-        assertArrayEquals(datagram, FastProto.toBytes(expected, 10));
-    }
-
     @Endian(EndianPolicy.BIG)
     public static class NonObject {
 
@@ -352,11 +334,5 @@ public class FastProtoTest {
     @EnableCrypto(key = "330926")
     public static class CryptoObject {
 
-    }
-
-    @Data
-    public static class ArrayObject {
-        @ArrayType(value = 0, length = 5, genericType = UInt16Type.class)
-        int[] ints;
     }
 }

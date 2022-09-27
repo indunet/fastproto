@@ -19,11 +19,6 @@ package org.indunet.fastproto.util;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.val;
-import org.indunet.fastproto.ProtocolType;
-import org.indunet.fastproto.annotation.Decoder;
-import org.indunet.fastproto.annotation.Encoder;
-import org.indunet.fastproto.decoder.TypeDecoder;
-import org.indunet.fastproto.encoder.TypeEncoder;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
 
@@ -75,20 +70,6 @@ public class TypeUtils {
                 throw new CodecException(
                         MessageFormat.format(CodecError.UNSUPPORTED_TYPE.getMessage(), name));
         }
-    }
-
-    public static Class<? extends TypeDecoder> decoderClass(@NonNull Annotation typeAnnotation) {
-        return Optional.of(typeAnnotation.annotationType())
-                .map(t -> t.getAnnotation(Decoder.class))
-                .map(Decoder::value)
-                .orElse(null);
-    }
-
-    public static Class<? extends TypeEncoder> encoderClass(@NonNull Annotation typeAnnotation) {
-        return Optional.of(typeAnnotation.annotationType())
-                .map(t -> t.getAnnotation(Encoder.class))
-                .map(Encoder::value)
-                .orElse(null);
     }
 
     public static Class<? extends Function> encodingFormula(@NonNull Annotation typeAnnotation) {

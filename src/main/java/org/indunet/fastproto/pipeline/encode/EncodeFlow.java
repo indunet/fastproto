@@ -17,17 +17,14 @@
 package org.indunet.fastproto.pipeline.encode;
 
 import lombok.val;
-import org.indunet.fastproto.encoder.EncodeContext;
-import org.indunet.fastproto.encoder.EncoderFactory;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.pipeline.Pipeline;
-import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.pipeline.PipelineContext;
 import org.indunet.fastproto.pipeline.FlowCode;
 
 import java.text.MessageFormat;
-import java.util.List;
-import java.util.function.Consumer;
+
 
 /**
  * Encode flow.
@@ -35,32 +32,21 @@ import java.util.function.Consumer;
  * @author Deng Ran
  * @since 1.7.0
  */
-public class EncodeFlow extends Pipeline<CodecContext> {
+public class EncodeFlow extends Pipeline<PipelineContext> {
     @Override
-    public void process(CodecContext context) {
-        // val assist = context.getTypeAssist();
+    public void process(PipelineContext context) {
         val graph = context.getGraph();
         val object = context.getObject();
-        val datagram = context.getDatagram();
+        val bytes = context.getDatagram();
 
-        List<EncodeContext> encodeContexts = graph.encodeContexts(object, datagram);
+        val refs = graph.encodeReferences(object);
 
-        encodeContexts
-                .forEach(c -> {
-                    val ref = c.getReference();
-
+        refs.forEach(r -> {
                     try {
-                        if (ref.getEncodeFormula() != null) {
-                            Object o = EncoderFactory.getFormula(ref.getEncodeFormula())
-                                    .apply(c.getValue());
-                            c.setValue(o);
-                        }
-
-                        Consumer<EncodeContext> consumer = EncoderFactory.getEncoder(ref.getEncoderClass());
-                        consumer.accept(c);
+                        r.encode(bytes);
                     } catch (EncodingException e) {
                         throw new EncodingException(MessageFormat.format(
-                                CodecError.FAIL_ENCODING_FIELD.getMessage(), ref.getField().toString()),
+                                CodecError.FAIL_ENCODING_FIELD.getMessage(), r.getField().toString()),
                                 e);
                     }
                 });

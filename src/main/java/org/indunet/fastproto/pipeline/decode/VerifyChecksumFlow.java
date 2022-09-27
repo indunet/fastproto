@@ -22,7 +22,7 @@ import org.indunet.fastproto.checksum.Checker;
 import org.indunet.fastproto.exception.CheckSumException;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.pipeline.Pipeline;
-import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.pipeline.PipelineContext;
 import org.indunet.fastproto.pipeline.FlowCode;
 
 /**
@@ -31,9 +31,9 @@ import org.indunet.fastproto.pipeline.FlowCode;
  * @author Deng Ran
  * @since 1.7.0
  */
-public class VerifyChecksumFlow extends Pipeline<CodecContext> {
+public class VerifyChecksumFlow extends Pipeline<PipelineContext> {
     @Override
-    public void process(CodecContext context) {
+    public void process(PipelineContext context) {
         val protocolClass = context.getProtocolClass();
         val datagram = context.getDatagram();
 

@@ -16,12 +16,8 @@
 
 package org.indunet.fastproto.annotation.type;
 
-import org.indunet.fastproto.annotation.Decoder;
-import org.indunet.fastproto.annotation.Encoder;
-import org.indunet.fastproto.annotation.TypeFlag;
+import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
-import org.indunet.fastproto.decoder.BinaryDecoder;
-import org.indunet.fastproto.encoder.BinaryEncoder;
 import org.indunet.fastproto.reference.resolve.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.reference.resolve.validate.EncodingFormulaValidator;
 import org.indunet.fastproto.reference.resolve.validate.FieldValidator;
@@ -37,12 +33,10 @@ import java.util.function.Function;
  * Binary type, corresponding to Java byte array.
  *
  * @author Deng Ran
- * @see TypeFlag
+ * @see DataType
  * @since 1.0.0
  */
-@TypeFlag
-@Decoder(BinaryDecoder.class)
-@Encoder(BinaryEncoder.class)
+@DataType
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)

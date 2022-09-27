@@ -50,7 +50,7 @@ public class UInt64Codec implements Codec<BigInteger> {
 
     @Override
     public BigInteger decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataType(UInt64Type.class);
+        val type = context.getDataTypeAnnotation(UInt64Type.class);
         val policy = context.getEndianPolicy();
 
         return this.decode(bytes, type.offset(), policy);
@@ -58,7 +58,7 @@ public class UInt64Codec implements Codec<BigInteger> {
 
     @Override
     public void encode(CodecContext context, byte[] bytes, BigInteger value) {
-        val type = context.getDataType(UInt64Type.class);
+        val type = context.getDataTypeAnnotation(UInt64Type.class);
         val policy = context.getEndianPolicy();
 
         this.encode(bytes, type.offset(), policy, value);

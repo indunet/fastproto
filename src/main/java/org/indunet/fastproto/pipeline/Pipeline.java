@@ -100,11 +100,11 @@ public abstract class Pipeline<T> {
 
     protected static Pipeline<ValidatorContext> validateFlow;
 
-    public static Pipeline<CodecContext> getDecodeFlow(long codecFeature) {
+    public static Pipeline<PipelineContext> getDecodeFlow(long codecFeature) {
         return decodeFlows.computeIfAbsent(codecFeature, __ -> create(decodeFlowClasses, codecFeature));
     }
 
-    public static Pipeline<CodecContext> getEncodeFlow(long codecFeature) {
+    public static Pipeline<PipelineContext> getEncodeFlow(long codecFeature) {
         return encodeFlows.computeIfAbsent(codecFeature, __ -> create(encodeFlowClasses, codecFeature));
     }
 

@@ -201,28 +201,24 @@ public class Weather {
 FastProto supports Java primitive data types, Timestamp, String and byte array. The above types can be replaced by `@AutoType`.
 Taking into account cross-language and cross-platform data exchange, FastProto also introduces unsigned types. [more][types]
 
-| Annotation  | Java               | C/C++          | Size        |
-|:-----------:|:------------------:|:--------------:|:-----------:|
-|  @BoolType  | Boolean / boolean  | bool           | 1 bit       |    
-| @CharType`  | Character / char   | --             | 2 bytes     |   
-|  @ByteType  | Byte / byte        | char           | 1 byte      |  
-| @ShortType  | Short / short      | short          | 2 bytes     |   
-| @Int32Type  | Integer / int      | int            | 4 bytes     | 
-| @Int64Type  | Long / long        | long long      | 8 bytes     |   
-| @FloatType  | Float / float      | float          | 4 bytes     |  
-| @DoubleType | Double / double    | double         | 8 bytes     |  
-|  @Int8Type  | Integer / int      | char           | 1 byte      |  
-| @Int16Type  | Integer / int      | short          | 2 bytes     |  
-| @UInt8Type  | Integer / int      | unsigned char  | 1 byte      |   
-| @UInt16Type | Integer / int      | unsigned short | 2 bytes     |   
-| @UInt32Type | Long / long        | unsigned long  | 4 bytes     |   
-| @UInt64Type | BigInteger        | unsigned long long | 8 bytes  |  
-| @BinaryType | byte[]             | char[]         | N bytes     |  
-| @StringType | java.lang.String   | --             | N bytes     |   
-|  @TimeType  | java.sql.Timestamp / java.util.Date | --             | 4 / 8 bytes |  
-| @ArrayType  | primitive type array   | primitive type array    | N 字节     |  
-|  @ListType  | primitive type list | --             | N 字节 |  
-|  @EnumType  | enum   | enum             | N 字节     |
+| Annotation  |                 Java                  | C/C++          |    Size     |
+|:-----------:|:-------------------------------------:|:--------------:|:-----------:|
+|  @BoolType  |           Boolean / boolean           | bool           |    1 bit    |    
+| @CharType`  |           Character / char            | --             |   2 bytes   |   
+| @Int32Type  |             Integer / int             | int            |   4 bytes   | 
+| @Int64Type  |              Long / long              | long long      |   8 bytes   |   
+| @FloatType  |             Float / float             | float          |   4 bytes   |  
+| @DoubleType |            Double / double            | double         |   8 bytes   |  
+|  @Int8Type  |      Byte / byte / Integer / int      | char           |   1 byte    |  
+| @Int16Type  |     Short / short / Integer / int     | short          |   2 bytes   |  
+| @UInt8Type  |             Integer / int             | unsigned char  |   1 byte    |   
+| @UInt16Type |             Integer / int             | unsigned short |   2 bytes   |   
+| @UInt32Type |              Long / long              | unsigned long  |   4 bytes   |   
+| @UInt64Type |              BigInteger               | unsigned long long |   8 bytes   |  
+| @BinaryType |                byte[]                 | char[]         |   N bytes   |  
+| @StringType | String / StringBuilder / StringBuffer | --             |   N bytes   |   
+|  @TimeType  |      Timestamp / Date / Calendar      | --             | 4 / 8 bytes |  
+|  @EnumType  |                 enum                  | enum             |   1 bytes   |
 
 FastProto also provides some auxiliary annotations to help users further customize the binary format, decoding and encoding process.
 

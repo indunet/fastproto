@@ -17,14 +17,12 @@
 package org.indunet.fastproto.pipeline.decode;
 
 import lombok.val;
-import org.indunet.fastproto.decoder.DecodeContext;
-import org.indunet.fastproto.decoder.DecoderFactory;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.reference.Reference;
 import org.indunet.fastproto.reference.Graph;
 import org.indunet.fastproto.pipeline.Pipeline;
-import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.pipeline.PipelineContext;
 import org.indunet.fastproto.pipeline.FlowCode;
 
 import java.text.MessageFormat;
@@ -37,9 +35,9 @@ import java.util.function.Function;
  * @author Deng Ran
  * @since 1.7.0
  */
-public class DecodeFlow extends Pipeline<CodecContext> {
+public class DecodeFlow extends Pipeline<PipelineContext> {
     @Override
-    public void process(CodecContext context) {
+    public void process(PipelineContext context) {
         // val assist = context.getTypeAssist();
         val reference = context.getGraph().root();
         val datagram = context.getDatagram();
@@ -49,20 +47,12 @@ public class DecodeFlow extends Pipeline<CodecContext> {
         this.forward(context);
     }
 
-    public Object linearDecode(byte[] datagram, Graph graph) {
-        List<DecodeContext> decodeContexts = graph.decodeContexts(datagram);
+    public Object linearDecode(byte[] bytes, Graph graph) {
+        val refs = graph.decodeReferences();
 
-        decodeContexts
-                .forEach(c -> {
-                    Reference r = c.getReference();
-                    Function<DecodeContext, ?> func = DecoderFactory.getDecoder(
-                            r.getDecoderClass(),
-                            r.getDecodeFormula());
-
+        refs.forEach(r -> {
                     try {
-                        Object value = func.apply(c);
-
-                        r.setValue(value);
+                        r.decode(bytes);
                     } catch (DecodingException e) {
                         throw new DecodingException(MessageFormat.format(
                                 CodecError.FAIL_DECODING_FIELD.getMessage(), r.getField().toString()), e);

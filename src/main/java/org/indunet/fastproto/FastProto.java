@@ -20,7 +20,7 @@ import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.reference.Resolver;
 import org.indunet.fastproto.pipeline.Pipeline;
-import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.pipeline.PipelineContext;
 
 /**
  * FastProto API.
@@ -51,7 +51,7 @@ public class FastProto {
     public static <T> T parse(@NonNull byte[] datagram, @NonNull Class<T> protocolClass, long... codecFeatures) {
         val graph = Resolver.resolve(protocolClass);
         val codecFeature = CodecFeature.of(codecFeatures);
-        val context = CodecContext.builder()
+        val context = PipelineContext.builder()
                 .datagram(datagram)
                 .protocolClass(protocolClass)
                 .codecFeature(codecFeature)
@@ -90,7 +90,7 @@ public class FastProto {
     public static byte[] toBytes(@NonNull Object object, long... codecFeatures) {
         val graph = Resolver.resolve(object.getClass());
         val codecFeature = CodecFeature.of(codecFeatures);
-        val context = CodecContext.builder()
+        val context = PipelineContext.builder()
                 .object(object)
                 .protocolClass(object.getClass())
                 .codecFeature(codecFeature)
@@ -107,7 +107,7 @@ public class FastProto {
     public static byte[] toBytes(@NonNull Object object, int length, long... codecFeatures) {
         val graph = Resolver.resolve(object.getClass());
         val codecFeature = CodecFeature.of(codecFeatures);
-        val context = CodecContext.builder()
+        val context = PipelineContext.builder()
                 .object(object)
                 .protocolClass(object.getClass())
                 .codecFeature(codecFeature)

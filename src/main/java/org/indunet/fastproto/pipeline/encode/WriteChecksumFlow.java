@@ -20,7 +20,7 @@ import lombok.val;
 import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.checksum.Checker;
 import org.indunet.fastproto.pipeline.Pipeline;
-import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.pipeline.PipelineContext;
 import org.indunet.fastproto.pipeline.FlowCode;
 
 /**
@@ -29,9 +29,9 @@ import org.indunet.fastproto.pipeline.FlowCode;
  * @author Deng Ran
  * @since 1.7.0
  */
-public class WriteChecksumFlow extends Pipeline<CodecContext> {
+public class WriteChecksumFlow extends Pipeline<PipelineContext> {
     @Override
-    public void process(CodecContext context) {
+    public void process(PipelineContext context) {
         val object = context.getObject();
         val datagram = context.getDatagram();
 

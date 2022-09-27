@@ -21,7 +21,7 @@ import org.indunet.fastproto.CodecFeature;
 import org.indunet.fastproto.annotation.EnableCompress;
 import org.indunet.fastproto.compress.Compressor;
 import org.indunet.fastproto.pipeline.Pipeline;
-import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.pipeline.PipelineContext;
 import org.indunet.fastproto.pipeline.FlowCode;
 
 /**
@@ -30,9 +30,9 @@ import org.indunet.fastproto.pipeline.FlowCode;
  * @author Deng Ran
  * @since 1.7.0
  */
-public class CompressFlow extends Pipeline<CodecContext> {
+public class CompressFlow extends Pipeline<PipelineContext> {
     @Override
-    public void process(CodecContext context) {
+    public void process(PipelineContext context) {
         boolean enableCompress =
                     (context.getCodecFeature() & CodecFeature.DISABLE_COMPRESS) == 0;
         Class<?> protocolClass = context.getProtocolClass();

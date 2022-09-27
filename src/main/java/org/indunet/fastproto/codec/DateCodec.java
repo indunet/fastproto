@@ -55,7 +55,7 @@ public class DateCodec implements Codec<Date> {
     @Override
     public Date decode(CodecContext context, byte[] bytes) {
         val policy = context.getEndianPolicy();
-        val type = context.getDataType(TimeType.class);
+        val type = context.getDataTypeAnnotation(TimeType.class);
     
         return this.decode(bytes, type.offset(), policy);
     }
@@ -63,7 +63,7 @@ public class DateCodec implements Codec<Date> {
     @Override
     public void encode(CodecContext context, byte[] bytes, Date value) {
         val policy = context.getEndianPolicy();
-        val type = context.getDataType(TimeType.class);
+        val type = context.getDataTypeAnnotation(TimeType.class);
     
         this.encode(bytes, type.offset(), policy, value);
     }

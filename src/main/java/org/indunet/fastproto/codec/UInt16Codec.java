@@ -48,7 +48,7 @@ public class UInt16Codec implements Codec<Integer> {
 
     @Override
     public Integer decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataType(UInt16Type.class);
+        val type = context.getDataTypeAnnotation(UInt16Type.class);
         val policy = context.getEndianPolicy();
 
         return this.decode(bytes, type.offset(), policy);
@@ -56,7 +56,7 @@ public class UInt16Codec implements Codec<Integer> {
 
     @Override
     public void encode(CodecContext context, byte[] bytes, Integer value) {
-        val type = context.getDataType(UInt16Type.class);
+        val type = context.getDataTypeAnnotation(UInt16Type.class);
         val policy = context.getEndianPolicy();
 
         this.encode(bytes, type.offset(), policy, value);

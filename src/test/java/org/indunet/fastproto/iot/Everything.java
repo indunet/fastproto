@@ -47,10 +47,10 @@ public class Everything {
     @BoolType(byteOffset = 0, bitOffset = 1)
     Boolean aBoolean;
 
-    @ByteType(offset = 1)
+    @Int8Type(offset = 1)
     Byte aByte;
 
-    @ShortType(offset = 2)
+    @Int16Type(offset = 2)
     Short aShort;
 
     @Int32Type(offset = 4)

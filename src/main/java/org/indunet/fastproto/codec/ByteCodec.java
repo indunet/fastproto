@@ -48,14 +48,14 @@ public class ByteCodec implements Codec<Byte> {
     
     @Override
     public Byte decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataType(Int8Type.class);
+        val type = context.getDataTypeAnnotation(Int8Type.class);
     
         return this.decode(bytes, type.offset());
     }
     
     @Override
     public void encode(CodecContext context, byte[] bytes, Byte value) {
-        val type = context.getDataType(Int8Type.class);
+        val type = context.getDataTypeAnnotation(Int8Type.class);
     
         this.encode(bytes, type.offset(), value);
     }

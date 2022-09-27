@@ -17,7 +17,7 @@
 package org.indunet.fastproto.pipeline.encode;
 
 import lombok.val;
-import org.indunet.fastproto.pipeline.CodecContext;
+import org.indunet.fastproto.pipeline.PipelineContext;
 import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.FlowCode;
@@ -28,9 +28,9 @@ import org.indunet.fastproto.pipeline.FlowCode;
  * @author Deng Ran
  * @since 1.7.0
  */
-public class WriteVersionFlow extends Pipeline<CodecContext> {
+public class WriteVersionFlow extends Pipeline<PipelineContext> {
     @Override
-    public void process(CodecContext context) {
+    public void process(PipelineContext context) {
         val reference = context.getGraph().root();
         val versions = reference.getEnableProtocolVersions();
         val bytes = context.getDatagram();
