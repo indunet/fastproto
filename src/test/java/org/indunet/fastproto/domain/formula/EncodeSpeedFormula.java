@@ -14,17 +14,17 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.iot.formula;
+package org.indunet.fastproto.domain.formula;
 
 import java.util.function.Function;
 
 /**
- * @author Deng Ran
- * @since 1.2.4
+ * @author Chance
+ * @since 1.0.0
  */
-public class DecodeSpeedFormula implements Function<Integer, Float> {
+public class EncodeSpeedFormula implements Function<Float, Integer> {
     @Override
-    public Float apply(Integer value) {
-        return value * 0.1f;
+    public Integer apply(Float value) {
+        return (int) (value * 10);
     }
 }

@@ -139,7 +139,7 @@ public class Reference {
         }
     }
 
-    public Object getValue(Object object) {
+    public Object parse(Object object) {
         try {
             if (object == null) {
                 return null;

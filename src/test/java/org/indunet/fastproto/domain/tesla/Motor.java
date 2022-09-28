@@ -14,17 +14,25 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.iot.formula;
+package org.indunet.fastproto.domain.tesla;
 
-import java.util.function.Function;
+import lombok.*;
+import org.indunet.fastproto.annotation.type.FloatType;
+import org.indunet.fastproto.annotation.type.Int16Type;
+import org.indunet.fastproto.annotation.type.Int32Type;
 
-/**
- * @author Chance
- * @since 1.0.0
- */
-public class EncodeSpeedFormula implements Function<Float, Integer> {
-    @Override
-    public Integer apply(Float value) {
-        return (int) (value * 10);
-    }
+@Data
+@ToString
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
+public class Motor {
+    @Int16Type(offset = 34)
+    short voltage;
+
+    @Int32Type(offset = 36)
+    int current;
+
+    @FloatType(offset = 40)
+    float temperature;
 }

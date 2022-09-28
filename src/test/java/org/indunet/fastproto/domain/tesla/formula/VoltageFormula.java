@@ -14,27 +14,17 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.iot.tesla;
+package org.indunet.fastproto.domain.tesla.formula;
 
-import lombok.*;
-import org.indunet.fastproto.annotation.type.FloatType;
-import org.indunet.fastproto.annotation.type.Int16Type;
-import org.indunet.fastproto.annotation.type.Int32Type;
+import java.util.function.Function;
 
-@Data
-@ToString
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
-public class Battery {
-    @Int16Type(offset = 22)
-    short capacity;
-
-    boolean locked;
-
-    @Int32Type(offset = 26)
-    int voltage;
-
-    @FloatType(offset = 30)
-    float temperature;
+/**
+ * @author Deng Ran
+ * @version 1.0
+ */
+public class VoltageFormula implements Function<Byte, Double> {
+    @Override
+    public Double apply(Byte value) {
+        return value * 0.1;
+    }
 }

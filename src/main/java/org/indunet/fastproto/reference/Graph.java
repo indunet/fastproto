@@ -35,6 +35,8 @@ import java.util.stream.Stream;
  */
 public class Graph {
     protected LinkedHashMap<Reference, ArrayList<Reference>> adj = new LinkedHashMap<>();
+    protected List<Reference> validReferences;
+
 
     protected Graph() {
 
@@ -128,12 +130,15 @@ public class Graph {
                 });
     }
 
-    public List<Reference> decodeReferences() {
-        return this.adj.values().stream()
-                .flatMap(Collection::stream)
-                .filter(r -> r.referenceType == Reference.ReferenceType.FIELD)
-                .filter(r -> !r.decodingIgnore)
-                .collect(Collectors.toList());
+    public synchronized List<Reference> getValidReferences() {
+        if (this.validReferences == null) {
+            this.validReferences = this.adj.values().stream()
+                    .flatMap(Collection::stream)
+                    .filter(r -> r.referenceType == Reference.ReferenceType.FIELD)
+                    .collect(Collectors.toList());
+        }
+
+        return this.validReferences;
     }
 
     public Stream<Reference> stream() {
@@ -205,17 +210,17 @@ public class Graph {
         }
     }
 
-    public List<Reference> encodeReferences(@NonNull Object object) {
+    public void copy(Object object) {
         Set<Reference> marks = new HashSet<>();
         Deque<Reference> queue = new ArrayDeque<>();
-        List<Reference> list = new ArrayList<>();
+        // List<Reference> list = new ArrayList<>();
 
         marks.add(this.root());
         queue.add(this.root());
 
         while (!queue.isEmpty()) {
             val ref = queue.remove();
-            val obj = ref.getValue(object);
+            val obj = ref.parse(object);
 
             // Ignore null object.
             if (obj == null) {
@@ -225,10 +230,9 @@ public class Graph {
             this.adj(ref).stream()
                     .filter(r -> r.getReferenceType() == ReferenceType.FIELD)
                     .filter(r -> !r.getEncodingIgnore())
-                    .filter(r -> r.getValue(obj) != null)   // Filter null object.
+                    // .filter(r -> r.parse(obj) != null)   // Filter null object.
                     .forEach(r -> {
-                        r.setValue(r.getValue(obj));
-                        list.add(r);
+                        r.setValue(r.parse(obj));
                     });
 
             for (val r: this.adj(ref)) {
@@ -238,7 +242,5 @@ public class Graph {
                 }
             }
         }
-
-        return list;
     }
 }

@@ -70,17 +70,18 @@ public class ResolverTest {
     @Test
     public void testDecodeContext() {
         val graph = Resolver.resolve(TestObject1.class);
-        val contexts = graph.decodeReferences();
+        val refs = graph.getValidReferences();
 
-        assertTrue(contexts.size() > 3);
+        assertTrue(refs.size() > 3);
     }
 
     @Test
     public void testEncodeContext() {
         val graph = Resolver.resolve(TestObject1.class);
-        val contexts = graph.encodeReferences(new TestObject1());
+        val refs = graph.getValidReferences();
 
+        graph.copy(new TestObject1());
         // No encode context would be generate while null object.
-        assertNotNull(contexts);
+        assertNotNull(refs);
     }
 }
