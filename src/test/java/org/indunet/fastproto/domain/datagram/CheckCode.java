@@ -1,4 +1,4 @@
-package org.indunet.fastproto.iot.datagram;
+package org.indunet.fastproto.domain.datagram;
 
 /**
  * @author Deng Ran

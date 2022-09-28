@@ -38,10 +38,13 @@ public class EncodeFlow extends Pipeline<PipelineContext> {
         val graph = context.getGraph();
         val object = context.getObject();
         val bytes = context.getDatagram();
+        val refs = graph.getValidReferences();
 
-        val refs = graph.encodeReferences(object);
-
-        refs.forEach(r -> {
+        graph.copy(object);
+        refs.stream()
+                .filter(r -> !r.getEncodingIgnore())
+                .filter(r -> r.getValue().get() != null)
+                .forEach(r -> {
                     try {
                         r.encode(bytes);
                     } catch (EncodingException e) {

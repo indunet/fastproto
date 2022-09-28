@@ -16,14 +16,12 @@
 
 package org.indunet.fastproto;
 
-import lombok.Data;
 import lombok.SneakyThrows;
 import lombok.val;
 import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.annotation.EnableCrypto;
 import org.indunet.fastproto.annotation.EnableProtocolVersion;
 import org.indunet.fastproto.annotation.Endian;
-import org.indunet.fastproto.annotation.type.UInt16Type;
 import org.indunet.fastproto.annotation.type.UInt64Type;
 import org.indunet.fastproto.checksum.Crc32Checker;
 import org.indunet.fastproto.compress.DeflateCompressor;
@@ -33,14 +31,14 @@ import org.indunet.fastproto.exception.CheckSumException;
 import org.indunet.fastproto.exception.CryptoException;
 import org.indunet.fastproto.exception.FixedLengthException;
 import org.indunet.fastproto.exception.ProtocolVersionException;
-import org.indunet.fastproto.iot.Everything;
-import org.indunet.fastproto.iot.Sensor;
-import org.indunet.fastproto.iot.Weather;
-import org.indunet.fastproto.iot.color.Phone;
-import org.indunet.fastproto.iot.datagram.StateDatagram;
-import org.indunet.fastproto.iot.tesla.Battery;
-import org.indunet.fastproto.iot.tesla.Motor;
-import org.indunet.fastproto.iot.tesla.Tesla;
+import org.indunet.fastproto.domain.Everything;
+import org.indunet.fastproto.domain.Sensor;
+import org.indunet.fastproto.domain.Weather;
+import org.indunet.fastproto.domain.color.Phone;
+import org.indunet.fastproto.domain.datagram.StateDatagram;
+import org.indunet.fastproto.domain.tesla.Battery;
+import org.indunet.fastproto.domain.tesla.Motor;
+import org.indunet.fastproto.domain.tesla.Tesla;
 import org.indunet.fastproto.util.CodecUtils;
 import org.junit.jupiter.api.Test;
 

@@ -14,26 +14,17 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.iot;
+package org.indunet.fastproto.domain.formula;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.indunet.fastproto.annotation.EnableFixedLength;
-import org.indunet.fastproto.annotation.type.Int16Type;
-import org.indunet.fastproto.annotation.type.UInt16Type;
+import java.util.function.Function;
 
 /**
  * @author Deng Ran
- * @since 1.7.4
+ * @since 1.2.4
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@EnableFixedLength(10)
-public class Sensor {
-    @Int16Type(offset = 0)
-    int temperature;
-    @UInt16Type(offset = 2)
-    int humidity;
+public class DecodeSpeedFormula implements Function<Integer, Float> {
+    @Override
+    public Float apply(Integer value) {
+        return value * 0.1f;
+    }
 }

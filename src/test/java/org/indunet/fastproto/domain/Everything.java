@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.iot;
+package org.indunet.fastproto.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,8 +26,8 @@ import org.indunet.fastproto.annotation.EnableProtocolVersion;
 import org.indunet.fastproto.annotation.type.*;
 import org.indunet.fastproto.compress.CompressPolicy;
 import org.indunet.fastproto.crypto.CryptoPolicy;
-import org.indunet.fastproto.iot.formula.DecodeSpeedFormula;
-import org.indunet.fastproto.iot.formula.EncodeSpeedFormula;
+import org.indunet.fastproto.domain.formula.DecodeSpeedFormula;
+import org.indunet.fastproto.domain.formula.EncodeSpeedFormula;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
