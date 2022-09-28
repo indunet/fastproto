@@ -63,10 +63,10 @@ public class TimeTest {
         buffer = BinaryUtils.valueOf(obj.getTimestamp().getTime());
         System.arraycopy(buffer, 0, expected, 8, 8);
 
-        buffer = BinaryUtils.valueOf(obj.getCalendar().getTimeInMillis());
+        buffer = BinaryUtils.valueOf(obj.getInstant().toEpochMilli());
         System.arraycopy(buffer, 0, expected, 16, 8);
 
-        buffer = BinaryUtils.valueOf(obj.getInstant().toEpochMilli());
+        buffer = BinaryUtils.valueOf(obj.getCalendar().getTimeInMillis());
         System.arraycopy(buffer, 0, expected, 24, 8);
 
         assertArrayEquals(expected, FastProto.toBytes(obj, 32));
