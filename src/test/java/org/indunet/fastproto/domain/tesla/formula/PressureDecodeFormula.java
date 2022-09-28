@@ -1,4 +1,4 @@
-package org.indunet.fastproto.iot.tesla.formula;
+package org.indunet.fastproto.domain.tesla.formula;
 
 import java.util.function.Function;
 

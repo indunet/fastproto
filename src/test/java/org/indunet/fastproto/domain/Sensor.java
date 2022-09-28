@@ -14,21 +14,26 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.iot.color;
+package org.indunet.fastproto.domain;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.indunet.fastproto.annotation.EnableFixedLength;
+import org.indunet.fastproto.annotation.type.Int16Type;
+import org.indunet.fastproto.annotation.type.UInt16Type;
 
 /**
  * @author Deng Ran
- * @since 2.1.0
+ * @since 1.7.4
  */
+@Data
 @AllArgsConstructor
-@Getter
-public enum Color {
-    GREEN(0x01),
-    RED(0x08),
-    YELLOW(0x09);
-
-    int code;
+@NoArgsConstructor
+@EnableFixedLength(10)
+public class Sensor {
+    @Int16Type(offset = 0)
+    int temperature;
+    @UInt16Type(offset = 2)
+    int humidity;
 }

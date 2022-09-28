@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.iot;
+package org.indunet.fastproto.domain;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

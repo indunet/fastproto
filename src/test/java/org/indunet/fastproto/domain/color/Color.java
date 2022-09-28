@@ -14,17 +14,21 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.iot.tesla.formula;
+package org.indunet.fastproto.domain.color;
 
-import java.util.function.Function;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 /**
  * @author Deng Ran
- * @version 1.0
+ * @since 2.1.0
  */
-public class VoltageFormula implements Function<Byte, Double> {
-    @Override
-    public Double apply(Byte value) {
-        return value * 0.1;
-    }
+@AllArgsConstructor
+@Getter
+public enum Color {
+    GREEN(0x01),
+    RED(0x08),
+    YELLOW(0x09);
+
+    int code;
 }

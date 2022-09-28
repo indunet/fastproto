@@ -19,15 +19,12 @@ package org.indunet.fastproto.pipeline.decode;
 import lombok.val;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
-import org.indunet.fastproto.reference.Reference;
 import org.indunet.fastproto.reference.Graph;
 import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.PipelineContext;
 import org.indunet.fastproto.pipeline.FlowCode;
 
 import java.text.MessageFormat;
-import java.util.List;
-import java.util.function.Function;
 
 /**
  * Decode flow.
@@ -48,9 +45,11 @@ public class DecodeFlow extends Pipeline<PipelineContext> {
     }
 
     public Object linearDecode(byte[] bytes, Graph graph) {
-        val refs = graph.decodeReferences();
+        val refs = graph.getValidReferences();
 
-        refs.forEach(r -> {
+        refs.stream()
+                .filter(r -> !r.getDecodingIgnore())
+                .forEach(r -> {
                     try {
                         r.decode(bytes);
                     } catch (DecodingException e) {
