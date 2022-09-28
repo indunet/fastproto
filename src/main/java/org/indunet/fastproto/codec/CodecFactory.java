@@ -23,9 +23,11 @@ import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.exception.DecodingException;
 
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
+import java.time.Instant;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
@@ -121,7 +123,7 @@ public class CodecFactory {
         codecMap.get(TimeType.class).put(Date.class, dateCodec);
         codecMap.get(TimeType.class).put(Timestamp.class, timestampCodec);
         codecMap.get(TimeType.class).put(Calendar.class, calendarCodec);
-        codecMap.get(TimeType.class).put(Calendar.class, instantCodec);
+        codecMap.get(TimeType.class).put(Instant.class, instantCodec);
 
         val stringCodec = new StringCodec();
         val stringBufferCodec = new StringBufferCodec();
@@ -135,6 +137,13 @@ public class CodecFactory {
 
         val binaryCodec = new BinaryCodec();
         codecMap.get(BinaryType.class).put(byte[].class, binaryCodec);
+    }
+
+    public static boolean isSupported(Type type) {
+        return codecMap.values()
+                .stream()
+                .flatMap(m -> m.keySet().stream())
+                .anyMatch(type::equals);
     }
 
     public static Codec createCodec(Class type, Class fieldClass) {

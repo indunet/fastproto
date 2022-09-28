@@ -31,6 +31,9 @@ import org.indunet.fastproto.domain.formula.EncodeSpeedFormula;
 
 import java.math.BigInteger;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * @author Deng Ran
@@ -42,7 +45,7 @@ import java.sql.Timestamp;
 @NoArgsConstructor
 @EnableCrypto(value = CryptoPolicy.AES_ECB_PKCS5PADDING, key = "330926")
 @EnableCompress(CompressPolicy.GZIP)
-@EnableProtocolVersion(offset = 79, version = 17)
+@EnableProtocolVersion(offset = 102, version = 17)
 public class Everything {
     @BoolType(byteOffset = 0, bitOffset = 1)
     Boolean aBoolean;
@@ -57,7 +60,7 @@ public class Everything {
     Integer aInteger;
 
     @Int64Type(offset = 8)
-    Long aLong;
+    long aLong;
 
     @FloatType(offset = 16)
     Float aFloat;
@@ -97,5 +100,14 @@ public class Everything {
 
     @UInt64Type(offset = 70)
     BigInteger aUInteger64;
+
+    @TimeType(offset = 78)
+    Date date;
+
+    @TimeType(offset = 86)
+    Calendar calendar;
+
+    @TimeType(offset = 94)
+    Instant instant;
 }
 

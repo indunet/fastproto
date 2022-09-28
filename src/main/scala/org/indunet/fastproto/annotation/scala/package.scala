@@ -27,7 +27,7 @@ import org.indunet.fastproto.annotation.`type`.{Int16Type => JavaInt16Type}
 import org.indunet.fastproto.annotation.`type`.{Int32Type => JavaInt32Type}
 import org.indunet.fastproto.annotation.`type`.{Int64Type => JavaInt64Type}
 import org.indunet.fastproto.annotation.`type`.{StringType => JavaStringType}
-import org.indunet.fastproto.annotation.`type`.{TimeType => JavaTimestampType}
+import org.indunet.fastproto.annotation.`type`.{TimeType => JavaTimeType}
 import org.indunet.fastproto.annotation.`type`.{UInt8Type => JavaUInt8Type}
 import org.indunet.fastproto.annotation.`type`.{UInt16Type => JavaUInt16Type}
 import org.indunet.fastproto.annotation.`type`.{UInt32Type => JavaUInt32Type}
@@ -54,8 +54,8 @@ import _root_.scala.annotation.meta.field
  */
 package object scala {
   type BinaryType = JavaBinaryType @field
-  type BooleanType = JavaBoolType @field
-  type CharacterType = JavaCharType @field
+  type BoolType = JavaBoolType @field
+  type CharType = JavaCharType @field
   type DoubleType = JavaDoubleType @field
   type EnumType = JavaEnumType @field
   type FloatType = JavaFloatType @field
@@ -64,7 +64,7 @@ package object scala {
   type IntType = JavaInt32Type @field
   type LongType = JavaInt64Type @field
   type StringType = JavaStringType @field
-  type TimestampType = JavaTimestampType @field
+  type TimeType = JavaTimeType @field
   type UInt8Type = JavaUInt8Type @field
   type UInt16Type = JavaUInt16Type @field
   type UInt32Type = JavaUInt32Type @field

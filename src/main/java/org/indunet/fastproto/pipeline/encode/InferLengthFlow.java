@@ -62,7 +62,7 @@ public class InferLengthFlow extends Pipeline<PipelineContext> {
                     .max()
                     .orElse(0);
 
-            if (offset > max) {
+            if (offset >= max) {    // offset need +1
                 max = offset + 1;
             }
 

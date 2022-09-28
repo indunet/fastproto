@@ -41,10 +41,6 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UInt16Type {
-    Type[] ALLOWED_JAVA_TYPES = {
-            int.class,
-            Integer.class
-    };
     int SIZE = Short.SIZE >> 3;
     int MAX_VALUE = Short.MAX_VALUE - Short.MIN_VALUE;
     int MIN_VALUE = 0;
@@ -54,6 +50,4 @@ public @interface UInt16Type {
     Class<? extends Function<Integer, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Integer>>[] encodingFormula() default {};
-
-    String description() default "";
 }

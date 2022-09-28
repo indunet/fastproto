@@ -51,6 +51,7 @@ public class ConstructorFlow extends ResolvePipeline {
                     .mapToInt(c -> c.getParameterCount())
                     .min()
                     .getAsInt();
+        // .orElseThrow(() -> new RuntimeException(protocolClass.getName()));
         }
 
         if (cnt == 0) {
@@ -67,7 +68,7 @@ public class ConstructorFlow extends ResolvePipeline {
                 reference.setConstructorType(ConstructorType.ALL_ARGS);
             } catch (NoSuchMethodException e) {
                 throw new ResolveException(String.format(
-                        "The type of constructor parameters and class fields does not match.",
+                        "The constructor parameters of %s and class fields does not match.",
                         protocolClass.getName()), e);
             }
         }

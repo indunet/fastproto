@@ -42,10 +42,6 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BoolType {
-    Type[] ALLOWED_JAVA_TYPES = {
-            boolean.class,
-            Boolean.class
-    };
     int SIZE = 1;
     int MAX_BIT_OFFSET = 7;
     int MIN_BIT_OFFSET = 0;
@@ -57,6 +53,4 @@ public @interface BoolType {
     Class<? extends Function<Boolean, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Boolean>>[] encodingFormula() default {};
-
-    String description() default "";
 }

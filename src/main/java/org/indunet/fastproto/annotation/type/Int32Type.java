@@ -41,10 +41,6 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Int32Type {
-    Type[] ALLOWED_JAVA_TYPES = {
-            int.class,
-            Integer.class
-    };
     int SIZE = Integer.SIZE >> 3;
     int MAX_VALUE = Integer.MAX_VALUE;
     int MIN_VALUE = Integer.MIN_VALUE;
@@ -54,6 +50,4 @@ public @interface Int32Type {
     Class<? extends Function<Integer, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Integer>>[] encodingFormula() default {};
-
-    String description() default "";
 }
