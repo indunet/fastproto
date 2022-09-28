@@ -41,10 +41,6 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DoubleType {
-    Type[] ALLOWED_JAVA_TYPES = {
-            double.class,
-            Double.class
-    };
     int SIZE = Double.SIZE >> 3;
     double MAX_VALUE = Double.MAX_VALUE;
     double MIN_VALUE = Double.MIN_VALUE;
@@ -54,6 +50,4 @@ public @interface DoubleType {
     Class<? extends Function<Double, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Double>>[] encodingFormula() default {};
-
-    String description() default "";
 }

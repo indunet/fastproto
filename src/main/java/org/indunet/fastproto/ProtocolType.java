@@ -49,30 +49,11 @@ public interface ProtocolType {
     Class<? extends Annotation> UINT64 = UInt64Type.class;
     Class<? extends Annotation> ENUM = EnumType.class;
 
-    static boolean isSupported(Type type) {
-        return Arrays.stream(ProtocolType.class.getDeclaredFields())
-                .filter(f -> f.getType() != boolean[].class)    // Filter boolean[], jacoco would add it during test.
-                .map(f -> {
-                    try {
-                        return (Class<? extends Annotation>) f.get(null);
-                    } catch (IllegalAccessException e) {
-                        throw new ResolveException("Fail getting protocol type.", e);
-                    }
-                })
-                .flatMap(t -> Arrays.stream(TypeUtils.javaTypes(t)))
-                .anyMatch(t -> t == type);
-    }
-
     static ProtocolType proxy(Annotation typeAnnotation) {
         return (ProtocolType) Proxy.newProxyInstance(ProtocolType.class.getClassLoader(), new Class<?>[]{ProtocolType.class, typeAnnotation.annotationType()}, (proxy, method, args) -> {
             switch (method.getName()) {
                 case "getType":
                     return typeAnnotation.annotationType();
-                case "javaTypes":
-                    return typeAnnotation
-                            .annotationType()
-                            .getDeclaredField("ALLOWED_JAVA_TYPES")
-                            .get(null);
                 case "size":
                     try {
                         return typeAnnotation
@@ -83,8 +64,8 @@ public interface ProtocolType {
                         return 0;
                     }
                 case "length":
-                    if (!Arrays.stream(typeAnnotation.getClass().getMethods())
-                            .anyMatch(m -> m.getName().equals("length"))) {
+                    if (Arrays.stream(typeAnnotation.getClass().getMethods())
+                            .noneMatch(m -> m.getName().equals("length"))) {
                         return 0;
                     }
                 default:
@@ -117,15 +98,11 @@ public interface ProtocolType {
 
     Class<? extends Function<?, ?>>[] encodingFormula();
 
-    String description();
-
     String field();
 
     EndianPolicy[] endianPolicy();
 
     Class<? extends Annotation> getType();
-
-    Type[] javaTypes();
 
     int size();
 }

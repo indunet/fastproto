@@ -41,10 +41,6 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface CharType {
-    Type[] ALLOWED_JAVA_TYPES = {
-            char.class,
-            Character.class
-    };
     int SIZE = Character.SIZE >> 3;
 
     int offset();
@@ -52,6 +48,4 @@ public @interface CharType {
     Class<? extends Function<Character, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Character>>[] encodingFormula() default {};
-
-    String description() default "";
 }

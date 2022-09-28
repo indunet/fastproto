@@ -41,10 +41,6 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BinaryType {
-    Type[] ALLOWED_JAVA_TYPES = {
-            byte[].class
-    };
-
     int offset();
 
     int length() default -1;
@@ -52,6 +48,4 @@ public @interface BinaryType {
     Class<? extends Function<byte[], ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, byte[]>>[] encodingFormula() default {};
-
-    String description() default "";
 }

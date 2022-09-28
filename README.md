@@ -56,7 +56,7 @@ FastProto is more recommended for the following scenarios:
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>${fastproto.version}</version>
+    <version>3.4.1</version>
 </dependency>
 ```
 

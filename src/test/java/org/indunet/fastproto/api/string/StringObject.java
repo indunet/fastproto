@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2022 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,14 +14,23 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.scala.iot.inverter
+package org.indunet.fastproto.api.string;
 
-import org.indunet.fastproto.annotation.scala._
+import lombok.Data;
+import org.indunet.fastproto.annotation.type.StringType;
 
 /**
+ * String object.
+ *
  * @author Deng Ran
- * @since 2.4.0
+ * @since 3.4.0
  */
-class Relay {
-  @BoolType(byteOffset = 8, bitOffset = 1) var state = false
+@Data
+public class StringObject {
+    @StringType(offset = 0, length = 6)
+    String string = "string";
+    @StringType(offset = 16, length = 13)
+    StringBuilder stringBuilder = new StringBuilder("stringBuilder");
+    @StringType(offset = 32, length = 12)
+    StringBuffer stringBuffer = new StringBuffer("stringBuffer");
 }

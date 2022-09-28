@@ -41,10 +41,6 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface StringType {
-    Type[] ALLOWED_JAVA_TYPES = {
-            String.class
-    };
-
     int offset();
 
     int length() default -1;
@@ -54,6 +50,4 @@ public @interface StringType {
     Class<? extends Function<String, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, String>>[] encodingFormula() default {};
-
-    String description() default "";
 }
