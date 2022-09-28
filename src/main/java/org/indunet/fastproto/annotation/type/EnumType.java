@@ -17,7 +17,6 @@
 package org.indunet.fastproto.annotation.type;
 
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.reference.resolve.validate.DecodingFormulaValidator;
@@ -25,7 +24,6 @@ import org.indunet.fastproto.reference.resolve.validate.EncodingFormulaValidator
 import org.indunet.fastproto.reference.resolve.validate.FieldValidator;
 
 import java.lang.annotation.*;
-import java.lang.reflect.Type;
 import java.util.function.Function;
 
 /**
@@ -40,15 +38,9 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EnumType {
-    Type[] ALLOWED_JAVA_TYPES = {
-            Enum.class
-    };
-
-    Class<?>[] ALLOWED_GENERIC_TYPES = {
-            ProtocolType.UINT8,
-            ProtocolType.UINT16,
-            ProtocolType.INT32
-    };
+    int SIZE = Byte.SIZE >> 3;
+    int MAX_VALUE = Byte.MAX_VALUE - Byte.MIN_VALUE;
+    int MIN_VALUE = 0;
 
     int offset();
 
@@ -61,6 +53,4 @@ public @interface EnumType {
     Class<? extends Function<? extends Enum, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, ? super Enum>>[] encodingFormula() default {};
-
-    String description() default "";
 }

@@ -84,7 +84,11 @@ public class FastProto {
      * @return binary datagram.
      */
     public static byte[] toBytes(@NonNull Object object, int length) {
-        return toBytes(object, length, CodecFeature.DEFAULT);
+        return toBytes(object, new byte[length], CodecFeature.DEFAULT);
+    }
+
+    public static void toBytes(@NonNull Object object, byte[] buffer) {
+        toBytes(object, buffer, CodecFeature.DEFAULT);
     }
 
     public static byte[] toBytes(@NonNull Object object, long... codecFeatures) {
@@ -105,13 +109,17 @@ public class FastProto {
     }
 
     public static byte[] toBytes(@NonNull Object object, int length, long... codecFeatures) {
+        return toBytes(object, new byte[length], codecFeatures);
+    }
+
+    public static byte[] toBytes(@NonNull Object object, byte[] buffer, long... codecFeatures) {
         val graph = Resolver.resolve(object.getClass());
         val codecFeature = CodecFeature.of(codecFeatures);
         val context = PipelineContext.builder()
                 .object(object)
                 .protocolClass(object.getClass())
                 .codecFeature(codecFeature)
-                .datagram(new byte[length])
+                .datagram(buffer)
                 .graph(graph)
                 .build();
         val feature = CodecFeature.of(graph.root());

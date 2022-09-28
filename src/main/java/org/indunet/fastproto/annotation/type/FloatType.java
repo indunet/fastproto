@@ -41,10 +41,6 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FloatType {
-    Type[] ALLOWED_JAVA_TYPES = {
-            float.class,
-            Float.class
-    };
     int SIZE = Float.SIZE >> 3;
     float MAX_VALUE = Float.MAX_VALUE;
     float MIN_VALUE = Float.MIN_VALUE;
@@ -54,6 +50,4 @@ public @interface FloatType {
     Class<? extends Function<Float, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Float>>[] encodingFormula() default {};
-
-    String description() default "";
 }

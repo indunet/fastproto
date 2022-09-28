@@ -43,9 +43,6 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UInt64Type {
-    Type[] ALLOWED_JAVA_TYPES = {
-            BigInteger.class
-    };
     int SIZE = Long.SIZE >> 3;
     BigInteger MAX_VALUE = new BigInteger(String.valueOf(Long.MAX_VALUE))
             .subtract(new BigInteger(String.valueOf(Long.MIN_VALUE)));
@@ -56,6 +53,4 @@ public @interface UInt64Type {
     Class<? extends Function<BigDecimal, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, BigDecimal>>[] encodingFormula() default {};
-
-    String description() default "";
 }

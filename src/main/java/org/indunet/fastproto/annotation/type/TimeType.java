@@ -16,18 +16,14 @@
 
 package org.indunet.fastproto.annotation.type;
 
-import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.reference.resolve.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.reference.resolve.validate.EncodingFormulaValidator;
 import org.indunet.fastproto.reference.resolve.validate.FieldValidator;
-import org.indunet.fastproto.reference.resolve.validate.TimestampValidator;
 
 import java.lang.annotation.*;
-import java.lang.reflect.Type;
 import java.sql.Timestamp;
-import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
@@ -39,18 +35,11 @@ import java.util.function.Function;
  * @since 1.1.0
  */
 @DataType
-@Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class, TimestampValidator.class})
+@Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TimeType {
-    Type[] ALLOWED_JAVA_TYPES = {
-            Timestamp.class,
-            Date.class
-    };
-    Class<?>[] ALLOWED_GENERIC_TYPES = {
-            ProtocolType.UINT32,
-            ProtocolType.INT64
-    };
+    int SIZE = Long.SIZE >> 3;
 
     int offset();
 
@@ -61,6 +50,4 @@ public @interface TimeType {
     Class<? extends Function<Timestamp, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Timestamp>>[] encodingFormula() default {};
-
-    String description() default "";
 }

@@ -20,6 +20,7 @@ import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.DataType;
+import org.indunet.fastproto.codec.CodecFactory;
 import org.indunet.fastproto.reference.Reference.ReferenceType;
 import org.indunet.fastproto.reference.resolve.ResolvePipeline;
 
@@ -56,7 +57,7 @@ public class Resolver {
 
             Arrays.stream(protocolClass.getDeclaredFields())
                     .peek(f -> f.setAccessible(true))
-                    .forEach(f -> deque.add(f));
+                    .forEach(deque::add);
 
             // BFS
             while (!deque.isEmpty()) {
@@ -88,7 +89,7 @@ public class Resolver {
                         graph.addReference(s);
                         Arrays.stream(field.getType().getDeclaredFields())
                                 .peek(f -> f.setAccessible(true))
-                                .forEach(f -> deque.add(f));
+                                .forEach(deque::add);
                     }
                 } else {
                     // Invalid field.
@@ -106,9 +107,9 @@ public class Resolver {
     }
 
     protected static boolean isClass(@NonNull Field field) {
-        Predicate<Field> isProtocolType = f -> ProtocolType.isSupported(f.getType());
+        Predicate<Field> condition = f -> CodecFactory.isSupported(field.getType());
 
-        return !isProtocolType.or(f -> Modifier.isTransient(f.getModifiers()))
+        return !condition.or(f -> Modifier.isTransient(f.getModifiers()))
                 .or(f -> f.isEnumConstant() || Enum.class.isAssignableFrom(f.getType()))
                 .or(f -> EnumSet.class.isAssignableFrom(f.getType()))
                 .or(f -> f.getType().isArray())

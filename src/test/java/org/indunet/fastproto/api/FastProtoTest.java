@@ -14,10 +14,13 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto;
+package org.indunet.fastproto.api;
 
 import lombok.SneakyThrows;
 import lombok.val;
+import org.indunet.fastproto.CodecFeature;
+import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.annotation.EnableCrypto;
 import org.indunet.fastproto.annotation.EnableProtocolVersion;
@@ -45,6 +48,9 @@ import org.junit.jupiter.api.Test;
 import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
+import java.time.Instant;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -91,15 +97,16 @@ public class FastProtoTest {
 
         // Test decode with multi-thread.
         IntStream.range(0, 10).parallel()
-                .forEach(__ -> {
-                    assertEquals(FastProto.parse(datagram, Tesla.class).toString(), tesla.toString());
-                });
+                .forEach(__ -> assertEquals(FastProto.parse(datagram, Tesla.class).toString(), tesla.toString()));
 
         // Test encode with multi-thread.
         IntStream.range(0, 10).parallel()
                 .forEach(__ -> {
-                    byte[] cache = FastProto.toBytes(tesla, 44);
-                    assertArrayEquals(cache, datagram);
+                    byte[] bytes = FastProto.toBytes(tesla, 44);
+                    assertArrayEquals(datagram, bytes);
+
+                    FastProto.toBytes(tesla, bytes);
+                    assertArrayEquals(datagram, bytes);
                 });
     }
 
@@ -134,7 +141,7 @@ public class FastProtoTest {
 
         // Test encode.
         byte[] cache = FastProto.toBytes(metrics, 30, CodecFeature.DISABLE_COMPRESS);
-        assertArrayEquals(cache, datagram);
+        assertArrayEquals(datagram, cache);
     }
 
     @Test
@@ -179,7 +186,11 @@ public class FastProtoTest {
 
     @Test
     public void testEverything() {
-        byte[] datagram = new byte[80];
+        byte[] datagram = new byte[103];
+        long millis = System.currentTimeMillis();
+        val calendar = Calendar.getInstance();
+
+        calendar.setTimeInMillis(millis);
         Everything everything = Everything.builder()
                 .aBoolean(true)
                 .aByte((byte) -12)
@@ -190,14 +201,17 @@ public class FastProtoTest {
                 .aInteger(102)
                 .aInteger8(32)
                 .aInteger16(13)
-                .aLong(-50000L)
+                .aLong(-50000)
                 .aShort((short) 12)
                 .aString("abcABC")
-                .aTimestamp(new Timestamp(System.currentTimeMillis()))
+                .aTimestamp(new Timestamp(millis))
+                .date(new Date(millis))
+                .calendar(calendar)
                 .aUInteger8(8)
                 .aUInteger16(16)
                 .aUInteger32(32L)
                 .speed(10.1f)
+                .instant(Instant.ofEpochMilli(millis))
                 .aUInteger64(new BigInteger(String.valueOf(UInt64Type.MAX_VALUE)))
                 .build();
 
@@ -219,7 +233,10 @@ public class FastProtoTest {
         CodecUtils.type(datagram, 56, EndianPolicy.LITTLE, everything.getATimestamp().getTime());
         CodecUtils.type(datagram, 64, EndianPolicy.LITTLE, everything.getACharacter());
         CodecUtils.type(datagram, 70, EndianPolicy.LITTLE, everything.getAUInteger64());
-        CodecUtils.uint8Type(datagram, 79, 17);
+        CodecUtils.type(datagram, 78, EndianPolicy.LITTLE, millis);
+        CodecUtils.type(datagram, 86, EndianPolicy.LITTLE, millis);
+        CodecUtils.type(datagram, 94, EndianPolicy.LITTLE, millis);
+        CodecUtils.uint8Type(datagram, 102, 17);
 
         // There is a formula.
         CodecUtils.uint8Type(datagram, 66, (int) (everything.getSpeed() * 10));
@@ -235,7 +252,7 @@ public class FastProtoTest {
         assertArrayEquals(afterEncrypted, cache);
 
         // Test with gzip
-        byte[] compressed = FastProto.toBytes(everything, 80, CodecFeature.DISABLE_CRYPTO);
+        byte[] compressed = FastProto.toBytes(everything, 103, CodecFeature.DISABLE_CRYPTO);
         assertEquals(FastProto.parse(compressed, Everything.class, CodecFeature.DISABLE_CRYPTO).toString(), everything.toString());
     }
 

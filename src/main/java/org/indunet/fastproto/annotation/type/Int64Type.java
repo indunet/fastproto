@@ -41,10 +41,6 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Int64Type {
-    Type[] ALLOWED_JAVA_TYPES = {
-            long.class,
-            Long.class
-    };
     int SIZE = Long.SIZE >> 3;
     long MAX_VALUE = Long.MAX_VALUE;
     long MIN_VALUE = Long.MIN_VALUE;
@@ -54,6 +50,4 @@ public @interface Int64Type {
     Class<? extends Function<Long, ?>>[] decodingFormula() default {};
 
     Class<? extends Function<?, Long>>[] encodingFormula() default {};
-
-    String description() default "";
 }
