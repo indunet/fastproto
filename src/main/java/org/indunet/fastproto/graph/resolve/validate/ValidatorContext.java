@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 indunet.org
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,29 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.annotation;
+package org.indunet.fastproto.graph.resolve.validate;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import lombok.Builder;
+import lombok.Data;
+import org.indunet.fastproto.ProtocolType;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.util.function.Function;
 
 /**
- * Enable versions annotation.
+ * Validation context.
  *
  * @author Deng Ran
- * @since 1.5.3
+ * @since 2.3.0
  */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface EnableProtocolVersions {
-    EnableProtocolVersion[] value();
+@Data
+@Builder
+public class ValidatorContext {
+    Field field;
+    Annotation typeAnnotation;
+    ProtocolType protocolType;
+    Class<? extends Annotation> typeAnnotationClass;
+    Class<? extends Function> decodingFormula;
+    Class<? extends Function> encodingFormula;
 }

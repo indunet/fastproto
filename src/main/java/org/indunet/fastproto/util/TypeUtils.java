@@ -153,9 +153,7 @@ public class TypeUtils {
         }
 
         IntStream.range(0, list.size())
-                .forEach(i -> {
-                    Array.set(array, i, list.get(i));
-                });
+                .forEach(i -> Array.set(array, i, list.get(i)));
 
         return array;
     }

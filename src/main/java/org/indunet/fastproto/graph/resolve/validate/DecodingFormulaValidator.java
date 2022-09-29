@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.reference.resolve.validate;
+package org.indunet.fastproto.graph.resolve.validate;
 
 import lombok.val;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.EncodeFormulaException;
+import org.indunet.fastproto.exception.DecodeFormulaException;
 import org.indunet.fastproto.util.TypeUtils;
 
 import java.lang.reflect.ParameterizedType;
@@ -26,24 +26,23 @@ import java.text.MessageFormat;
 import java.util.Arrays;
 
 /**
- * Encode formula validation flow.
+ * Decode formula validation flow.
  *
  * @author Deng Ran
  * @since 2.3.0
  */
-public class EncodingFormulaValidator extends TypeValidator {
+public class DecodingFormulaValidator extends TypeValidator {
     @Override
     public void process(ValidatorContext context) {
-        val encodeFormula = context.getEncodingFormula();
+        val decodeFormula = context.getDecodingFormula();
         val typeAnnotation = context.getTypeAnnotation();
         val field = context.getField();
 
-        // Validate encoder parameter type.
-        if (encodeFormula != null) {
-            Arrays.stream(encodeFormula.getGenericInterfaces())
+        if (decodeFormula != null) {
+            Arrays.stream(decodeFormula.getGenericInterfaces())
                     .filter(i -> i instanceof ParameterizedType)
                     .map(i -> ((ParameterizedType) i).getActualTypeArguments())
-                    .map(a -> a[0])
+                    .map(a -> a[1])
                     .filter(t -> {
                         if (field.getType().isPrimitive()) {
                             return t == TypeUtils.wrapperClass(field.getType().getName());
@@ -54,7 +53,7 @@ public class EncodingFormulaValidator extends TypeValidator {
                             return t == field.getType();
                         }
                     }).findAny()
-                    .orElseThrow(() -> new EncodeFormulaException(MessageFormat.format(
+                    .orElseThrow(() -> new DecodeFormulaException(MessageFormat.format(
                             CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
         }
 

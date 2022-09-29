@@ -23,8 +23,8 @@ import lombok.Getter;
  * @author Deng Ran
  * @since 2.1.0
  */
-@AllArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum Color {
     GREEN(0x01),
     RED(0x08),

@@ -14,11 +14,11 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.reference.resolve;
+package org.indunet.fastproto.graph.resolve;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.EnableCompress;
-import org.indunet.fastproto.reference.Reference;
+import org.indunet.fastproto.graph.Reference;
 
 /**
  * Resolve enable compress flow.

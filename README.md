@@ -23,7 +23,6 @@ FastProto uses a new way to solve the problem of cross-language and cross-platfo
     * Customize endianness (byte order)
     * Support [decoding formula & encoding formula][formula]
 *   Support data [compress and decompress(gzip, deflate)][compression]
-*   Support [protocol version verification][protocol-version]
 *   Support [data integrity verification][checksum]
 *   Support data decrypt & encrypt
 
@@ -280,6 +279,5 @@ limitations under the License.
 [formula]: https://github.com/indunet/fastproto/wiki/Formula
 [kafka]: https://github.com/indunet/fastproto/wiki/Work-with-Kafka
 [checksum]: https://github.com/indunet/fastproto/wiki/Data-Integrity-Check
-[protocol-version]: https://github.com/indunet/fastproto/wiki/Protocol-Version
 [compression]: https://github.com/indunet/fastproto/wiki/Compression
 [types]: https://github.com/indunet/fastproto/wiki/Data-Type-Annotations

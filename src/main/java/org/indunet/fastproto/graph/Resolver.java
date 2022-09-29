@@ -14,15 +14,14 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.reference;
+package org.indunet.fastproto.graph;
 
 import lombok.NonNull;
 import lombok.val;
-import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.codec.CodecFactory;
-import org.indunet.fastproto.reference.Reference.ReferenceType;
-import org.indunet.fastproto.reference.resolve.ResolvePipeline;
+import org.indunet.fastproto.graph.Reference.ReferenceType;
+import org.indunet.fastproto.graph.resolve.ResolvePipeline;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

@@ -1,13 +1,6 @@
 package org.indunet.fastproto.checksum;
 
 public class CRC16Util {
-
-    /**
-     * 计算CRC16校验码
-     *
-     * @param bytes
-     * @return
-     */
     public static String getCRC(byte[] bytes) {
         int CRC = 0x0000ffff;
         int POLYNOMIAL = 0x0000a001;
@@ -77,8 +70,8 @@ public class CRC16Util {
         int ucCRCHi = 0x00ff;
         int ucCRCLo = 0x00ff;
         int iIndex;
-        for (int i = 0; i < data.length; ++i) {
-            iIndex = (ucCRCLo ^ data[i]) & 0x00ff;
+        for (byte datum : data) {
+            iIndex = (ucCRCLo ^ datum) & 0x00ff;
             ucCRCLo = ucCRCHi ^ crc16_h[iIndex];
             ucCRCHi = crc16_l[iIndex];
         }

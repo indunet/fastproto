@@ -1,7 +1,7 @@
-package org.indunet.fastproto.reference.resolve;
+package org.indunet.fastproto.graph.resolve;
 
 import lombok.val;
-import org.indunet.fastproto.reference.Reference;
+import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.pipeline.Pipeline;
 
 /**
@@ -18,7 +18,6 @@ public abstract class ResolvePipeline extends Pipeline<Reference> {
         val head = new EndianFlow();
 
         head.setNext(new EnableFixedLengthFlow())
-            .setNext(new EnableVersionFlow())
             .setNext(new EnableCryptoFlow())
             .setNext(new EnableCompressFlow())
             .setNext(new EnableChecksumFlow())

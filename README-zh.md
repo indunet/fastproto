@@ -23,7 +23,6 @@ FastProto是一款采用Java编写的二进制序列化和反序列化工具，�
     * 自定义开端字节顺序
     * 自定义[编码公式 & 解码公式][formula]   
 *   支持数据[压缩 & 解压缩(gzip, deflate)][compression]  
-*   支持[协议版本校验][protocol-version]
 *   支持[数据完整性校验][checksum]
 *   支持数据对称加密 & 解密
 
@@ -270,7 +269,6 @@ limitations under the License.
 [formula]: https://github.com/indunet/fastproto/wiki/Conversion-Formula
 [kafka]: https://github.com/indunet/fastproto/wiki/Work-with-Kafka
 [checksum]: https://github.com/indunet/fastproto/wiki/Data-Integrity-Check
-[protocol-version]: https://github.com/indunet/fastproto/wiki/Protocol-Version
 [compression]: https://github.com/indunet/fastproto/wiki/Compression
 [formula]: https://github.com/indunet/fastproto/wiki/Formula-zh
 [types]: https://github.com/indunet/fastproto/wiki/Data-Type-Annotations-zh

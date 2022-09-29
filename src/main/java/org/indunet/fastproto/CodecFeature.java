@@ -17,7 +17,7 @@
 package org.indunet.fastproto;
 
 import lombok.val;
-import org.indunet.fastproto.reference.Reference;
+import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.pipeline.FlowCode;
 
 /**
@@ -29,7 +29,6 @@ import org.indunet.fastproto.pipeline.FlowCode;
 public final class CodecFeature {
     public static final long DEFAULT = 0;
     public static final long DISABLE_COMPRESS = FlowCode.COMPRESS_FLOW_CODE | FlowCode.UNCOMPRESS_FLOW_CODE;
-    public static final long DISABLE_PROTOCOL_VERSION = FlowCode.VERIFY_PROTOCOL_VERSION_FLOW_CODE | FlowCode.WRITE_PROTOCOL_VERSION_FLOW_CODE;
     public static final long DISABLE_CHECKSUM = FlowCode.VERIFY_CHECKSUM_FLOW_CODE | FlowCode.WRITE_CHECKSUM_FLOW_CODE;
     public static final long NON_INFER_LENGTH = FlowCode.INFER_LENGTH_FLOW_CODE;
     public static final long DISABLE_CRYPTO = FlowCode.DECRYPT_FLOW_CODE | FlowCode.ENCRYPT_FLOW_CODE;
@@ -48,10 +47,6 @@ public final class CodecFeature {
 
         if (reference.getEnableChecksum() == null) {
             codecFeature |= DISABLE_CHECKSUM;
-        }
-
-        if (reference.getEnableProtocolVersions().isEmpty()) {
-            codecFeature |= DISABLE_PROTOCOL_VERSION;
         }
 
         if (reference.getEnableFixedLength() == null) {

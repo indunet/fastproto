@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.reference;
+package org.indunet.fastproto.graph;
 
 import lombok.Data;
 import lombok.val;
