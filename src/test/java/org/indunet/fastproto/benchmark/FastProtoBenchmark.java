@@ -65,9 +65,7 @@ public class FastProtoBenchmark {
         byte[] tmp = new byte[128];
 
         IntStream.range(0, tmp.length)
-                .forEach(i -> {
-                    tmp[i] = (byte) random.nextInt();
-                });
+                .forEach(i -> tmp[i] = (byte) random.nextInt());
 
         this.datagram = tmp;
         this.sample = FastProto.parse(this.datagram, Sample.class);

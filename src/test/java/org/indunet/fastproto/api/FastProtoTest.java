@@ -23,17 +23,12 @@ import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.annotation.EnableCrypto;
-import org.indunet.fastproto.annotation.EnableProtocolVersion;
 import org.indunet.fastproto.annotation.Endian;
 import org.indunet.fastproto.annotation.type.UInt64Type;
 import org.indunet.fastproto.checksum.Crc32Checker;
 import org.indunet.fastproto.compress.DeflateCompressor;
 import org.indunet.fastproto.crypto.Crypto;
 import org.indunet.fastproto.crypto.CryptoPolicy;
-import org.indunet.fastproto.exception.CheckSumException;
-import org.indunet.fastproto.exception.CryptoException;
-import org.indunet.fastproto.exception.FixedLengthException;
-import org.indunet.fastproto.exception.ProtocolVersionException;
 import org.indunet.fastproto.domain.Everything;
 import org.indunet.fastproto.domain.Sensor;
 import org.indunet.fastproto.domain.Weather;
@@ -42,6 +37,9 @@ import org.indunet.fastproto.domain.datagram.StateDatagram;
 import org.indunet.fastproto.domain.tesla.Battery;
 import org.indunet.fastproto.domain.tesla.Motor;
 import org.indunet.fastproto.domain.tesla.Tesla;
+import org.indunet.fastproto.exception.CheckSumException;
+import org.indunet.fastproto.exception.CryptoException;
+import org.indunet.fastproto.exception.FixedLengthException;
 import org.indunet.fastproto.util.CodecUtils;
 import org.junit.jupiter.api.Test;
 
@@ -186,7 +184,7 @@ public class FastProtoTest {
 
     @Test
     public void testEverything() {
-        byte[] datagram = new byte[103];
+        byte[] datagram = new byte[102];
         long millis = System.currentTimeMillis();
         val calendar = Calendar.getInstance();
 
@@ -236,7 +234,6 @@ public class FastProtoTest {
         CodecUtils.type(datagram, 78, EndianPolicy.LITTLE, millis);
         CodecUtils.type(datagram, 86, EndianPolicy.LITTLE, millis);
         CodecUtils.type(datagram, 94, EndianPolicy.LITTLE, millis);
-        CodecUtils.uint8Type(datagram, 102, 17);
 
         // There is a formula.
         CodecUtils.uint8Type(datagram, 66, (int) (everything.getSpeed() * 10));
@@ -308,13 +305,6 @@ public class FastProtoTest {
     }
 
     @Test
-    public void testProtocolVersionException() {
-        val datagram = new byte[]{0, 1, 2, 3, 4, 5, 6, 7};
-
-        assertThrows(ProtocolVersionException.class, () -> FastProto.parse(datagram, ProtocolVersionObject.class));
-    }
-
-    @Test
     public void testCryptoException() {
         val datagram = new byte[100];
 
@@ -338,11 +328,6 @@ public class FastProtoTest {
 
     @EnableChecksum
     public static class ChecksumObject {
-
-    }
-
-    @EnableProtocolVersion(offset = 2, version = 10)
-    public static class ProtocolVersionObject {
 
     }
 

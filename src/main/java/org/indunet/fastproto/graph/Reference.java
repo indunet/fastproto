@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.reference;
+package org.indunet.fastproto.graph;
 
 import lombok.*;
 import org.indunet.fastproto.EndianPolicy;
@@ -55,8 +55,6 @@ public class Reference {
     Class<?> protocolClass;
     ConstructorType constructorType;
     EnableCompress enableCompress;
-
-    List<EnableProtocolVersion> enableProtocolVersions;
 
     EnableChecksum enableChecksum;
     EnableCrypto enableCrypto;
@@ -134,7 +132,7 @@ public class Reference {
                 field.set(this.value.get(), reference.getValue().get());
             } catch (IllegalAccessException e) {
                 throw new DecodingException(
-                        String.format("Fail decoding the field %s of class %s", field.toString(), this.protocolClass.getName()), e);
+                        String.format("Fail decoding the field %s of class %s", field, this.protocolClass.getName()), e);
             }
         }
     }
@@ -150,7 +148,7 @@ public class Reference {
             }
         } catch (IllegalAccessException e) {
             throw new EncodingException(
-                    String.format("Fail decoding the field %s of class %s", this.field.toString(), this.protocolClass.getName()), e);
+                    String.format("Fail decoding the field %s of class %s", this.field, this.protocolClass.getName()), e);
         }
     }
 
@@ -183,11 +181,11 @@ public class Reference {
     public enum ReferenceType {
         CLASS,
         FIELD,
-        INVALID;
+        INVALID
     }
 
     public enum ConstructorType {
         NO_ARGS,
-        ALL_ARGS;
+        ALL_ARGS
     }
 }

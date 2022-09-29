@@ -14,15 +14,13 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.reference.resolve.validate;
+package org.indunet.fastproto.graph.resolve.validate;
 
 import lombok.val;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.exception.DecodeFormulaException;
 
 import java.text.MessageFormat;
-import java.util.Arrays;
 import java.util.function.Function;
 
 /**

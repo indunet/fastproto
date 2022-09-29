@@ -54,15 +54,9 @@ public class EnumCodecTest {
 
         datagram[0] = 100;
 
-        assertThrows(DecodingException.class, () -> {
-            codec.decode(datagram, 0, "number", Color.class);
-        });
-        assertThrows(DecodingException.class, () -> {
-            codec.decode(datagram, 0, "", Color.class);
-        });
-        assertThrows(DecodingException.class, () -> {
-            codec.decode(datagram, 0, "", Color.class);
-        });
+        assertThrows(DecodingException.class, () -> codec.decode(datagram, 0, "number", Color.class));
+        assertThrows(DecodingException.class, () -> codec.decode(datagram, 0, "", Color.class));
+        assertThrows(DecodingException.class, () -> codec.decode(datagram, 0, "", Color.class));
     }
 
     @Test
@@ -87,13 +81,11 @@ public class EnumCodecTest {
 
         datagram[0] = 100;
 
-        assertThrows(EncodingException.class, () -> {
-            codec.encode(datagram, 0, "number", Color.RED);
-        });
+        assertThrows(EncodingException.class, () -> codec.encode(datagram, 0, "number", Color.RED));
     }
 
     @AllArgsConstructor
-    public static enum Color {
+    public enum Color {
         GREEN(0x01),
         RED(0x08),
         YELLOW(0x09);
@@ -106,7 +98,7 @@ public class EnumCodecTest {
         @EnumType(offset = 0)
         Color color1;
 
-        @EnumType(offset = 1, field = "code")
+        @EnumType(offset = 1, name = "code")
         Color color2;
     }
 }

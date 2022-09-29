@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.reference.resolve.validate;
+package org.indunet.fastproto.graph.resolve.validate;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.Validator;

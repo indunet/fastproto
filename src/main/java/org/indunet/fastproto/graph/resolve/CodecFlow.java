@@ -14,16 +14,16 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.reference.resolve;
+package org.indunet.fastproto.graph.resolve;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.codec.CodecContext;
 import org.indunet.fastproto.codec.CodecFactory;
 import org.indunet.fastproto.exception.ResolveException;
-import org.indunet.fastproto.reference.Reference;
-import org.indunet.fastproto.reference.resolve.validate.TypeValidator;
-import org.indunet.fastproto.reference.resolve.validate.ValidatorContext;
+import org.indunet.fastproto.graph.Reference;
+import org.indunet.fastproto.graph.resolve.validate.TypeValidator;
+import org.indunet.fastproto.graph.resolve.validate.ValidatorContext;
 
 import java.text.MessageFormat;
 

@@ -44,14 +44,14 @@ public class Crc16Checker implements Checker {
     }
 
     public static Crc16Checker getInstance() {
-        return checkers.computeIfAbsent(defaultPoly, p -> new Crc16Checker(p));
+        return checkers.computeIfAbsent(defaultPoly, Crc16Checker::new);
     }
 
     public static synchronized Crc16Checker getInstance(int poly) {
         if (poly == 0) {
             return getInstance();
         } else {
-            return checkers.computeIfAbsent(poly, p -> new Crc16Checker(p));
+            return checkers.computeIfAbsent(poly, Crc16Checker::new);
         }
     }
 

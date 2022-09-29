@@ -14,13 +14,13 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.reference;
+package org.indunet.fastproto.graph;
 
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.exception.ResolveException;
-import org.indunet.fastproto.reference.Reference.ConstructorType;
-import org.indunet.fastproto.reference.Reference.ReferenceType;
+import org.indunet.fastproto.graph.Reference.ConstructorType;
+import org.indunet.fastproto.graph.Reference.ReferenceType;
 
 import java.util.*;
 import java.util.function.Consumer;
@@ -77,7 +77,7 @@ public class Graph {
         if (this.contains(parent)) {
             adj.get(parent).add(child);
         } else {
-            adj.put(parent, new ArrayList<Reference>());
+            adj.put(parent, new ArrayList<>());
             adj.get(parent).add(child);
         }
     }
@@ -144,7 +144,7 @@ public class Graph {
     public Stream<Reference> stream() {
         val list = new ArrayList<Reference>();
 
-        this.foreach(r -> list.add(r));
+        this.foreach(list::add);
 
         return list.stream();
     }
@@ -171,7 +171,7 @@ public class Graph {
 
             this.adj(ref).stream()
                     .filter(r -> r.getReferenceType() == ReferenceType.FIELD)
-                    .forEach(consumer::accept);
+                    .forEach(consumer);
         }
     }
 
@@ -180,7 +180,7 @@ public class Graph {
         this.generate(root);
 
         val object = root.getValue().get();
-        this.foreach(r -> r.clear());
+        this.foreach(Reference::clear);
 
         return object;
     }
@@ -231,9 +231,7 @@ public class Graph {
                     .filter(r -> r.getReferenceType() == ReferenceType.FIELD)
                     .filter(r -> !r.getEncodingIgnore())
                     // .filter(r -> r.parse(obj) != null)   // Filter null object.
-                    .forEach(r -> {
-                        r.setValue(r.parse(obj));
-                    });
+                    .forEach(r -> r.setValue(r.parse(obj)));
 
             for (val r: this.adj(ref)) {
                 if (r.getReferenceType() == ReferenceType.CLASS && !marks.contains(r)) {

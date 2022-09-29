@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.reference.resolve;
+package org.indunet.fastproto.graph.resolve;
 
 import lombok.val;
 import lombok.var;
 import org.indunet.fastproto.annotation.Constructor;
 import org.indunet.fastproto.exception.ResolveException;
-import org.indunet.fastproto.reference.Reference;
-import org.indunet.fastproto.reference.Reference.ConstructorType;
+import org.indunet.fastproto.graph.Reference;
+import org.indunet.fastproto.graph.Reference.ConstructorType;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
@@ -48,7 +48,7 @@ public class ConstructorFlow extends ResolvePipeline {
                     .getParameterCount();
         } else {
             cnt = Arrays.stream(protocolClass.getConstructors())
-                    .mapToInt(c -> c.getParameterCount())
+                    .mapToInt(java.lang.reflect.Constructor::getParameterCount)
                     .min()
                     .getAsInt();
         // .orElseThrow(() -> new RuntimeException(protocolClass.getName()));
@@ -65,6 +65,7 @@ public class ConstructorFlow extends ResolvePipeline {
 
             try {
                 protocolClass.getConstructor(paramTypes);
+
                 reference.setConstructorType(ConstructorType.ALL_ARGS);
             } catch (NoSuchMethodException e) {
                 throw new ResolveException(String.format(

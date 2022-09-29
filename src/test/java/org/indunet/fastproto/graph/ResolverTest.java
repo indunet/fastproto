@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.reference;
+package org.indunet.fastproto.graph;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.type.BoolType;

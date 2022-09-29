@@ -25,7 +25,6 @@ import java.lang.annotation.Target;
  * Enable fixed length.
  *
  * @author Deng Ran
- * @see Decoder
  * @since 2.4.0
  */
 @Target(ElementType.TYPE)
