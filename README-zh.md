@@ -10,17 +10,18 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![JetBrain Support](https://img.shields.io/badge/JetBrain-support-blue)](https://www.jetbrains.com/community/opensource)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+[![GitHub](https://img.shields.io/badge/repo-github-blue)](https://github.com/indunet/fastproto)
 
-FastProto是一款采用Java编写的协议化二进制序列化和反序列化工具，不仅可以通过注解自定义二进制协议，而且支持数据压缩、加密、数据完整性校验和
-协议版本验证。FastProto使用一种全新的方式解决了Java跨语言和跨平台的数据交换问题，尤其适用于物联网（IoT）领域。
+FastProto是一款采用Java编写的二进制序列化和反序列化工具，能够通过注解自定义协议，解决了跨语言和跨平台的数据交换问题，特别适用于物联网（IoT）领域。
 
 ## *功能*
 
-*   协议化二进制序列化和反序列化
-    *   支持无符号类型
-    *   支持反向寻址，适用于非固定长度二进制数据
-    *   自定义开端字节顺序
-    *   自定义[编码公式 & 解码公式][formula]   
+*   二进制序列化和反序列化
+    * 通过注解自定义协议  
+    * 支持基本数据类型、无符号类型、字符串类型和时间类型等
+    * 支持反向寻址，适用于非固定长度二进制数据
+    * 自定义开端字节顺序
+    * 自定义[编码公式 & 解码公式][formula]   
 *   支持数据[压缩 & 解压缩(gzip, deflate)][compression]  
 *   支持[协议版本校验][protocol-version]
 *   支持[数据完整性校验][checksum]
@@ -30,21 +31,20 @@ FastProto是一款采用Java编写的协议化二进制序列化和反序列化�
 
 *  代码结构 & 性能优化
 *  添加测试用例，增加单元测试覆盖率
-*  多条二进制数据解析成一个数据对象
 
 ## *Compared with ProtoBuf*
 
-虽然ProtoBuf和FastProto都用于解决跨语言和跨平台的数据交换问题，但是两者解决问题的方式完全不同：
+虽然ProtoBuf和FastProto都可以用于解决跨语言和跨平台的数据交换问题，但两者采用的方式完全不同：
 
-*   ProtoBuf通过编写schema自定义协议，而FastProto通过注解自定义协议
-*   ProtoBuf能够适配多种语言，而FastProto仅针对Java语言
+*   ProtoBuf通过编写schema自定义协议，而FastProto通过注解自定义协议；
+*   仅有数据交换双方均使用ProtoBuf才能实现数据交换，而FastProto采用自定义开放协议，任意一方使用均可；
 *   FastProto性能更加优越，自定义协议粒度更加精细
 
 以下场景更加推荐使用FastProto：
 
-*   性能要求苛刻，不能容忍通用数据格式（JSON/XML）带来的性能损耗
-*   数据源包含大量二进制内容，如通过现场总线（CAN/MVB/RS-485）采集的数据，并不适用于文本格式
-*   对端软件开发的限制，只能采用二进制格式，且不支持ProtoBuf，如嵌入式设备采用非传统的编程方式（梯形图/功能图/ST）
+* 二进制格式 & 开放协议
+* 性能要求苛刻，不能容忍通用数据格式（JSON/XML）带来的性能损失；
+* 数据源包含大量二进制内容，如通过现场总线（CAN/MVB/RS-485）采集的数据，并不适用于文本格式
 
 ## *Maven*
 
@@ -58,7 +58,7 @@ FastProto是一款采用Java编写的协议化二进制序列化和反序列化�
 
 ## *快速入门*
 
-想象这样一个应用场景，一台气象监测设备实时采集气象数据，并以二进制格式发送数据到气象站，数据报文固定长度20字节:
+有这样一个应用场景，一台气象监测设备实时采集气象数据，并以二进制格式发送数据到气象站，数据报文20字节固定长度:
 
 >   65 00 7F 69 3D 84 7A 01 00 00 55 00 F1 FF 0D 00 00 00 07 00
 
@@ -80,34 +80,33 @@ FastProto是一款采用Java编写的协议化二进制序列化和反序列化�
 
 1. **序列化 & 反序列化**
 
-气象站接收到数据后，需要将其转换成Java数据对象，以便后续的业务功能开发。
-首先，按照协议定义Java数据对象`Weather`，然后使用FastProto数据类型注解修饰各个属性。
-需要注意，任意数据类型注解的`value`属性对应信号的字节偏移量。
+气象站接收到数据后，需要将其反序列化成Java数据对象，以便后续的业务功能开发。
+首先，按照协议定义Java数据对象`Weather`，然后使用FastProto数据类型注解修饰各个属性，通过注解的offset属性指定信号的字节偏移量。
 
 ```java
 public class Weather {
-    @UInt8Type(0)
+    @UInt8Type(offset = 0)
     int id;
 
-    @TimeType(2)
+    @TimeType(offset = 2)
     Timestamp time;
 
-    @UInt16Type(10)
+    @UInt16Type(offset = 10)
     int humidity;
 
-    @Int16Type(12)
+    @Int16Type(offset = 12)
     int temperature;
 
-    @UInt32Type(14)
+    @UInt32Type(offset = 14)
     long pressure;
 
-    @BoolType(value = 18, bitOffset = 0)
+    @BoolType(byteOffset = 18, bitOffset = 0)
     boolean temperatureValid;
 
-    @BoolType(value = 18, bitOffset = 1)
+    @BoolType(byteOffset = 18, bitOffset = 1)
     boolean humidityValid;
 
-    @BoolType(value = 18, bitOffset = 2)
+    @BoolType(byteOffset = 18, bitOffset = 2)
     boolean pressureValid;
 }
 ```
@@ -115,13 +114,13 @@ public class Weather {
 调用`FastProto::parse()`方法将二进制数据反序列化成Java数据对象`Weather`
 
 ```java
-byte[] datagram = ...   // Datagram sent by monitoring device.
-
+// datagram sent by monitoring device.
+byte[] datagram = ...   
+        
 Weather weather = FastProto.parse(datagram, Weather.class);
 ```
 
-调用`FastProto::toBytes()`方法将Java数据对象`Weather`序列成二进制数据。
-该方法的第二个参数是数据报文长度，如果用户不指定，那么FastProto会自动推测长度。
+调用`FastProto::toBytes()`方法将Java数据对象`Weather`序列成二进制数据,方法的第二个参数是字节数组长度，如果用户不指定，那么FastProto会自动推测。
 
 ```java
 byte[] datagram = FastProto.toBytes(weather, 20);
@@ -147,7 +146,7 @@ public class PressureDecodeFormula implements Function<Long, Double> {
 public class Weather {
     ...
     
-    @UInt32Type(value = 14, decodingFormula = DecodeSpeedFormula.class)
+    @UInt32Type(offset = 14, decodingFormula = DecodeSpeedFormula.class)
     double pressure;
 }
 ```
@@ -167,7 +166,7 @@ public class PressureEncodeFormula implements Function<Double, Long> {
 public class Weather {
     ...
 
-    @UInt32Type(value = 14, decodingFormula = PressureDecodeFormula.class, encodingFormula = PressureEncodeFormula.class)
+    @UInt32Type(offset = 14, decodingFormula = PressureDecodeFormula.class, encodingFormula = PressureEncodeFormula.class)
     double pressure;
 }
 ```
@@ -180,7 +179,7 @@ FastProto支持数据压缩、协议版本验证、数据完整性校验和数�
 @EnableCrypto(value = CryptoPolicy.AES_ECB_PKCS5PADDING, key = "330926")
 @EnableProtocolVersion(value = 78, version = 17)
 @EnableCompress(value = CompressPolicy.DEFLATE, level = 2)
-@EnableChecksum(value = -4, start = 0, length = -5, checkPolicy = CheckPolicy.CRC32, endianPolicy = EndianPolicy.BIG)
+@EnableChecksum(offset = -4, start = 0, length = -5, checkPolicy = CheckPolicy.CRC32, endianPolicy = EndianPolicy.BIG)
 public class Weather {
     ...
 }
@@ -245,6 +244,8 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 
 FastProto取得了etBrain开源计划的支持，可提供核心开发人员免费的全家桶许可证。
 如果你对该项目感兴趣，并希望加入承担部分工作（开发/测试/文档），请通过邮件<deng_ran@foxmail.com>联系我。
+
+GitHub仓库: [github.com/indunet/fastproto](https://github.com/indunet/fastproto)
 
 ## *License*
 
