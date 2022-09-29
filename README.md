@@ -10,19 +10,18 @@ English | [中文](README-zh.md)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![JetBrain Support](https://img.shields.io/badge/JetBrain-support-blue)](https://www.jetbrains.com/community/opensource)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
+[![Gitee](https://img.shields.io/badge/repo-gitee-blue)](https://gitee.com/indunet/fastproto)
 
-FastProto is a protocolized binary serialization & deserialization tool written in Java. It can not only customize the binary
-protocol through annotations, but also supports data compression, encryption, and data integrity checksum, protocol version
-verification. FastProto uses a new way to solve the problem of cross-language and cross-platform data exchange in Java, 
-which is especially suitable for the Internet of Things (IoT).
+FastProto is a binary serialization & deserialization tool written in Java, it allows customizing binary protocol through annotations.
+FastProto uses a new way to solve the problem of cross-language and cross-platform data exchange, which is especially suitable for the Internet of Things (IoT).
 
 ## *Features*
 
 *   Protocolized binary serialization & deserialization
-    *   Support unsigned data type
-    *   Support reverse addressing, suitable for non-fixed length binary data
-    *   Customize endianness (byte order)
-    *   Support [decoding formula & encoding formula][formula]
+    * Support primitive type, unsigned type, string type and time type  
+    * Support reverse addressing, suitable for non-fixed length binary data
+    * Customize endianness (byte order)
+    * Support [decoding formula & encoding formula][formula]
 *   Support data [compress and decompress(gzip, deflate)][compression]
 *   Support [protocol version verification][protocol-version]
 *   Support [data integrity verification][checksum]
@@ -32,23 +31,21 @@ which is especially suitable for the Internet of Things (IoT).
 
 *   Code structure & performance optimization
 *   Add test cases to increase unit test coverage
-*   Parse multiple pieces of binary data into one data object
 
-## Compared with ProtoBuf
+## *Compared with ProtoBuf*
 
 Although both ProtoBuf and FastProto are used to solve the problem of cross-language and cross-platform data exchange, 
 they have completely different ways of solving the problem:
 
-*   ProtoBuf customizes the protocol by writing schema, and FastProto customizes the protocol by annotation
-*   ProtoBuf can adapt to multiple languages, while FastProto only targets the Java language
+*   ProtoBuf customizes the protocol by writing schema, and FastProto customizes the protocol by annotations
+*   ProtoBuf is available only when using by both side, while FastProto can be used by each side because of open protocol
 *   FastProto performance is more superior, custom protocol granularity is more refined
 
 FastProto is more recommended for the following scenarios:
 
-*   The performance requirements are demanding, and the performance loss caused by common data formats (JSON/XML) cannot be tolerated
-*   The data source contains a lot of binary content, such as data collected through fieldbus (CAN/MVB/RS-485), which is not suitable for text format
-*   Restrictions on end software development can only be in binary format, and ProtoBuf is not supported. For example, 
-    embedded devices use non-traditional programming methods (ladder diagram/function diagram/ST)
+* Binary data format & open protocol
+* The performance requirements are demanding, and the performance loss caused by common data formats (JSON/XML) cannot be tolerated
+* The data source contains a lot of binary content, such as data collected through fieldbus (CAN/MVB/RS-485), which is not suitable for text format
 
 ## *Maven*
 
@@ -87,32 +84,32 @@ The binary data contains 8 different types of signals, the specific protocol is 
 
 After the weather station receives the data, it needs to be converted into Java data objects for subsequent business function development.
 First, define the Java data object `Weather` according to the protocol, and then use the FastProto data type annotation to annotate each attribute.
-It should be noted that the `value` attribute of any data type annotation corresponds to the byte offset of the signal.
+It should be noted that the `offset` attribute of any data type annotation corresponds to the byte offset of the signal.
 
 ```java
 public class Weather {
-    @UInt8Type(0)
+    @UInt8Type(offset = 0)
     int id;
 
-    @TimeType(2)
+    @TimeType(offset = 2)
     Timestamp time;
 
-    @UInt16Type(10)
+    @UInt16Type(offset = 10)
     int humidity;
 
-    @Int16Type(12)
+    @Int16Type(offset = 12)
     int temperature;
 
-    @UInt32Type(14)
+    @UInt32Type(offset = 14)
     long pressure;
 
-    @BoolType(value = 18, bitOffset = 0)
+    @BoolType(byteOffset = 18, bitOffset = 0)
     boolean temperatureValid;
 
-    @BoolType(value = 18, bitOffset = 1)
+    @BoolType(byteOffset = 18, bitOffset = 1)
     boolean humidityValid;
 
-    @BoolType(value = 18, bitOffset = 2)
+    @BoolType(byteOffset = 18, bitOffset = 2)
     boolean pressureValid;
 }
 ```
@@ -120,7 +117,8 @@ public class Weather {
 Invoke the `FastProto::parse()` method to deserialize the binary data into the Java data object `Weather`
 
 ```java
-byte[] datagram = ...   // Datagram sent by monitoring device.
+// datagram sent by monitoring device.
+byte[] datagram = ...   
 
 Weather weather = FastProto.parse(datagram, Weather.class);
 ```
@@ -155,7 +153,7 @@ public class PressureDecodeFormula implements Function<Long, Double> {
 public class Weather {
     ...
 
-    @UInt32Type(value = 14, decodingFormula = DecodeSpeedFormula.class)
+    @UInt32Type(offset = 14, decodingFormula = DecodeSpeedFormula.class)
     double pressure;
 }
 ```
@@ -176,7 +174,7 @@ public class PressureEncodeFormula implements Function<Double, Long> {
 public class Weather {
     ...
 
-    @UInt32Type(value = 14, decodingFormula = PressureDecodeFormula.class, encodingFormula = PressureEncodeFormula.class)
+    @UInt32Type(offset = 14, decodingFormula = PressureDecodeFormula.class, encodingFormula = PressureEncodeFormula.class)
     double pressure;
 }
 ```
@@ -190,7 +188,7 @@ Each function can be enabled by annotations.
 @EnableCrypto(value = CryptoPolicy.AES_ECB_PKCS5PADDING, key = "330926")
 @EnableProtocolVersion(value = 78, version = 17)
 @EnableCompress(value = CompressPolicy.DEFLATE, level = 2)
-@EnableChecksum(value = -4, start = 0, length = -5, checkPolicy = CheckPolicy.CRC32, endianPolicy = EndianPolicy.BIG)
+@EnableChecksum(offset = -4, start = 0, length = -5, checkPolicy = CheckPolicy.CRC32, endianPolicy = EndianPolicy.BIG)
 public class Weather {
     ...
 }
@@ -256,6 +254,8 @@ FastProto has obtained the support of JetBrain Open Source Project, which can pr
 all core contributors.
 If you are interested in this project and want to join and undertake part of the work (development/testing/documentation),
 please feel free to contact me via email <deng_ran@foxmail.com>
+
+Gitee Repository: [gitee.com/indunet/fastproto](https://gitee.com/indunet/fastproto)
 
 ## *License*
 
