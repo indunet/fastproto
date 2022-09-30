@@ -20,12 +20,14 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.function.Function;
 
 /**
  * @author Deng Ran
- * @since 3.0.0
+ * @since 3.5.0
  */
-@Target(ElementType.CONSTRUCTOR)
+@Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Constructor {
+public @interface EncodingFormula {
+    Class<? extends Function<?, ?>> value();
 }

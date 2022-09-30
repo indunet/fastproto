@@ -28,7 +28,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
-import java.util.List;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
 
@@ -64,8 +63,8 @@ public class Reference {
     Annotation dataTypeAnnotation;
     ProtocolType protocolType;
 
-    Class<? extends Function> decodeFormulaClass;
-    Class<? extends Function> encodeFormulaClass;
+    Class<? extends Function> decodingFormulaClass;
+    Class<? extends Function> encodingFormulaClass;
     Function<byte[], ?> decoder;
     BiConsumer<byte[], ? super Object> encoder;
 

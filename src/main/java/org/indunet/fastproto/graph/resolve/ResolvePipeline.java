@@ -31,6 +31,7 @@ public abstract class ResolvePipeline extends Pipeline<Reference> {
         val typeAnnotationFlow = new TypeAnnotationFlow();
 
         typeAnnotationFlow.setNext(new EndianFlow())
+                .setNext(new FormulaFlow())
                 .setNext(new CodecFlow())
                 .setNext(new CodecIgnoreFlow());
 

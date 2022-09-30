@@ -14,30 +14,20 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.exception;
+package org.indunet.fastproto.annotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+import java.util.function.Function;
 
 /**
  * @author Deng Ran
- * @since 1.6.2
+ * @since 3.5.0
  */
-public class IllegalValueException extends EncodingException {
-    public IllegalValueException() {
-
-    }
-
-    public IllegalValueException(CodecError error) {
-        this(error.getMessage());
-    }
-
-    public IllegalValueException(String message) {
-        super(message);
-    }
-
-    public IllegalValueException(CodecError error, Throwable cause) {
-        this(error.getMessage(), cause);
-    }
-
-    public IllegalValueException(String message, Throwable cause) {
-        super(message, cause);
-    }
+@Target(ElementType.FIELD)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface DecodingFormula {
+    Class<? extends Function<?, ?>> value();
 }

@@ -45,8 +45,4 @@ public @interface Int64Type {
     long MIN_VALUE = Long.MIN_VALUE;
 
     int offset();
-
-    Class<? extends Function<Long, ?>>[] decodingFormula() default {};
-
-    Class<? extends Function<?, Long>>[] encodingFormula() default {};
 }

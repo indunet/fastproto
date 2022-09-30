@@ -47,8 +47,4 @@ public @interface EnumType {
     String name() default "";
 
     EndianPolicy[] endianPolicy() default {};
-
-    Class<? extends Function<? extends Enum, ?>>[] decodingFormula() default {};
-
-    Class<? extends Function<?, ? super Enum>>[] encodingFormula() default {};
 }

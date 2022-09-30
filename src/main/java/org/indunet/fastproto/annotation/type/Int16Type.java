@@ -29,7 +29,7 @@ import java.lang.annotation.Target;
 import java.util.function.Function;
 
 /**
- * Integer16 type, corresponding to Java Integer/int.
+ * Int16 type, corresponding to Java Integer/int.
  *
  * @author Deng Ran
  * @see DataType
@@ -45,8 +45,4 @@ public @interface Int16Type {
     int MIN_VALUE = Short.MIN_VALUE;
 
     int offset();
-
-    Class<? extends Function<Integer, ?>>[] decodingFormula() default {};
-
-    Class<? extends Function<?, Integer>>[] encodingFormula() default {};
 }

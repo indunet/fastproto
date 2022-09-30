@@ -45,8 +45,4 @@ public @interface UInt8Type {
     int MIN_VALUE = 0;
 
     int offset();
-
-    Class<? extends Function<Integer, ?>>[] decodingFormula() default {};
-
-    Class<? extends Function<?, Integer>>[] encodingFormula() default {};
 }

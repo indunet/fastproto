@@ -17,33 +17,32 @@
 package org.indunet.fastproto.graph.resolve;
 
 import lombok.val;
-import org.indunet.fastproto.ProtocolType;
-import org.indunet.fastproto.annotation.DataType;
-import org.indunet.fastproto.exception.ResolveException;
+import org.indunet.fastproto.annotation.DecodingFormula;
+import org.indunet.fastproto.annotation.EncodingFormula;
 import org.indunet.fastproto.graph.Reference;
 
-import java.util.Arrays;
-
 /**
- * Resolve element type flow.
+ * Formula flow.
  *
  * @author Deng Ran
- * @since 2.5.0
+ * @since 3.5.0
  */
-public class TypeAnnotationFlow extends ResolvePipeline {
+public class FormulaFlow extends ResolvePipeline {
     @Override
     public void process(Reference reference) {
         val field = reference.getField();
 
-        val typeAnnotation = Arrays.stream(field.getAnnotations())
-                .filter(a -> a.annotationType().isAnnotationPresent(DataType.class))
-                .findAny()
-                .orElseThrow(ResolveException::new);
+        if (field.isAnnotationPresent(DecodingFormula.class)) {
+            val formula = field.getAnnotation(DecodingFormula.class);
 
-        reference.setDataTypeAnnotation(typeAnnotation);
-        reference.setReferenceType(Reference.ReferenceType.FIELD);
+            reference.setDecodingFormulaClass(formula.value());
+        }
 
-        reference.setProtocolType(ProtocolType.proxy(typeAnnotation));
+        if (field.isAnnotationPresent(EncodingFormula.class)) {
+            val formula = field.getAnnotation(EncodingFormula.class);
+
+            reference.setEncodingFormulaClass(formula.value());
+        }
 
         this.forward(reference);
     }

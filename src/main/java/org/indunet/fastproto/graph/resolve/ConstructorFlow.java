@@ -18,7 +18,6 @@ package org.indunet.fastproto.graph.resolve;
 
 import lombok.val;
 import lombok.var;
-import org.indunet.fastproto.annotation.Constructor;
 import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.graph.Reference.ConstructorType;
@@ -37,22 +36,10 @@ public class ConstructorFlow extends ResolvePipeline {
     @Override
     public void process(Reference reference) {
         val protocolClass = reference.getProtocolClass();
-        var cnt = 0;
-
-        if (Arrays.stream(protocolClass.getConstructors())
-                .anyMatch(c -> c.isAnnotationPresent(Constructor.class))) {
-            cnt = Arrays.stream(protocolClass.getConstructors())
-                    .filter(c -> c.isAnnotationPresent(Constructor.class))
-                    .findAny()
-                    .get()
-                    .getParameterCount();
-        } else {
-            cnt = Arrays.stream(protocolClass.getConstructors())
+        var cnt = Arrays.stream(protocolClass.getConstructors())
                     .mapToInt(java.lang.reflect.Constructor::getParameterCount)
                     .min()
                     .getAsInt();
-        // .orElseThrow(() -> new RuntimeException(protocolClass.getName()));
-        }
 
         if (cnt == 0) {
             reference.setConstructorType(ConstructorType.NO_ARGS);

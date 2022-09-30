@@ -45,8 +45,4 @@ public @interface DoubleType {
     double MIN_VALUE = Double.MIN_VALUE;
 
     int offset();
-
-    Class<? extends Function<Double, ?>>[] decodingFormula() default {};
-
-    Class<? extends Function<?, Double>>[] encodingFormula() default {};
 }

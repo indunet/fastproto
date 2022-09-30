@@ -45,8 +45,4 @@ public @interface FloatType {
     float MIN_VALUE = Float.MIN_VALUE;
 
     int offset();
-
-    Class<? extends Function<Float, ?>>[] decodingFormula() default {};
-
-    Class<? extends Function<?, Float>>[] encodingFormula() default {};
 }

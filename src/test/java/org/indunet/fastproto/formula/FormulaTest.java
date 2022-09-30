@@ -19,6 +19,8 @@ package org.indunet.fastproto.formula;
 import lombok.AllArgsConstructor;
 import lombok.val;
 import org.indunet.fastproto.FastProto;
+import org.indunet.fastproto.annotation.DecodingFormula;
+import org.indunet.fastproto.annotation.EncodingFormula;
 import org.indunet.fastproto.annotation.type.Int8Type;
 import org.indunet.fastproto.exception.DecodeFormulaException;
 import org.indunet.fastproto.exception.EncodeFormulaException;
@@ -35,7 +37,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 public class FormulaTest {
     @AllArgsConstructor
     public static class TestObject1 {
-        @Int8Type(offset = 0, encodingFormula = PressureEncodeFormula.class)
+        @Int8Type(offset = 0)
+        @EncodingFormula(PressureEncodeFormula.class)
         int pressure;
     }
 
@@ -54,7 +57,8 @@ public class FormulaTest {
 
     @AllArgsConstructor
     public static class TestObject2 {
-        @Int8Type(offset = 0, decodingFormula = PressureDecodeFormula.class)
+        @Int8Type(offset = 0)
+        @DecodingFormula(PressureDecodeFormula.class)
         int pressure;
     }
 

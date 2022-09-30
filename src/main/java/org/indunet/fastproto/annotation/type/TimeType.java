@@ -42,12 +42,4 @@ public @interface TimeType {
     int SIZE = Long.SIZE >> 3;
 
     int offset();
-
-    Class<? extends Annotation> genericType() default Int64Type.class;
-
-    TimeUnit unit() default TimeUnit.MILLISECONDS;
-
-    Class<? extends Function<Timestamp, ?>>[] decodingFormula() default {};
-
-    Class<? extends Function<?, Timestamp>>[] encodingFormula() default {};
 }
