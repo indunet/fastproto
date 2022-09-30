@@ -41,7 +41,7 @@ public class EnumCodec<T extends Enum> implements Codec<T> {
         val enums = enumClass.getEnumConstants();
         val code = CodecUtils.uint8Type(bytes, offset);
 
-        if (fieldName.isEmpty()) {
+        if (fieldName == null || fieldName.isEmpty()) {
             return Arrays.stream(enums)
                     .filter(e -> e.ordinal() == code)
                     .findAny()
@@ -94,13 +94,13 @@ public class EnumCodec<T extends Enum> implements Codec<T> {
         val dataType = context.getDataTypeAnnotation(EnumType.class);
         val fieldType = context.getFieldType();
 
-        return this.decode(bytes, dataType.offset(), dataType.field(), (Class<T>) fieldType);
+        return this.decode(bytes, dataType.offset(), dataType.name(), (Class<T>) fieldType);
     }
 
     @Override
     public void encode(CodecContext context, byte[] bytes, T value) {
         val dataType = context.getDataTypeAnnotation(EnumType.class);
 
-        this.encode(bytes, dataType.offset(), dataType.field(), value);
+        this.encode(bytes, dataType.offset(), dataType.name(), value);
     }
 }

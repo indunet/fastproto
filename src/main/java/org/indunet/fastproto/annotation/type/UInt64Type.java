@@ -18,15 +18,14 @@ package org.indunet.fastproto.annotation.type;
 
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
-import org.indunet.fastproto.reference.resolve.validate.DecodingFormulaValidator;
-import org.indunet.fastproto.reference.resolve.validate.EncodingFormulaValidator;
-import org.indunet.fastproto.reference.resolve.validate.FieldValidator;
+import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
+import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
+import org.indunet.fastproto.graph.resolve.validate.FieldValidator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.reflect.Type;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.function.Function;
@@ -49,8 +48,4 @@ public @interface UInt64Type {
     BigInteger MIN_VALUE = new BigInteger("0");
 
     int offset();
-
-    Class<? extends Function<BigDecimal, ?>>[] decodingFormula() default {};
-
-    Class<? extends Function<?, BigDecimal>>[] encodingFormula() default {};
 }

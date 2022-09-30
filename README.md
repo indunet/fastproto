@@ -23,7 +23,6 @@ FastProto uses a new way to solve the problem of cross-language and cross-platfo
     * Customize endianness (byte order)
     * Support [decoding formula & encoding formula][formula]
 *   Support data [compress and decompress(gzip, deflate)][compression]
-*   Support [protocol version verification][protocol-version]
 *   Support [data integrity verification][checksum]
 *   Support data decrypt & encrypt
 
@@ -138,7 +137,7 @@ the serialized result by 0.1, which is an extremely common operation in IoT data
 To help users reduce intermediate steps, FastProto introduces encoding formulas and decoding formulas.
 
 The custom decoding formula needs to implement the `java.lang.function.Function` interface, and then specify the decoding
-formula through the `decodingFormula` attribute of the data type annotation.
+formula through annotation `@DecodingFormula`
 
 ```java
 public class PressureDecodeFormula implements Function<Long, Double> {
@@ -159,7 +158,7 @@ public class Weather {
 ```
 
 Similarly, In the same way, the encoding formula also needs to implement the `java.lang.function.Function` interface, and
-then specify the encoding formula through the `encodingFormula` attribute of the data type annotation. [more][formula]
+then specify the encoding formula through annotation `@EncodingFormula`.
 
 ```java
 public class PressureEncodeFormula implements Function<Double, Long> {
@@ -173,8 +172,10 @@ public class PressureEncodeFormula implements Function<Double, Long> {
 ```java
 public class Weather {
     ...
-
-    @UInt32Type(offset = 14, decodingFormula = PressureDecodeFormula.class, encodingFormula = PressureEncodeFormula.class)
+    
+    @UInt32Type(offset = 14)
+    @DecodingFormula(PressureDecodeFormula.class)
+    @EncodingFormula(PressureEncodeFormula.class)
     double pressure;
 }
 ```
@@ -277,9 +278,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-[formula]: https://github.com/indunet/fastproto/wiki/Formula
 [kafka]: https://github.com/indunet/fastproto/wiki/Work-with-Kafka
 [checksum]: https://github.com/indunet/fastproto/wiki/Data-Integrity-Check
-[protocol-version]: https://github.com/indunet/fastproto/wiki/Protocol-Version
 [compression]: https://github.com/indunet/fastproto/wiki/Compression
 [types]: https://github.com/indunet/fastproto/wiki/Data-Type-Annotations

@@ -18,7 +18,7 @@ package org.indunet.fastproto.pipeline;
 
 import lombok.Builder;
 import lombok.Data;
-import org.indunet.fastproto.reference.Graph;
+import org.indunet.fastproto.graph.Graph;
 
 /**
  * Codec Context.

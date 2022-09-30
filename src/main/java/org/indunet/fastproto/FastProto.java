@@ -18,7 +18,7 @@ package org.indunet.fastproto;
 
 import lombok.NonNull;
 import lombok.val;
-import org.indunet.fastproto.reference.Resolver;
+import org.indunet.fastproto.graph.Resolver;
 import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.PipelineContext;
 

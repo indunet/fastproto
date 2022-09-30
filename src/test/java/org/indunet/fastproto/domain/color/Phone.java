@@ -26,13 +26,13 @@ import org.indunet.fastproto.annotation.type.EnumType;
  */
 @Data
 public class Phone {
-    @EnumType(offset = 0, field = "code")
+    @EnumType(offset = 0, name = "code")
     Color backCover;
 
-    @EnumType(offset = 1, field = "code")
+    @EnumType(offset = 1, name = "code")
     Color frontCover;
 
-    transient static final int LENGTH = 10;
+    static final int LENGTH = 10;
 
     public static Phone getDefault() {
         val phone = new Phone();

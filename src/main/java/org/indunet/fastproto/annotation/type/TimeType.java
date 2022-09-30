@@ -18,9 +18,9 @@ package org.indunet.fastproto.annotation.type;
 
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
-import org.indunet.fastproto.reference.resolve.validate.DecodingFormulaValidator;
-import org.indunet.fastproto.reference.resolve.validate.EncodingFormulaValidator;
-import org.indunet.fastproto.reference.resolve.validate.FieldValidator;
+import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
+import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
+import org.indunet.fastproto.graph.resolve.validate.FieldValidator;
 
 import java.lang.annotation.*;
 import java.sql.Timestamp;
@@ -42,12 +42,4 @@ public @interface TimeType {
     int SIZE = Long.SIZE >> 3;
 
     int offset();
-
-    Class<? extends Annotation> genericType() default Int64Type.class;
-
-    TimeUnit unit() default TimeUnit.MILLISECONDS;
-
-    Class<? extends Function<Timestamp, ?>>[] decodingFormula() default {};
-
-    Class<? extends Function<?, Timestamp>>[] encodingFormula() default {};
 }

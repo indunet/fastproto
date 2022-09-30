@@ -44,7 +44,7 @@ public class Crc8Checker implements Checker {
     }
 
     public static Crc8Checker getInstance() {
-        return checkers.computeIfAbsent(defaultPoly, p -> new Crc8Checker(p));
+        return checkers.computeIfAbsent(defaultPoly, Crc8Checker::new);
     }
 
     public synchronized static Crc8Checker getInstance(int poly) {

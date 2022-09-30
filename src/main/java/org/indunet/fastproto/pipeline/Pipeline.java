@@ -18,7 +18,7 @@ package org.indunet.fastproto.pipeline;
 
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
-import org.indunet.fastproto.reference.resolve.validate.ValidatorContext;
+import org.indunet.fastproto.graph.resolve.validate.ValidatorContext;
 import org.indunet.fastproto.pipeline.decode.*;
 import org.indunet.fastproto.pipeline.encode.*;
 
@@ -38,13 +38,11 @@ public abstract class Pipeline<T> {
             UncompressFlow.class,
             VerifyFixedLengthFlow.class,
             VerifyChecksumFlow.class,
-            VerifyVersionFlow.class,
             DecodeFlow.class};
     protected static Class<? extends Pipeline>[] encodeFlowClasses = new Class[] {
             InferLengthFlow.class,
             FixedLengthFlow.class,
             EncodeFlow.class,
-            WriteVersionFlow.class,
             WriteChecksumFlow.class,
             CompressFlow.class,
             EncryptFlow.class
@@ -87,7 +85,7 @@ public abstract class Pipeline<T> {
         String name = this.getClass().getSimpleName();
 
         if (this.next != null) {
-            return String.format("%s -> %s", name, this.next.toString());
+            return String.format("%s -> %s", name, this.next);
         } else {
             return name;
         }

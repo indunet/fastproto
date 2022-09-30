@@ -156,7 +156,7 @@ public class CodecFactory {
         if (Enum.class.isAssignableFrom(fieldClass)) {
             return map.get(Enum.class);
         } else if (!map.containsKey(fieldClass)) {
-            throw new CodecException(String.format("Codec of %s cannot be found.", fieldClass.toString()));
+            throw new CodecException(String.format("%s cannot be used on %s", type.getSimpleName(), fieldClass));
         } else {
             return map.get(fieldClass);
         }

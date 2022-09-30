@@ -42,7 +42,7 @@ public class StateDatagram {
     Integer protocolVersion;
     Long datagramProtocolId;
 
-    @TimeType(offset = DatagramProtocol.EVENT_TIME_OFFSET, genericType = UInt32Type.class, unit = TimeUnit.SECONDS)
+    @TimeType(offset = DatagramProtocol.EVENT_TIME_OFFSET)
     Timestamp eventTime;
     Timestamp receiveTime;
 

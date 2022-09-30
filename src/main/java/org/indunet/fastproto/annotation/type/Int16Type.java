@@ -18,19 +18,18 @@ package org.indunet.fastproto.annotation.type;
 
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
-import org.indunet.fastproto.reference.resolve.validate.DecodingFormulaValidator;
-import org.indunet.fastproto.reference.resolve.validate.EncodingFormulaValidator;
-import org.indunet.fastproto.reference.resolve.validate.FieldValidator;
+import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
+import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
+import org.indunet.fastproto.graph.resolve.validate.FieldValidator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.reflect.Type;
 import java.util.function.Function;
 
 /**
- * Integer16 type, corresponding to Java Integer/int.
+ * Int16 type, corresponding to Java Integer/int.
  *
  * @author Deng Ran
  * @see DataType
@@ -46,8 +45,4 @@ public @interface Int16Type {
     int MIN_VALUE = Short.MIN_VALUE;
 
     int offset();
-
-    Class<? extends Function<Integer, ?>>[] decodingFormula() default {};
-
-    Class<? extends Function<?, Integer>>[] encodingFormula() default {};
 }

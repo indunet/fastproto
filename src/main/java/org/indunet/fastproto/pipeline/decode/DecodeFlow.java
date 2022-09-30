@@ -19,7 +19,7 @@ package org.indunet.fastproto.pipeline.decode;
 import lombok.val;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
-import org.indunet.fastproto.reference.Graph;
+import org.indunet.fastproto.graph.Graph;
 import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.PipelineContext;
 import org.indunet.fastproto.pipeline.FlowCode;

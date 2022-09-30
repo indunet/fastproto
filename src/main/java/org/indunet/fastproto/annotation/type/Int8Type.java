@@ -18,15 +18,14 @@ package org.indunet.fastproto.annotation.type;
 
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
-import org.indunet.fastproto.reference.resolve.validate.DecodingFormulaValidator;
-import org.indunet.fastproto.reference.resolve.validate.EncodingFormulaValidator;
-import org.indunet.fastproto.reference.resolve.validate.FieldValidator;
+import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
+import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
+import org.indunet.fastproto.graph.resolve.validate.FieldValidator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.lang.reflect.Type;
 import java.util.function.Function;
 
 /**
@@ -46,8 +45,4 @@ public @interface Int8Type {
     int MIN_VALUE = Byte.MIN_VALUE;
 
     int offset();
-
-    Class<? extends Function<Integer, ?>>[] decodingFormula() default {};
-
-    Class<? extends Function<?, Integer>>[] encodingFormula() default {};
 }

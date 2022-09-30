@@ -20,9 +20,10 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.indunet.fastproto.annotation.DecodingFormula;
 import org.indunet.fastproto.annotation.EnableCompress;
 import org.indunet.fastproto.annotation.EnableCrypto;
-import org.indunet.fastproto.annotation.EnableProtocolVersion;
+import org.indunet.fastproto.annotation.EncodingFormula;
 import org.indunet.fastproto.annotation.type.*;
 import org.indunet.fastproto.compress.CompressPolicy;
 import org.indunet.fastproto.crypto.CryptoPolicy;
@@ -45,7 +46,6 @@ import java.util.Date;
 @NoArgsConstructor
 @EnableCrypto(value = CryptoPolicy.AES_ECB_PKCS5PADDING, key = "330926")
 @EnableCompress(CompressPolicy.GZIP)
-@EnableProtocolVersion(offset = 102, version = 17)
 public class Everything {
     @BoolType(byteOffset = 0, bitOffset = 1)
     Boolean aBoolean;
@@ -95,7 +95,9 @@ public class Everything {
     @CharType(offset = 64)
     Character aCharacter;
 
-    @UInt8Type(offset = 66, decodingFormula = DecodeSpeedFormula.class, encodingFormula = EncodeSpeedFormula.class)
+    @UInt8Type(offset = 66)
+    @DecodingFormula(DecodeSpeedFormula.class)
+    @EncodingFormula(EncodeSpeedFormula.class)
     float speed;
 
     @UInt64Type(offset = 70)

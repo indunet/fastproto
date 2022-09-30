@@ -50,14 +50,14 @@ public class AnnotationUtils {
     }
 
     public static <T extends Annotation> T mock(Class<T> annotationClass, int value) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("value", value);
 
         return mock(annotationClass, map);
     }
 
     public static <T extends Annotation> T mock(Class<T> annotationClass, int value, String fieldName, ProtocolType protocolType) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("value", value);
         map.put("fieldName", fieldName);
         map.put("protocolType", protocolType);
@@ -66,7 +66,7 @@ public class AnnotationUtils {
     }
 
     public static <T extends Annotation> T mock(Class<T> annotationClass, int value, ProtocolType protocolType) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("value", value);
         map.put("protocolType", protocolType);
 
@@ -74,7 +74,7 @@ public class AnnotationUtils {
     }
 
     public static <T extends Annotation> T mock(Class<T> annotationClass, int value, int length) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("value", value);
         map.put("length", length);
 
@@ -82,7 +82,7 @@ public class AnnotationUtils {
     }
 
     public static <T extends Annotation> T mockBooleanType(Class<T> annotationClass, int byteOffset, int bitOffset) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
         map.put("value", byteOffset);
         map.put("bitOffset", bitOffset);
 

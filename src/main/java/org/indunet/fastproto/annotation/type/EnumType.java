@@ -19,9 +19,9 @@ package org.indunet.fastproto.annotation.type;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
-import org.indunet.fastproto.reference.resolve.validate.DecodingFormulaValidator;
-import org.indunet.fastproto.reference.resolve.validate.EncodingFormulaValidator;
-import org.indunet.fastproto.reference.resolve.validate.FieldValidator;
+import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
+import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
+import org.indunet.fastproto.graph.resolve.validate.FieldValidator;
 
 import java.lang.annotation.*;
 import java.util.function.Function;
@@ -44,13 +44,7 @@ public @interface EnumType {
 
     int offset();
 
-    String field() default "";
-
-    Class<? extends Annotation> genericType() default UInt8Type.class;
+    String name() default "";
 
     EndianPolicy[] endianPolicy() default {};
-
-    Class<? extends Function<? extends Enum, ?>>[] decodingFormula() default {};
-
-    Class<? extends Function<?, ? super Enum>>[] encodingFormula() default {};
 }
