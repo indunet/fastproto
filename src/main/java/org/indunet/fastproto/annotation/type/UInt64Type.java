@@ -16,6 +16,7 @@
 
 package org.indunet.fastproto.annotation.type;
 
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
@@ -48,4 +49,6 @@ public @interface UInt64Type {
     BigInteger MIN_VALUE = new BigInteger("0");
 
     int offset();
+
+    EndianPolicy endian() default EndianPolicy.LITTLE;
 }

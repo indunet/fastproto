@@ -195,7 +195,7 @@ FastProto支持Java基础数据类型、Timestamp、String和字节数组，以�
 |     注解      |                 Java                  | C/C++          |    大小    |
 |:-----------:|:-------------------------------------:|:--------------:|:--------:|
 |  @BoolType  |           Boolean / boolean           | bool           |   1 位    |    
-| @CharType`  |           Character / char            | --             |   2 字节   |   
+|  @CharType  |           Character / char            | --             |   2 字节   |   
 | @Int32Type  |             Integer / int             | int            |   4 字节   | 
 | @Int64Type  |              Long / long              | long long      |   8 字节   |   
 | @FloatType  |             Float / float             | float          |   4 字节   |  

@@ -31,6 +31,6 @@ import java.lang.annotation.Target;
  */
 @Target({ElementType.TYPE, ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Endian {
+public @interface DefaultEndian {
     EndianPolicy value() default EndianPolicy.LITTLE;
 }

@@ -33,7 +33,7 @@ import org.indunet.fastproto.annotation.`type`.{UInt16Type => JavaUInt16Type}
 import org.indunet.fastproto.annotation.`type`.{UInt32Type => JavaUInt32Type}
 import org.indunet.fastproto.annotation.`type`.{UInt64Type => JavaUInt64Type}
 
-import org.indunet.fastproto.annotation.{Endian => JavaEndian}
+import org.indunet.fastproto.annotation.{DefaultEndian => JavaDefaultEndian}
 import org.indunet.fastproto.annotation.{EncodingIgnore => JavaEncodingIgnore}
 import org.indunet.fastproto.annotation.{DecodingIgnore => JavaDecodingIgnore}
 
@@ -68,7 +68,7 @@ package object scala {
   type UInt32Type = JavaUInt32Type @field
   type UInt64Type = JavaUInt64Type @field
 
-  type Endian = JavaEndian @field
+  type DefaultEndian = JavaDefaultEndian @field
   type DecodingIgnore = JavaDecodingIgnore @field
   type EncodingIgnore = JavaEncodingIgnore @field
 

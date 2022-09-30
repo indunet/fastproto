@@ -203,7 +203,7 @@ Taking into account cross-language and cross-platform data exchange, FastProto a
 | Annotation  |                 Java                  | C/C++          |    Size     |
 |:-----------:|:-------------------------------------:|:--------------:|:-----------:|
 |  @BoolType  |           Boolean / boolean           | bool           |    1 bit    |    
-| @CharType`  |           Character / char            | --             |   2 bytes   |   
+|  @CharType  |           Character / char            | --             |   2 bytes   |   
 | @Int32Type  |             Integer / int             | int            |   4 bytes   | 
 | @Int64Type  |              Long / long              | long long      |   8 bytes   |   
 | @FloatType  |             Float / float             | float          |   4 bytes   |  

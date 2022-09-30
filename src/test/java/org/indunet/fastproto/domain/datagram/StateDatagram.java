@@ -18,18 +18,17 @@ package org.indunet.fastproto.domain.datagram;
 
 import lombok.Data;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.Endian;
+import org.indunet.fastproto.annotation.DefaultEndian;
 import org.indunet.fastproto.annotation.type.*;
 
 import java.sql.Timestamp;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author Deng Ran
  * @since 1.6.2
  */
 @Data
-@Endian(EndianPolicy.LITTLE)
+@DefaultEndian(EndianPolicy.LITTLE)
 public class StateDatagram {
     @UInt8Type(offset = DatagramProtocol.VEHICLE_MODEL_NUMBER_OFFSET)
     Integer vehicleModelNumber;

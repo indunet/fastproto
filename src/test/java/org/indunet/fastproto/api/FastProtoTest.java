@@ -23,7 +23,7 @@ import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.annotation.EnableCrypto;
-import org.indunet.fastproto.annotation.Endian;
+import org.indunet.fastproto.annotation.DefaultEndian;
 import org.indunet.fastproto.annotation.type.UInt64Type;
 import org.indunet.fastproto.checksum.Crc32Checker;
 import org.indunet.fastproto.compress.DeflateCompressor;
@@ -321,7 +321,7 @@ public class FastProtoTest {
         assertArrayEquals(datagram, FastProto.toBytes(phone, Phone.getLength()));
     }
 
-    @Endian(EndianPolicy.BIG)
+    @DefaultEndian(EndianPolicy.BIG)
     public static class NonObject {
 
     }
