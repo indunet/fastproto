@@ -48,8 +48,4 @@ public @interface BoolType {
     int byteOffset();
 
     int bitOffset() default 0;
-
-    Class<? extends Function<Boolean, ?>>[] decodingFormula() default {};
-
-    Class<? extends Function<?, Boolean>>[] encodingFormula() default {};
 }

@@ -17,14 +17,10 @@
 package org.indunet.fastproto;
 
 import org.indunet.fastproto.annotation.type.*;
-import org.indunet.fastproto.exception.ResolveException;
-import org.indunet.fastproto.util.TypeUtils;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
-import java.lang.reflect.Type;
 import java.util.Arrays;
-import java.util.function.Function;
 
 /**
  * @author Deng Ran
@@ -93,10 +89,6 @@ public interface ProtocolType {
     int bitOffset();
 
     int length();
-
-    Class<? extends Function<?, ?>>[] decodingFormula();
-
-    Class<? extends Function<?, ?>>[] encodingFormula();
 
     String field();
 

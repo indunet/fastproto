@@ -72,14 +72,6 @@ public class TypeUtils {
         }
     }
 
-    public static Class<? extends Function> encodingFormula(@NonNull Annotation typeAnnotation) {
-        return formula(typeAnnotation, ENCODE_FORMULA_NAME);
-    }
-
-    public static Class<? extends Function> decodingFormula(@NonNull Annotation typeAnnotation) {
-        return formula(typeAnnotation, DECODE_FORMULA_NAME);
-    }
-
     @SneakyThrows
     protected static Class<? extends Function> formula(@NonNull Annotation typeAnnotation, @NonNull String name) {
         val method = typeAnnotation.getClass().getMethod(name);

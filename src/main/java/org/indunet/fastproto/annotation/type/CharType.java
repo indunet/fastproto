@@ -43,8 +43,4 @@ public @interface CharType {
     int SIZE = Character.SIZE >> 3;
 
     int offset();
-
-    Class<? extends Function<Character, ?>>[] decodingFormula() default {};
-
-    Class<? extends Function<?, Character>>[] encodingFormula() default {};
 }

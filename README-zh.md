@@ -130,7 +130,7 @@ byte[] datagram = FastProto.toBytes(weather, 20);
 也许你已经注意到压力信号对应一个换算公式，通常需要用户自行将序列化后的结果乘以0.1，这是物联网数据交换时极其常见的操作。
 为了帮助用户减少中间步骤，FastProto引入的编码公式和解码公式。
 
-自定义解码公式需要实现`java.lang.function.Function`接口，然后通过数据类型注解的`decodingFormula`属性指定解码公式。
+自定义解码公式需要实现`java.lang.function.Function`接口，然后通过注解`@DecodingFormula`指定解码公式。
 
 ```java
 public class PressureDecodeFormula implements Function<Long, Double> {
@@ -150,7 +150,7 @@ public class Weather {
 }
 ```
 
-同理，编码公式也需要实现`java.lang.function.Function`接口，然后通过数据类型注解的`encodingFormula`属性指定编码公式。[更多][formula]
+同理，编码公式也需要实现`java.lang.function.Function`接口，然后注解`@EncodingFormula`指定编码公式。
 
 ```java
 public class PressureEncodeFormula implements Function<Double, Long> {
@@ -165,7 +165,9 @@ public class PressureEncodeFormula implements Function<Double, Long> {
 public class Weather {
     ...
 
-    @UInt32Type(offset = 14, decodingFormula = PressureDecodeFormula.class, encodingFormula = PressureEncodeFormula.class)
+    @UInt32Type(offset = 14)
+    @DecodingFormula(PressureDecodeFormula.class)
+    @EncodingFormula(PressureEncodeFormula.class)
     double pressure;
 }
 ```
@@ -270,5 +272,4 @@ limitations under the License.
 [kafka]: https://github.com/indunet/fastproto/wiki/Work-with-Kafka
 [checksum]: https://github.com/indunet/fastproto/wiki/Data-Integrity-Check
 [compression]: https://github.com/indunet/fastproto/wiki/Compression
-[formula]: https://github.com/indunet/fastproto/wiki/Formula-zh
 [types]: https://github.com/indunet/fastproto/wiki/Data-Type-Annotations-zh

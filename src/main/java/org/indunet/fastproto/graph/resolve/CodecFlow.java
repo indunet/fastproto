@@ -43,9 +43,9 @@ public class CodecFlow extends ResolvePipeline {
                 .build();
 
         reference.setDecoder(CodecFactory
-                .createDecoder(context, reference.getDecodeFormulaClass()));
+                .createDecoder(context, reference.getDecodingFormulaClass()));
         reference.setEncoder(CodecFactory
-                .createEncoder(context, reference.getEncodeFormulaClass()));
+                .createEncoder(context, reference.getEncodingFormulaClass()));
 
         try {
             val ctx = ValidatorContext.builder()

@@ -48,8 +48,4 @@ public @interface UInt64Type {
     BigInteger MIN_VALUE = new BigInteger("0");
 
     int offset();
-
-    Class<? extends Function<BigDecimal, ?>>[] decodingFormula() default {};
-
-    Class<? extends Function<?, BigDecimal>>[] encodingFormula() default {};
 }

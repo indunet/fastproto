@@ -45,8 +45,4 @@ public @interface StringType {
     int length() default -1;
 
     String charset() default "UTF-8";
-
-    Class<? extends Function<String, ?>>[] decodingFormula() default {};
-
-    Class<? extends Function<?, String>>[] encodingFormula() default {};
 }

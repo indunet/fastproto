@@ -45,8 +45,4 @@ public @interface Int32Type {
     int MIN_VALUE = Integer.MIN_VALUE;
 
     int offset();
-
-    Class<? extends Function<Integer, ?>>[] decodingFormula() default {};
-
-    Class<? extends Function<?, Integer>>[] encodingFormula() default {};
 }

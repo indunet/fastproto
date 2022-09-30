@@ -43,8 +43,4 @@ public @interface BinaryType {
     int offset();
 
     int length() default -1;
-
-    Class<? extends Function<byte[], ?>>[] decodingFormula() default {};
-
-    Class<? extends Function<?, byte[]>>[] encodingFormula() default {};
 }

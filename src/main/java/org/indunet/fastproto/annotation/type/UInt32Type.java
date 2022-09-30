@@ -45,8 +45,4 @@ public @interface UInt32Type {
     int MIN_VALUE = 0;
 
     int offset();
-
-    Class<? extends Function<Long, ?>>[] decodingFormula() default {};
-
-    Class<? extends Function<?, Long>>[] encodingFormula() default {};
 }

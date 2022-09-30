@@ -17,10 +17,13 @@
 package org.indunet.fastproto.graph.resolve.validate;
 
 import lombok.val;
+import org.indunet.fastproto.annotation.DecodingFormula;
+import org.indunet.fastproto.annotation.EncodingFormula;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodeFormulaException;
 
 import java.text.MessageFormat;
+import java.util.Optional;
 import java.util.function.Function;
 
 /**
@@ -35,18 +38,14 @@ public class FieldValidator extends TypeValidator {
         val protocolType = context.getProtocolType();
         val typeAnnotationClass = context.getTypeAnnotationClass();
         val field = context.getField();
-        Class<? extends Function> decodingFormula = null;
-        Class<? extends Function> encodingFormula = null;
+        Class<? extends Function> decodingFormula = Optional.ofNullable(field.getAnnotation(DecodingFormula.class))
+                .map(DecodingFormula::value)
+                .orElse(null);
+        Class<? extends Function> encodingFormula = Optional.ofNullable(field.getAnnotation(EncodingFormula.class))
+                .map(EncodingFormula::value)
+                .orElse(null);
 
         try {
-            if (protocolType.decodingFormula().length > 0) {
-                decodingFormula = protocolType.decodingFormula()[0];
-            }
-
-            if (protocolType.encodingFormula().length > 0) {
-                encodingFormula = protocolType.encodingFormula()[0];
-            }
-
             context.setDecodingFormula(decodingFormula);
             context.setEncodingFormula(encodingFormula);
         } catch (Exception e) {
