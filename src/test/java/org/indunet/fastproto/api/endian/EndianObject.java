@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,23 +14,22 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.crypto;
+package org.indunet.fastproto.api.endian;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
+import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.annotation.DefaultEndian;
+import org.indunet.fastproto.annotation.type.Int16Type;
 
 /**
- * Crypto Policy.
- *
  * @author Deng Ran
- * @since 2.0.0
+ * @since 1.4.0
  */
-@AllArgsConstructor
-@Getter
-public enum CryptoPolicy {
-    DES_ECB_PKCS5PADDING("DES/ECB/PKCS5Padding", 8),
-    AES_ECB_PKCS5PADDING( "AES/ECB/PKCS5Padding", 16);
-
-    String transformation;
-    int keyLength;
+@Data
+@DefaultEndian(EndianPolicy.BIG)
+public class EndianObject {
+    @Int16Type(offset = 0, endian = EndianPolicy.LITTLE)
+    Integer little = 0x0102;
+    @Int16Type(offset = 2)
+    Integer big = 0x0304;
 }

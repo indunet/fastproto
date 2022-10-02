@@ -27,7 +27,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.function.Function;
 
 /**
  * Float type, corresponding to Java Float/float.
@@ -47,5 +46,5 @@ public @interface FloatType {
 
     int offset();
 
-    EndianPolicy endian() default EndianPolicy.LITTLE;
+    EndianPolicy[] endian() default {};
 }

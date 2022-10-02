@@ -31,15 +31,10 @@ public final class CodecFeature {
     public static final long DISABLE_COMPRESS = FlowCode.COMPRESS_FLOW_CODE | FlowCode.UNCOMPRESS_FLOW_CODE;
     public static final long DISABLE_CHECKSUM = FlowCode.VERIFY_CHECKSUM_FLOW_CODE | FlowCode.WRITE_CHECKSUM_FLOW_CODE;
     public static final long NON_INFER_LENGTH = FlowCode.INFER_LENGTH_FLOW_CODE;
-    public static final long DISABLE_CRYPTO = FlowCode.DECRYPT_FLOW_CODE | FlowCode.ENCRYPT_FLOW_CODE;
     public static final long DISABLE_FIXED_LENGTH = FlowCode.VERIFY_FIXED_LENGTH_FLOW_CODE | FlowCode.FIXED_LENGTH_FLOW_CODE;
 
     public static long of(Reference reference) {
         long codecFeature = DEFAULT;
-
-        if (reference.getEnableCrypto() == null) {
-            codecFeature |= DISABLE_CRYPTO;
-        }
 
         if (reference.getEnableCompress() == null) {
             codecFeature |= DISABLE_COMPRESS;

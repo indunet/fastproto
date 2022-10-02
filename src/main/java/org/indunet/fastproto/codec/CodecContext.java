@@ -31,7 +31,7 @@ import java.lang.annotation.Annotation;
 @Data
 @Builder
 public class CodecContext {
-    EndianPolicy endianPolicy;
+    EndianPolicy defaultEndianPolicy;
     Class<?> fieldType;
     Annotation dataTypeAnnotation;
 

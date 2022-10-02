@@ -21,14 +21,11 @@ import lombok.val;
 import org.indunet.fastproto.CodecFeature;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.annotation.EnableChecksum;
-import org.indunet.fastproto.annotation.EnableCrypto;
 import org.indunet.fastproto.annotation.DefaultEndian;
+import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.annotation.type.UInt64Type;
 import org.indunet.fastproto.checksum.Crc32Checker;
 import org.indunet.fastproto.compress.DeflateCompressor;
-import org.indunet.fastproto.crypto.Crypto;
-import org.indunet.fastproto.crypto.CryptoPolicy;
 import org.indunet.fastproto.domain.Everything;
 import org.indunet.fastproto.domain.Sensor;
 import org.indunet.fastproto.domain.Weather;
@@ -38,13 +35,11 @@ import org.indunet.fastproto.domain.tesla.Battery;
 import org.indunet.fastproto.domain.tesla.Motor;
 import org.indunet.fastproto.domain.tesla.Tesla;
 import org.indunet.fastproto.exception.CheckSumException;
-import org.indunet.fastproto.exception.CryptoException;
 import org.indunet.fastproto.exception.FixedLengthException;
 import org.indunet.fastproto.util.CodecUtils;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
-import java.nio.charset.StandardCharsets;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.Calendar;
@@ -238,19 +233,9 @@ public class FastProtoTest {
         // There is a formula.
         CodecUtils.uint8Type(datagram, 66, (int) (everything.getSpeed() * 10));
 
-        val crypto = Crypto.getInstance(CryptoPolicy.AES_ECB_PKCS5PADDING);
-        val afterEncrypted = crypto.encrypt("330926".getBytes(StandardCharsets.UTF_8), datagram);
-
-        // Test decode.
-        assertEquals(FastProto.parse(afterEncrypted, Everything.class, CodecFeature.DISABLE_COMPRESS).toString(), everything.toString());
-
-        // Test encode.
-        byte[] cache = FastProto.toBytes(everything, CodecFeature.DISABLE_COMPRESS);
-        assertArrayEquals(afterEncrypted, cache);
-
         // Test with gzip
-        byte[] compressed = FastProto.toBytes(everything, 103, CodecFeature.DISABLE_CRYPTO);
-        assertEquals(FastProto.parse(compressed, Everything.class, CodecFeature.DISABLE_CRYPTO).toString(), everything.toString());
+        byte[] compressed = FastProto.toBytes(everything, 103);
+        assertEquals(FastProto.parse(compressed, Everything.class).toString(), everything.toString());
     }
 
     @Test
@@ -304,13 +289,6 @@ public class FastProtoTest {
         assertThrows(CheckSumException.class, () -> FastProto.parse(datagram, ChecksumObject.class));
     }
 
-    @Test
-    public void testCryptoException() {
-        val datagram = new byte[100];
-
-        assertThrows(CryptoException.class, () -> FastProto.parse(datagram, CryptoObject.class));
-    }
-
     @SneakyThrows
     @Test
     public void testColor() {
@@ -328,11 +306,6 @@ public class FastProtoTest {
 
     @EnableChecksum
     public static class ChecksumObject {
-
-    }
-
-    @EnableCrypto(key = "330926")
-    public static class CryptoObject {
 
     }
 }

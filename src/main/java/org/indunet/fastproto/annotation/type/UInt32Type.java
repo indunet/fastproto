@@ -27,7 +27,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.function.Function;
 
 /**
  * Long type, corresponding to Java Long/long.
@@ -47,5 +46,5 @@ public @interface UInt32Type {
 
     int offset();
 
-    EndianPolicy endian() default EndianPolicy.LITTLE;
+    EndianPolicy[] endian() default {};
 }

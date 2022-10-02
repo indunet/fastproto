@@ -29,8 +29,8 @@ import java.lang.annotation.Target;
  * @author Deng Ran
  * @since 1.0.0
  */
-@Target({ElementType.TYPE, ElementType.FIELD})
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DefaultEndian {
-    EndianPolicy value() default EndianPolicy.LITTLE;
+    EndianPolicy value();
 }

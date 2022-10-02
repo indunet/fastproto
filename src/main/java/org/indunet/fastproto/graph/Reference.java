@@ -56,7 +56,6 @@ public class Reference {
     EnableCompress enableCompress;
 
     EnableChecksum enableChecksum;
-    EnableCrypto enableCrypto;
     EnableFixedLength enableFixedLength;
 
     Field field;

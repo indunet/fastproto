@@ -27,9 +27,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.util.function.Function;
 
 /**
  * uint64 type, corresponding to Java BigInteger.
@@ -50,5 +48,5 @@ public @interface UInt64Type {
 
     int offset();
 
-    EndianPolicy endian() default EndianPolicy.LITTLE;
+    EndianPolicy[] endian() default {};
 }

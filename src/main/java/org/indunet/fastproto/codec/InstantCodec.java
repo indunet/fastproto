@@ -24,6 +24,7 @@ import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 import java.time.Instant;
+import java.util.Arrays;
 
 /**
  * Instant type codec.
@@ -54,15 +55,17 @@ public class InstantCodec implements Codec<Instant> {
     
     @Override
     public Instant decode(CodecContext context, byte[] bytes) {
-        val policy = context.getEndianPolicy();
         val type = context.getDataTypeAnnotation(TimeType.class);
-    
+        val policy = Arrays.stream(type.endian())
+                .findFirst()
+                .orElseGet(context::getDefaultEndianPolicy);
+
         return this.decode(bytes, type.offset(), policy);
     }
     
     @Override
     public void encode(CodecContext context, byte[] bytes, Instant value) {
-        val policy = context.getEndianPolicy();
+        val policy = context.getDefaultEndianPolicy();
         val type = context.getDataTypeAnnotation(TimeType.class);
     
         this.encode(bytes, type.offset(), policy, value);

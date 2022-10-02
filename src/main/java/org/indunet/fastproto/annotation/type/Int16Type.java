@@ -27,7 +27,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.function.Function;
 
 /**
  * Int16 type, corresponding to Java Integer/int.
@@ -47,5 +46,5 @@ public @interface Int16Type {
 
     int offset();
 
-    EndianPolicy endian() default EndianPolicy.LITTLE;
+    EndianPolicy[] endian() default {};
 }
