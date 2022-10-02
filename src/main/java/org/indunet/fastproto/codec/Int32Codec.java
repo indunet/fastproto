@@ -23,6 +23,8 @@ import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
+import java.util.Arrays;
+
 /**
  * Int32 type codec.
  *
@@ -49,7 +51,9 @@ public class Int32Codec implements Codec<Integer> {
     @Override
     public Integer decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(Int32Type.class);
-        val policy = context.getEndianPolicy();
+        val policy = Arrays.stream(type.endian())
+                .findFirst()
+                .orElseGet(context::getDefaultEndianPolicy);
 
         return this.decode(bytes, type.offset(), policy);
     }
@@ -57,7 +61,7 @@ public class Int32Codec implements Codec<Integer> {
     @Override
     public void encode(CodecContext context, byte[] bytes, Integer value) {
         val type = context.getDataTypeAnnotation(Int32Type.class);
-        val policy = context.getEndianPolicy();
+        val policy = context.getDefaultEndianPolicy();
 
         this.encode(bytes, type.offset(), policy, value);
     }

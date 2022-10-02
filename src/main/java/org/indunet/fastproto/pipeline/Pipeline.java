@@ -34,7 +34,6 @@ import java.util.concurrent.ConcurrentMap;
  */
 public abstract class Pipeline<T> {
     protected static Class<? extends Pipeline>[] decodeFlowClasses = new Class[] {
-            DecryptFlow.class,
             UncompressFlow.class,
             VerifyFixedLengthFlow.class,
             VerifyChecksumFlow.class,
@@ -44,8 +43,7 @@ public abstract class Pipeline<T> {
             FixedLengthFlow.class,
             EncodeFlow.class,
             WriteChecksumFlow.class,
-            CompressFlow.class,
-            EncryptFlow.class
+            CompressFlow.class
     };
 
     Pipeline<T> next = null;

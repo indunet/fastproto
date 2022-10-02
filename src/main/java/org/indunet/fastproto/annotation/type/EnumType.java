@@ -24,7 +24,6 @@ import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
 import org.indunet.fastproto.graph.resolve.validate.FieldValidator;
 
 import java.lang.annotation.*;
-import java.util.function.Function;
 
 /**
  * Float type, corresponding to Java Float/float.

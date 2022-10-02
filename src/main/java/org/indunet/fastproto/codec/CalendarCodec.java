@@ -23,6 +23,7 @@ import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
+import java.util.Arrays;
 import java.util.Calendar;
 
 /**
@@ -58,7 +59,9 @@ public class CalendarCodec implements Codec<Calendar> {
     @Override
     public Calendar decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(TimeType.class);
-        val policy = context.getEndianPolicy();
+        val policy = Arrays.stream(type.endian())
+                .findFirst()
+                .orElseGet(context::getDefaultEndianPolicy);
 
         return this.decode(bytes, type.offset(), policy);
     }
@@ -66,7 +69,9 @@ public class CalendarCodec implements Codec<Calendar> {
     @Override
     public void encode(CodecContext context, byte[] bytes, Calendar value) {
         val type = context.getDataTypeAnnotation(TimeType.class);
-        val policy = context.getEndianPolicy();
+        val policy = Arrays.stream(type.endian())
+                .findFirst()
+                .orElseGet(context::getDefaultEndianPolicy);
 
         this.encode(bytes, type.offset(), policy, value);
     }

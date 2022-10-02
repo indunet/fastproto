@@ -19,7 +19,7 @@ package org.indunet.fastproto.checksum;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.EnableChecksum;
-import org.indunet.fastproto.annotation.Endian;
+import org.indunet.fastproto.annotation.DefaultEndian;
 import org.indunet.fastproto.annotation.type.UInt16Type;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
@@ -69,8 +69,8 @@ public class Crc16Checker implements Checker {
 
         if (checkSum.endianPolicy().length != 0) {
             policy = checkSum.endianPolicy()[0];
-        } else if (protocolClass.isAnnotationPresent(Endian.class)) {
-            policy = protocolClass.getAnnotation(Endian.class).value();
+        } else if (protocolClass.isAnnotationPresent(DefaultEndian.class)) {
+            policy = protocolClass.getAnnotation(DefaultEndian.class).value();
         } else {
             policy = EndianPolicy.LITTLE;
         }
@@ -95,8 +95,8 @@ public class Crc16Checker implements Checker {
 
         if (checkSum.endianPolicy().length != 0) {
             policy = checkSum.endianPolicy()[0];
-        } else if (protocolClass.isAnnotationPresent(Endian.class)) {
-            policy = protocolClass.getAnnotation(Endian.class).value();
+        } else if (protocolClass.isAnnotationPresent(DefaultEndian.class)) {
+            policy = protocolClass.getAnnotation(DefaultEndian.class).value();
         } else {
             policy = EndianPolicy.LITTLE;
         }

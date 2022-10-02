@@ -23,6 +23,7 @@ import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
+import java.util.Arrays;
 import java.util.Date;
 
 /**
@@ -54,17 +55,21 @@ public class DateCodec implements Codec<Date> {
     
     @Override
     public Date decode(CodecContext context, byte[] bytes) {
-        val policy = context.getEndianPolicy();
         val type = context.getDataTypeAnnotation(TimeType.class);
-    
+        val policy = Arrays.stream(type.endian())
+                .findFirst()
+                .orElseGet(context::getDefaultEndianPolicy);
+
         return this.decode(bytes, type.offset(), policy);
     }
     
     @Override
     public void encode(CodecContext context, byte[] bytes, Date value) {
-        val policy = context.getEndianPolicy();
         val type = context.getDataTypeAnnotation(TimeType.class);
-    
+        val policy = Arrays.stream(type.endian())
+                .findFirst()
+                .orElseGet(context::getDefaultEndianPolicy);
+
         this.encode(bytes, type.offset(), policy, value);
     }
 }

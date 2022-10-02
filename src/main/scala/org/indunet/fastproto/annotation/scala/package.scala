@@ -33,13 +33,12 @@ import org.indunet.fastproto.annotation.`type`.{UInt16Type => JavaUInt16Type}
 import org.indunet.fastproto.annotation.`type`.{UInt32Type => JavaUInt32Type}
 import org.indunet.fastproto.annotation.`type`.{UInt64Type => JavaUInt64Type}
 
-import org.indunet.fastproto.annotation.{Endian => JavaEndian}
+import org.indunet.fastproto.annotation.{DefaultEndian => JavaDefaultEndian}
 import org.indunet.fastproto.annotation.{EncodingIgnore => JavaEncodingIgnore}
 import org.indunet.fastproto.annotation.{DecodingIgnore => JavaDecodingIgnore}
 
 import org.indunet.fastproto.annotation.{EnableChecksum => JavaEnableChecksum}
 import org.indunet.fastproto.annotation.{EnableCompress => JavaEnableCompress}
-import org.indunet.fastproto.annotation.{EnableCrypto => JavaEnableCrypto}
 import org.indunet.fastproto.annotation.{EnableFixedLength => JavaEnableFixedLength}
 
 import _root_.scala.annotation.meta.field
@@ -68,12 +67,11 @@ package object scala {
   type UInt32Type = JavaUInt32Type @field
   type UInt64Type = JavaUInt64Type @field
 
-  type Endian = JavaEndian @field
+  type DefaultEndian = JavaDefaultEndian @field
   type DecodingIgnore = JavaDecodingIgnore @field
   type EncodingIgnore = JavaEncodingIgnore @field
 
   type EnableChecksum = JavaEnableChecksum
   type EnableCompress = JavaEnableCompress
-  type EnableCrypto = JavaEnableCrypto
   type EnableFixedLength = JavaEnableFixedLength
 }

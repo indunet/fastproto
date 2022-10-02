@@ -24,7 +24,6 @@ FastProto uses a new way to solve the problem of cross-language and cross-platfo
     * Support [decoding formula & encoding formula][formula]
 *   Support data [compress and decompress(gzip, deflate)][compression]
 *   Support [data integrity verification][checksum]
-*   Support data decrypt & encrypt
 
 ## *Under Developing*
 
@@ -52,7 +51,7 @@ FastProto is more recommended for the following scenarios:
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.4.1</version>
+    <version>3.5.1</version>
 </dependency>
 ```
 
@@ -182,12 +181,9 @@ public class Weather {
 
 3. **Other Functions**
 
-FastProto supports data compression, protocol version verification, data integrity verification, and data symmetric encryption.
-Each function can be enabled by annotations.
+FastProto supports data compression and data integrity verification, each function can be enabled by annotations.
 
 ```java
-@EnableCrypto(value = CryptoPolicy.AES_ECB_PKCS5PADDING, key = "330926")
-@EnableProtocolVersion(value = 78, version = 17)
 @EnableCompress(value = CompressPolicy.DEFLATE, level = 2)
 @EnableChecksum(offset = -4, start = 0, length = -5, checkPolicy = CheckPolicy.CRC32, endianPolicy = EndianPolicy.BIG)
 public class Weather {
@@ -197,13 +193,13 @@ public class Weather {
 
 ## *Core Annotations*
 
-FastProto supports Java primitive data types, Timestamp, String and byte array. The above types can be replaced by `@AutoType`.
-Taking into account cross-language and cross-platform data exchange, FastProto also introduces unsigned types. [more][types]
+FastProto supports Java primitive data types, time type, String type, enum type and byte array type, taking into account 
+cross-language and cross-platform data exchange, FastProto also introduces unsigned types.
 
 | Annotation  |                 Java                  | C/C++          |    Size     |
 |:-----------:|:-------------------------------------:|:--------------:|:-----------:|
 |  @BoolType  |           Boolean / boolean           | bool           |    1 bit    |    
-| @CharType`  |           Character / char            | --             |   2 bytes   |   
+|  @CharType  |           Character / char            | --             |   2 bytes   |   
 | @Int32Type  |             Integer / int             | int            |   4 bytes   | 
 | @Int64Type  |              Long / long              | long long      |   8 bytes   |   
 | @FloatType  |             Float / float             | float          |   4 bytes   |  
@@ -227,10 +223,7 @@ FastProto also provides some auxiliary annotations to help users further customi
 |               @DecodingIgnore                | Field        |          Ignore the field when decoding.          |
 |               @EncodingIgnore                | Field        |          Ignore the field when encoding.          |
 |               @EnableCompress                | Class        | Enable compress & decompress, default as deflate. |
-|           @EnableProtocolVersions            | Class     |       Enable protocol version verification.       |
-|            @EnableProtocolVersion            | Class     |       Enable protocol version verification.       |
 |               @EnableCheckSum                |  Class      |           Enable checksum verification.           |
-|                @EnableCrypto                 |  Class |             Enable encrypt & decrypt.             |
 |              @EnableFixedLength              |  Class |         Enable fixed length of datagram.          |
 
 ## *Benchmark*
@@ -278,7 +271,5 @@ See the License for the specific language governing permissions and
 limitations under the License.
 ```
 
-[kafka]: https://github.com/indunet/fastproto/wiki/Work-with-Kafka
 [checksum]: https://github.com/indunet/fastproto/wiki/Data-Integrity-Check
 [compression]: https://github.com/indunet/fastproto/wiki/Compression
-[types]: https://github.com/indunet/fastproto/wiki/Data-Type-Annotations
