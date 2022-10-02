@@ -24,24 +24,8 @@ package org.indunet.fastproto.pipeline;
  */
 public final class FlowCode {
     public static final long DECODE_FLOW_CODE = 0x0001;
-    public static final long DECRYPT_FLOW_CODE = 0x0002;
-    public static final long UNCOMPRESS_FLOW_CODE = 0x0004;
-    public static final long VERIFY_CHECKSUM_FLOW_CODE = 0x0008;
-    public static final long VERIFY_PROTOCOL_VERSION_FLOW_CODE = 0x0010;
     public static final long VERIFY_FIXED_LENGTH_FLOW_CODE = 0x0020;
-
-    public static final long COMPRESS_FLOW_CODE = 0x0100;
     public static final long ENCODE_FLOW_CODE = 0x0200;
-    public static final long ENCRYPT_FLOW_CODE = 0x0400;
     public static final long FIXED_LENGTH_FLOW_CODE = 0x0800;
     public static final long INFER_LENGTH_FLOW_CODE = 0x1000;
-    public static final long WRITE_CHECKSUM_FLOW_CODE = 0x2000;
-    public static final long WRITE_PROTOCOL_VERSION_FLOW_CODE = 0x4000;
-
-    public static final long ARRAY_FLOW_CODE = 0x01;
-    public static final long DECODE_FORMULA_FLOW_CODE = 0x02;
-    public static final long ENCODE_FORMULA_FLOW_CODE = 0x03;
-    public static final long FIELD_FLOW_CODE = 0x04;
-    public static final long LIST_FLOW_CODE = 0x05;
-    public static final long TIMESTAMP_FLOW_CODE = 0x06;
 }

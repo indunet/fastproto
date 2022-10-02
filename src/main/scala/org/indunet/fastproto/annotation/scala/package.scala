@@ -37,8 +37,6 @@ import org.indunet.fastproto.annotation.{DefaultEndian => JavaDefaultEndian}
 import org.indunet.fastproto.annotation.{EncodingIgnore => JavaEncodingIgnore}
 import org.indunet.fastproto.annotation.{DecodingIgnore => JavaDecodingIgnore}
 
-import org.indunet.fastproto.annotation.{EnableChecksum => JavaEnableChecksum}
-import org.indunet.fastproto.annotation.{EnableCompress => JavaEnableCompress}
 import org.indunet.fastproto.annotation.{EnableFixedLength => JavaEnableFixedLength}
 
 import _root_.scala.annotation.meta.field
@@ -71,7 +69,5 @@ package object scala {
   type DecodingIgnore = JavaDecodingIgnore @field
   type EncodingIgnore = JavaEncodingIgnore @field
 
-  type EnableChecksum = JavaEnableChecksum
-  type EnableCompress = JavaEnableCompress
   type EnableFixedLength = JavaEnableFixedLength
 }

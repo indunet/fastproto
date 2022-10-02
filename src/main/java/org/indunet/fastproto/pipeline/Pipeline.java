@@ -34,16 +34,12 @@ import java.util.concurrent.ConcurrentMap;
  */
 public abstract class Pipeline<T> {
     protected static Class<? extends Pipeline>[] decodeFlowClasses = new Class[] {
-            UncompressFlow.class,
             VerifyFixedLengthFlow.class,
-            VerifyChecksumFlow.class,
             DecodeFlow.class};
     protected static Class<? extends Pipeline>[] encodeFlowClasses = new Class[] {
             InferLengthFlow.class,
             FixedLengthFlow.class,
             EncodeFlow.class,
-            WriteChecksumFlow.class,
-            CompressFlow.class
     };
 
     Pipeline<T> next = null;
