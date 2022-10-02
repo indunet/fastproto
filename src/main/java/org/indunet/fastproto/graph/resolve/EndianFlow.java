@@ -19,7 +19,7 @@ package org.indunet.fastproto.graph.resolve;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.Endian;
+import org.indunet.fastproto.annotation.DefaultEndian;
 import org.indunet.fastproto.graph.Reference;
 
 import java.util.Optional;
@@ -37,18 +37,18 @@ public class EndianFlow extends ResolvePipeline {
     public void process(@NonNull Reference reference) {
         if (reference.getReferenceType() == Reference.ReferenceType.CLASS) {
             val protocolClass = reference.getProtocolClass();
-            val endianPolicy = Optional.ofNullable(protocolClass.getAnnotation(Endian.class))
-                    .map(Endian::value)
+            val endianPolicy = Optional.ofNullable(protocolClass.getAnnotation(DefaultEndian.class))
+                    .map(DefaultEndian::value)
                     .orElse(DEFAULT_ENDIAN_POLICY);
 
             reference.setEndianPolicy(endianPolicy);
         } else if (reference.getReferenceType() == Reference.ReferenceType.FIELD) {
             val field = reference.getField();
-            val endianPolicy = Optional.ofNullable(field.getAnnotation(Endian.class))
-                    .map(Endian::value)
+            val endianPolicy = Optional.ofNullable(field.getAnnotation(DefaultEndian.class))
+                    .map(DefaultEndian::value)
                     .orElseGet(() -> Optional.ofNullable(reference.getField().getDeclaringClass())
-                            .map(c -> c.getAnnotation(Endian.class))
-                            .map(Endian::value)
+                            .map(c -> c.getAnnotation(DefaultEndian.class))
+                            .map(DefaultEndian::value)
                             .orElse(DEFAULT_ENDIAN_POLICY));     // Inherit endian of declaring class.
 
             reference.setEndianPolicy(endianPolicy);

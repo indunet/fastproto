@@ -14,23 +14,23 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.crypto;
+package org.indunet.fastproto.annotation;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
+import org.indunet.fastproto.EndianPolicy;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Crypto Policy.
+ * Specify endian according to hardware platform.
  *
  * @author Deng Ran
- * @since 2.0.0
+ * @since 1.0.0
  */
-@AllArgsConstructor
-@Getter
-public enum CryptoPolicy {
-    DES_ECB_PKCS5PADDING("DES/ECB/PKCS5Padding", 8),
-    AES_ECB_PKCS5PADDING( "AES/ECB/PKCS5Padding", 16);
-
-    String transformation;
-    int keyLength;
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface DefaultEndian {
+    EndianPolicy value();
 }

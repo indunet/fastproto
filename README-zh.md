@@ -24,7 +24,6 @@ FastProto是一款采用Java编写的二进制序列化和反序列化工具，�
     * 自定义[编码公式 & 解码公式][formula]   
 *   支持数据[压缩 & 解压缩(gzip, deflate)][compression]  
 *   支持[数据完整性校验][checksum]
-*   支持数据对称加密 & 解密
 
 ## *Under Developing*
 
@@ -51,7 +50,7 @@ FastProto是一款采用Java编写的二进制序列化和反序列化工具，�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.4.1</version>
+    <version>3.5.1</version>
 </dependency>
 ```
 
@@ -174,11 +173,9 @@ public class Weather {
 
 3. **其他功能**
 
-FastProto支持数据压缩、协议版本验证、数据完整性校验和数据对称加密，各项功能均可由注解开启。
+FastProto支持数据压缩和数据完整性校验，均可通过注解开启。
 
 ```java
-@EnableCrypto(value = CryptoPolicy.AES_ECB_PKCS5PADDING, key = "330926")
-@EnableProtocolVersion(value = 78, version = 17)
 @EnableCompress(value = CompressPolicy.DEFLATE, level = 2)
 @EnableChecksum(offset = -4, start = 0, length = -5, checkPolicy = CheckPolicy.CRC32, endianPolicy = EndianPolicy.BIG)
 public class Weather {
@@ -188,14 +185,13 @@ public class Weather {
 
 ## *核心注解*
 
-FastProto支持Java基础数据类型、Timestamp、String和字节数组，以上类型均可由`@AutoType`代替。
-考虑到跨语言跨平台的数据交换，FastProto还引入了无符号类型。[更多][types]
+FastProto支持Java基础数据类型、时间类型、字符串类型、枚举类型和字节数组等，考虑到跨语言跨平台的数据交换，FastProto还引入了无符号类型。
 
 
 |     注解      |                 Java                  | C/C++          |    大小    |
 |:-----------:|:-------------------------------------:|:--------------:|:--------:|
 |  @BoolType  |           Boolean / boolean           | bool           |   1 位    |    
-| @CharType`  |           Character / char            | --             |   2 字节   |   
+|  @CharType  |           Character / char            | --             |   2 字节   |   
 | @Int32Type  |             Integer / int             | int            |   4 字节   | 
 | @Int64Type  |              Long / long              | long long      |   8 字节   |   
 | @FloatType  |             Float / float             | float          |   4 字节   |  
@@ -269,7 +265,5 @@ limitations under the License.
 ```
 
 [formula]: https://github.com/indunet/fastproto/wiki/Conversion-Formula
-[kafka]: https://github.com/indunet/fastproto/wiki/Work-with-Kafka
 [checksum]: https://github.com/indunet/fastproto/wiki/Data-Integrity-Check
 [compression]: https://github.com/indunet/fastproto/wiki/Compression
-[types]: https://github.com/indunet/fastproto/wiki/Data-Type-Annotations-zh

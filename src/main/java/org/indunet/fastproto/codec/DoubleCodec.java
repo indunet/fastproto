@@ -23,6 +23,8 @@ import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
+import java.util.Arrays;
+
 /**
  * Double type codec.
  *
@@ -49,16 +51,20 @@ public class DoubleCodec implements Codec<Double> {
     @Override
     public Double decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(DoubleType.class);
-        val policy = context.getEndianPolicy();
-    
+        val policy = Arrays.stream(type.endian())
+                .findFirst()
+                .orElseGet(context::getDefaultEndianPolicy);
+
         return this.decode(bytes, type.offset(), policy);
     }
     
     @Override
     public void encode(CodecContext context, byte[] bytes, Double value) {
         val type = context.getDataTypeAnnotation(DoubleType.class);
-        val policy = context.getEndianPolicy();
-    
+        val policy = Arrays.stream(type.endian())
+                .findFirst()
+                .orElseGet(context::getDefaultEndianPolicy);
+
         this.encode(bytes, type.offset(), policy, value);
     }
 }

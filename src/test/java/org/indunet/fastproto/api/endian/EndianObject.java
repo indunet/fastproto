@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,25 +14,22 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.crypto;
+package org.indunet.fastproto.api.endian;
 
-import org.indunet.fastproto.annotation.EnableCrypto;
+import lombok.Data;
+import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.annotation.DefaultEndian;
+import org.indunet.fastproto.annotation.type.Int16Type;
 
 /**
- * Crypto.
- *
  * @author Deng Ran
- * @since 2.0.0
+ * @since 1.4.0
  */
-public interface Crypto {
-    byte[] encrypt(byte[] key, byte[] datagram);
-    byte[] decrypt(byte[] key, byte[] datagram);
-
-    static Crypto getInstance(EnableCrypto enableCrypto) {
-        return getInstance(enableCrypto.value());
-    }
-
-    static Crypto getInstance(CryptoPolicy policy) {
-        return StandardCrypto.getInstance(policy);
-    }
+@Data
+@DefaultEndian(EndianPolicy.BIG)
+public class EndianObject {
+    @Int16Type(offset = 0, endian = EndianPolicy.LITTLE)
+    Integer little = 0x0102;
+    @Int16Type(offset = 2)
+    Integer big = 0x0304;
 }

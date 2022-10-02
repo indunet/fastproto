@@ -16,16 +16,17 @@
 
 package org.indunet.fastproto.annotation.type;
 
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
 import org.indunet.fastproto.graph.resolve.validate.FieldValidator;
 
-import java.lang.annotation.*;
-import java.sql.Timestamp;
-import java.util.concurrent.TimeUnit;
-import java.util.function.Function;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Timestamp type, corresponding to Java java.sql.Timestamp.
@@ -42,4 +43,6 @@ public @interface TimeType {
     int SIZE = Long.SIZE >> 3;
 
     int offset();
+
+    EndianPolicy[] endian() default {};
 }

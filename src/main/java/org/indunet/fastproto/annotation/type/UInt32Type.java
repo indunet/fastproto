@@ -16,6 +16,7 @@
 
 package org.indunet.fastproto.annotation.type;
 
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
@@ -26,7 +27,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.function.Function;
 
 /**
  * Long type, corresponding to Java Long/long.
@@ -45,4 +45,6 @@ public @interface UInt32Type {
     int MIN_VALUE = 0;
 
     int offset();
+
+    EndianPolicy[] endian() default {};
 }

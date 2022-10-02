@@ -16,6 +16,7 @@
 
 package org.indunet.fastproto.annotation.type;
 
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
@@ -26,7 +27,6 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.function.Function;
 
 /**
  * Float type, corresponding to Java Float/float.
@@ -45,4 +45,6 @@ public @interface FloatType {
     float MIN_VALUE = Float.MIN_VALUE;
 
     int offset();
+
+    EndianPolicy[] endian() default {};
 }
