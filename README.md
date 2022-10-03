@@ -17,18 +17,16 @@ FastProto uses a new way to solve the problem of cross-language and cross-platfo
 
 ## *Features*
 
-*   Protocolized binary serialization & deserialization
-    * Support primitive type, unsigned type, string type and time type  
-    * Support reverse addressing, suitable for non-fixed length binary data
-    * Customize endianness (byte order)
-    * Support [decoding formula & encoding formula][formula]
-*   Support data [compress and decompress(gzip, deflate)][compression]
-*   Support [data integrity verification][checksum]
+* Protocolized binary serialization & deserialization
+* Support primitive type, unsigned type, string type and time type  
+* Support reverse addressing, suitable for non-fixed length binary data
+* Customize endianness (byte order)
+* Support decoding formula & encoding formula
 
 ## *Under Developing*
 
-*   Code structure & performance optimization
-*   Add test cases to increase unit test coverage
+* Add array type of primitive
+* Code structure & performance optimization
 
 ## *Compared with ProtoBuf*
 
@@ -179,18 +177,6 @@ public class Weather {
 }
 ```
 
-3. **Other Functions**
-
-FastProto supports data compression and data integrity verification, each function can be enabled by annotations.
-
-```java
-@EnableCompress(value = CompressPolicy.DEFLATE, level = 2)
-@EnableChecksum(offset = -4, start = 0, length = -5, checkPolicy = CheckPolicy.CRC32, endianPolicy = EndianPolicy.BIG)
-public class Weather {
-    ...
-}
-```
-
 ## *Core Annotations*
 
 FastProto supports Java primitive data types, time type, String type, enum type and byte array type, taking into account 
@@ -217,14 +203,12 @@ cross-language and cross-platform data exchange, FastProto also introduces unsig
 
 FastProto also provides some auxiliary annotations to help users further customize the binary format, decoding and encoding process.
 
-|                  Annotation                  | Scope        |                    Description                    |
-|:--------------------------------------------:|:------------:|:-------------------------------------------------:|
-|                   @Endian                    | Class & Field |       Endianness, default as little endian.       |
-|               @DecodingIgnore                | Field        |          Ignore the field when decoding.          |
-|               @EncodingIgnore                | Field        |          Ignore the field when encoding.          |
-|               @EnableCompress                | Class        | Enable compress & decompress, default as deflate. |
-|               @EnableCheckSum                |  Class      |           Enable checksum verification.           |
-|              @EnableFixedLength              |  Class |         Enable fixed length of datagram.          |
+|   Annotation    |   Scope   |                    Description                    |
+|:---------------:|:---------:|:-------------------------------------------------:|
+| @DefaultEndian  |   Class   |       Endianness, default as little endian.       |
+| @DecodingIgnore |   Field   |          Ignore the field when decoding.          |
+| @EncodingIgnore |   Field   |          Ignore the field when encoding.          |
+|  @FixedLength   |   Class   |         Enable fixed length of datagram.          |
 
 ## *Benchmark*
 
@@ -270,6 +254,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
-
-[checksum]: https://github.com/indunet/fastproto/wiki/Data-Integrity-Check
-[compression]: https://github.com/indunet/fastproto/wiki/Compression

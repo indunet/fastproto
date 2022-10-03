@@ -63,7 +63,7 @@ public class StateDatagram {
     @UInt16Type(offset = DatagramProtocol.CRC16_CODE_OFFSET)
     Integer crc16Code;
 
-    @BinaryType(offset = 0, length = -1)
+    @ByteArrayType(offset = 0, length = -1)
     byte[] bytes;
 
     CheckCode checkCode;

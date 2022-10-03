@@ -16,19 +16,17 @@ FastProto是一款采用Java编写的二进制序列化和反序列化工具，�
 
 ## *功能*
 
-*   二进制序列化和反序列化
-    * 通过注解自定义协议  
-    * 支持基本数据类型、无符号类型、字符串类型和时间类型等
-    * 支持反向寻址，适用于非固定长度二进制数据
-    * 自定义开端字节顺序
-    * 自定义[编码公式 & 解码公式][formula]   
-*   支持数据[压缩 & 解压缩(gzip, deflate)][compression]  
-*   支持[数据完整性校验][checksum]
+* 二进制序列化和反序列化
+* 通过注解自定义协议  
+* 支持基本数据类型、无符号类型、字符串类型和时间类型等
+* 支持反向寻址，适用于非固定长度二进制数据
+* 自定义开端字节顺序
+* 自定义编码公式 & 解码公式
 
 ## *Under Developing*
 
-*  代码结构 & 性能优化
-*  添加测试用例，增加单元测试覆盖率
+* 添加基本数据类型数组
+* 代码结构 & 性能优化
 
 ## *Compared with ProtoBuf*
 
@@ -171,18 +169,6 @@ public class Weather {
 }
 ```
 
-3. **其他功能**
-
-FastProto支持数据压缩和数据完整性校验，均可通过注解开启。
-
-```java
-@EnableCompress(value = CompressPolicy.DEFLATE, level = 2)
-@EnableChecksum(offset = -4, start = 0, length = -5, checkPolicy = CheckPolicy.CRC32, endianPolicy = EndianPolicy.BIG)
-public class Weather {
-    ...
-}
-```
-
 ## *核心注解*
 
 FastProto支持Java基础数据类型、时间类型、字符串类型、枚举类型和字节数组等，考虑到跨语言跨平台的数据交换，FastProto还引入了无符号类型。
@@ -209,17 +195,12 @@ FastProto支持Java基础数据类型、时间类型、字符串类型、枚举�
 
 FastProto还提供了一些辅助注解，帮助用户进一步自定义二进制格式、解码和编码流程。
 
-|                      注解                      | 作用域        | 描述                           |
-|:--------------------------------------------:|:------------:|:-------------------------------------:|
-|                   @Endian                    | Class & Field | 数据开端，默认小开端 |
-|               @DecodingIgnore                | Field        | 反序列化时忽略该字段       |
-|               @EncodingIgnore                | Field        | 序列化时忽略该字段       |
-|               @EnableCompress                | Class        | 启动压缩和解压缩  |
-|           @EnableProtocolVersions            | Class     |  启动协议版本校验  |
-|            @EnableProtocolVersion            | Class     |  启动协议版本校验  |
-|               @EnableChecksum                |  Class      |  启动数据完整性校验              |
-|                @EnableCrypto                 |  Class      |    启动加密和解密             |
-|              @EnableFixedLength              |  Class      |    启动固定报文长度             |
+|        注解         |    作用域    |     描述     |
+|:-----------------:|:---------:|:----------:|
+|  @DefaultEndian   |   Class   | 数据开端，默认小开端 |
+|  @DecodingIgnore  |   Field   | 反序列化时忽略该字段 |
+|  @EncodingIgnore  |   Field   | 序列化时忽略该字段  |
+|   @FixedLength    |   Class   |  启动固定报文长度  |
 
 ## *基准测试*
 
@@ -263,7 +244,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
-
-[formula]: https://github.com/indunet/fastproto/wiki/Conversion-Formula
-[checksum]: https://github.com/indunet/fastproto/wiki/Data-Integrity-Check
-[compression]: https://github.com/indunet/fastproto/wiki/Compression

@@ -53,7 +53,7 @@ public class Reference {
 
     Class<?> protocolClass;
     ConstructorType constructorType;
-    EnableFixedLength enableFixedLength;
+    FixedLength enableFixedLength;
 
     Field field;
     Annotation dataTypeAnnotation;

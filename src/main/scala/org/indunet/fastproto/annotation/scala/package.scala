@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.annotation
 
-import org.indunet.fastproto.annotation.`type`.{BinaryType => JavaBinaryType}
+import org.indunet.fastproto.annotation.`type`.{ByteArrayType => JavaBinaryType}
 import org.indunet.fastproto.annotation.`type`.{BoolType => JavaBoolType}
 import org.indunet.fastproto.annotation.`type`.{CharType => JavaCharType}
 import org.indunet.fastproto.annotation.`type`.{DoubleType => JavaDoubleType}
@@ -37,7 +37,7 @@ import org.indunet.fastproto.annotation.{DefaultEndian => JavaDefaultEndian}
 import org.indunet.fastproto.annotation.{EncodingIgnore => JavaEncodingIgnore}
 import org.indunet.fastproto.annotation.{DecodingIgnore => JavaDecodingIgnore}
 
-import org.indunet.fastproto.annotation.{EnableFixedLength => JavaEnableFixedLength}
+import org.indunet.fastproto.annotation.{FixedLength => JavaEnableFixedLength}
 
 import _root_.scala.annotation.meta.field
 

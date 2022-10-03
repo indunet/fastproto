@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,21 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.domain;
+package org.indunet.fastproto.annotation;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.indunet.fastproto.annotation.FixedLength;
-import org.indunet.fastproto.annotation.type.Int16Type;
-import org.indunet.fastproto.annotation.type.UInt16Type;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
+ * Enable fixed length.
+ *
  * @author Deng Ran
- * @since 1.7.4
+ * @since 2.4.0
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@FixedLength(10)
-public class Sensor {
-    @Int16Type(offset = 0)
-    int temperature;
-    @UInt16Type(offset = 2)
-    int humidity;
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface FixedLength {
+    int value();
 }
