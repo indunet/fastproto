@@ -36,8 +36,8 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @author Deng Ran
  * @since 3.2.1
  */
-public class BinaryCodecTest {
-    BinaryCodec codec = new BinaryCodec();
+public class ByteArrayCodecTest {
+    ByteArrayCodec codec = new ByteArrayCodec();
 
     @Test
     public void testDecode1() {
@@ -49,7 +49,6 @@ public class BinaryCodecTest {
         assertArrayEquals(codec.decode(datagram, 6, -1), new byte[]{6, 7, 8, 9});
         assertArrayEquals(codec.decode(datagram, -4, -1), new byte[]{6, 7, 8, 9});
         assertArrayEquals(codec.decode(datagram, -4, -2), new byte[]{6, 7, 8});
-
     }
 
     @Test

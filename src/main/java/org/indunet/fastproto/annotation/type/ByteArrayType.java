@@ -16,7 +16,6 @@
 
 package org.indunet.fastproto.annotation.type;
 
-import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
@@ -29,7 +28,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Double type, corresponding to Java Double/double.
+ * Binary type, corresponding to Java byte array.
  *
  * @author Deng Ran
  * @see DataType
@@ -39,12 +38,8 @@ import java.lang.annotation.Target;
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DoubleType {
-    int SIZE = Double.SIZE >> 3;
-    double MAX_VALUE = Double.MAX_VALUE;
-    double MIN_VALUE = Double.MIN_VALUE;
-
+public @interface ByteArrayType {
     int offset();
 
-    EndianPolicy[] endian() default {};
+    int length() default -1;
 }

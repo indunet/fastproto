@@ -59,7 +59,7 @@ public class CodecFactory {
         codecMap.put(BoolType.class, new ConcurrentHashMap<>());
         codecMap.put(CharType.class, new ConcurrentHashMap<>());
         codecMap.put(TimeType.class, new ConcurrentHashMap<>());
-        codecMap.put(BinaryType.class, new ConcurrentHashMap<>());
+        codecMap.put(ByteArrayType.class, new ConcurrentHashMap<>());
         codecMap.put(EnumType.class, new ConcurrentHashMap<>());
         codecMap.put(StringType.class, new ConcurrentHashMap<>());
 
@@ -135,8 +135,8 @@ public class CodecFactory {
         val enumCodec = new EnumCodec<>();
         codecMap.get(EnumType.class).put(Enum.class, enumCodec);
 
-        val binaryCodec = new BinaryCodec();
-        codecMap.get(BinaryType.class).put(byte[].class, binaryCodec);
+        val binaryCodec = new ByteArrayCodec();
+        codecMap.get(ByteArrayType.class).put(byte[].class, binaryCodec);
     }
 
     public static boolean isSupported(Type type) {

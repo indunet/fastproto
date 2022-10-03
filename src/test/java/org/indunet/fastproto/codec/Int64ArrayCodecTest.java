@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet.org
+ * Copyright 2019-2022 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,21 +14,26 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.annotation;
+package org.indunet.fastproto.codec;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.junit.jupiter.api.Test;
 
 /**
- * Enable fixed length.
+ * Unit test of int64 array type codec.
  *
  * @author Deng Ran
- * @since 2.4.0
+ * @since 3.6.0
  */
-@Target(ElementType.TYPE)
-@Retention(RetentionPolicy.RUNTIME)
-public @interface EnableFixedLength {
-    int value();
+public class Int64ArrayCodecTest {
+    Int64ArrayCodec codec = new Int64ArrayCodec();
+
+    @Test
+    public void testDecode() {
+
+    }
+
+    @Test
+    public void testEncode() {
+
+    }
 }

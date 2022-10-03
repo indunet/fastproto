@@ -17,7 +17,7 @@ public abstract class ResolvePipeline extends Pipeline<Reference> {
     public static ResolvePipeline getClassPipeline() {
         val head = new EndianFlow();
 
-        head.setNext(new EnableFixedLengthFlow())
+        head.setNext(new FixedLengthFlow())
             .setNext(new ConstructorFlow())
             .setNext(new CodecIgnoreFlow());
 

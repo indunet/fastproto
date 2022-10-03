@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2022 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,26 +14,26 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.domain;
+package org.indunet.fastproto.codec;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import org.indunet.fastproto.annotation.FixedLength;
-import org.indunet.fastproto.annotation.type.Int16Type;
-import org.indunet.fastproto.annotation.type.UInt16Type;
+import org.junit.jupiter.api.Test;
 
 /**
+ * Unit test of uint16 array type codec.
+ *
  * @author Deng Ran
- * @since 1.7.4
+ * @since 3.6.0
  */
-@Data
-@AllArgsConstructor
-@NoArgsConstructor
-@FixedLength(10)
-public class Sensor {
-    @Int16Type(offset = 0)
-    int temperature;
-    @UInt16Type(offset = 2)
-    int humidity;
+public class UInt16ArrayCodecTest {
+    UInt16ArrayCodec codec = new UInt16ArrayCodec();
+
+    @Test
+    public void testDecode() {
+
+    }
+
+    @Test
+    public void testEncode() {
+
+    }
 }
