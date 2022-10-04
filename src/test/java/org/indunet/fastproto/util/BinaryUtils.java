@@ -20,6 +20,7 @@ import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigInteger;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -106,6 +107,81 @@ public class BinaryUtils {
         return bytes;
     }
 
+    public static byte[] valueOf(short[] values, EndianPolicy policy) {
+        val bytes = new byte[values.length * 2];
+
+        IntStream.range(0, values.length)
+                .forEach(i -> {
+                    if (policy == EndianPolicy.LITTLE) {
+                        bytes[i * 2] = (byte) (values[i] & 0xFF);
+                        bytes[i * 2 + 1] = (byte) (values[i] >> 8 & 0xFF);
+                    } else if (policy == EndianPolicy.BIG) {
+                        bytes[i * 2 + 1] = (byte) (values[i] & 0xFF);
+                        bytes[i * 2] = (byte) (values[i] >> 8 & 0xFF);
+                    }
+                });
+
+        return bytes;
+    }
+
+    public static byte[] int32Of(int[] values, EndianPolicy policy) {
+        val bytes = new byte[values.length * 4];
+
+        IntStream.range(0, values.length)
+                .forEach(i -> System.arraycopy(valueOf(values[i], policy), 0, bytes, i * 4, 4));
+
+        return bytes;
+    }
+
+    public static byte[] uint16Of(int[] values, EndianPolicy policy) {
+        val bytes = new byte[values.length * 2];
+
+        IntStream.range(0, values.length)
+                .forEach(i -> {
+                    if (policy == EndianPolicy.BIG) {
+                        bytes[i * 2 + 1] = (byte) values[i];
+                        bytes[i * 2] = (byte) (values[i] >>> 8);
+                    } else {
+                        bytes[i * 2] = (byte) values[i];
+                        bytes[i * 2 + 1] = (byte) (values[i] >>> 8);
+                    }
+                });
+
+        return bytes;
+    }
+
+    public static byte[] valueOf(long[] values, EndianPolicy policy) {
+        val bytes = new byte[values.length * 8];
+
+        IntStream.range(0, values.length)
+                .forEach(i -> System.arraycopy(valueOf(values[i], policy), 0, bytes, i * 8, 8));
+
+        return bytes;
+    }
+
+    public static byte[] uint32Of(long[] values, EndianPolicy policy) {
+        val bytes = new byte[values.length * 4];
+
+        IntStream.range(0, values.length)
+                .forEach(i -> System.arraycopy(uint32of(values[i], policy), 0, bytes, i * 4, 4));
+
+        return bytes;
+    }
+
+    public static byte[] uint64Of(BigInteger[] values, EndianPolicy policy) {
+        val bytes = new byte[values.length * 8];
+
+        IntStream.range(0, values.length)
+                .forEach(i -> {
+                    val buf = new byte[8];
+
+                    CodecUtils.uint64Type(buf, 0, policy, values[i]);
+                    System.arraycopy(buf, 0, bytes, i * 8, 8);
+                });
+
+        return bytes;
+    }
+
     public static byte[] uint8Of(int[] values) {
         val bytes = new byte[values.length];
 
@@ -128,10 +204,10 @@ public class BinaryUtils {
             bytes[2] = (byte) (value >> 16 & 0xFF);
             bytes[3] = (byte) (value >> 24 & 0xFF);
         } else if (policy == EndianPolicy.BIG) {
-            bytes[7] = (byte) (value & 0xFF);
-            bytes[6] = (byte) (value >> 8 & 0xFF);
-            bytes[5] = (byte) (value >> 16 & 0xFF);
-            bytes[4] = (byte) (value >> 24 & 0xFF);
+            bytes[3] = (byte) (value & 0xFF);
+            bytes[2] = (byte) (value >> 8 & 0xFF);
+            bytes[1] = (byte) (value >> 16 & 0xFF);
+            bytes[0] = (byte) (value >> 24 & 0xFF);
         }
 
         return bytes;

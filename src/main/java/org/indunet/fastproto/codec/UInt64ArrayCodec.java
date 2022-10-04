@@ -62,7 +62,7 @@ public class UInt64ArrayCodec implements Codec<BigInteger[]> {
 
             IntStream.range(0, l)
                     .forEach(i -> CodecUtils.uint64Type(bytes, o + i * UInt64Type.SIZE, values[i]));
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException | NullPointerException e) {
             throw new EncodingException("Fail encoding uint64 array type.", e);
         }
     }
