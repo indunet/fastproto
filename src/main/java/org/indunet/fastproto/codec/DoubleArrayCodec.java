@@ -59,9 +59,7 @@ public class DoubleArrayCodec implements Codec<double[]> {
                 l = CodecUtils.reverse(bytes, offset, length * DoubleType.SIZE) / DoubleType.SIZE + 1;
             }
 
-            if (o + l * DoubleType.SIZE > values.length * DoubleType.SIZE) {
-                throw new IllegalArgumentException("Out of the datagram range.");
-            } else if (l >= values.length) {
+            if (l >= values.length) {
                 IntStream.range(0, values.length)
                         .forEach(i -> CodecUtils.doubleType(bytes, offset + i * DoubleType.SIZE, values[i]));
             } else {

@@ -18,14 +18,14 @@ FastProto是一款采用Java编写的二进制序列化和反序列化工具，�
 
 * 二进制序列化和反序列化
 * 通过注解自定义协议  
-* 支持基本数据类型、无符号类型、字符串类型和时间类型等
+* 支持基本数据类型、无符号类型、字符串类型、时间类型和数组类型等
 * 支持反向寻址，适用于非固定长度二进制数据
 * 自定义开端字节顺序
 * 自定义编码公式 & 解码公式
 
 ## *Under Developing*
 
-* 添加基本数据类型数组
+* 强化数组类型
 * 代码结构 & 性能优化
 
 ## *Compared with ProtoBuf*
@@ -48,7 +48,7 @@ FastProto是一款采用Java编写的二进制序列化和反序列化工具，�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.5.1</version>
+    <version>3.6.0</version>
 </dependency>
 ```
 
@@ -169,30 +169,48 @@ public class Weather {
 }
 ```
 
-## *核心注解*
+## *注解*
 
+### *基本数据类型注解*
 FastProto支持Java基础数据类型、时间类型、字符串类型、枚举类型和字节数组等，考虑到跨语言跨平台的数据交换，FastProto还引入了无符号类型。
 
 
-|     注解      |                 Java                  | C/C++          |    大小    |
-|:-----------:|:-------------------------------------:|:--------------:|:--------:|
-|  @BoolType  |           Boolean / boolean           | bool           |   1 位    |    
-|  @CharType  |           Character / char            | --             |   2 字节   |   
-| @Int32Type  |             Integer / int             | int            |   4 字节   | 
-| @Int64Type  |              Long / long              | long long      |   8 字节   |   
-| @FloatType  |             Float / float             | float          |   4 字节   |  
-| @DoubleType |            Double / double            | double         |   8 字节   |  
-|  @Int8Type  |      Byte / byte / Integer / int      | char           |   1 字节   |  
-| @Int16Type  |     Short / short / Integer / int     | short          |   2 字节   |  
-| @UInt8Type  |             Integer / int             | unsigned char  |   1 字节   |   
-| @UInt16Type |             Integer / int             | unsigned short |   2 字节   |   
-| @UInt32Type |              Long / long              | unsigned long  |   4 字节   |   
-| @UInt64Type |              BigInteger               | unsigned long long |   8 字节   |  
-| @BinaryType |                byte[]                 | char[]         |   N 字节   |  
-| @StringType | String / StringBuilder / StringBuffer | --             |   N 字节   |   
-|  @TimeType  |      Timestamp / Date / Calendar      | --             | 4 / 8 字节 |  
-|  @EnumType  |                 enum                  | enum             |   1 字节   |
+|        注解         |                 Java                  |       C/C++        |  大小  |
+|:-----------------:|:-------------------------------------:|:------------------:|:----:|
+|     @BoolType     |           Boolean / boolean           |        bool        | 1 位  |    
+| @CharType(仅ASCII) |           Character / char            |        char        | 1 字节 |   
+|    @Int32Type     |             Integer / int             |        int         | 4 字节 | 
+|    @Int64Type     |              Long / long              |     long long      | 8 字节 |   
+|    @FloatType     |             Float / float             |       float        | 4 字节 |  
+|    @DoubleType    |            Double / double            |       double       | 8 字节 |  
+|     @Int8Type     |      Byte / byte / Integer / int      |        char        | 1 字节 |  
+|    @Int16Type     |     Short / short / Integer / int     |       short        | 2 字节 |  
+|    @UInt8Type     |             Integer / int             |   unsigned char    | 1 字节 |   
+|    @UInt16Type    |             Integer / int             |   unsigned short   | 2 字节 |   
+|    @UInt32Type    |              Long / long              |   unsigned long    | 4 字节 |   
+|    @UInt64Type    |              BigInteger               | unsigned long long | 8 字节 |  
+|    @StringType    | String / StringBuilder / StringBuffer |         --         | N 字节 |   
+|     @TimeType     |      Timestamp / Date / Calendar      |         --         | 8 字节 |  
+|     @EnumType     |                 enum                  |        enum        | 1 字节 |
 
+### *数组类型注解*
+
+|        注解        |      Java       | C/C++          |
+|:----------------:|:---------------:|:--------------:|
+|   @BinaryType    |     byte[]      | char[]         |
+|  @Int8ArrayType  | byte[] / int[]  | char[]         |
+| @Int16ArrayType  | short[] / int[] | char[]         |
+| @Int32ArrayType  |      int[]      | char[]         |
+| @Int64ArrayType  |     long[]      | char[]         |
+| @UInt8ArrayType  |      int[]      | char[]         |
+| @UInt16ArrayType |      int[]      | char[]         |
+| @UInt32ArrayType |     long[]      | char[]         |
+| @UInt64ArrayType |  BigInteger[]   | char[]         |
+| @FloatArrayType  |     float[]     | char[]         |
+| @DoubleArrayType |    double[]     | char[]         |
+
+
+### 其它注解
 FastProto还提供了一些辅助注解，帮助用户进一步自定义二进制格式、解码和编码流程。
 
 |        注解         |    作用域    |     描述     |

@@ -38,7 +38,7 @@ import java.lang.annotation.Target;
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ByteArrayType {
+public @interface BinaryType {
     int offset();
 
     int length() default -1;
