@@ -12,12 +12,11 @@
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 [![GitHub](https://img.shields.io/badge/repo-github-blue)](https://github.com/indunet/fastproto)
 
-FastProto是一款采用Java编写的二进制序列化和反序列化工具，能够通过注解自定义协议，解决了跨语言和跨平台的数据交换问题，特别适用于物联网（IoT）领域。
+FastProto是一款能够通过注解自定义协议的二进制序列化 & 反序列化工具，其采用Java编写，解决了跨语言和跨平台的数据交换问题，特别适用于物联网（IoT）领域。
 
 ## *功能*
 
-* 二进制序列化和反序列化
-* 通过注解自定义协议  
+* 通过注解自定义协议的二进制序列化 & 反序列化
 * 支持基本数据类型、无符号类型、字符串类型、时间类型和数组类型等
 * 支持反向寻址，适用于非固定长度二进制数据
 * 自定义开端字节顺序
@@ -60,17 +59,17 @@ FastProto是一款采用Java编写的二进制序列化和反序列化工具，�
 
 数据报文包含8种不同类型的信号，具体协议如下：
 
-| 字节偏移 | 位偏移 | 数据类型(C/C++)   | 信号名称       | 单位 |  换算公式  |
+| 字节偏移 | 位偏移 |  数据类型(C/C++)   | 信号名称       | 单位 |  换算公式  |
 |:-----------:|:----------:|:--------------:|:-----------------:|:----:|:---------:|
 | 0           |            | unsigned char  | 设备编号         |      |           |
 | 1           |            |                | 预留          |      |           |
-| 2-9         |            | long long      | 时间戳              |  ms  |           |
+| 2-9         |            |      long      | 时间戳              |  ms  |           |
 | 10-11       |            | unsigned short | 湿度          |  %RH |           |
-| 12-13       |            | short          | 温度       |  ℃  |            |
-| 14-17       |            | unsigned int   | 气压          |  Pa  | p * 0.1   |
-| 18          | 0          | bool           | 温度有效标识 |      |           |
-| 18          | 1          | bool           | 湿度有效标识    |      |           |
-| 18          | 2          | bool           | 气压有效标识    |      |           |
+| 12-13       |            |     short      | 温度       |  ℃  |            |
+| 14-17       |            |  unsigned int  | 气压          |  Pa  | p * 0.1   |
+| 18          | 0          |      bool      | 温度有效标识 |      |           |
+| 18          | 1          |      bool      | 湿度有效标识    |      |           |
+| 18          | 2          |      bool      | 气压有效标识    |      |           |
 | 18          | 3-7        |                | 预留          |      |           |
 | 19          |            |                | 预留          |      |           |
 
@@ -171,43 +170,43 @@ public class Weather {
 
 ## *注解*
 
-### *基本数据类型注解*
+### *基本类型注解*
 FastProto支持Java基础数据类型、时间类型、字符串类型、枚举类型和字节数组等，考虑到跨语言跨平台的数据交换，FastProto还引入了无符号类型。
 
 
-|        注解         |                 Java                  |       C/C++        |  大小  |
-|:-----------------:|:-------------------------------------:|:------------------:|:----:|
-|     @BoolType     |           Boolean / boolean           |        bool        | 1 位  |    
-| @CharType(仅ASCII) |           Character / char            |        char        | 1 字节 |   
-|    @Int32Type     |             Integer / int             |        int         | 4 字节 | 
-|    @Int64Type     |              Long / long              |     long long      | 8 字节 |   
-|    @FloatType     |             Float / float             |       float        | 4 字节 |  
-|    @DoubleType    |            Double / double            |       double       | 8 字节 |  
-|     @Int8Type     |      Byte / byte / Integer / int      |        char        | 1 字节 |  
-|    @Int16Type     |     Short / short / Integer / int     |       short        | 2 字节 |  
-|    @UInt8Type     |             Integer / int             |   unsigned char    | 1 字节 |   
-|    @UInt16Type    |             Integer / int             |   unsigned short   | 2 字节 |   
-|    @UInt32Type    |              Long / long              |   unsigned long    | 4 字节 |   
-|    @UInt64Type    |              BigInteger               | unsigned long long | 8 字节 |  
-|    @StringType    | String / StringBuilder / StringBuffer |         --         | N 字节 |   
-|     @TimeType     |      Timestamp / Date / Calendar      |         --         | 8 字节 |  
-|     @EnumType     |                 enum                  |        enum        | 1 字节 |
+|        注解         |                 Java                  |       C/C++       |  大小  |
+|:-----------------:|:-------------------------------------:|:-----------------:|:----:|
+|     @BoolType     |           Boolean / boolean           |       bool        | 1 位  |    
+| @CharType(仅ASCII) |           Character / char            |       char        | 1 字节 |   
+|    @Int32Type     |             Integer / int             |        int        | 4 字节 | 
+|    @Int64Type     |              Long / long              |     long long     | 8 字节 |   
+|    @FloatType     |             Float / float             |       float       | 4 字节 |  
+|    @DoubleType    |            Double / double            |      double       | 8 字节 |  
+|     @Int8Type     |      Byte / byte / Integer / int      |       char        | 1 字节 |  
+|    @Int16Type     |     Short / short / Integer / int     |       short       | 2 字节 |  
+|    @UInt8Type     |             Integer / int             |   unsigned char   | 1 字节 |   
+|    @UInt16Type    |             Integer / int             |  unsigned short   | 2 字节 |   
+|    @UInt32Type    |              Long / long              |   unsigned long   | 4 字节 |   
+|    @UInt64Type    |              BigInteger               |   unsigned long   | 8 字节 |  
+|    @StringType    | String / StringBuilder / StringBuffer |        --         | N 字节 |   
+|     @TimeType     |      Timestamp / Date / Calendar      |        --         | 8 字节 |  
+|     @EnumType     |                 enum                  |       enum        | 1 字节 |
 
 ### *数组类型注解*
 
-|        注解        |      Java       | C/C++          |
-|:----------------:|:---------------:|:--------------:|
-|   @BinaryType    |     byte[]      | char[]         |
-|  @Int8ArrayType  | byte[] / int[]  | char[]         |
-| @Int16ArrayType  | short[] / int[] | char[]         |
-| @Int32ArrayType  |      int[]      | char[]         |
-| @Int64ArrayType  |     long[]      | char[]         |
-| @UInt8ArrayType  |      int[]      | char[]         |
-| @UInt16ArrayType |      int[]      | char[]         |
-| @UInt32ArrayType |     long[]      | char[]         |
-| @UInt64ArrayType |  BigInteger[]   | char[]         |
-| @FloatArrayType  |     float[]     | char[]         |
-| @DoubleArrayType |    double[]     | char[]         |
+|        注解        |      Java       |      C/C++       |
+|:----------------:|:---------------:|:----------------:|
+|   @BinaryType    |     byte[]      |      char[]      |
+|  @Int8ArrayType  | byte[] / int[]  |      char[]      |
+| @Int16ArrayType  | short[] / int[] |     short[]      |
+| @Int32ArrayType  |      int[]      |      int[]       |
+| @Int64ArrayType  |     long[]      |      long[]      |
+| @UInt8ArrayType  |      int[]      | unsigned char[]  |
+| @UInt16ArrayType |      int[]      | unsigned short[] |
+| @UInt32ArrayType |     long[]      |  unsigned int[]  |
+| @UInt64ArrayType |  BigInteger[]   | unsigned long[]  |
+| @FloatArrayType  |     float[]     |     float[]      |
+| @DoubleArrayType |    double[]     |     double[]     |
 
 
 ### 其它注解
@@ -220,16 +219,23 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 |  @EncodingIgnore  |   Field   | 序列化时忽略该字段  |
 |   @FixedLength    |   Class   |  启动固定报文长度  |
 
+## Scala
+FastProto支持case class，但是Scala并不完全兼容Java注解，所以请使用如下方式引用FastProto。
+
+```scala
+import org.indunet.fastproto.annotation.scala._
+```
+
 ## *基准测试*
 
 *   macOS, m1 8 cores, 16gb
 *   openjdk 1.8.0_292
 *   二进制数据固定大小128字节，嵌套数据对象共包含48个不同类型的字段
 
-|Benchmark |    模式  | 样本数量  |  评分  |   误差   |   单位   |
-|:--------:|:--------:|:--------:|:-------:|:---------:|:---------:|
-| `FastProto::parse` |  吞吐量   |   10  |   291.2 | ± 1.6    |  次/毫秒   |
-| `FastProto::toBytes` | 吞吐量  |   10  |   285.7 | ± 1.5    |  次/毫秒   |
+|Benchmark |    模式  | 样本数量  | 评分  |   误差   |   单位   |
+|:--------:|:--------:|:--------:|:---:|:---------:|:---------:|
+| `FastProto::parse` |  吞吐量   |   10  | 132 | ± 1.6    |  次/毫秒   |
+| `FastProto::toBytes` | 吞吐量  |   10  | 201 | ± 1.5    |  次/毫秒   |
 
 ## *Build Requirements*
 
@@ -243,7 +249,7 @@ FastProto取得了etBrain开源计划的支持，可提供核心开发人员免�
 
 GitHub仓库: [github.com/indunet/fastproto](https://github.com/indunet/fastproto)
 
-## *License*
+## *许可证*
 
 FastProto is released under the [Apache 2.0 license](license).
 
