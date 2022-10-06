@@ -21,10 +21,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.indunet.fastproto.annotation.DecodingFormula;
-import org.indunet.fastproto.annotation.EnableCompress;
 import org.indunet.fastproto.annotation.EncodingFormula;
 import org.indunet.fastproto.annotation.type.*;
-import org.indunet.fastproto.compress.CompressPolicy;
 import org.indunet.fastproto.domain.formula.DecodeSpeedFormula;
 import org.indunet.fastproto.domain.formula.EncodeSpeedFormula;
 
@@ -42,7 +40,6 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@EnableCompress(CompressPolicy.GZIP)
 public class Everything {
     @BoolType(byteOffset = 0, bitOffset = 1)
     Boolean aBoolean;
