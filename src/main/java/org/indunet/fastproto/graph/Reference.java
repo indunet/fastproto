@@ -53,10 +53,7 @@ public class Reference {
 
     Class<?> protocolClass;
     ConstructorType constructorType;
-    EnableCompress enableCompress;
-
-    EnableChecksum enableChecksum;
-    EnableFixedLength enableFixedLength;
+    FixedLength enableFixedLength;
 
     Field field;
     Annotation dataTypeAnnotation;

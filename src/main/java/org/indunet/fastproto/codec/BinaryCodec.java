@@ -23,7 +23,7 @@ import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 /**
- * Binary type codec.
+ * Byte array type codec.
  *
  * @author Deng Ran
  * @since 3.2.1

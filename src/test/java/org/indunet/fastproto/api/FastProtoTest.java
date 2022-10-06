@@ -22,10 +22,7 @@ import org.indunet.fastproto.CodecFeature;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.DefaultEndian;
-import org.indunet.fastproto.annotation.EnableChecksum;
 import org.indunet.fastproto.annotation.type.UInt64Type;
-import org.indunet.fastproto.checksum.Crc32Checker;
-import org.indunet.fastproto.compress.DeflateCompressor;
 import org.indunet.fastproto.domain.Everything;
 import org.indunet.fastproto.domain.Sensor;
 import org.indunet.fastproto.domain.Weather;
@@ -34,7 +31,6 @@ import org.indunet.fastproto.domain.datagram.StateDatagram;
 import org.indunet.fastproto.domain.tesla.Battery;
 import org.indunet.fastproto.domain.tesla.Motor;
 import org.indunet.fastproto.domain.tesla.Tesla;
-import org.indunet.fastproto.exception.CheckSumException;
 import org.indunet.fastproto.exception.FixedLengthException;
 import org.indunet.fastproto.util.CodecUtils;
 import org.junit.jupiter.api.Test;
@@ -126,14 +122,13 @@ public class FastProtoTest {
         CodecUtils.type(datagram, 18, 0, metrics.isHumidityValid());
         CodecUtils.type(datagram, 18, 1, metrics.isTemperatureValid());
         CodecUtils.type(datagram, 18, 2, metrics.isPressureValid());
-        CodecUtils.uint32Type(datagram, 26, EndianPolicy.BIG, Crc32Checker.getInstance().getValue(datagram, 0, -5));
 
         // Test decode.
         assertEquals(
-                FastProto.parse(datagram, Weather.class, CodecFeature.DISABLE_COMPRESS).toString(), metrics.toString());
+                FastProto.parse(datagram, Weather.class).toString(), metrics.toString());
 
         // Test encode.
-        byte[] cache = FastProto.toBytes(metrics, 30, CodecFeature.DISABLE_COMPRESS);
+        byte[] cache = FastProto.toBytes(metrics, 30);
         assertArrayEquals(datagram, cache);
     }
 
@@ -150,7 +145,6 @@ public class FastProtoTest {
                 .temperatureValid(true)
                 .pressureValid(true)
                 .build();
-        val compressor = DeflateCompressor.getInstance(2);
 
         // Init datagram.
         CodecUtils.uint8Type(datagram, 0, weather.getId());
@@ -161,10 +155,6 @@ public class FastProtoTest {
         CodecUtils.type(datagram, 18, 0, weather.isHumidityValid());
         CodecUtils.type(datagram, 18, 1, weather.isTemperatureValid());
         CodecUtils.type(datagram, 18, 2, weather.isPressureValid());
-        CodecUtils.uint32Type(datagram, 19, EndianPolicy.BIG, Crc32Checker.getInstance().getValue(datagram, 0, -5));
-
-        // Compress the datagram.
-        datagram = compressor.compress(datagram);
 
         // Test decode.
         assertEquals(
@@ -173,7 +163,7 @@ public class FastProtoTest {
                 FastProto.parse(datagram, Weather.class, CodecFeature.DEFAULT).toString(), weather.toString());
 
         // Test encode.
-        byte[] cache = FastProto.toBytes(weather);
+        byte[] cache = FastProto.toBytes(weather, 23);
         assertArrayEquals(cache, datagram);
     }
 
@@ -282,13 +272,6 @@ public class FastProtoTest {
         assertNotNull(bytes);
     }
 
-    @Test
-    public void testChecksumException() {
-        val datagram = new byte[]{0, 1, 2, 3, 4, 5, 6, 7};
-
-        assertThrows(CheckSumException.class, () -> FastProto.parse(datagram, ChecksumObject.class));
-    }
-
     @SneakyThrows
     @Test
     public void testColor() {
@@ -301,11 +284,6 @@ public class FastProtoTest {
 
     @DefaultEndian(EndianPolicy.BIG)
     public static class NonObject {
-
-    }
-
-    @EnableChecksum
-    public static class ChecksumObject {
 
     }
 }

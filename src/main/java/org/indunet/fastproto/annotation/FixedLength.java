@@ -14,18 +14,21 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.pipeline;
+package org.indunet.fastproto.annotation;
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
- * Codec Context.
+ * Enable fixed length.
  *
  * @author Deng Ran
  * @since 2.4.0
  */
-public final class FlowCode {
-    public static final long DECODE_FLOW_CODE = 0x0001;
-    public static final long VERIFY_FIXED_LENGTH_FLOW_CODE = 0x0020;
-    public static final long ENCODE_FLOW_CODE = 0x0200;
-    public static final long FIXED_LENGTH_FLOW_CODE = 0x0800;
-    public static final long INFER_LENGTH_FLOW_CODE = 0x1000;
+@Target(ElementType.TYPE)
+@Retention(RetentionPolicy.RUNTIME)
+public @interface FixedLength {
+    int value();
 }

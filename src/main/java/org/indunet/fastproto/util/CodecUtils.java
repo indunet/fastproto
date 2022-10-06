@@ -17,6 +17,7 @@
 package org.indunet.fastproto.util;
 
 import lombok.NonNull;
+import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.type.*;
 
@@ -31,7 +32,13 @@ import java.util.Arrays;
  */
 public class CodecUtils {
     public static int reverse(@NonNull byte[] datagram, int offset) {
-        return offset >= 0 ? offset : datagram.length + offset;
+        val o = offset >= 0 ? offset : datagram.length + offset;
+
+        if (o >= 0) {
+            return o;
+        } else {
+            throw new IllegalArgumentException(String.format("Illegal offset %d", o));
+        }
     }
 
     public static int reverse(@NonNull byte[] datagram, int offset, int length) {
@@ -57,7 +64,7 @@ public class CodecUtils {
     }
 
     public static void binaryType(@NonNull byte[] datagram, int offset, int length, @NonNull byte[] values) {
-        int o =reverse(datagram, offset);
+        int o = reverse(datagram, offset);
         int l = reverse(datagram, offset, length);
 
         if (o + l > datagram.length) {
@@ -432,7 +439,7 @@ public class CodecUtils {
         return uint64Type(datagram, offset, EndianPolicy.LITTLE);
     }
 
-    public static void uint64Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull BigInteger value) {
+    public static void uint64Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, BigInteger value) {
         if (value.compareTo(UInt64Type.MAX_VALUE) > 0 || value.compareTo(UInt64Type.MIN_VALUE) < 0) {
             throw new IllegalArgumentException("Out of uinteger64 range.");
         }
@@ -468,7 +475,7 @@ public class CodecUtils {
         }
     }
 
-    public static void uint64Type(@NonNull byte[] datagram, int offset, @NonNull BigInteger value) {
+    public static void uint64Type(@NonNull byte[] datagram, int offset, BigInteger value) {
         uint64Type(datagram, offset, EndianPolicy.LITTLE, value);
     }
 

@@ -12,23 +12,21 @@ English | [中文](README-zh.md)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 [![Gitee](https://img.shields.io/badge/repo-gitee-blue)](https://gitee.com/indunet/fastproto)
 
-FastProto is a binary serialization & deserialization tool written in Java, it allows customizing binary protocol through annotations.
-FastProto uses a new way to solve the problem of cross-language and cross-platform data exchange, which is especially suitable for the Internet of Things (IoT).
+FastProto is a binary serialization & deserialization tool that can customize protocol through annotations. It is written in Java and 
+solve the problem of cross-language and cross-platform data exchange, which is especially suitable for the Internet of Things (IoT).
 
 ## *Features*
 
-*   Protocolized binary serialization & deserialization
-    * Support primitive type, unsigned type, string type and time type  
-    * Support reverse addressing, suitable for non-fixed length binary data
-    * Customize endianness (byte order)
-    * Support [decoding formula & encoding formula][formula]
-*   Support data [compress and decompress(gzip, deflate)][compression]
-*   Support [data integrity verification][checksum]
+* Binary serialization & deserialization, customize protocol through annotations
+* Support primitive type, unsigned type, string type, time type and array type  
+* Support reverse addressing, suitable for non-fixed length binary data
+* Customize endianness (byte order)
+* Support decoding formula & encoding formula
 
 ## *Under Developing*
 
-*   Code structure & performance optimization
-*   Add test cases to increase unit test coverage
+* Reinforce array type
+* Code structure & performance optimization
 
 ## *Compared with ProtoBuf*
 
@@ -51,7 +49,7 @@ FastProto is more recommended for the following scenarios:
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.5.1</version>
+    <version>3.6.0</version>
 </dependency>
 ```
 
@@ -179,52 +177,55 @@ public class Weather {
 }
 ```
 
-3. **Other Functions**
+## *Annotations*
 
-FastProto supports data compression and data integrity verification, each function can be enabled by annotations.
-
-```java
-@EnableCompress(value = CompressPolicy.DEFLATE, level = 2)
-@EnableChecksum(offset = -4, start = 0, length = -5, checkPolicy = CheckPolicy.CRC32, endianPolicy = EndianPolicy.BIG)
-public class Weather {
-    ...
-}
-```
-
-## *Core Annotations*
-
+### *Primitive Type*
 FastProto supports Java primitive data types, time type, String type, enum type and byte array type, taking into account 
 cross-language and cross-platform data exchange, FastProto also introduces unsigned types.
 
-| Annotation  |                 Java                  | C/C++          |    Size     |
-|:-----------:|:-------------------------------------:|:--------------:|:-----------:|
-|  @BoolType  |           Boolean / boolean           | bool           |    1 bit    |    
-|  @CharType  |           Character / char            | --             |   2 bytes   |   
-| @Int32Type  |             Integer / int             | int            |   4 bytes   | 
-| @Int64Type  |              Long / long              | long long      |   8 bytes   |   
-| @FloatType  |             Float / float             | float          |   4 bytes   |  
-| @DoubleType |            Double / double            | double         |   8 bytes   |  
-|  @Int8Type  |      Byte / byte / Integer / int      | char           |   1 byte    |  
-| @Int16Type  |     Short / short / Integer / int     | short          |   2 bytes   |  
-| @UInt8Type  |             Integer / int             | unsigned char  |   1 byte    |   
-| @UInt16Type |             Integer / int             | unsigned short |   2 bytes   |   
-| @UInt32Type |              Long / long              | unsigned long  |   4 bytes   |   
-| @UInt64Type |              BigInteger               | unsigned long long |   8 bytes   |  
-| @BinaryType |                byte[]                 | char[]         |   N bytes   |  
-| @StringType | String / StringBuilder / StringBuffer | --             |   N bytes   |   
-|  @TimeType  |      Timestamp / Date / Calendar      | --             | 4 / 8 bytes |  
-|  @EnumType  |                 enum                  | enum             |   1 bytes   |
+|      Annotation       |                 Java                  |     C/C++      |   Size    |
+|:---------------------:|:-------------------------------------:|:--------------:|:---------:|
+|       @BoolType       |           Boolean / boolean           |      bool      |   1 bit   |    
+| @CharType(ASCII Only) |           Character / char            |      char      |  1 bytes  |   
+|      @Int32Type       |             Integer / int             |      int       |  4 bytes  | 
+|      @Int64Type       |              Long / long              |      long      |  8 bytes  |   
+|      @FloatType       |             Float / float             |     float      |  4 bytes  |  
+|      @DoubleType      |            Double / double            |     double     |  8 bytes  |  
+|       @Int8Type       |      Byte / byte / Integer / int      |      char      |  1 byte   |  
+|      @Int16Type       |     Short / short / Integer / int     |     short      |  2 bytes  |  
+|      @UInt8Type       |             Integer / int             | unsigned char  |  1 byte   |   
+|      @UInt16Type      |             Integer / int             | unsigned short |  2 bytes  |   
+|      @UInt32Type      |              Long / long              |  unsigned int  |  4 bytes  |   
+|      @UInt64Type      |              BigInteger               | unsigned long  |  8 bytes  |  
+|      @StringType      | String / StringBuilder / StringBuffer |       --       |  N bytes  |   
+|       @TimeType       |      Timestamp / Date / Calendar      |      long      |  8 bytes  |  
+|       @EnumType       |                 enum                  |      enum      |  1 bytes  |
 
+### *Array Annotations*
+
+|    Annotation    |      Java       |      C/C++       |
+|:----------------:|:---------------:|:----------------:|
+|   @BinaryType    |     byte[]      |      char[]      |
+|  @Int8ArrayType  | byte[] / int[]  |      char[]      |
+| @Int16ArrayType  | short[] / int[] |     short[]      |
+| @Int32ArrayType  |      int[]      |      int[]       |
+| @Int64ArrayType  |     long[]      |      long[]      |
+| @UInt8ArrayType  |      int[]      | unsigned char[]  |
+| @UInt16ArrayType |      int[]      | unsigned short[] |
+| @UInt32ArrayType |     long[]      |  unsigned int[]  |
+| @UInt64ArrayType |  BigInteger[]   | unsigned long[]  |
+| @FloatArrayType  |     float[]     |     float[]      |
+| @DoubleArrayType |    double[]     |     double[]     |
+
+### *Other Annotations*
 FastProto also provides some auxiliary annotations to help users further customize the binary format, decoding and encoding process.
 
-|                  Annotation                  | Scope        |                    Description                    |
-|:--------------------------------------------:|:------------:|:-------------------------------------------------:|
-|                   @Endian                    | Class & Field |       Endianness, default as little endian.       |
-|               @DecodingIgnore                | Field        |          Ignore the field when decoding.          |
-|               @EncodingIgnore                | Field        |          Ignore the field when encoding.          |
-|               @EnableCompress                | Class        | Enable compress & decompress, default as deflate. |
-|               @EnableCheckSum                |  Class      |           Enable checksum verification.           |
-|              @EnableFixedLength              |  Class |         Enable fixed length of datagram.          |
+|   Annotation    |   Scope   |                    Description                    |
+|:---------------:|:---------:|:-------------------------------------------------:|
+| @DefaultEndian  |   Class   |       Endianness, default as little endian.       |
+| @DecodingIgnore |   Field   |          Ignore the field when decoding.          |
+| @EncodingIgnore |   Field   |          Ignore the field when encoding.          |
+|  @FixedLength   |   Class   |         Enable fixed length of datagram.          |
 
 ## *Benchmark*
 
@@ -232,10 +233,17 @@ FastProto also provides some auxiliary annotations to help users further customi
 *   openjdk 1.8.0_292
 *   datagram of 128 bytes and nested protocol class of 48 fields
 
-|Benchmark |    Mode  | Samples  |  Score  |   Error   |   Units   |
-|:--------:|:--------:|:--------:|:-------:|:---------:|:---------:|
-| `FastProto::parse` |  throughput   |   10  |   291.2 | ± 1.6    |  ops/ms   |
-| `FastProto::toBytes` | throughput  |   10  |   285.7 | ± 1.5    |  ops/ms   |
+|Benchmark |    Mode  | Samples  | Score |   Error   |   Units   |
+|:--------:|:--------:|:--------:|:-----:|:---------:|:---------:|
+| `FastProto::parse` |  throughput   |   10  |  132  | ± 1.6    |  ops/ms   |
+| `FastProto::toBytes` | throughput  |   10  |  201  | ± 1.5    |  ops/ms   |
+
+## Scala
+FastProto supports case class，but Scala is not fully compatible with Java annotations, so please refer to FastProto as follows.
+
+```scala
+import org.indunet.fastproto.annotation.scala._
+```
 
 ## *Build Requirements*
 
@@ -270,6 +278,3 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
-
-[checksum]: https://github.com/indunet/fastproto/wiki/Data-Integrity-Check
-[compression]: https://github.com/indunet/fastproto/wiki/Compression
