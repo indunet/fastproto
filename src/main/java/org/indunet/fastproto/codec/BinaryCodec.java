@@ -17,7 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.annotation.type.ByteArrayType;
+import org.indunet.fastproto.annotation.type.BinaryType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
@@ -28,7 +28,7 @@ import org.indunet.fastproto.util.CodecUtils;
  * @author Deng Ran
  * @since 3.2.1
  */
-public class ByteArrayCodec implements Codec<byte[]> {
+public class BinaryCodec implements Codec<byte[]> {
     public byte[] decode(byte[] bytes, int offset, int length) {
         try {
             return CodecUtils.binaryType(bytes, offset, length);
@@ -47,14 +47,14 @@ public class ByteArrayCodec implements Codec<byte[]> {
     
     @Override
     public byte[] decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(ByteArrayType.class);
+        val type = context.getDataTypeAnnotation(BinaryType.class);
     
         return this.decode(bytes, type.offset(), type.length());
     }
     
     @Override
     public void encode(CodecContext context, byte[] bytes, byte[] value) {
-        val type = context.getDataTypeAnnotation(ByteArrayType.class);
+        val type = context.getDataTypeAnnotation(BinaryType.class);
     
         this.encode(bytes, type.offset(), type.length(), value);
     }

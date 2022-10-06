@@ -47,66 +47,103 @@ public class CodecFactory {
 
     static {
         codecMap.put(Int8Type.class, new ConcurrentHashMap<>());
+        codecMap.put(Int8ArrayType.class, new ConcurrentHashMap<>());
+        codecMap.put(BinaryType.class, new ConcurrentHashMap<>());
         codecMap.put(Int16Type.class, new ConcurrentHashMap<>());
+        codecMap.put(Int16ArrayType.class, new ConcurrentHashMap<>());
         codecMap.put(Int32Type.class, new ConcurrentHashMap<>());
+        codecMap.put(Int32ArrayType.class, new ConcurrentHashMap<>());
         codecMap.put(Int64Type.class, new ConcurrentHashMap<>());
+        codecMap.put(Int64ArrayType.class, new ConcurrentHashMap<>());
         codecMap.put(UInt8Type.class, new ConcurrentHashMap<>());
+        codecMap.put(UInt8ArrayType.class, new ConcurrentHashMap<>());
         codecMap.put(UInt16Type.class, new ConcurrentHashMap<>());
+        codecMap.put(UInt16ArrayType.class, new ConcurrentHashMap<>());
         codecMap.put(UInt32Type.class, new ConcurrentHashMap<>());
+        codecMap.put(UInt32ArrayType.class, new ConcurrentHashMap<>());
         codecMap.put(UInt64Type.class, new ConcurrentHashMap<>());
+        codecMap.put(UInt64ArrayType.class, new ConcurrentHashMap<>());
         codecMap.put(FloatType.class, new ConcurrentHashMap<>());
+        codecMap.put(FloatArrayType.class, new ConcurrentHashMap<>());
         codecMap.put(DoubleType.class, new ConcurrentHashMap<>());
+        codecMap.put(DoubleArrayType.class, new ConcurrentHashMap<>());
         codecMap.put(BoolType.class, new ConcurrentHashMap<>());
         codecMap.put(CharType.class, new ConcurrentHashMap<>());
         codecMap.put(TimeType.class, new ConcurrentHashMap<>());
-        codecMap.put(ByteArrayType.class, new ConcurrentHashMap<>());
         codecMap.put(EnumType.class, new ConcurrentHashMap<>());
         codecMap.put(StringType.class, new ConcurrentHashMap<>());
 
         val byteCodec = new ByteCodec();
         val int8Codec = new Int8Codec();
+        val binaryCodec = new BinaryCodec();
+        val int8ArrayCodec = new Int8ArrayCodec();
         codecMap.get(Int8Type.class).put(byte.class, byteCodec);
         codecMap.get(Int8Type.class).put(Byte.class, byteCodec);
         codecMap.get(Int8Type.class).put(int.class, int8Codec);
         codecMap.get(Int8Type.class).put(Integer.class, int8Codec);
+        codecMap.get(BinaryType.class).put(byte[].class, binaryCodec);
+        codecMap.get(Int8ArrayType.class).put(byte[].class, binaryCodec);
+        codecMap.get(Int8ArrayType.class).put(int[].class, int8ArrayCodec);
+
+
 
         val shortCodec = new ShortCodec();
         val int16Codec = new Int16Codec();
+        val shortArrayCodec = new ShortArrayCodec();
+        val int16ArrayCodec = new Int16ArrayCodec();
         codecMap.get(Int16Type.class).put(short.class, shortCodec);
         codecMap.get(Int16Type.class).put(Short.class, shortCodec);
         codecMap.get(Int16Type.class).put(int.class, int16Codec);
         codecMap.get(Int16Type.class).put(Integer.class, int16Codec);
+        codecMap.get(Int16ArrayType.class).put(short[].class, shortArrayCodec);
+        codecMap.get(Int16ArrayType.class).put(int[].class, int16ArrayCodec);
 
         val int32Codec = new Int32Codec();
+        val int32ArrayCodec = new Int32ArrayCodec();
         codecMap.get(Int32Type.class).put(int.class, int32Codec);
         codecMap.get(Int32Type.class).put(Integer.class, int32Codec);
+        codecMap.get(Int32ArrayType.class).put(int[].class, int32ArrayCodec);
 
         val int64Codec = new Int64Codec();
+        val int64ArrayCodec = new Int64ArrayCodec();
         codecMap.get(Int64Type.class).put(long.class, int64Codec);
         codecMap.get(Int64Type.class).put(Long.class, int64Codec);
+        codecMap.get(Int64ArrayType.class).put(long[].class, int64ArrayCodec);
 
         val uint8Codec = new UInt8Codec();
+        val uint8ArrayCodec = new UInt8ArrayCodec();
         codecMap.get(UInt8Type.class).put(int.class, uint8Codec);
         codecMap.get(UInt8Type.class).put(Integer.class, uint8Codec);
+        codecMap.get(UInt8ArrayType.class).put(int[].class, uint8ArrayCodec);
 
         val uint16Codec = new UInt16Codec();
+        val uint16ArrayCodec = new UInt16ArrayCodec();
         codecMap.get(UInt16Type.class).put(int.class, uint16Codec);
         codecMap.get(UInt16Type.class).put(Integer.class, uint16Codec);
+        codecMap.get(UInt16ArrayType.class).put(int[].class, uint16ArrayCodec);
 
         val uint32Codec = new UInt32Codec();
+        val uint32ArrayCodec = new UInt32ArrayCodec();
         codecMap.get(UInt32Type.class).put(long.class, uint32Codec);
         codecMap.get(UInt32Type.class).put(Long.class, uint32Codec);
+        codecMap.get(UInt32ArrayType.class).put(long[].class, uint32ArrayCodec);
 
         val uint64Codec = new UInt64Codec();
+        val uint64ArrayCodec = new UInt64ArrayCodec();
         codecMap.get(UInt64Type.class).put(BigInteger.class, uint64Codec);
+        codecMap.get(UInt64ArrayType.class).put(BigInteger[].class, uint64ArrayCodec);
 
         val floatCodec = new FloatCodec();
+        val floatArrayCodec = new FloatArrayCodec();
         codecMap.get(FloatType.class).put(float.class, floatCodec);
         codecMap.get(FloatType.class).put(Float.class, floatCodec);
+        codecMap.get(FloatArrayType.class).put(float[].class, floatArrayCodec);
 
         val doubleCodec = new DoubleCodec();
+        val doubleArrayCodec = new DoubleArrayCodec();
         codecMap.get(DoubleType.class).put(double.class, doubleCodec);
         codecMap.get(DoubleType.class).put(Double.class, doubleCodec);
+        codecMap.get(DoubleArrayType.class).put(double[].class, doubleArrayCodec);
 
         val boolCodec = new BoolCodec();
         codecMap.get(BoolType.class).put(boolean.class, boolCodec);
@@ -134,9 +171,6 @@ public class CodecFactory {
 
         val enumCodec = new EnumCodec<>();
         codecMap.get(EnumType.class).put(Enum.class, enumCodec);
-
-        val binaryCodec = new ByteArrayCodec();
-        codecMap.get(ByteArrayType.class).put(byte[].class, binaryCodec);
     }
 
     public static boolean isSupported(Type type) {

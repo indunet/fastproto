@@ -27,7 +27,7 @@ import java.util.Arrays;
  * @since 3.2.0
  */
 public interface ProtocolType {
-    Class<? extends Annotation> BINARY = ByteArrayType.class;
+    Class<? extends Annotation> BINARY = BinaryType.class;
     Class<? extends Annotation> BOOL = BoolType.class;
     Class<? extends Annotation> CHAR = CharType.class;
     Class<? extends Annotation> DOUBLE = DoubleType.class;

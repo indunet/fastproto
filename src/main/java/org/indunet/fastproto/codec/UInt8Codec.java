@@ -32,7 +32,7 @@ public class UInt8Codec implements Codec<Integer> {
     public int decode(byte[] bytes, int offset) {
         try {
             return CodecUtils.uint8Type(bytes, offset);
-        } catch(ArrayIndexOutOfBoundsException e) {
+        } catch(ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding int8 type.", e);
         }
     }

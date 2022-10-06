@@ -62,9 +62,7 @@ public class FloatArrayCodec implements Codec<float[]> {
                 l = CodecUtils.reverse(bytes, offset, length * FloatType.SIZE) / FloatType.SIZE + 1;
             }
 
-            if (o + l * FloatType.SIZE > values.length * FloatType.SIZE) {
-                throw new IllegalArgumentException("Out of the datagram range.");
-            } else if (l >= values.length) {
+            if (l >= values.length) {
                 IntStream.range(0, values.length)
                         .forEach(i -> CodecUtils.floatType(bytes, offset + i * FloatType.SIZE, values[i]));
             } else {

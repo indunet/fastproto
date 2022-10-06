@@ -37,7 +37,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * @since 3.2.1
  */
 public class ByteArrayCodecTest {
-    ByteArrayCodec codec = new ByteArrayCodec();
+    BinaryCodec codec = new BinaryCodec();
 
     @Test
     public void testDecode1() {

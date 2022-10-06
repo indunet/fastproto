@@ -35,7 +35,7 @@ public class UInt16Codec implements Codec<Integer> {
     public int decode(byte[] bytes, int offset, EndianPolicy policy) {
         try {
             return CodecUtils.uint16Type(bytes, offset, policy);
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding uint16 type.", e);
         }
     }

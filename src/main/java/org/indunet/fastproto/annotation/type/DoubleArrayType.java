@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet.org
+ * Copyright 2019-2022 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,17 +28,16 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Binary type, corresponding to Java byte array.
+ * Double array type
  *
  * @author Deng Ran
- * @see DataType
- * @since 1.0.0
+ * @since 3.6.0
  */
 @DataType
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface ByteArrayType {
+public @interface DoubleArrayType {
     int offset();
 
     int length() default -1;

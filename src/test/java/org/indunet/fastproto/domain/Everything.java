@@ -77,7 +77,7 @@ public class Everything {
     @UInt32Type(offset = 36)
     Long aUInteger32;
 
-    @ByteArrayType(offset = 40, length = 10)
+    @BinaryType(offset = 40, length = 10)
     byte[] aByteArray;
 
     @StringType(offset = 50, length = 6)

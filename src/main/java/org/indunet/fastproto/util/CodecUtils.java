@@ -439,7 +439,7 @@ public class CodecUtils {
         return uint64Type(datagram, offset, EndianPolicy.LITTLE);
     }
 
-    public static void uint64Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull BigInteger value) {
+    public static void uint64Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, BigInteger value) {
         if (value.compareTo(UInt64Type.MAX_VALUE) > 0 || value.compareTo(UInt64Type.MIN_VALUE) < 0) {
             throw new IllegalArgumentException("Out of uinteger64 range.");
         }
@@ -475,7 +475,7 @@ public class CodecUtils {
         }
     }
 
-    public static void uint64Type(@NonNull byte[] datagram, int offset, @NonNull BigInteger value) {
+    public static void uint64Type(@NonNull byte[] datagram, int offset, BigInteger value) {
         uint64Type(datagram, offset, EndianPolicy.LITTLE, value);
     }
 

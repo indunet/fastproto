@@ -42,7 +42,7 @@ public class ShortArrayCodec implements Codec<short[]> {
                 l = CodecUtils.reverse(bytes, offset, length * Int16Type.SIZE)  / Int16Type.SIZE + 1;
             }
 
-            val values = new short[length];
+            val values = new short[l];
 
             IntStream.range(0, l)
                     .forEach(i -> values[i] = CodecUtils.shortType(bytes, o + i * Int16Type.SIZE));
