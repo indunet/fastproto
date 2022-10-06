@@ -227,6 +227,14 @@ FastProto also provides some auxiliary annotations to help users further customi
 | @EncodingIgnore |   Field   |          Ignore the field when encoding.          |
 |  @FixedLength   |   Class   |         Enable fixed length of datagram.          |
 
+
+## Scala
+FastProto supports case class，but Scala is not fully compatible with Java annotations, so please refer to FastProto as follows.
+
+```scala
+import org.indunet.fastproto.annotation.scala._
+```
+
 ## *Benchmark*
 
 *   macOS, m1 8 cores, 16gb
@@ -237,13 +245,6 @@ FastProto also provides some auxiliary annotations to help users further customi
 |:--------:|:--------:|:--------:|:-----:|:---------:|:---------:|
 | `FastProto::parse` |  throughput   |   10  |  132  | ± 1.6    |  ops/ms   |
 | `FastProto::toBytes` | throughput  |   10  |  201  | ± 1.5    |  ops/ms   |
-
-## Scala
-FastProto supports case class，but Scala is not fully compatible with Java annotations, so please refer to FastProto as follows.
-
-```scala
-import org.indunet.fastproto.annotation.scala._
-```
 
 ## *Build Requirements*
 
