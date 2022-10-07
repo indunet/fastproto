@@ -62,19 +62,19 @@ the weather station in binary format，the binary data has fixed length of 20 by
 
 The binary data contains 8 different types of signals, the specific protocol is as follows:
 
-| Byte Offset | Bit Offset | Data Type(C/C++)   | Signal Name       | Unit |  Formula  |
-|:-----------:|:----------:|:--------------:|:-----------------:|:----:|:---------:|
-| 0           |            | unsigned char  | device id         |      |           |
-| 1           |            |                | reserved          |      |           |
-| 2-9         |            | long long      | time              |  ms  |           |
-| 10-11       |            | unsigned short | humidity          |  %RH |           |
-| 12-13       |            | short          | temperature       |  ℃  |            |
-| 14-17       |            | unsigned int   | pressure          |  Pa  | p * 0.1   |
-| 18          | 0          | bool           | temperature valid |      |           |
-| 18          | 1          | bool           | humidity valid    |      |           |
-| 18          | 2          | bool           | pressure valid    |      |           |
-| 18          | 3-7        |                | reserved          |      |           |
-| 19          |            |                | reserved          |      |           |
+| Byte Offset | Bit Offset | Data Type(C/C++)  | Signal Name       | Unit |  Formula  |
+|:-----------:|:----------:|:-----------------:|:-----------------:|:----:|:---------:|
+| 0           |            |   unsigned char   | device id         |      |           |
+| 1           |            |                   | reserved          |      |           |
+| 2-9         |            |       long        | time              |  ms  |           |
+| 10-11       |            |  unsigned short   | humidity          |  %RH |           |
+| 12-13       |            |       short       | temperature       |  ℃  |            |
+| 14-17       |            |   unsigned int    | pressure          |  Pa  | p * 0.1   |
+| 18          | 0          |       bool        | temperature valid |      |           |
+| 18          | 1          |       bool        | humidity valid    |      |           |
+| 18          | 2          |       bool        | pressure valid    |      |           |
+| 18          | 3-7        |                   | reserved          |      |           |
+| 19          |            |                   | reserved          |      |           |
 
 1. **Serialization & Deserialization**
 
