@@ -25,7 +25,7 @@ solve the problem of cross-language and cross-platform data exchange, which is e
 
 ## *Under Developing*
 
-* Reinforce array type
+* Support list type
 * Code structure & performance optimization
 
 ## *Compared with ProtoBuf*
@@ -49,7 +49,7 @@ FastProto is more recommended for the following scenarios:
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.6.0</version>
+    <version>3.6.1</version>
 </dependency>
 ```
 
@@ -203,19 +203,19 @@ cross-language and cross-platform data exchange, FastProto also introduces unsig
 
 ### *Array Annotations*
 
-|    Annotation    |      Java       |      C/C++       |
-|:----------------:|:---------------:|:----------------:|
-|   @BinaryType    |     byte[]      |      char[]      |
-|  @Int8ArrayType  | byte[] / int[]  |      char[]      |
-| @Int16ArrayType  | short[] / int[] |     short[]      |
-| @Int32ArrayType  |      int[]      |      int[]       |
-| @Int64ArrayType  |     long[]      |      long[]      |
-| @UInt8ArrayType  |      int[]      | unsigned char[]  |
-| @UInt16ArrayType |      int[]      | unsigned short[] |
-| @UInt32ArrayType |     long[]      |  unsigned int[]  |
-| @UInt64ArrayType |  BigInteger[]   | unsigned long[]  |
-| @FloatArrayType  |     float[]     |     float[]      |
-| @DoubleArrayType |    double[]     |     double[]     |
+|    Annotation    |                 Java                  |      C/C++       |
+|:----------------:|:-------------------------------------:|:----------------:|
+|   @BinaryType    |            Byte[] / byte[]            |      char[]      |
+|  @Int8ArrayType  |  Byte[] / byte[] / Integer[] / int[]  |      char[]      |
+| @Int16ArrayType  | Short[] / short[] / Integer[] / int[] |     short[]      |
+| @Int32ArrayType  |          Integer[] /  int[]           |      int[]       |
+| @Int64ArrayType  |            Long[] / long[]            |      long[]      |
+| @UInt8ArrayType  |           Integer[] / int[]           | unsigned char[]  |
+| @UInt16ArrayType |           Integer[] / int[]           | unsigned short[] |
+| @UInt32ArrayType |            Long[] / long[]            |  unsigned int[]  |
+| @UInt64ArrayType |             BigInteger[]              | unsigned long[]  |
+| @FloatArrayType  |           Float[] / float[]           |     float[]      |
+| @DoubleArrayType |          Double[] / double[]          |     double[]     |
 
 ### *Other Annotations*
 FastProto also provides some auxiliary annotations to help users further customize the binary format, decoding and encoding process.

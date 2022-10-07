@@ -22,6 +22,8 @@ import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
+import java.util.stream.IntStream;
+
 /**
  * Byte array type codec.
  *
@@ -57,5 +59,28 @@ public class BinaryCodec implements Codec<byte[]> {
         val type = context.getDataTypeAnnotation(BinaryType.class);
     
         this.encode(bytes, type.offset(), type.length(), value);
+    }
+
+    public class WrapperCodec implements Codec<Byte[]> {
+        @Override
+        public Byte[] decode(CodecContext context, byte[] bytes) {
+            val bs = BinaryCodec.this.decode(context, bytes);
+            val values = new Byte[bs.length];
+
+            IntStream.range(0, bs.length)
+                    .forEach(i -> values[i] = bs[i]);
+
+            return values;
+        }
+
+        @Override
+        public void encode(CodecContext context, byte[] bytes, Byte[] values) {
+            val bs = new byte[values.length];
+
+            IntStream.range(0, bs.length)
+                    .forEach(i -> bs[i] = values[i]);
+
+            BinaryCodec.this.encode(context, bytes, bs);
+        }
     }
 }

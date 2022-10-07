@@ -24,10 +24,10 @@ FastProto是一款能够通过注解自定义协议的二进制序列化 & 反�
 
 ## *Under Developing*
 
-* 强化数组类型
+* 支持List类型
 * 代码结构 & 性能优化
 
-## *Compared with ProtoBuf*
+## *与ProtoBuf相比较*
 
 虽然ProtoBuf和FastProto都可以用于解决跨语言和跨平台的数据交换问题，但两者采用的方式完全不同：
 
@@ -47,7 +47,7 @@ FastProto是一款能够通过注解自定义协议的二进制序列化 & 反�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.6.0</version>
+    <version>3.6.1</version>
 </dependency>
 ```
 
@@ -194,19 +194,19 @@ FastProto支持Java基础数据类型、时间类型、字符串类型、枚举�
 
 ### *数组类型注解*
 
-|        注解        |      Java       |      C/C++       |
-|:----------------:|:---------------:|:----------------:|
-|   @BinaryType    |     byte[]      |      char[]      |
-|  @Int8ArrayType  | byte[] / int[]  |      char[]      |
-| @Int16ArrayType  | short[] / int[] |     short[]      |
-| @Int32ArrayType  |      int[]      |      int[]       |
-| @Int64ArrayType  |     long[]      |      long[]      |
-| @UInt8ArrayType  |      int[]      | unsigned char[]  |
-| @UInt16ArrayType |      int[]      | unsigned short[] |
-| @UInt32ArrayType |     long[]      |  unsigned int[]  |
-| @UInt64ArrayType |  BigInteger[]   | unsigned long[]  |
-| @FloatArrayType  |     float[]     |     float[]      |
-| @DoubleArrayType |    double[]     |     double[]     |
+|        注解        |                 Java                  |      C/C++       |
+|:----------------:|:-------------------------------------:|:----------------:|
+|   @BinaryType    |            Byte[] / byte[]            |      char[]      |
+|  @Int8ArrayType  |  Byte[] / byte[] / Integer[] / int[]  |      char[]      |
+| @Int16ArrayType  | Short[] / short[] / Integer[] / int[] |     short[]      |
+| @Int32ArrayType  |          Integer[] /  int[]           |      int[]       |
+| @Int64ArrayType  |            Long[] / long[]            |      long[]      |
+| @UInt8ArrayType  |           Integer[] / int[]           | unsigned char[]  |
+| @UInt16ArrayType |           Integer[] / int[]           | unsigned short[] |
+| @UInt32ArrayType |            Long[] / long[]            |  unsigned int[]  |
+| @UInt64ArrayType |             BigInteger[]              | unsigned long[]  |
+| @FloatArrayType  |           Float[] / float[]           |     float[]      |
+| @DoubleArrayType |          Double[] / double[]          |     double[]     |
 
 
 ### 其它注解

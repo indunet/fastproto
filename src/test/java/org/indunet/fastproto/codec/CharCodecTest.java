@@ -28,7 +28,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since 3.2.1
  */
 public class CharCodecTest {
-    CharCodec codec = new CharCodec();
+    AsciiCodec codec = new AsciiCodec();
 
     @Test
     public void testDecode1() {
