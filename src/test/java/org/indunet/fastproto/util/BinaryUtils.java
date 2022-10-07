@@ -18,10 +18,8 @@ package org.indunet.fastproto.util;
 
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
-import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
-import java.util.Random;
 import java.util.stream.IntStream;
 
 public class BinaryUtils {
@@ -105,6 +103,33 @@ public class BinaryUtils {
                 });
 
         return bytes;
+    }
+
+    public static byte[] valueOf(Byte[] bytes) {
+        val bs = new byte[bytes.length];
+
+        IntStream.range(0, bytes.length)
+                .forEach(i -> bs[i] = bytes[i]);
+
+        return bs;
+    }
+
+    public static byte[] valueOf(Short[] shorts, EndianPolicy policy) {
+        val ss = new short[shorts.length];
+
+        IntStream.range(0, shorts.length)
+                .forEach(i -> ss[i] = shorts[i]);
+
+        return valueOf(ss, policy);
+    }
+
+    public static byte[] valueOf(Float[] floats, EndianPolicy policy) {
+        val fs = new float[floats.length];
+
+        IntStream.range(0, floats.length)
+                .forEach(i -> fs[i] = floats[i]);
+
+        return valueOf(fs, policy);
     }
 
     public static byte[] valueOf(short[] values, EndianPolicy policy) {
@@ -241,19 +266,5 @@ public class BinaryUtils {
         }
 
         return bytes;
-    }
-
-    @Test
-    public void test() {
-        IntStream.range(0, 10000000)
-                .parallel()
-                .forEach(i -> {
-                    val random = new Random(System.currentTimeMillis());
-
-                    i += 655;
-                    i -= 323;
-                    i = random.nextInt();
-                    val sqrt = i * i * i;
-                });
     }
 }

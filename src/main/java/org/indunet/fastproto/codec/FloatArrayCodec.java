@@ -87,4 +87,27 @@ public class FloatArrayCodec implements Codec<float[]> {
 
         this.encode(bytes, type.offset(), type.length(), value);
     }
+
+    public class WrapperCodec implements Codec<Float[]> {
+        @Override
+        public Float[] decode(CodecContext context, byte[] bytes) {
+            val floats = FloatArrayCodec.this.decode(context, bytes);
+            val values = new Float[floats.length];
+
+            IntStream.range(0, floats.length)
+                    .forEach(i -> values[i] = floats[i]);
+
+            return values;
+        }
+
+        @Override
+        public void encode(CodecContext context, byte[] bytes, Float[] values) {
+            val floats = new float[values.length];
+
+            IntStream.range(0, floats.length)
+                    .forEach(i -> floats[i] = values[i]);
+
+            FloatArrayCodec.this.encode(context, bytes, floats);
+        }
+    }
 }

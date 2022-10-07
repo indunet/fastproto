@@ -25,6 +25,7 @@ import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Int16 array type codec.
@@ -78,5 +79,23 @@ public class Int16ArrayCodec implements Codec<int[]> {
         val type = context.getDataTypeAnnotation(Int16ArrayType.class);
 
         this.encode(bytes, type.offset(), type.length(), value);
+    }
+
+    public class WrapperCodec implements Codec<Integer[]> {
+        @Override
+        public Integer[] decode(CodecContext context, byte[] bytes) {
+            return IntStream.of(Int16ArrayCodec.this.decode(context, bytes))
+                    .mapToObj(Integer::valueOf)
+                    .toArray(Integer[]::new);
+        }
+
+        @Override
+        public void encode(CodecContext context, byte[] bytes, Integer[] values) {
+            val ints = Stream.of(values)
+                    .mapToInt(i -> i.intValue())
+                    .toArray();
+
+            Int16ArrayCodec.this.encode(context, bytes, ints);
+        }
     }
 }

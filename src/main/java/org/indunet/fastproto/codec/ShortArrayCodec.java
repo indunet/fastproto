@@ -82,4 +82,27 @@ public class ShortArrayCodec implements Codec<short[]> {
 
         this.encode(bytes, type.offset(), type.length(), value);
     }
+
+    public class WrapperCodec implements Codec<Short[]> {
+        @Override
+        public Short[] decode(CodecContext context, byte[] bytes) {
+            val shorts = ShortArrayCodec.this.decode(context, bytes);
+            val values = new Short[shorts.length];
+
+            IntStream.range(0, shorts.length)
+                    .forEach(i -> values[i] = shorts[i]);
+
+            return values;
+        }
+
+        @Override
+        public void encode(CodecContext context, byte[] bytes, Short[] values) {
+            val shorts = new short[values.length];
+
+            IntStream.range(0, shorts.length)
+                    .forEach(i -> shorts[i] = values[i]);
+
+            ShortArrayCodec.this.encode(context, bytes, shorts);
+        }
+    }
 }
