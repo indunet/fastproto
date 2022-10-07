@@ -25,7 +25,7 @@ solve the problem of cross-language and cross-platform data exchange, which is e
 
 ## *Under Developing*
 
-* Reinforce array type
+* Support list type
 * Code structure & performance optimization
 
 ## *Compared with ProtoBuf*
@@ -49,7 +49,7 @@ FastProto is more recommended for the following scenarios:
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.6.0</version>
+    <version>3.6.1</version>
 </dependency>
 ```
 
@@ -62,19 +62,19 @@ the weather station in binary format，the binary data has fixed length of 20 by
 
 The binary data contains 8 different types of signals, the specific protocol is as follows:
 
-| Byte Offset | Bit Offset | Data Type(C/C++)   | Signal Name       | Unit |  Formula  |
-|:-----------:|:----------:|:--------------:|:-----------------:|:----:|:---------:|
-| 0           |            | unsigned char  | device id         |      |           |
-| 1           |            |                | reserved          |      |           |
-| 2-9         |            | long long      | time              |  ms  |           |
-| 10-11       |            | unsigned short | humidity          |  %RH |           |
-| 12-13       |            | short          | temperature       |  ℃  |            |
-| 14-17       |            | unsigned int   | pressure          |  Pa  | p * 0.1   |
-| 18          | 0          | bool           | temperature valid |      |           |
-| 18          | 1          | bool           | humidity valid    |      |           |
-| 18          | 2          | bool           | pressure valid    |      |           |
-| 18          | 3-7        |                | reserved          |      |           |
-| 19          |            |                | reserved          |      |           |
+| Byte Offset | Bit Offset | Data Type(C/C++)  | Signal Name       | Unit |  Formula  |
+|:-----------:|:----------:|:-----------------:|:-----------------:|:----:|:---------:|
+| 0           |            |   unsigned char   | device id         |      |           |
+| 1           |            |                   | reserved          |      |           |
+| 2-9         |            |       long        | time              |  ms  |           |
+| 10-11       |            |  unsigned short   | humidity          |  %RH |           |
+| 12-13       |            |       short       | temperature       |  ℃  |            |
+| 14-17       |            |   unsigned int    | pressure          |  Pa  | p * 0.1   |
+| 18          | 0          |       bool        | temperature valid |      |           |
+| 18          | 1          |       bool        | humidity valid    |      |           |
+| 18          | 2          |       bool        | pressure valid    |      |           |
+| 18          | 3-7        |                   | reserved          |      |           |
+| 19          |            |                   | reserved          |      |           |
 
 1. **Serialization & Deserialization**
 
@@ -203,19 +203,19 @@ cross-language and cross-platform data exchange, FastProto also introduces unsig
 
 ### *Array Annotations*
 
-|    Annotation    |      Java       |      C/C++       |
-|:----------------:|:---------------:|:----------------:|
-|   @BinaryType    |     byte[]      |      char[]      |
-|  @Int8ArrayType  | byte[] / int[]  |      char[]      |
-| @Int16ArrayType  | short[] / int[] |     short[]      |
-| @Int32ArrayType  |      int[]      |      int[]       |
-| @Int64ArrayType  |     long[]      |      long[]      |
-| @UInt8ArrayType  |      int[]      | unsigned char[]  |
-| @UInt16ArrayType |      int[]      | unsigned short[] |
-| @UInt32ArrayType |     long[]      |  unsigned int[]  |
-| @UInt64ArrayType |  BigInteger[]   | unsigned long[]  |
-| @FloatArrayType  |     float[]     |     float[]      |
-| @DoubleArrayType |    double[]     |     double[]     |
+|    Annotation    |                 Java                  |      C/C++       |
+|:----------------:|:-------------------------------------:|:----------------:|
+|   @BinaryType    |            Byte[] / byte[]            |      char[]      |
+|  @Int8ArrayType  |  Byte[] / byte[] / Integer[] / int[]  |      char[]      |
+| @Int16ArrayType  | Short[] / short[] / Integer[] / int[] |     short[]      |
+| @Int32ArrayType  |          Integer[] /  int[]           |      int[]       |
+| @Int64ArrayType  |            Long[] / long[]            |      long[]      |
+| @UInt8ArrayType  |           Integer[] / int[]           | unsigned char[]  |
+| @UInt16ArrayType |           Integer[] / int[]           | unsigned short[] |
+| @UInt32ArrayType |            Long[] / long[]            |  unsigned int[]  |
+| @UInt64ArrayType |             BigInteger[]              | unsigned long[]  |
+| @FloatArrayType  |           Float[] / float[]           |     float[]      |
+| @DoubleArrayType |          Double[] / double[]          |     double[]     |
 
 ### *Other Annotations*
 FastProto also provides some auxiliary annotations to help users further customize the binary format, decoding and encoding process.

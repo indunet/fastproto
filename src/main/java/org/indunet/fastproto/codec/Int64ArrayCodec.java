@@ -25,6 +25,8 @@ import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 import java.util.stream.IntStream;
+import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
 /**
  * Int64 array type codec.
@@ -78,5 +80,23 @@ public class Int64ArrayCodec implements Codec<long[]> {
         val type = context.getDataTypeAnnotation(Int64ArrayType.class);
 
         this.encode(bytes, type.offset(), type.length(), value);
+    }
+
+    public class WrapperCodec implements Codec<Long[]> {
+        @Override
+        public Long[] decode(CodecContext context, byte[] bytes) {
+            return LongStream.of(Int64ArrayCodec.this.decode(context, bytes))
+                    .mapToObj(Long::valueOf)
+                    .toArray(Long[]::new);
+        }
+
+        @Override
+        public void encode(CodecContext context, byte[] bytes, Long[] values) {
+            val longs = Stream.of(values)
+                    .mapToLong(i -> i.longValue())
+                    .toArray();
+
+            Int64ArrayCodec.this.encode(context, bytes, longs);
+        }
     }
 }

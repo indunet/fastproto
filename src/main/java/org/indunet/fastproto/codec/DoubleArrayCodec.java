@@ -24,7 +24,9 @@ import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
+import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 /**
  * Double array type codec.
@@ -83,5 +85,23 @@ public class DoubleArrayCodec implements Codec<double[]> {
         val type = context.getDataTypeAnnotation(DoubleArrayType.class);
 
         this.encode(bytes, type.offset(), type.length(), value);
+    }
+
+    public class WrapperCodec implements Codec<Double[]> {
+        @Override
+        public Double[] decode(CodecContext context, byte[] bytes) {
+            return DoubleStream.of(DoubleArrayCodec.this.decode(context, bytes))
+                    .mapToObj(Double::valueOf)
+                    .toArray(Double[]::new);
+        }
+
+        @Override
+        public void encode(CodecContext context, byte[] bytes, Double[] values) {
+            val doubles = Stream.of(values)
+                    .mapToDouble(i -> i.doubleValue())
+                    .toArray();
+
+            DoubleArrayCodec.this.encode(context, bytes, doubles);
+        }
     }
 }

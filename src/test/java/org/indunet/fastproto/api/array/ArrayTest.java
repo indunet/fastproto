@@ -24,6 +24,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -76,6 +77,86 @@ public class ArrayTest {
         stream.write(BinaryUtils.uint64Of(object.getUint64s(), EndianPolicy.LITTLE));
         stream.write(BinaryUtils.valueOf(object.getFloats(), EndianPolicy.LITTLE));
         stream.write(BinaryUtils.valueOf(object.getDoubles(), EndianPolicy.LITTLE));
+
+        stream.flush();
+        val expected = stream.toByteArray();
+
+        assertArrayEquals(expected, FastProto.toBytes(object, expected.length));
+    }
+
+    @Test
+    public void testWrapperParse() throws IOException {
+        val expected = new WrapperArrayObject();
+        val stream = new ByteArrayOutputStream();
+
+        stream.write(BinaryUtils.valueOf(expected.getBytes()));
+        stream.write(BinaryUtils.valueOf(expected.getShorts(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.int8Of(Arrays.stream(expected.getInt8s())
+                .mapToInt(Integer::intValue)
+                .toArray()));
+        stream.write(BinaryUtils.int16Of(Arrays.stream(expected.getInt16s())
+                .mapToInt(Integer::intValue)
+                .toArray(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.int32Of(Arrays.stream(expected.getInt32s())
+                .mapToInt(Integer::intValue)
+                .toArray(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.valueOf(Arrays.stream(expected.getInt64s())
+                .mapToLong(Long::longValue)
+                .toArray(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.uint8Of(Arrays.stream(expected.getUint8s())
+                .mapToInt(Integer::intValue)
+                .toArray()));
+        stream.write(BinaryUtils.uint16Of(Arrays.stream(expected.getUint16s())
+                .mapToInt(Integer::intValue)
+                .toArray(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.uint32Of(Arrays.stream(expected.getUint32s())
+                .mapToLong(Long::longValue)
+                .toArray(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.uint64Of(expected.getUint64s(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.valueOf(expected.getFloats(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.valueOf(Arrays.stream(expected.getDoubles())
+                .mapToDouble(Double::doubleValue)
+                .toArray(), EndianPolicy.LITTLE));
+
+        stream.flush();
+        val bytes = stream.toByteArray();
+
+        assertEquals(expected, FastProto.parse(bytes, WrapperArrayObject.class));
+    }
+
+    @Test
+    public void testWrapperToBytes() throws IOException {
+        val object = new WrapperArrayObject();
+        val stream = new ByteArrayOutputStream();
+
+        stream.write(BinaryUtils.valueOf(object.getBytes()));
+        stream.write(BinaryUtils.valueOf(object.getShorts(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.int8Of(Arrays.stream(object.getInt8s())
+                .mapToInt(Integer::intValue)
+                .toArray()));
+        stream.write(BinaryUtils.int16Of(Arrays.stream(object.getInt16s())
+                .mapToInt(Integer::intValue)
+                .toArray(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.int32Of(Arrays.stream(object.getInt32s())
+                .mapToInt(Integer::intValue)
+                .toArray(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.valueOf(Arrays.stream(object.getInt64s())
+                .mapToLong(Long::longValue)
+                .toArray(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.uint8Of(Arrays.stream(object.getUint8s())
+                .mapToInt(Integer::intValue)
+                .toArray()));
+        stream.write(BinaryUtils.uint16Of(Arrays.stream(object.getUint16s())
+                .mapToInt(Integer::intValue)
+                .toArray(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.uint32Of(Arrays.stream(object.getUint32s())
+                .mapToLong(Long::longValue)
+                .toArray(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.uint64Of(object.getUint64s(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.valueOf(object.getFloats(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.valueOf(Arrays.stream(object.getDoubles())
+                .mapToDouble(Double::doubleValue)
+                .toArray(), EndianPolicy.LITTLE));
 
         stream.flush();
         val expected = stream.toByteArray();

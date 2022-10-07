@@ -28,7 +28,7 @@ import org.indunet.fastproto.util.CodecUtils;
  * @author Deng Ran
  * @since 3.2.1
  */
-public class CharCodec implements Codec<Character> {
+public class AsciiCodec implements Codec<Character> {
     public Character decode(final byte[] datagram, int offset) {
         try {
             val num = CodecUtils.uint8Type(datagram, offset);
