@@ -47,7 +47,7 @@ FastProto是一款能够通过注解自定义协议的二进制序列化 & 反�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.6.1</version>
+    <version>3.6.2</version>
 </dependency>
 ```
 
@@ -79,6 +79,8 @@ FastProto是一款能够通过注解自定义协议的二进制序列化 & 反�
 首先，按照协议定义Java数据对象`Weather`，然后使用FastProto数据类型注解修饰各个属性，通过注解的offset属性指定信号的字节偏移量。
 
 ```java
+import org.indunet.fastproto.annotation.type.*;
+
 public class Weather {
     @UInt8Type(offset = 0)
     int id;

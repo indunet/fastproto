@@ -28,9 +28,7 @@ import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.time.Instant;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
@@ -156,6 +154,7 @@ public class CodecFactory {
         codecMap.get(DoubleType.class).put(Double.class, doubleCodec);
         codecMap.get(DoubleArrayType.class).put(double[].class, doubleArrayCodec);
         codecMap.get(DoubleArrayType.class).put(Double[].class, doubleArrayCodec.new WrapperCodec());
+        codecMap.get(DoubleArrayType.class).put(List.class, doubleArrayCodec.new CollectionCodec());
 
         val boolCodec = new BoolCodec();
         codecMap.get(BoolType.class).put(boolean.class, boolCodec);

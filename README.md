@@ -49,7 +49,7 @@ FastProto is more recommended for the following scenarios:
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.6.1</version>
+    <version>3.6.2</version>
 </dependency>
 ```
 
@@ -83,6 +83,8 @@ First, define the Java data object `Weather` according to the protocol, and then
 It should be noted that the `offset` attribute of any data type annotation corresponds to the byte offset of the signal.
 
 ```java
+import org.indunet.fastproto.annotation.type.*;
+
 public class Weather {
     @UInt8Type(offset = 0)
     int id;

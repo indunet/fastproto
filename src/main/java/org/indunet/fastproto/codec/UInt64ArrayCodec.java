@@ -23,8 +23,11 @@ import org.indunet.fastproto.annotation.type.UInt64Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.util.CollectionUtils;
 
 import java.math.BigInteger;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.stream.IntStream;
 
 /**
@@ -79,5 +82,29 @@ public class UInt64ArrayCodec implements Codec<BigInteger[]> {
         val type = context.getDataTypeAnnotation(UInt64ArrayType.class);
 
         this.encode(bytes, type.offset(), type.length(), value);
+    }
+
+    public class CollectionCodec implements Codec<Collection<BigInteger>> {
+        @Override
+        public Collection<BigInteger> decode(CodecContext context, byte[] bytes) {
+            try {
+                val type = (Class<? extends Collection>) context.getFieldType();
+                Collection<BigInteger> collection = CollectionUtils.newInstance(type);
+
+                Arrays.stream(UInt64ArrayCodec.this.decode(context, bytes))
+                        .forEach(collection::add);
+
+                return collection;
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new DecodingException(
+                        String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
+            }
+        }
+
+        @Override
+        public void encode(CodecContext context, byte[] bytes, Collection<BigInteger> collection) {
+            UInt64ArrayCodec.this.encode(context, bytes, collection.stream()
+                    .toArray(BigInteger[]::new));
+        }
     }
 }

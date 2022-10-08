@@ -23,7 +23,9 @@ import org.indunet.fastproto.annotation.type.Int16Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.util.CollectionUtils;
 
+import java.util.Collection;
 import java.util.stream.IntStream;
 
 /**
@@ -103,6 +105,37 @@ public class ShortArrayCodec implements Codec<short[]> {
                     .forEach(i -> shorts[i] = values[i]);
 
             ShortArrayCodec.this.encode(context, bytes, shorts);
+        }
+    }
+
+    public class CollectionCodec implements Codec<Collection<Short>> {
+        @Override
+        public Collection<Short> decode(CodecContext context, byte[] bytes) {
+            try {
+                val type = (Class<? extends Collection>) context.getFieldType();
+                Collection<Short> collection = CollectionUtils.newInstance(type);
+
+                for (short b: ShortArrayCodec.this.decode(context, bytes)) {
+                    collection.add(b);
+                }
+
+                return collection;
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new DecodingException(
+                        String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
+            }
+        }
+
+        @Override
+        public void encode(CodecContext context, byte[] bytes, Collection<Short> collection) {
+            val ss = new short[collection.size()];
+            val values = collection.stream()
+                    .toArray(Short[]::new);
+
+            IntStream.range(0, ss.length)
+                    .forEach(i -> ss[i] = values[i]);
+
+            ShortArrayCodec.this.encode(context, bytes, ss);
         }
     }
 }

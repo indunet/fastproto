@@ -23,7 +23,9 @@ import org.indunet.fastproto.annotation.type.DoubleType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.util.CollectionUtils;
 
+import java.util.*;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -99,6 +101,33 @@ public class DoubleArrayCodec implements Codec<double[]> {
         public void encode(CodecContext context, byte[] bytes, Double[] values) {
             val doubles = Stream.of(values)
                     .mapToDouble(i -> i.doubleValue())
+                    .toArray();
+
+            DoubleArrayCodec.this.encode(context, bytes, doubles);
+        }
+    }
+
+    public class CollectionCodec implements Codec<Collection<Double>> {
+        @Override
+        public Collection<Double> decode(CodecContext context, byte[] bytes) {
+            try {
+                val type = (Class<? extends Collection>) context.getFieldType();
+                Collection<Double> collection = CollectionUtils.newInstance(type);
+
+                Arrays.stream(DoubleArrayCodec.this.decode(context, bytes))
+                        .forEach(collection::add);
+
+                return collection;
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new DecodingException(
+                        String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
+            }
+        }
+
+        @Override
+        public void encode(CodecContext context, byte[] bytes, Collection<Double> collection) {
+            val doubles = collection.stream()
+                    .mapToDouble(Double::doubleValue)
                     .toArray();
 
             DoubleArrayCodec.this.encode(context, bytes, doubles);

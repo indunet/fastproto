@@ -163,4 +163,34 @@ public class ArrayTest {
 
         assertArrayEquals(expected, FastProto.toBytes(object, expected.length));
     }
+
+    @Test
+    public void testCollectionParse() throws IOException {
+        val expected = new CollectionObject();
+        val stream = new ByteArrayOutputStream();
+
+        stream.write(BinaryUtils.valueOf(expected.getDoubles().stream()
+                .mapToDouble(Double::doubleValue)
+                .toArray(), EndianPolicy.LITTLE));
+
+        stream.flush();
+        val bytes = stream.toByteArray();
+
+        assertEquals(expected, FastProto.parse(bytes, CollectionObject.class));
+    }
+
+    @Test
+    public void testCollectionToBytes() throws IOException {
+        val object = new CollectionObject();
+        val stream = new ByteArrayOutputStream();
+
+        stream.write(BinaryUtils.valueOf(object.getDoubles().stream()
+                .mapToDouble(Double::doubleValue)
+                .toArray(), EndianPolicy.LITTLE));
+
+        stream.flush();
+        val expected = stream.toByteArray();
+
+        assertArrayEquals(expected, FastProto.toBytes(object, expected.length));
+    }
 }
