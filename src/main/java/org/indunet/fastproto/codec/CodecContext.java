@@ -21,6 +21,7 @@ import lombok.Data;
 import org.indunet.fastproto.EndianPolicy;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 
 /**
  * Codec context.
@@ -33,6 +34,7 @@ import java.lang.annotation.Annotation;
 public class CodecContext {
     EndianPolicy defaultEndianPolicy;
     Class<?> fieldType;
+    Field field;
     Annotation dataTypeAnnotation;
 
     public <T> T getDataTypeAnnotation(Class<T> clazz) {

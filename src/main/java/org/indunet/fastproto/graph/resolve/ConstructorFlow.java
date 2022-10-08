@@ -18,6 +18,7 @@ package org.indunet.fastproto.graph.resolve;
 
 import lombok.val;
 import lombok.var;
+import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.graph.Reference.ConstructorType;
@@ -39,7 +40,8 @@ public class ConstructorFlow extends ResolvePipeline {
         var cnt = Arrays.stream(protocolClass.getConstructors())
                     .mapToInt(java.lang.reflect.Constructor::getParameterCount)
                     .min()
-                    .getAsInt();
+                    .orElseThrow(() -> new CodecException(
+                            String.format("Fail getting constructor parameters of %s", protocolClass.getName())));
 
         if (cnt == 0) {
             reference.setConstructorType(ConstructorType.NO_ARGS);

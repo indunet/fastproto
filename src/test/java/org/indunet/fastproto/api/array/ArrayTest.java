@@ -167,29 +167,15 @@ public class ArrayTest {
     @Test
     public void testCollectionParse() throws IOException {
         val expected = new CollectionObject();
-        val stream = new ByteArrayOutputStream();
+        val bytes = expected.toBytes();
 
-        stream.write(BinaryUtils.valueOf(expected.getDoubles().stream()
-                .mapToDouble(Double::doubleValue)
-                .toArray(), EndianPolicy.LITTLE));
-
-        stream.flush();
-        val bytes = stream.toByteArray();
-
-        assertEquals(expected, FastProto.parse(bytes, CollectionObject.class));
+        assertEquals(expected.toString(), FastProto.parse(bytes, CollectionObject.class).toString());
     }
 
     @Test
     public void testCollectionToBytes() throws IOException {
         val object = new CollectionObject();
-        val stream = new ByteArrayOutputStream();
-
-        stream.write(BinaryUtils.valueOf(object.getDoubles().stream()
-                .mapToDouble(Double::doubleValue)
-                .toArray(), EndianPolicy.LITTLE));
-
-        stream.flush();
-        val expected = stream.toByteArray();
+        val expected = object.toBytes();
 
         assertArrayEquals(expected, FastProto.toBytes(object, expected.length));
     }

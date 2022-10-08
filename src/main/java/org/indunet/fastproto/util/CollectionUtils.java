@@ -16,6 +16,8 @@
 
 package org.indunet.fastproto.util;
 
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.*;
 
 /**
@@ -27,8 +29,8 @@ import java.util.*;
 public class CollectionUtils {
     public static Collection newInstance(Class<? extends Collection> clazz) throws InstantiationException, IllegalAccessException {
         if (!clazz.isInterface()) {
-           return clazz.newInstance();
-        } else if (clazz.equals(List.class)) {
+            return clazz.newInstance();
+        } else if (clazz.equals(Collection.class) || clazz.equals(List.class)) {
             return new ArrayList<>();
         } else if (clazz.equals(Set.class)) {
             return new HashSet<>();
@@ -38,5 +40,14 @@ public class CollectionUtils {
             throw new IllegalArgumentException(
                     String.format("%s type is not supported", clazz.getName()));
         }
+    }
+
+    public static Type elementType(Class<? extends Collection> clazz) {
+        return Arrays.stream(clazz.getGenericInterfaces())
+                .filter(i -> i instanceof ParameterizedType)
+                .map(i -> ((ParameterizedType) i).getActualTypeArguments())
+                .map(a -> a[0])
+                .findAny()
+                .orElseThrow(() -> new IllegalArgumentException("Fail getting element type"));
     }
 }

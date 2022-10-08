@@ -18,14 +18,14 @@ solve the problem of cross-language and cross-platform data exchange, which is e
 ## *Features*
 
 * Binary serialization & deserialization, customize protocol through annotations
-* Support primitive type, unsigned type, string type, time type and array type  
+* Support primitive type, unsigned type, string type, time type, array type and collection type 
 * Support reverse addressing, suitable for non-fixed length binary data
 * Customize endianness (byte order)
 * Support decoding formula & encoding formula
 
 ## *Under Developing*
 
-* Support list type
+* Dynamically compile encoding & decoding formulas in lambda
 * Code structure & performance optimization
 
 ## *Compared with ProtoBuf*
@@ -181,43 +181,43 @@ public class Weather {
 
 ## *Annotations*
 
-### *Primitive Type*
+### *Primitive Type Annotations*
 FastProto supports Java primitive data types, time type, String type, enum type and byte array type, taking into account 
 cross-language and cross-platform data exchange, FastProto also introduces unsigned types.
 
-|      Annotation       |                 Java                  |     C/C++      |   Size    |
-|:---------------------:|:-------------------------------------:|:--------------:|:---------:|
-|       @BoolType       |           Boolean / boolean           |      bool      |   1 bit   |    
-| @CharType(ASCII Only) |           Character / char            |      char      |  1 bytes  |   
-|      @Int32Type       |             Integer / int             |      int       |  4 bytes  | 
-|      @Int64Type       |              Long / long              |      long      |  8 bytes  |   
-|      @FloatType       |             Float / float             |     float      |  4 bytes  |  
-|      @DoubleType      |            Double / double            |     double     |  8 bytes  |  
-|       @Int8Type       |      Byte / byte / Integer / int      |      char      |  1 byte   |  
-|      @Int16Type       |     Short / short / Integer / int     |     short      |  2 bytes  |  
-|      @UInt8Type       |             Integer / int             | unsigned char  |  1 byte   |   
-|      @UInt16Type      |             Integer / int             | unsigned short |  2 bytes  |   
-|      @UInt32Type      |              Long / long              |  unsigned int  |  4 bytes  |   
-|      @UInt64Type      |              BigInteger               | unsigned long  |  8 bytes  |  
-|      @StringType      | String / StringBuilder / StringBuffer |       --       |  N bytes  |   
-|       @TimeType       |      Timestamp / Date / Calendar      |      long      |  8 bytes  |  
-|       @EnumType       |                 enum                  |      enum      |  1 bytes  |
+|      Annotation       |               Java                |     C/C++      |   Size    |
+|:---------------------:|:---------------------------------:|:--------------:|:---------:|
+|       @BoolType       |          Boolean/boolean          |      bool      |   1 bit   |    
+| @CharType(ASCII Only) |          Character/char           |      char      |  1 bytes  |   
+|      @Int32Type       |            Integer/int            |      int       |  4 bytes  | 
+|      @Int64Type       |             Long/long             |      long      |  8 bytes  |   
+|      @FloatType       |            Float/float            |     float      |  4 bytes  |  
+|      @DoubleType      |           Double/double           |     double     |  8 bytes  |  
+|       @Int8Type       |       Byte/byte/Integer/int       |      char      |  1 byte   |  
+|      @Int16Type       |     Short/short / Integer/int     |     short      |  2 bytes  |  
+|      @UInt8Type       |            Integer/int            | unsigned char  |  1 byte   |   
+|      @UInt16Type      |            Integer/int            | unsigned short |  2 bytes  |   
+|      @UInt32Type      |             Long/long             |  unsigned int  |  4 bytes  |   
+|      @UInt64Type      |            BigInteger             | unsigned long  |  8 bytes  |  
+|      @StringType      | String/StringBuilder/StringBuffer |       --       |  N bytes  |   
+|       @TimeType       |  Timestamp/Date/Calendar/Instant  |      long      |  8 bytes  |  
+|       @EnumType       |               enum                |      enum      |  1 bytes  |
 
-### *Array Annotations*
+### *Array Type Annotations*
 
-|    Annotation    |                 Java                  |      C/C++       |
-|:----------------:|:-------------------------------------:|:----------------:|
-|   @BinaryType    |            Byte[] / byte[]            |      char[]      |
-|  @Int8ArrayType  |  Byte[] / byte[] / Integer[] / int[]  |      char[]      |
-| @Int16ArrayType  | Short[] / short[] / Integer[] / int[] |     short[]      |
-| @Int32ArrayType  |          Integer[] /  int[]           |      int[]       |
-| @Int64ArrayType  |            Long[] / long[]            |      long[]      |
-| @UInt8ArrayType  |           Integer[] / int[]           | unsigned char[]  |
-| @UInt16ArrayType |           Integer[] / int[]           | unsigned short[] |
-| @UInt32ArrayType |            Long[] / long[]            |  unsigned int[]  |
-| @UInt64ArrayType |             BigInteger[]              | unsigned long[]  |
-| @FloatArrayType  |           Float[] / float[]           |     float[]      |
-| @DoubleArrayType |          Double[] / double[]          |     double[]     |
+|    Annotation    |                                       Java                                        |      C/C++       |
+|:----------------:|:---------------------------------------------------------------------------------:|:----------------:|
+|   @BinaryType    |                       Byte[]/byte[]/Collection&lt;Byte&gt;                        |      char[]      |
+|  @Int8ArrayType  |  Byte[]/byte[]/Integer[]/int[]/Collection&lt;Byte&gt;/Collection&lt;Integer&gt;   |      char[]      |
+| @Int16ArrayType  | Short[]/short[]/Integer[]/int[]/Collection&lt;Short&gt;/Collection&lt;Integer&gt; |     short[]      |
+| @Int32ArrayType  |                     Integer[]/int[]/Collection&lt;Integer&gt;                     |      int[]       |
+| @Int64ArrayType  |                       Long[]/long[]/Collection&lt;Long&gt;                        |      long[]      |
+| @UInt8ArrayType  |                     Integer[]/int[]/Collection&lt;Integer&gt;                     | unsigned char[]  |
+| @UInt16ArrayType |                     Integer[]/int[]/Collection&lt;Integer&gt;                     | unsigned short[] |
+| @UInt32ArrayType |                       Long[]/long[]/Collection&lt;Long&gt;                        |  unsigned int[]  |
+| @UInt64ArrayType |                     BigInteger[]/Collection&lt;BigInteger&gt;                     | unsigned long[]  |
+| @FloatArrayType  |                      Float[]/float[]/Collection&lt;Float&gt;                      |     float[]      |
+| @DoubleArrayType |                    Double[]/double[]/Collection&lt;Double&gt;                     |     double[]     |
 
 ### *Other Annotations*
 FastProto also provides some auxiliary annotations to help users further customize the binary format, decoding and encoding process.
@@ -229,6 +229,24 @@ FastProto also provides some auxiliary annotations to help users further customi
 | @EncodingIgnore |   Field   |          Ignore the field when encoding.          |
 |  @FixedLength   |   Class   |         Enable fixed length of datagram.          |
 
+
+## Endianness
+FastProto uses little endian by default. You can modify the global endian through `@DefaultEndian` annotation, or you can 
+modify the endian of specific field through `endian` attribute which has a higher priority.
+
+```java
+import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.annotation.DefaultEndian;
+
+@DefaultEndian(EndianPolicy.BIG)
+public class Weather {
+    @UInt16Type(offset = 10, endian = EndianPolicy.LITTLE)
+    int humidity;
+
+    @UInt32Type(offset = 14)
+    long pressure;
+}
+```
 
 ## Scala
 FastProto supports case class，but Scala is not fully compatible with Java annotations, so please refer to FastProto as follows.
