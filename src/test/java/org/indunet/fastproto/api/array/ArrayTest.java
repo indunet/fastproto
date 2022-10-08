@@ -163,4 +163,20 @@ public class ArrayTest {
 
         assertArrayEquals(expected, FastProto.toBytes(object, expected.length));
     }
+
+    @Test
+    public void testCollectionParse() throws IOException {
+        val expected = new CollectionObject();
+        val bytes = expected.toBytes();
+
+        assertEquals(expected.toString(), FastProto.parse(bytes, CollectionObject.class).toString());
+    }
+
+    @Test
+    public void testCollectionToBytes() throws IOException {
+        val object = new CollectionObject();
+        val expected = object.toBytes();
+
+        assertArrayEquals(expected, FastProto.toBytes(object, expected.length));
+    }
 }

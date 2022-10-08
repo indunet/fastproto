@@ -17,14 +17,14 @@ FastProto是一款能够通过注解自定义协议的二进制序列化 & 反�
 ## *功能*
 
 * 通过注解自定义协议的二进制序列化 & 反序列化
-* 支持基本数据类型、无符号类型、字符串类型、时间类型和数组类型等
+* 支持基本数据类型、无符号类型、字符串类型、时间类型、数组类型和集合类型等
 * 支持反向寻址，适用于非固定长度二进制数据
 * 自定义开端字节顺序
 * 自定义编码公式 & 解码公式
 
 ## *Under Developing*
 
-* 支持List类型
+* 动态编译lambda形式的编码 & 解码公式
 * 代码结构 & 性能优化
 
 ## *与ProtoBuf相比较*
@@ -47,7 +47,7 @@ FastProto是一款能够通过注解自定义协议的二进制序列化 & 反�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.6.1</version>
+    <version>3.6.2</version>
 </dependency>
 ```
 
@@ -79,6 +79,8 @@ FastProto是一款能够通过注解自定义协议的二进制序列化 & 反�
 首先，按照协议定义Java数据对象`Weather`，然后使用FastProto数据类型注解修饰各个属性，通过注解的offset属性指定信号的字节偏移量。
 
 ```java
+import org.indunet.fastproto.annotation.type.*;
+
 public class Weather {
     @UInt8Type(offset = 0)
     int id;
@@ -174,39 +176,39 @@ public class Weather {
 FastProto支持Java基础数据类型、时间类型、字符串类型、枚举类型和字节数组等，考虑到跨语言跨平台的数据交换，FastProto还引入了无符号类型。
 
 
-|        注解         |                 Java                  |     C/C++      |  大小  |
-|:-----------------:|:-------------------------------------:|:--------------:|:----:|
-|     @BoolType     |           Boolean / boolean           |      bool      | 1 位  |    
-| @CharType(仅ASCII) |           Character / char            |      char      | 1 字节 |   
-|    @Int32Type     |             Integer / int             |      int       | 4 字节 | 
-|    @Int64Type     |              Long / long              |      long      | 8 字节 |   
-|    @FloatType     |             Float / float             |     float      | 4 字节 |  
-|    @DoubleType    |            Double / double            |     double     | 8 字节 |  
-|     @Int8Type     |      Byte / byte / Integer / int      |      char      | 1 字节 |  
-|    @Int16Type     |     Short / short / Integer / int     |     short      | 2 字节 |  
-|    @UInt8Type     |             Integer / int             | unsigned char  | 1 字节 |   
-|    @UInt16Type    |             Integer / int             | unsigned short | 2 字节 |   
-|    @UInt32Type    |              Long / long              |  unsigned int  | 4 字节 |   
-|    @UInt64Type    |              BigInteger               | unsigned long  | 8 字节 |  
-|    @StringType    | String / StringBuilder / StringBuffer |       --       | N 字节 |   
-|     @TimeType     |      Timestamp / Date / Calendar      |      long      | 8 字节 |  
-|     @EnumType     |                 enum                  |      enum      | 1 字节 |
+|        注解         |                Java                |     C/C++      |  大小  |
+|:-----------------:|:----------------------------------:|:--------------:|:----:|
+|     @BoolType     |          Boolean/boolean           |      bool      | 1 位  |    
+| @CharType(仅ASCII) |           Character/char           |      char      | 1 字节 |   
+|    @Int32Type     |            Integer/int             |      int       | 4 字节 | 
+|    @Int64Type     |             Long/long              |      long      | 8 字节 |   
+|    @FloatType     |            Float/float             |     float      | 4 字节 |  
+|    @DoubleType    |           Double/double            |     double     | 8 字节 |  
+|     @Int8Type     |       Byte/byte/Integer/int        |      char      | 1 字节 |  
+|    @Int16Type     |      Short/short/Integer/int       |     short      | 2 字节 |  
+|    @UInt8Type     |            Integer/int             | unsigned char  | 1 字节 |   
+|    @UInt16Type    |            Integer/int             | unsigned short | 2 字节 |   
+|    @UInt32Type    |             Long/long              |  unsigned int  | 4 字节 |   
+|    @UInt64Type    |             BigInteger             | unsigned long  | 8 字节 |  
+|    @StringType    | String/ StringBuilder/StringBuffer |       --       | N 字节 |   
+|     @TimeType     |  Timestamp/Date/Calendar/Instant   |      long      | 8 字节 |  
+|     @EnumType     |                enum                |      enum      | 1 字节 |
 
 ### *数组类型注解*
 
-|        注解        |                 Java                  |      C/C++       |
-|:----------------:|:-------------------------------------:|:----------------:|
-|   @BinaryType    |            Byte[] / byte[]            |      char[]      |
-|  @Int8ArrayType  |  Byte[] / byte[] / Integer[] / int[]  |      char[]      |
-| @Int16ArrayType  | Short[] / short[] / Integer[] / int[] |     short[]      |
-| @Int32ArrayType  |          Integer[] /  int[]           |      int[]       |
-| @Int64ArrayType  |            Long[] / long[]            |      long[]      |
-| @UInt8ArrayType  |           Integer[] / int[]           | unsigned char[]  |
-| @UInt16ArrayType |           Integer[] / int[]           | unsigned short[] |
-| @UInt32ArrayType |            Long[] / long[]            |  unsigned int[]  |
-| @UInt64ArrayType |             BigInteger[]              | unsigned long[]  |
-| @FloatArrayType  |           Float[] / float[]           |     float[]      |
-| @DoubleArrayType |          Double[] / double[]          |     double[]     |
+|        注解        |                                       Java                                        |      C/C++       |
+|:----------------:|:---------------------------------------------------------------------------------:|:----------------:|
+|   @BinaryType    |                       Byte[]/byte[]/Collection&lt;Byte&gt;                        |      char[]      |
+|  @Int8ArrayType  |  Byte[]/byte[]/Integer[]/int[]/Collection&lt;Byte&gt;/Collection&lt;Integer&gt;   |      char[]      |
+| @Int16ArrayType  | Short[]/short[]/Integer[]/int[]/Collection&lt;Short&gt;/Collection&lt;Integer&gt; |     short[]      |
+| @Int32ArrayType  |                     Integer[]/int[]/Collection&lt;Integer&gt;                     |      int[]       |
+| @Int64ArrayType  |                       Long[]/long[]/Collection&lt;Long&gt;                        |      long[]      |
+| @UInt8ArrayType  |                     Integer[]/int[]/Collection&lt;Integer&gt;                     | unsigned char[]  |
+| @UInt16ArrayType |                     Integer[]/int[]/Collection&lt;Integer&gt;                     | unsigned short[] |
+| @UInt32ArrayType |                       Long[]/long[]/Collection&lt;Long&gt;                        |  unsigned int[]  |
+| @UInt64ArrayType |                     BigInteger[]/Collection&lt;BigInteger&gt;                     | unsigned long[]  |
+| @FloatArrayType  |                      Float[]/float[]/Collection&lt;Float&gt;                      |     float[]      |
+| @DoubleArrayType |                    Double[]/double[]/Collection&lt;Double&gt;                     |     double[]     |
 
 
 ### 其它注解
@@ -218,6 +220,23 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 |  @DecodingIgnore  |   Field   | 反序列化时忽略该字段 |
 |  @EncodingIgnore  |   Field   | 序列化时忽略该字段  |
 |   @FixedLength    |   Class   |  启动固定报文长度  |
+
+## 大小开端
+FastProto默认使用小开端，可以通过`@DefaultEndian`注解修改全局开端类型，也可以通过endian属性修改特定字段开端，后者优先级更高。
+
+```java
+import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.annotation.DefaultEndian;
+
+@DefaultEndian(EndianPolicy.BIG)
+public class Weather {
+    @UInt16Type(offset = 10, endian = EndianPolicy.LITTLE)
+    int humidity;
+
+    @UInt32Type(offset = 14)
+    long pressure;
+}
+```
 
 ## Scala
 FastProto支持case class，但是Scala并不完全兼容Java注解，所以请使用如下方式引用FastProto。

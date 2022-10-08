@@ -21,7 +21,9 @@ import org.indunet.fastproto.annotation.type.BinaryType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.util.CollectionUtils;
 
+import java.util.Collection;
 import java.util.stream.IntStream;
 
 /**
@@ -46,18 +48,18 @@ public class BinaryCodec implements Codec<byte[]> {
             throw new EncodingException("Fail encoding binary type.", e);
         }
     }
-    
+
     @Override
     public byte[] decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(BinaryType.class);
-    
+
         return this.decode(bytes, type.offset(), type.length());
     }
-    
+
     @Override
     public void encode(CodecContext context, byte[] bytes, byte[] value) {
         val type = context.getDataTypeAnnotation(BinaryType.class);
-    
+
         this.encode(bytes, type.offset(), type.length(), value);
     }
 
@@ -76,6 +78,37 @@ public class BinaryCodec implements Codec<byte[]> {
         @Override
         public void encode(CodecContext context, byte[] bytes, Byte[] values) {
             val bs = new byte[values.length];
+
+            IntStream.range(0, bs.length)
+                    .forEach(i -> bs[i] = values[i]);
+
+            BinaryCodec.this.encode(context, bytes, bs);
+        }
+    }
+
+    public class CollectionCodec implements Codec<Collection<Byte>> {
+        @Override
+        public Collection<Byte> decode(CodecContext context, byte[] bytes) {
+            try {
+                val type = (Class<? extends Collection>) context.getFieldType();
+                Collection<Byte> collection = CollectionUtils.newInstance(type);
+
+                for (byte b : BinaryCodec.this.decode(context, bytes)) {
+                    collection.add(b);
+                }
+
+                return collection;
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new DecodingException(
+                        String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
+            }
+        }
+
+        @Override
+        public void encode(CodecContext context, byte[] bytes, Collection<Byte> collection) {
+            val bs = new byte[collection.size()];
+            val values = collection.stream()
+                    .toArray(Byte[]::new);
 
             IntStream.range(0, bs.length)
                     .forEach(i -> bs[i] = values[i]);

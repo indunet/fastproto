@@ -39,6 +39,7 @@ public class CodecFlow extends ResolvePipeline {
         val context = CodecContext.builder()
                 .dataTypeAnnotation(reference.getDataTypeAnnotation())
                 .fieldType(reference.getField().getType())
+                .field(reference.getField())
                 .defaultEndianPolicy(reference.getEndianPolicy())
                 .build();
 

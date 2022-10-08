@@ -23,7 +23,10 @@ import org.indunet.fastproto.annotation.type.UInt16Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.util.CollectionUtils;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
@@ -96,6 +99,31 @@ public class UInt16ArrayCodec implements Codec<int[]> {
                     .toArray();
 
             UInt16ArrayCodec.this.encode(context, bytes, ints);
+        }
+    }
+
+    public class CollectionCodec implements Codec<Collection<Integer>> {
+        @Override
+        public Collection<Integer> decode(CodecContext context, byte[] bytes) {
+            try {
+                val type = (Class<? extends Collection>) context.getFieldType();
+                Collection<Integer> collection = CollectionUtils.newInstance(type);
+
+                Arrays.stream(UInt16ArrayCodec.this.decode(context, bytes))
+                        .forEach(collection::add);
+
+                return collection;
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new DecodingException(
+                        String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
+            }
+        }
+
+        @Override
+        public void encode(CodecContext context, byte[] bytes, Collection<Integer> collection) {
+            UInt16ArrayCodec.this.encode(context, bytes, collection.stream()
+                    .mapToInt(Integer::intValue)
+                    .toArray());
         }
     }
 }

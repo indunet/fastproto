@@ -27,5 +27,5 @@ case class Inverter(
                      @UInt8Type(offset = 0) voltage: Int,
                      @UInt8Type(offset = 2) current: Int,
                      fan: Fan,
-                     @DefaultEndian(EndianPolicy.BIG) @UInt16Type(offset = 8) power: Int
+                     @UInt16Type(offset = 8, endian = Array(EndianPolicy.BIG)) power: Int
                    )

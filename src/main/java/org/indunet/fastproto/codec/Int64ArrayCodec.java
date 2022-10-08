@@ -23,7 +23,10 @@ import org.indunet.fastproto.annotation.type.Int64Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.util.CollectionUtils;
 
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.stream.IntStream;
 import java.util.stream.LongStream;
 import java.util.stream.Stream;
@@ -97,6 +100,31 @@ public class Int64ArrayCodec implements Codec<long[]> {
                     .toArray();
 
             Int64ArrayCodec.this.encode(context, bytes, longs);
+        }
+    }
+
+    public class CollectionCodec implements Codec<Collection<Long>> {
+        @Override
+        public Collection<Long> decode(CodecContext context, byte[] bytes) {
+            try {
+                val type = (Class<? extends Collection>) context.getFieldType();
+                Collection<Long> collection = CollectionUtils.newInstance(type);
+
+                Arrays.stream(Int64ArrayCodec.this.decode(context, bytes))
+                        .forEach(collection::add);
+
+                return collection;
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new DecodingException(
+                        String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
+            }
+        }
+
+        @Override
+        public void encode(CodecContext context, byte[] bytes, Collection<Long> collection) {
+            Int64ArrayCodec.this.encode(context, bytes, collection.stream()
+                    .mapToLong(Long::longValue)
+                    .toArray());
         }
     }
 }
