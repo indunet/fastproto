@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.benchmark;
 
-import org.indunet.fastproto.annotation.type.DoubleType;
+import org.indunet.fastproto.annotation.DoubleType;
 
 /**
  * @author Deng Ran

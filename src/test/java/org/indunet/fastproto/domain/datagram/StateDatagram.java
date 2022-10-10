@@ -18,8 +18,7 @@ package org.indunet.fastproto.domain.datagram;
 
 import lombok.Data;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.DefaultEndian;
-import org.indunet.fastproto.annotation.type.*;
+import org.indunet.fastproto.annotation.*;
 
 import java.sql.Timestamp;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.annotation.type;
+package org.indunet.fastproto.annotation;
 
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
@@ -26,23 +26,20 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.function.Function;
 
 /**
- * Integer8 type, corresponding to Java Integer/int.
+ * Binary type, corresponding to Java byte array.
  *
  * @author Deng Ran
  * @see DataType
- * @since 1.2.0
+ * @since 1.0.0
  */
 @DataType
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Int8Type {
-    int SIZE = Byte.SIZE >> 3;
-    int MAX_VALUE = Byte.MAX_VALUE;
-    int MIN_VALUE = Byte.MIN_VALUE;
-
+public @interface BinaryType {
     int offset();
+
+    int length() default -1;
 }

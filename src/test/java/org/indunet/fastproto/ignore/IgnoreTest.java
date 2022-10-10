@@ -5,8 +5,8 @@ import lombok.val;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.DecodingIgnore;
 import org.indunet.fastproto.annotation.EncodingIgnore;
-import org.indunet.fastproto.annotation.type.Int16Type;
-import org.indunet.fastproto.annotation.type.Int8Type;
+import org.indunet.fastproto.annotation.Int16Type;
+import org.indunet.fastproto.annotation.Int8Type;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

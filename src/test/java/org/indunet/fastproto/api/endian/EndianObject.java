@@ -19,7 +19,7 @@ package org.indunet.fastproto.api.endian;
 import lombok.Data;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.DefaultEndian;
-import org.indunet.fastproto.annotation.type.Int16Type;
+import org.indunet.fastproto.annotation.Int16Type;
 
 /**
  * @author Deng Ran

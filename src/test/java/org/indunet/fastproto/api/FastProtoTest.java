@@ -22,7 +22,7 @@ import org.indunet.fastproto.CodecFeature;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.DefaultEndian;
-import org.indunet.fastproto.annotation.type.UInt64Type;
+import org.indunet.fastproto.annotation.UInt64Type;
 import org.indunet.fastproto.domain.Everything;
 import org.indunet.fastproto.domain.Sensor;
 import org.indunet.fastproto.domain.Weather;

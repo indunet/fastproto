@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2022 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.annotation.type;
+package org.indunet.fastproto.annotation;
 
-import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
@@ -27,26 +26,19 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.math.BigInteger;
 
 /**
- * uint64 type, corresponding to Java BigInteger.
+ * UInt16 array type
  *
  * @author Deng Ran
- * @see DataType
- * @since 1.5.0
+ * @since 3.6.0
  */
 @DataType
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UInt64Type {
-    int SIZE = Long.SIZE >> 3;
-    BigInteger MAX_VALUE = new BigInteger(String.valueOf(Long.MAX_VALUE))
-            .subtract(new BigInteger(String.valueOf(Long.MIN_VALUE)));
-    BigInteger MIN_VALUE = new BigInteger("0");
-
+public @interface UInt16ArrayType {
     int offset();
 
-    EndianPolicy[] endian() default {};
+    int length() default -1;
 }

@@ -17,10 +17,10 @@
 package org.indunet.fastproto.graph;
 
 import lombok.val;
-import org.indunet.fastproto.annotation.type.BoolType;
-import org.indunet.fastproto.annotation.type.DoubleType;
-import org.indunet.fastproto.annotation.type.Int8Type;
-import org.indunet.fastproto.annotation.type.UInt8Type;
+import org.indunet.fastproto.annotation.BoolType;
+import org.indunet.fastproto.annotation.DoubleType;
+import org.indunet.fastproto.annotation.Int8Type;
+import org.indunet.fastproto.annotation.UInt8Type;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;

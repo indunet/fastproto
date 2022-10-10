@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto;
 
-import org.indunet.fastproto.annotation.type.*;
+import org.indunet.fastproto.annotation.*;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;

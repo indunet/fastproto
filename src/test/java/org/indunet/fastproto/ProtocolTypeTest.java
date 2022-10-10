@@ -18,12 +18,8 @@ package org.indunet.fastproto;
 
 import lombok.SneakyThrows;
 import lombok.val;
-import org.indunet.fastproto.annotation.type.UInt8Type;
+import org.indunet.fastproto.annotation.UInt8Type;
 import org.junit.jupiter.api.Test;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

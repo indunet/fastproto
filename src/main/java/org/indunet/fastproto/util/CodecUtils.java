@@ -19,7 +19,7 @@ package org.indunet.fastproto.util;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.type.*;
+import org.indunet.fastproto.annotation.*;
 
 import java.math.BigInteger;
 import java.util.Arrays;

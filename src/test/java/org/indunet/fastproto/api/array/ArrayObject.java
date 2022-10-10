@@ -18,8 +18,12 @@ package org.indunet.fastproto.api.array;
 
 import lombok.Data;
 import lombok.val;
-import org.indunet.fastproto.annotation.type.*;
+import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.annotation.*;
+import org.indunet.fastproto.util.BinaryUtils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -95,5 +99,25 @@ public class ArrayObject {
         this.doubles = IntStream.range(0, 16)
                 .mapToDouble(__ -> random.nextDouble())
                 .toArray();
+    }
+
+    public byte[] toBytes() throws IOException {
+        val stream = new ByteArrayOutputStream();
+
+        stream.write(this.getBytes());
+        stream.write(BinaryUtils.valueOf(this.getShorts(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.int8Of(this.getInt8s()));
+        stream.write(BinaryUtils.int16Of(this.getInt16s(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.int32Of(this.getInt32s(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.valueOf(this.getInt64s(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.uint8Of(this.getUint8s()));
+        stream.write(BinaryUtils.uint16Of(this.getUint16s(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.uint32Of(this.getUint32s(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.uint64Of(this.getUint64s(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.valueOf(this.getFloats(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.valueOf(this.getDoubles(), EndianPolicy.LITTLE));
+        stream.flush();
+
+        return stream.toByteArray();
     }
 }

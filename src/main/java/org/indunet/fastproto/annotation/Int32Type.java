@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.annotation.type;
+package org.indunet.fastproto.annotation;
 
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
@@ -26,23 +27,24 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
-import java.util.function.Function;
 
 /**
- * String type, corresponding to Java String.
+ * Integer type, corresponding to Java Integer/int.
  *
  * @author Deng Ran
  * @see DataType
- * @since 1.1.0
+ * @since 1.0.0
  */
 @DataType
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface StringType {
+public @interface Int32Type {
+    int SIZE = Integer.SIZE >> 3;
+    int MAX_VALUE = Integer.MAX_VALUE;
+    int MIN_VALUE = Integer.MIN_VALUE;
+
     int offset();
 
-    int length() default -1;
-
-    String charset() default "UTF-8";
+    EndianPolicy[] endian() default {};
 }

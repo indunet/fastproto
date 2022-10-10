@@ -29,5 +29,7 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EncodingFormula {
-    Class<? extends Function<?, ?>> value();
+    Class<? extends Function<?, ?>>[] value() default {};
+
+    String lambda() default "";
 }

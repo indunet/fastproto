@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.benchmark;
 
-import org.indunet.fastproto.annotation.type.BoolType;
+import org.indunet.fastproto.annotation.BoolType;
 
 /**
  * @author Deng Ran

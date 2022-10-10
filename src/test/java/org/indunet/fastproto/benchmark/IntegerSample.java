@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.benchmark;
 
-import org.indunet.fastproto.annotation.type.Int32Type;
+import org.indunet.fastproto.annotation.Int32Type;
 
 /**
  * @author Deng Ran

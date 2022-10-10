@@ -18,8 +18,8 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
-import org.indunet.fastproto.annotation.type.FloatArrayType;
-import org.indunet.fastproto.annotation.type.FloatType;
+import org.indunet.fastproto.annotation.FloatArrayType;
+import org.indunet.fastproto.annotation.FloatType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;

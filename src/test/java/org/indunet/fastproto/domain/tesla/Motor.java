@@ -17,9 +17,9 @@
 package org.indunet.fastproto.domain.tesla;
 
 import lombok.*;
-import org.indunet.fastproto.annotation.type.FloatType;
-import org.indunet.fastproto.annotation.type.Int16Type;
-import org.indunet.fastproto.annotation.type.Int32Type;
+import org.indunet.fastproto.annotation.FloatType;
+import org.indunet.fastproto.annotation.Int16Type;
+import org.indunet.fastproto.annotation.Int32Type;
 
 @Data
 @ToString

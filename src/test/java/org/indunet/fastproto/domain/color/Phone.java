@@ -18,7 +18,7 @@ package org.indunet.fastproto.domain.color;
 
 import lombok.Data;
 import lombok.val;
-import org.indunet.fastproto.annotation.type.EnumType;
+import org.indunet.fastproto.annotation.EnumType;
 
 /**
  * @author Deng Ran

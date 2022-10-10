@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2022 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.annotation.type;
+package org.indunet.fastproto.annotation;
 
-import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
@@ -29,22 +28,17 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Long type, corresponding to Java Long/long.
+ * Int8 array type
  *
  * @author Deng Ran
- * @see DataType
- * @since 1.0.0
+ * @since 3.6.0
  */
 @DataType
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Int64Type {
-    int SIZE = Long.SIZE >> 3;
-    long MAX_VALUE = Long.MAX_VALUE;
-    long MIN_VALUE = Long.MIN_VALUE;
-
+public @interface Int8ArrayType {
     int offset();
 
-    EndianPolicy[] endian() default {};
+    int length() default -1;
 }

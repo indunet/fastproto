@@ -21,7 +21,7 @@ import lombok.val;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.DecodingFormula;
 import org.indunet.fastproto.annotation.EncodingFormula;
-import org.indunet.fastproto.annotation.type.Int8Type;
+import org.indunet.fastproto.annotation.Int8Type;
 import org.indunet.fastproto.exception.DecodeFormulaException;
 import org.indunet.fastproto.exception.EncodeFormulaException;
 import org.junit.jupiter.api.Test;

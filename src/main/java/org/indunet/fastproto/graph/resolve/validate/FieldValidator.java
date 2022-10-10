@@ -39,10 +39,10 @@ public class FieldValidator extends TypeValidator {
         val typeAnnotationClass = context.getTypeAnnotationClass();
         val field = context.getField();
         Class<? extends Function> decodingFormula = Optional.ofNullable(field.getAnnotation(DecodingFormula.class))
-                .map(DecodingFormula::value)
+                .map(d -> d.value()[0])
                 .orElse(null);
         Class<? extends Function> encodingFormula = Optional.ofNullable(field.getAnnotation(EncodingFormula.class))
-                .map(EncodingFormula::value)
+                .map(d -> d.value()[0])
                 .orElse(null);
 
         try {

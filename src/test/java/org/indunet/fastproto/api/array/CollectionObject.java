@@ -19,7 +19,7 @@ package org.indunet.fastproto.api.array;
 import lombok.Data;
 import lombok.val;
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.type.*;
+import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.util.BinaryUtils;
 
 import java.io.ByteArrayOutputStream;

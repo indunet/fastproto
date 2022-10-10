@@ -20,9 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.indunet.fastproto.annotation.DecodingFormula;
-import org.indunet.fastproto.annotation.EncodingFormula;
-import org.indunet.fastproto.annotation.type.*;
+import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.domain.formula.DecodeSpeedFormula;
 import org.indunet.fastproto.domain.formula.EncodeSpeedFormula;
 

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 indunet.org
+ * Copyright 2019-2021 indunet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.annotation.type;
+package org.indunet.fastproto.annotation;
 
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
@@ -28,17 +29,22 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * UInt16 array type
+ * Integer type, corresponding to Java Integer/int.
  *
  * @author Deng Ran
- * @since 3.6.0
+ * @see DataType
+ * @since 1.2.0
  */
 @DataType
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UInt16ArrayType {
+public @interface UInt16Type {
+    int SIZE = Short.SIZE >> 3;
+    int MAX_VALUE = Short.MAX_VALUE - Short.MIN_VALUE;
+    int MIN_VALUE = 0;
+
     int offset();
 
-    int length() default -1;
+    EndianPolicy[] endian() default {};
 }

@@ -18,9 +18,14 @@ package org.indunet.fastproto.api.array;
 
 import lombok.Data;
 import lombok.val;
-import org.indunet.fastproto.annotation.type.*;
+import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.annotation.*;
+import org.indunet.fastproto.util.BinaryUtils;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.math.BigInteger;
+import java.util.Arrays;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -98,5 +103,41 @@ public class WrapperArrayObject {
         this.doubles = IntStream.range(0, 16)
                 .mapToObj(__ -> random.nextDouble())
                 .toArray(Double[]::new);
+    }
+
+    public byte[] toBytes() throws IOException {
+        val stream = new ByteArrayOutputStream();
+
+        stream.write(BinaryUtils.valueOf(this.getBytes()));
+        stream.write(BinaryUtils.valueOf(this.getShorts(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.int8Of(Arrays.stream(this.getInt8s())
+                .mapToInt(Integer::intValue)
+                .toArray()));
+        stream.write(BinaryUtils.int16Of(Arrays.stream(this.getInt16s())
+                .mapToInt(Integer::intValue)
+                .toArray(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.int32Of(Arrays.stream(this.getInt32s())
+                .mapToInt(Integer::intValue)
+                .toArray(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.valueOf(Arrays.stream(this.getInt64s())
+                .mapToLong(Long::longValue)
+                .toArray(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.uint8Of(Arrays.stream(this.getUint8s())
+                .mapToInt(Integer::intValue)
+                .toArray()));
+        stream.write(BinaryUtils.uint16Of(Arrays.stream(this.getUint16s())
+                .mapToInt(Integer::intValue)
+                .toArray(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.uint32Of(Arrays.stream(this.getUint32s())
+                .mapToLong(Long::longValue)
+                .toArray(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.uint64Of(this.getUint64s(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.valueOf(this.getFloats(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.valueOf(Arrays.stream(this.getDoubles())
+                .mapToDouble(Double::doubleValue)
+                .toArray(), EndianPolicy.LITTLE));
+        stream.flush();
+
+        return stream.toByteArray();
     }
 }

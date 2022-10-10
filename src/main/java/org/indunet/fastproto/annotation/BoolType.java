@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,9 +14,8 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.annotation.type;
+package org.indunet.fastproto.annotation;
 
-import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
@@ -27,24 +26,26 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.function.Function;
+
 
 /**
- * Int16 type, corresponding to Java Integer/int.
+ * Boolean type, corresponding to Java Boolean/boolean.
  *
  * @author Deng Ran
  * @see DataType
- * @since 1.2.0
+ * @since 1.0.0
  */
 @DataType
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Int16Type {
-    int SIZE = Short.SIZE >> 3;
-    int MAX_VALUE = Short.MAX_VALUE;
-    int MIN_VALUE = Short.MIN_VALUE;
+public @interface BoolType {
+    int SIZE = 1;
+    int MAX_BIT_OFFSET = 7;
+    int MIN_BIT_OFFSET = 0;
 
-    int offset();
+    int byteOffset();
 
-    EndianPolicy[] endian() default {};
+    int bitOffset() default 0;
 }

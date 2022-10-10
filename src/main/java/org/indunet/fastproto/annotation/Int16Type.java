@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.annotation.type;
+package org.indunet.fastproto.annotation;
 
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.DataType;
@@ -29,18 +29,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Timestamp type, corresponding to Java java.sql.Timestamp.
+ * Int16 type, corresponding to Java Integer/int.
  *
  * @author Deng Ran
  * @see DataType
- * @since 1.1.0
+ * @since 1.2.0
  */
 @DataType
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface TimeType {
-    int SIZE = Long.SIZE >> 3;
+public @interface Int16Type {
+    int SIZE = Short.SIZE >> 3;
+    int MAX_VALUE = Short.MAX_VALUE;
+    int MIN_VALUE = Short.MIN_VALUE;
 
     int offset();
 

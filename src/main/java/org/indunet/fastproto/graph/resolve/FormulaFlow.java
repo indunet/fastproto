@@ -35,13 +35,13 @@ public class FormulaFlow extends ResolvePipeline {
         if (field.isAnnotationPresent(DecodingFormula.class)) {
             val formula = field.getAnnotation(DecodingFormula.class);
 
-            reference.setDecodingFormulaClass(formula.value());
+            reference.setDecodingFormulaClass(formula.value()[0]);
         }
 
         if (field.isAnnotationPresent(EncodingFormula.class)) {
             val formula = field.getAnnotation(EncodingFormula.class);
 
-            reference.setEncodingFormulaClass(formula.value());
+            reference.setEncodingFormulaClass(formula.value()[0]);
         }
 
         this.forward(reference);

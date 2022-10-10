@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 indunet.org
+ * Copyright 2019-2021 indunet
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.annotation.type;
+package org.indunet.fastproto.annotation;
 
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
@@ -26,19 +26,23 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.function.Function;
 
 /**
- * Float array type
+ * String type, corresponding to Java String.
  *
  * @author Deng Ran
- * @since 3.6.0
+ * @see DataType
+ * @since 1.1.0
  */
 @DataType
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface FloatArrayType {
+public @interface StringType {
     int offset();
 
     int length() default -1;
+
+    String charset() default "UTF-8";
 }

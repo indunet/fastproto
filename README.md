@@ -83,7 +83,7 @@ First, define the Java data object `Weather` according to the protocol, and then
 It should be noted that the `offset` attribute of any data type annotation corresponds to the byte offset of the signal.
 
 ```java
-import org.indunet.fastproto.annotation.type.*;
+import org.indunet.fastproto.annotation.*;
 
 public class Weather {
     @UInt8Type(offset = 0)

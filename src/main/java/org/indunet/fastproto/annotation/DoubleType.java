@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.annotation.type;
+package org.indunet.fastproto.annotation;
 
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.DataType;
@@ -29,20 +29,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Long type, corresponding to Java Long/long.
+ * Double type, corresponding to Java Double/double.
  *
  * @author Deng Ran
  * @see DataType
- * @since 1.2.0
+ * @since 1.0.0
  */
 @DataType
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UInt32Type {
-    int SIZE = Integer.SIZE >> 3;
-    long MAX_VALUE = (long) Integer.MAX_VALUE - Integer.MIN_VALUE;
-    int MIN_VALUE = 0;
+public @interface DoubleType {
+    int SIZE = Double.SIZE >> 3;
+    double MAX_VALUE = Double.MAX_VALUE;
+    double MIN_VALUE = Double.MIN_VALUE;
 
     int offset();
 

@@ -14,7 +14,8 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.annotation.type;
+
+package org.indunet.fastproto.annotation;
 
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.annotation.Validator;
@@ -28,7 +29,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Int8 array type
+ * Int32 array type
  *
  * @author Deng Ran
  * @since 3.6.0
@@ -37,7 +38,7 @@ import java.lang.annotation.Target;
 @Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Int8ArrayType {
+public @interface Int32ArrayType {
     int offset();
 
     int length() default -1;
