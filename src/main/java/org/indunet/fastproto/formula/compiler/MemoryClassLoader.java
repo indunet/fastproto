@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.compiler;
+package org.indunet.fastproto.formula.compiler;
 
 import java.net.URL;
 import java.net.URLClassLoader;

@@ -19,7 +19,7 @@ package org.indunet.fastproto.graph.resolve;
 import lombok.val;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.codec.CodecContext;
-import org.indunet.fastproto.codec.CodecFactory;
+import org.indunet.fastproto.codec.CodecMapper;
 import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.graph.resolve.validate.TypeValidator;
@@ -43,10 +43,27 @@ public class CodecFlow extends ResolvePipeline {
                 .defaultEndianPolicy(reference.getEndianPolicy())
                 .build();
 
-        reference.setDecoder(CodecFactory
-                .createDecoder(context, reference.getDecodingFormulaClass()));
-        reference.setEncoder(CodecFactory
-                .createEncoder(context, reference.getEncodingFormulaClass()));
+        val decoder = CodecMapper
+                .createDecoder(context, reference.getDecodingFormulaClass());
+
+        if (reference.getDecodingFormula() != null) {
+            val func = reference.getDecodingFormula();
+
+            reference.setDecoder(decoder.andThen(func));
+        } else {
+            reference.setDecoder(decoder);
+        }
+
+        val encoder = CodecMapper
+                .createEncoder(context, reference.getEncodingFormulaClass());
+
+        if (reference.getEncodingFormula() != null) {
+            val func = reference.getEncodingFormula();
+
+            reference.setEncoder((byte[] bytes, Object value) -> encoder.accept(bytes, func.apply(value)));
+        } else {
+            reference.setEncoder(encoder);
+        }
 
         try {
             val ctx = ValidatorContext.builder()

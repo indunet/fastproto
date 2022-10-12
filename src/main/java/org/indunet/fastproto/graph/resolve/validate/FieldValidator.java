@@ -20,7 +20,7 @@ import lombok.val;
 import org.indunet.fastproto.annotation.DecodingFormula;
 import org.indunet.fastproto.annotation.EncodingFormula;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.DecodeFormulaException;
+import org.indunet.fastproto.exception.FormulaException;
 
 import java.text.MessageFormat;
 import java.util.Optional;
@@ -49,7 +49,7 @@ public class FieldValidator extends TypeValidator {
             context.setDecodingFormula(decodingFormula);
             context.setEncodingFormula(encodingFormula);
         } catch (Exception e) {
-            throw new DecodeFormulaException(
+            throw new FormulaException(
                     MessageFormat.format(
                             CodecError.FAIL_GETTING_DECODE_FORMULA.getMessage(),
                             protocolType.getType().getName(), field.getName()), e);

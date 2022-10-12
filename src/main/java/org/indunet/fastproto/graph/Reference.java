@@ -61,6 +61,9 @@ public class Reference {
 
     Class<? extends Function> decodingFormulaClass;
     Class<? extends Function> encodingFormulaClass;
+
+    Function decodingFormula;
+    Function encodingFormula;
     Function<byte[], ?> decoder;
     BiConsumer<byte[], ? super Object> encoder;
 

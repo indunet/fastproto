@@ -39,6 +39,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BinaryType {
+    Class DEFAULT_JAVA_TYPE = byte[].class;
+
     int offset();
 
     int length() default -1;

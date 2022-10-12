@@ -38,6 +38,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UInt32ArrayType {
+    Class DEFAULT_JAVA_TYPE = long[].class;
     int offset();
 
     int length() default -1;

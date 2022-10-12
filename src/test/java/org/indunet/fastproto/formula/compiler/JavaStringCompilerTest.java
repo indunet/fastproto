@@ -1,4 +1,4 @@
-package org.indunet.fastproto.compiler;
+package org.indunet.fastproto.formula.compiler;
 
 
 import org.junit.jupiter.api.Test;
@@ -14,7 +14,7 @@ public class JavaStringCompilerTest {
 
 	static final String SINGLE_JAVA = "/* a single java class to one file */  "
 			+ "package org.indunet.fastproto.formula;                                            "
-			+ "import org.indunet.fastproto.compiler.*;                            "
+			+ "import org.indunet.fastproto.formula.compiler.*;                            "
 			+ "public class UserProxy extends User implements BeanProxy {     "
 			+ "    boolean _dirty = false;                                    "
 			+ "    public void setId(String id) {                             "

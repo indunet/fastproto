@@ -1,4 +1,4 @@
-package org.indunet.fastproto.compiler;
+package org.indunet.fastproto.formula.compiler;
 
 /**
  * Sample class as JavaBean.

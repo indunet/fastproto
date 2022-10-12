@@ -38,6 +38,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DoubleArrayType {
+    Class DEFAULT_JAVA_TYPE = double[].class;
+
     int offset();
 
     int length() default -1;

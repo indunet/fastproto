@@ -41,6 +41,8 @@ import java.util.function.Function;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BoolType {
+    Class DEFAULT_JAVA_TYPE = Boolean.class;
+
     int SIZE = 1;
     int MAX_BIT_OFFSET = 7;
     int MIN_BIT_OFFSET = 0;

@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,12 +22,12 @@ import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.DecodingFormula;
 import org.indunet.fastproto.annotation.EncodingFormula;
 import org.indunet.fastproto.annotation.Int8Type;
-import org.indunet.fastproto.exception.DecodeFormulaException;
-import org.indunet.fastproto.exception.EncodeFormulaException;
+import org.indunet.fastproto.exception.FormulaException;
 import org.junit.jupiter.api.Test;
 
 import java.util.function.Function;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
@@ -52,7 +52,7 @@ public class FormulaTest {
     @Test
     public void testEncodeFormula() {
         val object = new TestObject1(101);
-        assertThrows(EncodeFormulaException.class, () -> FastProto.toBytes(object, 10));
+        assertThrows(FormulaException.class, () -> FastProto.toBytes(object, 10));
     }
 
     @AllArgsConstructor
@@ -73,6 +73,19 @@ public class FormulaTest {
     public void testDecodeFormula() {
         val datagram = new byte[10];
 
-        assertThrows(DecodeFormulaException.class, () -> FastProto.parse(datagram, TestObject2.class));
+        assertThrows(FormulaException.class, () -> FastProto.parse(datagram, TestObject2.class));
+    }
+
+    @Test
+    public void testDecodingLambda() {
+        val expected = new FormulaObject();
+        val bytes = expected.toBytes();
+
+        assertEquals(expected, FastProto.parse(bytes, FormulaObject.class));
+    }
+
+    @Test
+    public void testEncodingLambda() {
+
     }
 }

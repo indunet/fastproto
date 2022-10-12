@@ -37,6 +37,7 @@ import java.lang.annotation.*;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EnumType {
+    Class DEFAULT_JAVA_TYPE = Enum.class;
     int SIZE = Byte.SIZE >> 3;
     int MAX_VALUE = Byte.MAX_VALUE - Byte.MIN_VALUE;
     int MIN_VALUE = 0;

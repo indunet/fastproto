@@ -1,34 +1,41 @@
+/*
+ * Copyright 2019-2022 indunet.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.indunet.fastproto.formula;
 
 import lombok.val;
-import lombok.var;
-import org.indunet.fastproto.Formula;
-import org.indunet.fastproto.FormulaBuilder;
-import org.indunet.fastproto.compiler.JavaStringCompiler;
+import org.indunet.fastproto.formula.compiler.JavaStringCompiler;
 import org.junit.jupiter.api.Test;
 
-import javax.tools.JavaCompiler;
 import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+/**
+ * Unit test of Formula Builder.
+ *
+ * @author Deng Ran
+ * @since 3.7.0
+ */
 public class FormulaBuilderTest {
     @Test
-    public void testBuild() throws IOException, ClassNotFoundException, InstantiationException, IllegalAccessException {
-        val compiler = new JavaStringCompiler();
-        StringBuffer lambda = new StringBuffer("x -> x * 0.1");
+    public void testBuild() {
+        val lambda = "x -> x * 0.1";
+        val builder = FormulaBuilder.create(Integer.class, lambda);
 
-        if (lambda.toString().endsWith(";") || lambda.toString().endsWith("}")) {
-
-        } else {
-            lambda.append(";");
-        }
-
-        val results = compiler.compile("Formula01.java", String.format(Formula.TEMPLATE(), "Formula01", lambda));
-        val clazz = compiler.loadClass("org.indunet.fastproto.formula.Formula01", results);
-
-        val builder = (FormulaBuilder) clazz.newInstance();
         assertNotNull(builder.build());
-        System.out.println(builder.build().apply(10));
     }
 }

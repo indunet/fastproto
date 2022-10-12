@@ -41,7 +41,7 @@ import java.util.function.Predicate;
  * @author Deng Ran
  * @since 3.2.1
  */
-public class CodecFactory {
+public class CodecMapper {
     protected static ConcurrentHashMap<Class, Map<Predicate<Type>, Codec>> codecMap = new ConcurrentHashMap<>();
     protected static ConcurrentHashMap<Class<? extends Function>, Function> formulas = new ConcurrentHashMap<>();
 

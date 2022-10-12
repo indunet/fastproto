@@ -27,6 +27,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Date;
 
 /**
  * UInt8 array type
@@ -39,6 +40,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UInt8ArrayType {
+    Class DEFAULT_JAVA_TYPE = int[].class;
     int offset();
 
     int length() default -1;

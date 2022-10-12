@@ -40,6 +40,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Int64Type {
+    Class DEFAULT_JAVA_TYPE = Long.class;
     int SIZE = Long.SIZE >> 3;
     long MAX_VALUE = Long.MAX_VALUE;
     long MIN_VALUE = Long.MIN_VALUE;

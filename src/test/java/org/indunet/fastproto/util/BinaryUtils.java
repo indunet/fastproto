@@ -88,6 +88,20 @@ public class BinaryUtils {
         return bytes;
     }
 
+    public static byte[] int16Of(int value, EndianPolicy policy) {
+        val bytes = new byte[2];
+
+        if (policy == EndianPolicy.LITTLE) {
+            bytes[0] = (byte) (value % 256);
+            bytes[1] = (byte) (value / 256);
+        } else {
+            bytes[0] = (byte) (value / 256);
+            bytes[1] = (byte) (value % 256);
+        }
+
+        return bytes;
+    }
+
     public static byte[] int16Of(int[] values, EndianPolicy policy) {
         val bytes = new byte[values.length * 2];
 

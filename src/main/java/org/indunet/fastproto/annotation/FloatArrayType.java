@@ -38,6 +38,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FloatArrayType {
+    Class DEFAULT_JAVA_TYPE = float[].class;
     int offset();
 
     int length() default -1;

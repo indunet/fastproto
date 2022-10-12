@@ -27,6 +27,7 @@ import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+import java.util.Date;
 
 /**
  * Timestamp type, corresponding to Java java.sql.Timestamp.
@@ -40,6 +41,8 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TimeType {
+    Class DEFAULT_JAVA_TYPE = Date.class;
+
     int SIZE = Long.SIZE >> 3;
 
     int offset();
