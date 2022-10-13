@@ -34,7 +34,7 @@ import java.util.Arrays;
 public class EncodingFormulaValidator extends TypeValidator {
     @Override
     public void process(ValidatorContext context) {
-        val encodeFormula = context.getEncodingFormula();
+        val encodeFormula = context.getEncodingFormulaClass();
         val typeAnnotation = context.getTypeAnnotation();
         val field = context.getField();
 

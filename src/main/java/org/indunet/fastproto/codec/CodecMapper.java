@@ -195,7 +195,7 @@ public class CodecMapper {
                 .anyMatch(p -> p.test((Class) type));
     }
 
-    public static Codec createCodec(Class type, Type fieldClass) {
+    public static Codec getCodec(Class type, Type fieldClass) {
         if (!codecMap.containsKey(type)) {
             throw new CodecException(String.format("%s is not supported.", type.toString()));
         }
@@ -209,7 +209,7 @@ public class CodecMapper {
                 .orElseThrow(() -> new CodecException(String.format("%s cannot be used on %s", type.getSimpleName(), fieldClass)));
     }
 
-    public static <T, R> Function<T, R> createFormula(Class<? extends Function> clazz) {
+    public static <T, R> Function<T, R> getFormula(Class<? extends Function> clazz) {
         return formulas.computeIfAbsent(clazz, c -> {
             try {
                 return c.newInstance();
@@ -221,7 +221,7 @@ public class CodecMapper {
         });
     }
 
-    public static Function<byte[], ?> createDecoder(CodecContext context, Class<? extends Function> clazz) {
+    public static Function<byte[], ?> getDecoder(CodecContext context, Class<? extends Function> clazz) {
         if (clazz != null) {
             val type = Arrays.stream(clazz.getGenericInterfaces())
                     .filter(i -> i instanceof ParameterizedType)
@@ -230,17 +230,17 @@ public class CodecMapper {
                     .findAny()
                     .get();
 
-            Function<byte[], ?> func = (byte[] bytes) -> createCodec(context.getDataTypeAnnotation().annotationType(), (Class) type)
+            Function<byte[], ?> func = (byte[] bytes) -> getCodec(context.getDataTypeAnnotation().annotationType(), (Class) type)
                     .decode(context, bytes);
 
-            return func.andThen(createFormula(clazz));
+            return func.andThen(getFormula(clazz));
         } else {
-            return (byte[] bytes) -> createCodec(context.getDataTypeAnnotation().annotationType(), context.getField().getGenericType())
+            return (byte[] bytes) -> getCodec(context.getDataTypeAnnotation().annotationType(), context.getField().getGenericType())
                     .decode(context, bytes);
         }
     }
 
-    public static BiConsumer<byte[], ? super Object> createEncoder(CodecContext context, Class<? extends Function> clazz) {
+    public static BiConsumer<byte[], ? super Object> getEncoder(CodecContext context, Class<? extends Function> clazz) {
         if (clazz != null) {
             val type = Arrays.stream(clazz.getGenericInterfaces())
                     .filter(i -> i instanceof ParameterizedType)
@@ -249,11 +249,16 @@ public class CodecMapper {
                     .findAny()
                     .get();
 
-            return (bytes, value) -> createCodec(context.getDataTypeAnnotation().annotationType(), (Class) type)
-                    .encode(context, bytes, createFormula(clazz).apply(value));
+            return (bytes, value) -> getCodec(context.getDataTypeAnnotation().annotationType(), (Class) type)
+                    .encode(context, bytes, getFormula(clazz).apply(value));
         } else {
-            return (bytes, value) -> createCodec(context.getDataTypeAnnotation().annotationType(), context.getField().getGenericType())
+            return (bytes, value) -> getCodec(context.getDataTypeAnnotation().annotationType(), context.getField().getGenericType())
                     .encode(context, bytes, value);
         }
+    }
+
+    public static BiConsumer<byte[], ? super Object> getDefaultEncoder(CodecContext context, Class type) {
+        return (bytes, value) -> getCodec(context.getDataTypeAnnotation().annotationType(), type)
+                .encode(context, bytes, value);
     }
 }

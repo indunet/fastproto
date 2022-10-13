@@ -25,6 +25,7 @@ import org.indunet.fastproto.annotation.Int8Type;
 import org.indunet.fastproto.exception.FormulaException;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.function.Function;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -77,11 +78,11 @@ public class FormulaTest {
     }
 
     @Test
-    public void testDecodingLambda() {
-        val expected = new FormulaObject();
+    public void testDecodingLambda() throws IOException {
+        val expected = new LambdaObject();
         val bytes = expected.toBytes();
 
-        assertEquals(expected, FastProto.parse(bytes, FormulaObject.class));
+        assertEquals(expected, FastProto.parse(bytes, LambdaObject.class));
     }
 
     @Test

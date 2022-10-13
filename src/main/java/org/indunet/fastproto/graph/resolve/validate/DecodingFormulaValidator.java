@@ -34,7 +34,7 @@ import java.util.Arrays;
 public class DecodingFormulaValidator extends TypeValidator {
     @Override
     public void process(ValidatorContext context) {
-        val decodeFormula = context.getDecodingFormula();
+        val decodeFormula = context.getDecodingFormulaClass();
         val typeAnnotation = context.getTypeAnnotation();
         val field = context.getField();
 

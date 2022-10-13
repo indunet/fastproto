@@ -44,7 +44,7 @@ public class CodecFlow extends ResolvePipeline {
                 .build();
 
         val decoder = CodecMapper
-                .createDecoder(context, reference.getDecodingFormulaClass());
+                .getDecoder(context, reference.getDecodingFormulaClass());
 
         if (reference.getDecodingFormula() != null) {
             val func = reference.getDecodingFormula();
@@ -55,7 +55,7 @@ public class CodecFlow extends ResolvePipeline {
         }
 
         val encoder = CodecMapper
-                .createEncoder(context, reference.getEncodingFormulaClass());
+                .getEncoder(context, reference.getEncodingFormulaClass());
 
         if (reference.getEncodingFormula() != null) {
             val func = reference.getEncodingFormula();
@@ -70,6 +70,8 @@ public class CodecFlow extends ResolvePipeline {
                     .field(reference.getField())
                     .typeAnnotation(reference.getDataTypeAnnotation())
                     .protocolType(reference.getProtocolType())
+                    .decodingFormulaClass(reference.getDecodingFormulaClass())
+                    .encodingFormulaClass(reference.getEncodingFormulaClass())
                     .build();
             val validator = reference.getDataTypeAnnotation()
                     .annotationType()
