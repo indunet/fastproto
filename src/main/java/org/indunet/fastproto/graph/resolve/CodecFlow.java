@@ -44,33 +44,27 @@ public class CodecFlow extends ResolvePipeline {
                 .defaultEndianPolicy(reference.getEndianPolicy())
                 .build();
 
-        Function decoder = null;
+        if (reference.getDecodingFormulaClass() != null) {
+            Function decoder = CodecMapper.getDecoder(context, reference.getDecodingFormulaClass());
 
-        if (reference.getDecodingLambda() != null) {
-            decoder = CodecMapper.getDefaultDecoder(context, reference.getProtocolType().defaultJavaType());
-        } else {
-            decoder = CodecMapper.getDecoder(context, reference.getDecodingFormulaClass());
-        }
-
-        if (reference.getDecodingFormula() != null) {
-            val func = reference.getDecodingFormula();
-
-            reference.setDecoder(decoder.andThen(func));
+            reference.setDecoder(decoder);
         } else if (reference.getDecodingLambda() != null) {
+            val decoder = CodecMapper.getDefaultDecoder(context, reference.getProtocolType().defaultJavaType());
             val func = reference.getDecodingLambda();
 
             reference.setDecoder(decoder.andThen(func));
         } else {
+            Function decoder = CodecMapper.getDecoder(context, null);
+
             reference.setDecoder(decoder);
         }
 
-        if (reference.getEncodingFormula() != null) {
-            val encoder = CodecMapper.getDefaultEncoder(context, reference.getProtocolType().defaultJavaType());
-            val func = reference.getEncodingFormula();
-
-            reference.setEncoder((byte[] bytes, Object value) -> encoder.accept(bytes, func.apply(value)));
-        } else if (reference.getEncodingLambda() != null) {
+        if (reference.getEncodingFormulaClass() != null) {
             val encoder = CodecMapper.getEncoder(context, reference.getEncodingFormulaClass());
+
+            reference.setEncoder(encoder);
+        } else if (reference.getEncodingLambda() != null) {
+            val encoder = CodecMapper.getDefaultEncoder(context, reference.getProtocolType().defaultJavaType());
             val func = reference.getEncodingLambda();
 
             reference.setEncoder((byte[] bytes, Object value) -> encoder.accept(bytes, func.apply(value)));

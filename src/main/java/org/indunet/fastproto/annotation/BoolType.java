@@ -45,5 +45,5 @@ public @interface BoolType {
 
     int byteOffset();
 
-    int bitOffset() default 0;
+    int bitOffset();
 }

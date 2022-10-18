@@ -72,7 +72,7 @@ public class FormulaFlow extends ResolvePipeline {
                     throw new FormulaException(String.format("fail initializing formula %s", clazz.getSimpleName()), e);
                 }
             } else if (!formula.lambda().isEmpty()) {
-                val inputType = reference.getProtocolType().defaultJavaType();
+                val inputType = reference.getField().getType();
                 val builder = FormulaBuilder.create(inputType, formula.lambda());
 
                 reference.setEncodingLambda(builder.build());
