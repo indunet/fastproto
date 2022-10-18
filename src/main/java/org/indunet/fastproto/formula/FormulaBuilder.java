@@ -16,7 +16,6 @@
 
 package org.indunet.fastproto.formula;
 
-import lombok.val;
 import org.indunet.fastproto.exception.FormulaException;
 import org.indunet.fastproto.formula.compiler.JavaStringCompiler;
 
@@ -31,13 +30,11 @@ import java.util.function.Function;
  * @since 3.7.0
  */
 public interface FormulaBuilder {
-    Function build();
-
     static FormulaBuilder create(Class inputType, String lambda) {
         try {
             JavaStringCompiler compiler = new JavaStringCompiler();
             FormulaBuilderTemplate template = new FormulaBuilderTemplate(inputType, lambda);
-            Map<String, byte[]> results= compiler.compile(template.fileName(), template.toSourceCode());
+            Map<String, byte[]> results = compiler.compile(template.fileName(), template.toSourceCode());
             Class clazz = compiler.loadClass(template.fullName(), results);
 
             return (FormulaBuilder) clazz.newInstance();
@@ -45,4 +42,6 @@ public interface FormulaBuilder {
             throw new FormulaException(String.format("Fail compiling lambda expression: %s", lambda), e);
         }
     }
+
+    Function build();
 }
