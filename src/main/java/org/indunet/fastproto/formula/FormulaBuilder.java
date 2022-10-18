@@ -38,7 +38,7 @@ public interface FormulaBuilder {
             val compiler = new JavaStringCompiler();
             val template = new FormulaBuilderTemplate(inputType, lambda);
             Map<String, byte[]> results= compiler.compile(template.fileName(), template.toSourceCode());
-            val clazz = compiler.loadClass(template.fullName(), results);
+            Class clazz = compiler.loadClass(template.fullName(), results);
 
             return (FormulaBuilder) clazz.newInstance();
         } catch (IOException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
