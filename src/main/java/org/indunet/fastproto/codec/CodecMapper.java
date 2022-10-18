@@ -240,6 +240,11 @@ public class CodecMapper {
         }
     }
 
+    public static Function<byte[], ?> getDefaultDecoder(CodecContext context, Class type) {
+        return (byte[] bytes) -> getCodec(context.getDataTypeAnnotation().annotationType(), type)
+                .decode(context, bytes);
+    }
+
     public static BiConsumer<byte[], ? super Object> getEncoder(CodecContext context, Class<? extends Function> clazz) {
         if (clazz != null) {
             val type = Arrays.stream(clazz.getGenericInterfaces())

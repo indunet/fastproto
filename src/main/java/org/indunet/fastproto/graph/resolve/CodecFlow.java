@@ -26,6 +26,7 @@ import org.indunet.fastproto.graph.resolve.validate.TypeValidator;
 import org.indunet.fastproto.graph.resolve.validate.ValidatorContext;
 
 import java.text.MessageFormat;
+import java.util.function.Function;
 
 /**
  * Resolve decoder and encoder flow.
@@ -43,25 +44,39 @@ public class CodecFlow extends ResolvePipeline {
                 .defaultEndianPolicy(reference.getEndianPolicy())
                 .build();
 
-        val decoder = CodecMapper
-                .getDecoder(context, reference.getDecodingFormulaClass());
+        Function decoder = null;
+
+        if (reference.getDecodingLambda() != null) {
+            decoder = CodecMapper.getDefaultDecoder(context, reference.getProtocolType().defaultJavaType());
+        } else {
+            decoder = CodecMapper.getDecoder(context, reference.getDecodingFormulaClass());
+        }
 
         if (reference.getDecodingFormula() != null) {
             val func = reference.getDecodingFormula();
+
+            reference.setDecoder(decoder.andThen(func));
+        } else if (reference.getDecodingLambda() != null) {
+            val func = reference.getDecodingLambda();
 
             reference.setDecoder(decoder.andThen(func));
         } else {
             reference.setDecoder(decoder);
         }
 
-        val encoder = CodecMapper
-                .getEncoder(context, reference.getEncodingFormulaClass());
-
         if (reference.getEncodingFormula() != null) {
+            val encoder = CodecMapper.getDefaultEncoder(context, reference.getProtocolType().defaultJavaType());
             val func = reference.getEncodingFormula();
 
             reference.setEncoder((byte[] bytes, Object value) -> encoder.accept(bytes, func.apply(value)));
+        } else if (reference.getEncodingLambda() != null) {
+            val encoder = CodecMapper.getEncoder(context, reference.getEncodingFormulaClass());
+            val func = reference.getEncodingLambda();
+
+            reference.setEncoder((byte[] bytes, Object value) -> encoder.accept(bytes, func.apply(value)));
         } else {
+            val encoder = CodecMapper.getEncoder(context, null);
+
             reference.setEncoder(encoder);
         }
 

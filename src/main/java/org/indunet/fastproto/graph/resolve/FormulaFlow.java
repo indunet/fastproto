@@ -22,9 +22,6 @@ import org.indunet.fastproto.annotation.EncodingFormula;
 import org.indunet.fastproto.exception.FormulaException;
 import org.indunet.fastproto.formula.FormulaBuilder;
 import org.indunet.fastproto.graph.Reference;
-import scala.Predef;
-
-import java.util.function.Function;
 
 /**
  * Formula flow.
@@ -53,7 +50,7 @@ public class FormulaFlow extends ResolvePipeline {
                 val inputType = reference.getProtocolType().defaultJavaType();
                 val builder = FormulaBuilder.create(inputType, formula.lambda());
 
-                reference.setDecodingFormula(builder.build());
+                reference.setDecodingLambda(builder.build());
             } else {
                 throw new FormulaException(
                         String.format("value and lambda of @DecodingFormula of %s should not be empty at the same time.",
@@ -78,7 +75,7 @@ public class FormulaFlow extends ResolvePipeline {
                 val inputType = reference.getProtocolType().defaultJavaType();
                 val builder = FormulaBuilder.create(inputType, formula.lambda());
 
-                reference.setEncodingFormula(builder.build());
+                reference.setEncodingLambda(builder.build());
             } else {
                 throw new FormulaException(
                         String.format("value and lambda of @EncodingFormula of %s should not be empty at the same time.",

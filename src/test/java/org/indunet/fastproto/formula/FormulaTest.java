@@ -28,8 +28,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Deng Ran
@@ -86,7 +85,10 @@ public class FormulaTest {
     }
 
     @Test
-    public void testEncodingLambda() {
+    public void testEncodingLambda() throws IOException {
+        val object = new LambdaObject();
+        val expected = object.toBytes();
 
+        assertArrayEquals(expected, FastProto.toBytes(object, expected.length));
     }
 }

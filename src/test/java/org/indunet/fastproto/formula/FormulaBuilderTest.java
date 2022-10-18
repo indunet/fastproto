@@ -17,10 +17,7 @@
 package org.indunet.fastproto.formula;
 
 import lombok.val;
-import org.indunet.fastproto.formula.compiler.JavaStringCompiler;
 import org.junit.jupiter.api.Test;
-
-import java.io.IOException;
 
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 

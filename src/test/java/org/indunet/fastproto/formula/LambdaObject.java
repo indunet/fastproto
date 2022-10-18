@@ -39,7 +39,7 @@ public class LambdaObject {
     @UInt8Type(offset = 2)
     @DecodingFormula(lambda = "x -> x * 10")
     @EncodingFormula(lambda = "x -> x / 10")
-    Integer current = 16;
+    Integer current = 160;
 
     public byte[] toBytes() throws IOException {
         val stream = new ByteArrayOutputStream();
