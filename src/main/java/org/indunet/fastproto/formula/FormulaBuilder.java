@@ -35,8 +35,8 @@ public interface FormulaBuilder {
 
     static FormulaBuilder create(Class inputType, String lambda) {
         try {
-            val compiler = new JavaStringCompiler();
-            val template = new FormulaBuilderTemplate(inputType, lambda);
+            JavaStringCompiler compiler = new JavaStringCompiler();
+            FormulaBuilderTemplate template = new FormulaBuilderTemplate(inputType, lambda);
             Map<String, byte[]> results= compiler.compile(template.fileName(), template.toSourceCode());
             Class clazz = compiler.loadClass(template.fullName(), results);
 
