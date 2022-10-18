@@ -19,7 +19,7 @@ package org.indunet.fastproto.graph;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.annotation.DataType;
-import org.indunet.fastproto.codec.CodecFactory;
+import org.indunet.fastproto.codec.CodecMapper;
 import org.indunet.fastproto.graph.Reference.ReferenceType;
 import org.indunet.fastproto.graph.resolve.ResolvePipeline;
 
@@ -106,7 +106,7 @@ public class Resolver {
     }
 
     protected static boolean isClass(@NonNull Field field) {
-        Predicate<Field> condition = f -> CodecFactory.isSupported(field.getType());
+        Predicate<Field> condition = f -> CodecMapper.isSupported(field.getType());
 
         return !condition.or(f -> Modifier.isTransient(f.getModifiers()))
                 .or(f -> f.isEnumConstant() || Enum.class.isAssignableFrom(f.getType()))

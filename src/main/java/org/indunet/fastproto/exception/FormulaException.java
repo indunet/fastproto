@@ -17,27 +17,27 @@
 package org.indunet.fastproto.exception;
 
 /**
- * @author Deng Ran
- * @since 1.7.0
+ * @author Chance
+ * @since 1.0.0
  */
-public class EncodeFormulaException extends EncodingException {
-    public EncodeFormulaException() {
+public class FormulaException extends DecodingException {
+    public FormulaException() {
 
     }
 
-    public EncodeFormulaException(CodecError error) {
+    public FormulaException(CodecError error) {
         this(error.getMessage());
     }
 
-    public EncodeFormulaException(String message) {
+    public FormulaException(String message) {
         super(message);
     }
 
-    public EncodeFormulaException(CodecError error, Throwable cause) {
+    public FormulaException(CodecError error, Throwable cause) {
         this(error.getMessage(), cause);
     }
 
-    public EncodeFormulaException(String message, Throwable cause) {
+    public FormulaException(String message, Throwable cause) {
         super(message, cause);
     }
 }

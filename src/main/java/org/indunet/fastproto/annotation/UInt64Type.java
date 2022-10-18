@@ -17,11 +17,8 @@
 package org.indunet.fastproto.annotation;
 
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.DataType;
-import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
-import org.indunet.fastproto.graph.resolve.validate.FieldValidator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -37,10 +34,11 @@ import java.math.BigInteger;
  * @since 1.5.0
  */
 @DataType
-@Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
+@Validator({DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UInt64Type {
+    Class DEFAULT_JAVA_TYPE = BigInteger.class;
     int SIZE = Long.SIZE >> 3;
     BigInteger MAX_VALUE = new BigInteger(String.valueOf(Long.MAX_VALUE))
             .subtract(new BigInteger(String.valueOf(Long.MIN_VALUE)));

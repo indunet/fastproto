@@ -17,13 +17,13 @@
 package org.indunet.fastproto.annotation;
 
 import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.DataType;
-import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
-import org.indunet.fastproto.graph.resolve.validate.FieldValidator;
 
-import java.lang.annotation.*;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Float type, corresponding to Java Float/float.
@@ -33,10 +33,11 @@ import java.lang.annotation.*;
  * @since 2.1.0
  */
 @DataType
-@Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
+@Validator({DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EnumType {
+    Class DEFAULT_JAVA_TYPE = Enum.class;
     int SIZE = Byte.SIZE >> 3;
     int MAX_VALUE = Byte.MAX_VALUE - Byte.MIN_VALUE;
     int MIN_VALUE = 0;

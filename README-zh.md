@@ -20,11 +20,10 @@ FastProto是一款能够通过注解自定义协议的二进制序列化 & 反�
 * 支持基本数据类型、无符号类型、字符串类型、时间类型、数组类型和集合类型等
 * 支持反向寻址，适用于非固定长度二进制数据
 * 自定义开端字节顺序
-* 自定义编码公式 & 解码公式
+* 自定义编码公式 & 解码公式，支持Lambda表达式
 
 ## *Under Developing*
 
-* 动态编译lambda形式的编码 & 解码公式
 * 代码结构 & 性能优化
 
 ## *与ProtoBuf相比较*
@@ -47,7 +46,7 @@ FastProto是一款能够通过注解自定义协议的二进制序列化 & 反�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.6.2</version>
+    <version>3.7.0</version>
 </dependency>
 ```
 
@@ -126,46 +125,18 @@ byte[] datagram = FastProto.toBytes(weather, 20);
 2. **编码公式 & 解码公式**
 
 也许你已经注意到压力信号对应一个换算公式，通常需要用户自行将序列化后的结果乘以0.1，这是物联网数据交换时极其常见的操作。
-为了帮助用户减少中间步骤，FastProto引入的编码公式和解码公式。
-
-自定义解码公式需要实现`java.lang.function.Function`接口，然后通过注解`@DecodingFormula`指定解码公式。
+为了帮助用户减少中间步骤，FastProto引入了编码公式注解`@EncodingFormula`和解码公式注解`@DecodingFormula`，上述简单的公式变换可以通过Lambda表达式实现。
 
 ```java
-public class PressureDecodeFormula implements Function<Long, Double> {
-    @Override
-    public Double apply(Long value) {
-        return value * 0.1;
-    }
-}
-```
+import org.indunet.fastproto.annotation.DecodingFormula;
+import org.indunet.fastproto.annotation.EncodingFormula;
 
-```java
-public class Weather {
-    ...
-    
-    @UInt32Type(offset = 14, decodingFormula = DecodeSpeedFormula.class)
-    double pressure;
-}
-```
-
-同理，编码公式也需要实现`java.lang.function.Function`接口，然后注解`@EncodingFormula`指定编码公式。
-
-```java
-public class PressureEncodeFormula implements Function<Double, Long> {
-    @Override
-    public Long apply(Double value) {
-        return (long) (value * 10);
-    }
-}
-```
-
-```java
 public class Weather {
     ...
 
     @UInt32Type(offset = 14)
-    @DecodingFormula(PressureDecodeFormula.class)
-    @EncodingFormula(PressureEncodeFormula.class)
+    @DecodingFormula(lambda = "x -> x * 0.1")
+    @EncodingFormula(lambda = "x -> (long) (x * 10)")
     double pressure;
 }
 ```
@@ -214,14 +185,16 @@ FastProto支持Java基础数据类型、时间类型、字符串类型、枚举�
 ### 其它注解
 FastProto还提供了一些辅助注解，帮助用户进一步自定义二进制格式、解码和编码流程。
 
-|        注解         |    作用域    |     描述     |
-|:-----------------:|:---------:|:----------:|
-|  @DefaultEndian   |   Class   | 数据开端，默认小开端 |
-|  @DecodingIgnore  |   Field   | 反序列化时忽略该字段 |
-|  @EncodingIgnore  |   Field   | 序列化时忽略该字段  |
-|   @FixedLength    |   Class   |  启动固定报文长度  |
+|        注解        |    作用域    |     描述     |
+|:----------------:|:---------:|:----------:|
+|  @DefaultEndian  |   Class   | 数据开端，默认小开端 |
+| @DecodingIgnore  |   Field   | 反序列化时忽略该字段 |
+| @EncodingIgnore  |   Field   | 序列化时忽略该字段  |
+|   @FixedLength   |   Class   |  启动固定报文长度  |
+| @DecodingFormula |   Field   |    解码公式    |
+| @EncodingFormula |   Field   |    编码公式    |
 
-## 大小开端
+## *大小开端*
 FastProto默认使用小开端，可以通过`@DefaultEndian`注解修改全局开端类型，也可以通过endian属性修改特定字段开端，后者优先级更高。
 
 ```java
@@ -238,7 +211,68 @@ public class Weather {
 }
 ```
 
-## Scala
+## *解码 & 编码公式*
+
+用户可以通过两种方式自定义公式，形式较为简单的公式建议使用Lambda表达式，形式较为复杂的公式建议自定义公式类并实现`java.lang.function.Function`接口。
+
+1. Lambda表达式
+
+```java
+import org.indunet.fastproto.annotation.DecodingFormula;
+import org.indunet.fastproto.annotation.EncodingFormula;
+
+public class Weather {
+    ...
+
+    @UInt32Type(offset = 14)
+    @DecodingFormula(lambda -> "x -> x * 0.1")
+    @EncodingFormula(lambda -> "x -> (long) (x * 10)")
+    double pressure;
+}
+
+```
+
+2. 自定义公式类
+
+```java
+import java.util.function.Function;
+
+public class PressureDecodeFormula implements Function<Long, Double> {
+    @Override
+    public Double apply(Long value) {
+        return value * 0.1;
+    }
+}
+```
+
+```java
+import java.util.function.Function;
+
+public class PressureEncodeFormula implements Function<Double, Long> {
+    @Override
+    public Long apply(Double value) {
+        return (long) (value * 10);
+    }
+}
+```
+
+```java
+import org.indunet.fastproto.annotation.DecodingFormula;
+import org.indunet.fastproto.annotation.EncodingFormula;
+
+public class Weather {
+    ...
+
+    @UInt32Type(offset = 14)
+    @DecodingFormula(PressureDecodeFormula.class)
+    @EncodingFormula(PressureEncodeFormula.class)
+    double pressure;
+}
+```
+
+用户可以根据需要仅指定编码公式，或者仅指定解码公式，如果同时指定Lambda表达式和自定义公式类，后者有更高的优先级。
+
+## *Scala*
 FastProto支持case class，但是Scala并不完全兼容Java注解，所以请使用如下方式引用FastProto。
 
 ```scala

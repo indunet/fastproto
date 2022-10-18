@@ -64,6 +64,15 @@ public interface ProtocolType {
                             .noneMatch(m -> m.getName().equals("length"))) {
                         return 0;
                     }
+                case "defaultJavaType":
+                    try {
+                        return (Class) typeAnnotation
+                                .annotationType()
+                                .getDeclaredField("DEFAULT_JAVA_TYPE")
+                                .get(null);
+                    } catch (IllegalAccessException | NoSuchFieldException e) {
+                        return null;
+                    }
                 default:
                     if (typeAnnotation.annotationType() == BoolType.class && method.getName().equals("offset")) {
                         return Arrays.stream(typeAnnotation.getClass().getMethods())
@@ -97,4 +106,6 @@ public interface ProtocolType {
     Class<? extends Annotation> getType();
 
     int size();
+
+    Class defaultJavaType();
 }

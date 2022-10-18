@@ -21,11 +21,10 @@ solve the problem of cross-language and cross-platform data exchange, which is e
 * Support primitive type, unsigned type, string type, time type, array type and collection type 
 * Support reverse addressing, suitable for non-fixed length binary data
 * Customize endianness (byte order)
-* Support decoding formula & encoding formula
+* Support decoding formula & encoding formula including lambda expression
 
 ## *Under Developing*
 
-* Dynamically compile encoding & decoding formulas in lambda
 * Code structure & performance optimization
 
 ## *Compared with ProtoBuf*
@@ -49,7 +48,7 @@ FastProto is more recommended for the following scenarios:
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.6.2</version>
+    <version>3.7.0</version>
 </dependency>
 ```
 
@@ -133,48 +132,19 @@ byte[] datagram = FastProto.toBytes(weather, 20);
 
 Perhaps you have noticed that the pressure signal corresponds to a conversion formula, usually requiring the user to multiply
 the serialized result by 0.1, which is an extremely common operation in IoT data exchange.
-To help users reduce intermediate steps, FastProto introduces encoding formulas and decoding formulas.
-
-The custom decoding formula needs to implement the `java.lang.function.Function` interface, and then specify the decoding
-formula through annotation `@DecodingFormula`
+To help users reduce intermediate steps, FastProto introduces decoding formula annotation `@DecodingFormula` and encoding formula annotation `@EncodingFormula`,
+the above simple formula transformation can be implemented by Lambda expression.
 
 ```java
-public class PressureDecodeFormula implements Function<Long, Double> {
-    @Override
-    public Double apply(Long value) {
-        return value * 0.1;
-    }
-}
-```
+import org.indunet.fastproto.annotation.DecodingFormula;
+import org.indunet.fastproto.annotation.EncodingFormula;
 
-```java
 public class Weather {
     ...
 
-    @UInt32Type(offset = 14, decodingFormula = DecodeSpeedFormula.class)
-    double pressure;
-}
-```
-
-Similarly, In the same way, the encoding formula also needs to implement the `java.lang.function.Function` interface, and
-then specify the encoding formula through annotation `@EncodingFormula`.
-
-```java
-public class PressureEncodeFormula implements Function<Double, Long> {
-    @Override
-    public Long apply(Double value) {
-        return (long) (value * 10);
-    }
-}
-```
-
-```java
-public class Weather {
-    ...
-    
     @UInt32Type(offset = 14)
-    @DecodingFormula(PressureDecodeFormula.class)
-    @EncodingFormula(PressureEncodeFormula.class)
+    @DecodingFormula(lambda = "x -> x * 0.1")
+    @EncodingFormula(lambda = "x -> (long) (x * 10)")
     double pressure;
 }
 ```
@@ -222,12 +192,14 @@ cross-language and cross-platform data exchange, FastProto also introduces unsig
 ### *Other Annotations*
 FastProto also provides some auxiliary annotations to help users further customize the binary format, decoding and encoding process.
 
-|   Annotation    |   Scope   |                    Description                    |
-|:---------------:|:---------:|:-------------------------------------------------:|
-| @DefaultEndian  |   Class   |       Endianness, default as little endian.       |
-| @DecodingIgnore |   Field   |          Ignore the field when decoding.          |
-| @EncodingIgnore |   Field   |          Ignore the field when encoding.          |
-|  @FixedLength   |   Class   |         Enable fixed length of datagram.          |
+|    Annotation    | Scope |              Description              |
+|:----------------:|:-----:|:-------------------------------------:|
+|  @DefaultEndian  | Class | Endianness, default as little endian. |
+| @DecodingIgnore  | Field |    Ignore the field when decoding.    |
+| @EncodingIgnore  | Field |    Ignore the field when encoding.    |
+|   @FixedLength   | Class |   Enable fixed length of datagram.    |
+| @DecodingFormula | Field |           Decoding formula.           |
+| @EncodingFormula | Field |           Encoding formula.           |
 
 
 ## Endianness
@@ -247,6 +219,69 @@ public class Weather {
     long pressure;
 }
 ```
+
+## *解码 & 编码公式*
+
+Users can customize formula in two ways. For simple formulas, it is recommended to use Lambda expression, while for more 
+complex formula, it is recommended to customize formula classes by implementing the `java.lang.function.Function` interface.
+
+1. Lambda Expression
+
+```java
+import org.indunet.fastproto.annotation.DecodingFormula;
+import org.indunet.fastproto.annotation.EncodingFormula;
+
+public class Weather {
+    ...
+
+    @UInt32Type(offset = 14)
+    @DecodingFormula(lambda -> "x -> x * 0.1")
+    @EncodingFormula(lambda -> "x -> (long) (x * 10)")
+    double pressure;
+}
+
+```
+
+2. Custom Formula Class
+
+```java
+import java.util.function.Function;
+
+public class PressureDecodeFormula implements Function<Long, Double> {
+    @Override
+    public Double apply(Long value) {
+        return value * 0.1;
+    }
+}
+```
+
+```java
+import java.util.function.Function;
+
+public class PressureEncodeFormula implements Function<Double, Long> {
+    @Override
+    public Long apply(Double value) {
+        return (long) (value * 10);
+    }
+}
+```
+
+```java
+import org.indunet.fastproto.annotation.DecodingFormula;
+import org.indunet.fastproto.annotation.EncodingFormula;
+
+public class Weather {
+    ...
+
+    @UInt32Type(offset = 14)
+    @DecodingFormula(PressureDecodeFormula.class)
+    @EncodingFormula(PressureEncodeFormula.class)
+    double pressure;
+}
+```
+
+Users can specify only the encoding formula or only the decoding formula as needed. If both lambda expression and custom 
+formula class are specified, the latter has a higher priority.
 
 ## Scala
 FastProto supports case class，but Scala is not fully compatible with Java annotations, so please refer to FastProto as follows.

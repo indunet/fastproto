@@ -18,7 +18,7 @@ package org.indunet.fastproto.graph.resolve.validate;
 
 import lombok.val;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.EncodeFormulaException;
+import org.indunet.fastproto.exception.FormulaException;
 import org.indunet.fastproto.util.TypeUtils;
 
 import java.lang.reflect.ParameterizedType;
@@ -34,7 +34,7 @@ import java.util.Arrays;
 public class EncodingFormulaValidator extends TypeValidator {
     @Override
     public void process(ValidatorContext context) {
-        val encodeFormula = context.getEncodingFormula();
+        val encodeFormula = context.getEncodingFormulaClass();
         val typeAnnotation = context.getTypeAnnotation();
         val field = context.getField();
 
@@ -54,7 +54,7 @@ public class EncodingFormulaValidator extends TypeValidator {
                             return t == field.getType();
                         }
                     }).findAny()
-                    .orElseThrow(() -> new EncodeFormulaException(MessageFormat.format(
+                    .orElseThrow(() -> new FormulaException(MessageFormat.format(
                             CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
         }
 

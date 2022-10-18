@@ -17,11 +17,8 @@
 
 package org.indunet.fastproto.annotation;
 
-import org.indunet.fastproto.annotation.DataType;
-import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
-import org.indunet.fastproto.graph.resolve.validate.FieldValidator;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -35,10 +32,12 @@ import java.lang.annotation.Target;
  * @since 3.6.0
  */
 @DataType
-@Validator({FieldValidator.class, DecodingFormulaValidator.class, EncodingFormulaValidator.class})
+@Validator({DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Int32ArrayType {
+    Class DEFAULT_JAVA_TYPE = int[].class;
+
     int offset();
 
     int length() default -1;

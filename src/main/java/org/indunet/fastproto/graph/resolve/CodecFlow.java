@@ -19,13 +19,14 @@ package org.indunet.fastproto.graph.resolve;
 import lombok.val;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.codec.CodecContext;
-import org.indunet.fastproto.codec.CodecFactory;
+import org.indunet.fastproto.codec.CodecMapper;
 import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.graph.resolve.validate.TypeValidator;
 import org.indunet.fastproto.graph.resolve.validate.ValidatorContext;
 
 import java.text.MessageFormat;
+import java.util.function.Function;
 
 /**
  * Resolve decoder and encoder flow.
@@ -43,16 +44,43 @@ public class CodecFlow extends ResolvePipeline {
                 .defaultEndianPolicy(reference.getEndianPolicy())
                 .build();
 
-        reference.setDecoder(CodecFactory
-                .createDecoder(context, reference.getDecodingFormulaClass()));
-        reference.setEncoder(CodecFactory
-                .createEncoder(context, reference.getEncodingFormulaClass()));
+        if (reference.getDecodingFormulaClass() != null) {
+            Function decoder = CodecMapper.getDecoder(context, reference.getDecodingFormulaClass());
+
+            reference.setDecoder(decoder);
+        } else if (reference.getDecodingLambda() != null) {
+            val decoder = CodecMapper.getDefaultDecoder(context, reference.getProtocolType().defaultJavaType());
+            val func = reference.getDecodingLambda();
+
+            reference.setDecoder(decoder.andThen(func));
+        } else {
+            Function decoder = CodecMapper.getDecoder(context, null);
+
+            reference.setDecoder(decoder);
+        }
+
+        if (reference.getEncodingFormulaClass() != null) {
+            val encoder = CodecMapper.getEncoder(context, reference.getEncodingFormulaClass());
+
+            reference.setEncoder(encoder);
+        } else if (reference.getEncodingLambda() != null) {
+            val encoder = CodecMapper.getDefaultEncoder(context, reference.getProtocolType().defaultJavaType());
+            val func = reference.getEncodingLambda();
+
+            reference.setEncoder((byte[] bytes, Object value) -> encoder.accept(bytes, func.apply(value)));
+        } else {
+            val encoder = CodecMapper.getEncoder(context, null);
+
+            reference.setEncoder(encoder);
+        }
 
         try {
             val ctx = ValidatorContext.builder()
                     .field(reference.getField())
                     .typeAnnotation(reference.getDataTypeAnnotation())
                     .protocolType(reference.getProtocolType())
+                    .decodingFormulaClass(reference.getDecodingFormulaClass())
+                    .encodingFormulaClass(reference.getEncodingFormulaClass())
                     .build();
             val validator = reference.getDataTypeAnnotation()
                     .annotationType()
