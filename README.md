@@ -128,7 +128,7 @@ If the user does not specify it, FastProto will automatically guess the length.
 byte[] datagram = FastProto.toBytes(weather, 20);
 ```
 
-2. **Decoding Formula & Encoding Formula**
+2. **Formula**
 
 Perhaps you have noticed that the pressure signal corresponds to a conversion formula, usually requiring the user to multiply
 the serialized result by 0.1, which is an extremely common operation in IoT data exchange.
@@ -220,7 +220,7 @@ public class Weather {
 }
 ```
 
-## *解码 & 编码公式*
+## *Decoding & Encoding Formula*
 
 Users can customize formula in two ways. For simple formulas, it is recommended to use Lambda expression, while for more 
 complex formula, it is recommended to customize formula classes by implementing the `java.lang.function.Function` interface.

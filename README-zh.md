@@ -122,7 +122,7 @@ Weather weather = FastProto.parse(datagram, Weather.class);
 byte[] datagram = FastProto.toBytes(weather, 20);
 ```
 
-2. **编码公式 & 解码公式**
+2. **公式**
 
 也许你已经注意到压力信号对应一个换算公式，通常需要用户自行将序列化后的结果乘以0.1，这是物联网数据交换时极其常见的操作。
 为了帮助用户减少中间步骤，FastProto引入了编码公式注解`@EncodingFormula`和解码公式注解`@DecodingFormula`，上述简单的公式变换可以通过Lambda表达式实现。
