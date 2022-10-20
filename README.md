@@ -10,7 +10,6 @@ English | [中文](README-zh.md)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![JetBrain Support](https://img.shields.io/badge/JetBrain-support-blue)](https://www.jetbrains.com/community/opensource)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
-[![Gitee](https://img.shields.io/badge/repo-gitee-blue)](https://gitee.com/indunet/fastproto)
 
 FastProto is a binary serialization & deserialization tool that can customize protocol through annotations. It is written in Java and 
 solve the problem of cross-language and cross-platform data exchange, which is especially suitable for the Internet of Things (IoT).
@@ -25,6 +24,7 @@ solve the problem of cross-language and cross-platform data exchange, which is e
 
 ## *Under Developing*
 
+* Add auto type
 * Code structure & performance optimization
 
 ## *Compared with ProtoBuf*
@@ -235,8 +235,8 @@ public class Weather {
     ...
 
     @UInt32Type(offset = 14)
-    @DecodingFormula(lambda -> "x -> x * 0.1")
-    @EncodingFormula(lambda -> "x -> (long) (x * 10)")
+    @DecodingFormula(lambda = "x -> x * 0.1")
+    @EncodingFormula(lambda = "x -> (long) (x * 10)")
     double pressure;
 }
 
@@ -292,14 +292,14 @@ import org.indunet.fastproto.annotation.scala._
 
 ## *Benchmark*
 
-*   macOS, m1 8 cores, 16gb
+*   windows 11, i7 11th, 32gb
 *   openjdk 1.8.0_292
-*   datagram of 128 bytes and nested protocol class of 48 fields
+*   datagram of 60 bytes and protocol class of 13 fields
 
-|Benchmark |    Mode  | Samples  | Score |   Error   |   Units   |
-|:--------:|:--------:|:--------:|:-----:|:---------:|:---------:|
-| `FastProto::parse` |  throughput   |   10  |  132  | ± 1.6    |  ops/ms   |
-| `FastProto::toBytes` | throughput  |   10  |  201  | ± 1.5    |  ops/ms   |
+|Benchmark |    Mode  | Samples  | Score | Error  |   Units   |
+|:--------:|:--------:|:--------:|:-----:|:------:|:---------:|
+| `FastProto::parse` |  throughput   |   10  |  240  | ± 4.6  |  ops/ms   |
+| `FastProto::toBytes` | throughput  |   10  |  317  | ± 11.9 |  ops/ms   |
 
 ## *Build Requirements*
 
@@ -312,8 +312,6 @@ FastProto has obtained the support of JetBrain Open Source Project, which can pr
 all core contributors.
 If you are interested in this project and want to join and undertake part of the work (development/testing/documentation),
 please feel free to contact me via email <deng_ran@foxmail.com>
-
-Gitee Repository: [gitee.com/indunet/fastproto](https://gitee.com/indunet/fastproto)
 
 ## *License*
 

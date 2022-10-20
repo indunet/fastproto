@@ -10,7 +10,6 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![JetBrain Support](https://img.shields.io/badge/JetBrain-support-blue)](https://www.jetbrains.com/community/opensource)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
-[![GitHub](https://img.shields.io/badge/repo-github-blue)](https://github.com/indunet/fastproto)
 
 FastProto是一款能够通过注解自定义协议的二进制序列化 & 反序列化工具，其采用Java编写，解决了跨语言和跨平台的数据交换问题，特别适用于物联网（IoT）领域。
 
@@ -24,6 +23,7 @@ FastProto是一款能够通过注解自定义协议的二进制序列化 & 反�
 
 ## *Under Developing*
 
+* 添加自动类型
 * 代码结构 & 性能优化
 
 ## *与ProtoBuf相比较*
@@ -225,8 +225,8 @@ public class Weather {
     ...
 
     @UInt32Type(offset = 14)
-    @DecodingFormula(lambda -> "x -> x * 0.1")
-    @EncodingFormula(lambda -> "x -> (long) (x * 10)")
+    @DecodingFormula(lambda = "x -> x * 0.1")
+    @EncodingFormula(lambda = "x -> (long) (x * 10)")
     double pressure;
 }
 
@@ -283,12 +283,12 @@ import org.indunet.fastproto.annotation.scala._
 
 *   macOS, m1 8 cores, 16gb
 *   openjdk 1.8.0_292
-*   二进制数据固定大小128字节，嵌套数据对象共包含48个不同类型的字段
+*   二进制数据固定大小60字节，数据对象共包含13个不同类型的字段
 
-|Benchmark |    模式  | 样本数量  | 评分  |   误差   |   单位   |
-|:--------:|:--------:|:--------:|:---:|:---------:|:---------:|
-| `FastProto::parse` |  吞吐量   |   10  | 132 | ± 1.6    |  次/毫秒   |
-| `FastProto::toBytes` | 吞吐量  |   10  | 201 | ± 1.5    |  次/毫秒   |
+|Benchmark |    模式  | 样本数量  | 评分 |   误差   |   单位   |
+|:--------:|:--------:|:--------:|:--:|:---------:|:---------:|
+| `FastProto::parse` |  吞吐量   |   10  | 240 | ± 4.6    |  次/毫秒   |
+| `FastProto::toBytes` | 吞吐量  |   10  | 317 | ± 11.9    |  次/毫秒   |
 
 ## *Build Requirements*
 
@@ -299,8 +299,6 @@ import org.indunet.fastproto.annotation.scala._
 
 FastProto取得了etBrain开源计划的支持，可提供核心开发人员免费的全家桶许可证。
 如果你对该项目感兴趣，并希望加入承担部分工作（开发/测试/文档），请通过邮件<deng_ran@foxmail.com>联系我。
-
-GitHub仓库: [github.com/indunet/fastproto](https://github.com/indunet/fastproto)
 
 ## *许可证*
 

@@ -27,7 +27,7 @@ import java.io.IOException;
 
 /**
  * @author Deng Ran
- * @since 2.0.0
+ * @since 3.7.0
  */
 @Data
 public class LambdaObject {
