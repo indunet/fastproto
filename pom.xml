@@ -193,6 +193,7 @@
             <version>${jmh-generator-annprocess}</version>
             <scope>test</scope>
         </dependency>
+
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>

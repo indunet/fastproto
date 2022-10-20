@@ -24,6 +24,7 @@ FastProto是一款能够通过注解自定义协议的二进制序列化 & 反�
 
 ## *Under Developing*
 
+* 添加自动类型
 * 代码结构 & 性能优化
 
 ## *与ProtoBuf相比较*
@@ -225,8 +226,8 @@ public class Weather {
     ...
 
     @UInt32Type(offset = 14)
-    @DecodingFormula(lambda -> "x -> x * 0.1")
-    @EncodingFormula(lambda -> "x -> (long) (x * 10)")
+    @DecodingFormula(lambda = "x -> x * 0.1")
+    @EncodingFormula(lambda = "x -> (long) (x * 10)")
     double pressure;
 }
 
