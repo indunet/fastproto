@@ -16,56 +16,104 @@
 
 package org.indunet.fastproto.benchmark;
 
+import lombok.Data;
+import lombok.val;
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.*;
+import org.indunet.fastproto.util.CodecUtils;
+
+import java.io.ByteArrayOutputStream;
+import java.nio.charset.StandardCharsets;
+import java.util.Random;
+import java.util.stream.IntStream;
+
+import static java.lang.Math.abs;
 
 /**
  * @author Deng Ran
  * @since 1.4.0
  */
+@Data
 public class Sample {
     @BoolType(byteOffset = 0, bitOffset = 1)
-    Boolean bool1 = true;
+    Boolean bool1;
 
     @Int8Type(offset = 1)
-    Byte byte8 = 12;
+    Byte byte8;
 
     @Int16Type(offset = 2)
-    Short short16 = 128;
+    Short short16;
 
     @Int32Type(offset = 4)
-    Integer int32 = 34;
+    Integer int32;
 
     @Int64Type(offset = 8)
-    Long long64 = 90l;
+    Long long64;
 
     @FloatType(offset = 16)
-    Float float32 = 60.21f;
+    Float float32;
 
     @DoubleType(offset = 20)
-    Double double64 = 90.11;
+    Double double64;
 
     @Int8Type(offset = 28)
-    Integer int8 = 65;
+    Integer int8;
 
     @Int16Type(offset = 30)
-    Integer int16 = 9921;
+    Integer int16;
 
     @UInt8Type(offset = 32)
-    Integer uint8 = 232;
+    Integer uint8;
 
     @UInt16Type(offset = 34)
-    Integer uint16 = 1231;
+    Integer uint16;
 
     @UInt32Type(offset = 36)
-    Long uint32 = 123;
+    Long uint32;
 
     @BinaryType(offset = 40, length = 10)
     byte[] bytes;
 
-    @StringType(offset = 50, length = 6)
-    String str;
+    public Sample() {
+        val random = new Random();
+
+        this.bool1 = random.nextInt() % 2 == 0 ? true : false;
+        this.byte8 = (byte) random.nextInt(Byte.MAX_VALUE);
+        this.short16 = (short) random.nextInt(Short.MAX_VALUE);
+        this.int32 = random.nextInt();
+        this.long64 = random.nextLong();
+        this.float32 = random.nextFloat();
+        this.double64 = random.nextDouble();
+        this.int8 = random.nextInt(Byte.MAX_VALUE);
+        this.int16 = random.nextInt(Short.MAX_VALUE);
+        this.uint8 = abs(random.nextInt(UInt8Type.MAX_VALUE));
+        this.uint16 = abs(random.nextInt(UInt16Type.MAX_VALUE));
+        this.uint32 = (long) abs(random.nextInt());
+
+        val bytes = new byte[10];
+
+        IntStream.range(0, bytes.length)
+                .forEach(i -> bytes[i] = (byte) random.nextInt(Byte.MAX_VALUE));
+        this.bytes = bytes;
+    }
 
     public byte[] toBytes() {
+        val bytes = new byte[60];
 
+        CodecUtils.type(bytes, 0, 1, this.getBool1());
+        CodecUtils.type(bytes, 1, this.getByte8());
+        CodecUtils.type(bytes, 2, EndianPolicy.LITTLE, this.getShort16());
+        CodecUtils.type(bytes, 4, EndianPolicy.LITTLE, this.getInt32());
+        CodecUtils.type(bytes, 8, EndianPolicy.LITTLE, this.getLong64());
+        CodecUtils.type(bytes, 16, EndianPolicy.LITTLE, this.getFloat32());
+        CodecUtils.type(bytes, 20, EndianPolicy.LITTLE, this.getDouble64());
+        CodecUtils.int8Type(bytes, 28, this.getInt8());
+        CodecUtils.int16Type(bytes, 30, EndianPolicy.LITTLE, this.getInt16());
+        CodecUtils.uint8Type(bytes, 32, this.getUint8());
+        CodecUtils.uint16Type(bytes, 34, EndianPolicy.LITTLE, this.getUint16());
+        CodecUtils.uint32Type(bytes, 36, EndianPolicy.LITTLE, this.getUint32());
+        CodecUtils.type(bytes, 40, this.getBytes());
+
+        return bytes;
     }
 }

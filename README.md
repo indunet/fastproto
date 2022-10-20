@@ -292,14 +292,14 @@ import org.indunet.fastproto.annotation.scala._
 
 ## *Benchmark*
 
-*   macOS, m1 8 cores, 16gb
+*   windows 11, i7 11th, 32gb
 *   openjdk 1.8.0_292
-*   datagram of 128 bytes and nested protocol class of 48 fields
+*   datagram of 60 bytes and protocol class of 13 fields
 
-|Benchmark |    Mode  | Samples  | Score |   Error   |   Units   |
-|:--------:|:--------:|:--------:|:-----:|:---------:|:---------:|
-| `FastProto::parse` |  throughput   |   10  |  132  | ± 1.6    |  ops/ms   |
-| `FastProto::toBytes` | throughput  |   10  |  201  | ± 1.5    |  ops/ms   |
+|Benchmark |    Mode  | Samples  | Score | Error  |   Units   |
+|:--------:|:--------:|:--------:|:-----:|:------:|:---------:|
+| `FastProto::parse` |  throughput   |   10  |  240  | ± 4.6  |  ops/ms   |
+| `FastProto::toBytes` | throughput  |   10  |  317  | ± 11.9 |  ops/ms   |
 
 ## *Build Requirements*
 
