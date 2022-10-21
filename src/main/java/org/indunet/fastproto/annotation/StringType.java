@@ -40,7 +40,7 @@ public @interface StringType {
 
     int offset();
 
-    int length() default -1;
+    int length();
 
     String charset() default "UTF-8";
 }

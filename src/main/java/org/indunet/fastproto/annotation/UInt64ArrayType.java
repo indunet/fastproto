@@ -40,5 +40,5 @@ public @interface UInt64ArrayType {
 
     int offset();
 
-    int length() default -1;
+    int length();
 }

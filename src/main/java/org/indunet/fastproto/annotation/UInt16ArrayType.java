@@ -39,5 +39,5 @@ public @interface UInt16ArrayType {
 
     int offset();
 
-    int length() default -1;
+    int length();
 }

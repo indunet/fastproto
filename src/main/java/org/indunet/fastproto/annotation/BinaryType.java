@@ -28,7 +28,6 @@ import java.lang.annotation.Target;
  * Binary type, corresponding to Java byte array.
  *
  * @author Deng Ran
- * @see DataType
  * @since 1.0.0
  */
 @DataType
@@ -40,5 +39,5 @@ public @interface BinaryType {
 
     int offset();
 
-    int length() default -1;
+    int length();
 }

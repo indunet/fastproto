@@ -39,5 +39,5 @@ public @interface Int8ArrayType {
 
     int offset();
 
-    int length() default -1;
+    int length();
 }

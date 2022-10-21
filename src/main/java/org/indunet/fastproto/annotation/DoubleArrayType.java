@@ -39,5 +39,5 @@ public @interface DoubleArrayType {
 
     int offset();
 
-    int length() default -1;
+    int length();
 }

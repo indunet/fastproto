@@ -45,6 +45,4 @@ public @interface EnumType {
     int offset();
 
     String name() default "";
-
-    EndianPolicy[] endianPolicy() default {};
 }

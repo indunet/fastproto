@@ -25,6 +25,7 @@ solve the problem of cross-language and cross-platform data exchange, which is e
 ## *Under Developing*
 
 * Add auto type
+* Address conflict detection
 * Code structure & performance optimization
 
 ## *Compared with ProtoBuf*
@@ -48,7 +49,7 @@ FastProto is more recommended for the following scenarios:
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.7.0</version>
+    <version>3.7.1</version>
 </dependency>
 ```
 

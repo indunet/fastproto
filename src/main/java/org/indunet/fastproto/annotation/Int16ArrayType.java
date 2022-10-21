@@ -39,5 +39,5 @@ public @interface Int16ArrayType {
 
     int offset();
 
-    int length() default -1;
+    int length();
 }

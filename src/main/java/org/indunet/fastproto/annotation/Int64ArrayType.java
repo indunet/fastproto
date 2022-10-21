@@ -40,5 +40,5 @@ public @interface Int64ArrayType {
 
     int offset();
 
-    int length() default -1;
+    int length();
 }
