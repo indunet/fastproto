@@ -16,35 +16,33 @@
 
 package org.indunet.fastproto.api.auto;
 
-import org.indunet.fastproto.annotation.AutoType;
+import lombok.val;
+import org.indunet.fastproto.FastProto;
+import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Auto object.
+ * Unit test of auto type.
  *
  * @author Deng Ran
  * @since 3.7.1
  */
-public class AutoObject {
-    @AutoType(byteOffset = 0, bitOffset = 1)
-    Boolean bool1;
+public class AutoTypeTest {
+    @Test
+    public void testParse() {
+        val expected = new AutoTypeObject();
+        val bytes = expected.toBytes();
 
-    @AutoType(offset = 2)
-    Byte byte8;
-
-    @AutoType(offset = 4)
-    Short short16;
-
-    @AutoType(offset = 6)
-    Integer int32;
-
-    @AutoType(offset = 10)
-    Long long64;
-
-    public AutoObject() {
-
+        assertEquals(expected, FastProto.parse(bytes, AutoTypeObject.class));
     }
 
-    public byte[] toBytes() {
-        return null;
+    @Test
+    public void testToBytes() {
+        val object = new AutoTypeObject();
+        val expected = object.toBytes();
+
+        assertArrayEquals(expected, FastProto.toBytes(object, expected.length));
     }
 }

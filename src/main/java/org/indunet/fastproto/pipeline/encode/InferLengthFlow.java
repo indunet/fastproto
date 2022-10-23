@@ -17,8 +17,8 @@
 package org.indunet.fastproto.pipeline.encode;
 
 import lombok.val;
-import org.indunet.fastproto.exception.AddressingException;
 import org.indunet.fastproto.exception.CodecError;
+import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.pipeline.FlowCode;
 import org.indunet.fastproto.pipeline.Pipeline;
@@ -41,7 +41,7 @@ public class InferLengthFlow extends Pipeline<PipelineContext> {
                     val type = r.getProtocolType();
 
                     if (type.offset() < 0 || type.length() < 0) {
-                        throw new AddressingException(CodecError.UNABLE_INFER_LENGTH);
+                        throw new ResolveException(CodecError.UNABLE_INFER_LENGTH);
                     } else {
                         return type.offset() + type.size() + type.length();
                     }
@@ -49,7 +49,7 @@ public class InferLengthFlow extends Pipeline<PipelineContext> {
                 .orElse(0);
 
         if (max == 0) {
-            throw new AddressingException(CodecError.UNABLE_INFER_LENGTH);
+            throw new ResolveException(CodecError.UNABLE_INFER_LENGTH);
         } else {
             context.setDatagram(new byte[max]);
         }

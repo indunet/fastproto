@@ -21,6 +21,7 @@ import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.exception.DecodingException;
+import org.indunet.fastproto.exception.ResolveException;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -219,6 +220,16 @@ public class CodecMapper {
                         MessageFormat.format(CodecError.FAIL_INITIALIZING_DECODE_FORMULA.getMessage(), clazz.getName()), e);
             }
         });
+    }
+
+    public static Class getDataTypeAnnotationClass(Class fieldType) {
+        return codecMap.entrySet().stream()
+                .filter(e -> e.getValue().keySet().stream()
+                        .anyMatch(p -> p.test(fieldType)))
+                .map(Map.Entry::getKey)
+                .findAny()
+                .orElseThrow(() -> new ResolveException(
+                        String.format("%s is not supported", fieldType.getName())));
     }
 
     public static Function<byte[], ?> getDecoder(CodecContext context, Class<? extends Function> clazz) {
