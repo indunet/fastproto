@@ -37,7 +37,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Int32Type {
-    Class DEFAULT_JAVA_TYPE = Integer.class;
     int SIZE = Integer.SIZE >> 3;
     int MAX_VALUE = Integer.MAX_VALUE;
     int MIN_VALUE = Integer.MIN_VALUE;

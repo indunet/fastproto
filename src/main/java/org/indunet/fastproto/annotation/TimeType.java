@@ -38,8 +38,6 @@ import java.util.Date;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface TimeType {
-    Class DEFAULT_JAVA_TYPE = Date.class;
-
     int SIZE = Long.SIZE >> 3;
 
     int offset();

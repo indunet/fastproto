@@ -14,10 +14,11 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.codec;
+package org.indunet.fastproto.mapper;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.*;
+import org.indunet.fastproto.codec.*;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.exception.DecodingException;
@@ -37,7 +38,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * Codec factory.
+ * Codec mapper.
  *
  * @author Deng Ran
  * @since 3.2.1

@@ -20,7 +20,7 @@ import lombok.val;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.AutoType;
 import org.indunet.fastproto.annotation.DataType;
-import org.indunet.fastproto.codec.CodecMapper;
+import org.indunet.fastproto.mapper.CodecMapper;
 import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.graph.Reference;
 
@@ -37,7 +37,6 @@ public class TypeAnnotationFlow extends ResolvePipeline {
     @Override
     public void process(Reference reference) {
         val field = reference.getField();
-
         val typeAnnotation = Arrays.stream(field.getAnnotations())
                 .filter(a -> a.annotationType().isAnnotationPresent(DataType.class))
                 .findAny()
@@ -45,7 +44,7 @@ public class TypeAnnotationFlow extends ResolvePipeline {
 
         if (typeAnnotation instanceof AutoType) {
             Class<? extends Annotation> type = CodecMapper.getDataTypeAnnotationClass((Class) field.getGenericType());
-            Annotation proxy =  (Annotation) ProtocolType.proxy((AutoType) typeAnnotation, type);
+            Annotation proxy = ProtocolType.proxy((AutoType) typeAnnotation, type);
 
             reference.setDataTypeAnnotation(proxy);
             reference.setProtocolType(ProtocolType.proxy(proxy));

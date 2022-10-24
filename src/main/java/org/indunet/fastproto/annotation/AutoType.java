@@ -45,7 +45,7 @@ public @interface AutoType {
 
     int[] length() default {};
 
-    EndianPolicy[] endianPolicy() default {};
+    EndianPolicy[] endian() default {};
 
     String charset() default "UTF-8";
 

@@ -37,7 +37,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FloatType {
-    Class DEFAULT_JAVA_TYPE = Float.class;
     int SIZE = Float.SIZE >> 3;
     float MAX_VALUE = Float.MAX_VALUE;
     float MIN_VALUE = Float.MIN_VALUE;

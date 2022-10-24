@@ -16,6 +16,7 @@
 
 package org.indunet.fastproto.api.auto;
 
+import lombok.Data;
 import lombok.val;
 import org.indunet.fastproto.annotation.AutoType;
 import org.indunet.fastproto.util.CodecUtils;
@@ -28,6 +29,7 @@ import java.util.Random;
  * @author Deng Ran
  * @since 3.7.1
  */
+@Data
 public class AutoTypeObject {
     @AutoType(byteOffset = 0, bitOffset = 1)
     Boolean bool1;

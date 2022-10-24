@@ -16,11 +16,15 @@
 
 package org.indunet.fastproto;
 
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.SneakyThrows;
 import lombok.val;
 import org.indunet.fastproto.annotation.BoolType;
 import org.indunet.fastproto.annotation.UInt8Type;
 import org.junit.jupiter.api.Test;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Proxy;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,21 +35,13 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ProtocolTypeTest {
     @Test
     @SneakyThrows
-    public void testProxy1() {
+    public void testProxy() {
         val field = TestObj.class.getDeclaredField("value");
         val typeAnnotation = field.getAnnotation(UInt8Type.class);
         val proxy = ProtocolType.proxy(typeAnnotation);
 
         assertEquals(0, proxy.offset());
         assertEquals(UInt8Type.SIZE, proxy.size());
-    }
-
-    @Test
-    public void testProxy2() {
-        val proxy = ProtocolType.proxy(null, BoolType.class);
-
-        assertTrue(proxy instanceof BoolType);
-        assertNotNull(ProtocolType.proxy(proxy));
     }
 
     public static class TestObj {

@@ -24,6 +24,8 @@ import java.lang.reflect.Proxy;
 import java.util.Arrays;
 
 /**
+ * Protocol type.
+ *
  * @author Deng Ran
  * @since 3.2.0
  */
@@ -56,8 +58,13 @@ public interface ProtocolType {
             if (Arrays.asList("offset", "byteOffset", "bitOffset", "length")
                     .contains(mth.getName())) {
                 return ((int[]) mth.invoke(autoType, args))[0];
-            } else {
+            } else if (Arrays.asList("endian", "charset", "name")
+                    .contains(method.getName())) {
                 return mth.invoke(autoType, args);
+            } else if (mth.getName().equals("annotationType")) {
+                return dataTypeAnnotationClass;
+            } else {
+                return null;
             }
         });
     }
@@ -123,6 +130,4 @@ public interface ProtocolType {
     Class<? extends Annotation> getType();
 
     int size();
-
-    Class defaultJavaType();
 }
