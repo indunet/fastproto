@@ -16,16 +16,12 @@
 
 package org.indunet.fastproto.mapper;
 
-import jdk.nashorn.internal.codegen.types.BooleanType;
-import lombok.val;
 import org.indunet.fastproto.annotation.*;
-import org.indunet.fastproto.codec.*;
 import org.indunet.fastproto.exception.ResolveException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
-import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
@@ -51,18 +47,11 @@ public class DataTypeAnnotationMapper {
         map.put(c -> c.equals(Byte[].class), Int8ArrayType.class);
         map.put(t -> collectionType.apply(t, Byte.class), Int8ArrayType.class);
 
-        map.put(c -> c.equals(int.class) || c.equals(Integer.class), Int8Type.class);
         map.put(c -> c.equals(byte[].class), BinaryType.class);
-        map.put(c -> c.equals(int[].class), Int8ArrayType.class);
-        map.put(c -> c.equals(Integer[].class), Int8ArrayType.class);
         map.put(t -> collectionType.apply(t, Integer.class), Int8ArrayType.class);
 
         map.put(c -> c.equals(short.class) || c.equals(Short.class), Int16Type.class);
-        map.put(c -> c.equals(int.class) || c.equals(Integer.class), Int16Type.class);
         map.put(c -> c.equals(short[].class), Int16ArrayType.class);
-        map.put(c -> c.equals(int[].class), Int16ArrayType.class);
-        map.put(c -> c.equals(Integer[].class), Int16ArrayType.class);
-        map.put(t -> collectionType.apply(t, Integer.class), Int16ArrayType.class);
         map.put(c -> c.equals(Short[].class), Int16ArrayType.class);
         map.put(t -> collectionType.apply(t, Short.class), Int16ArrayType.class);
 
@@ -99,10 +88,10 @@ public class DataTypeAnnotationMapper {
         map.put(c -> c.equals(StringBuffer.class), StringType.class);
         map.put(c -> c.equals(StringBuilder.class), StringType.class);
 
-        map.put(t -> Enum.class.isAssignableFrom((Class) t), EnumType.class);
+        map.put(t -> t instanceof Class && Enum.class.isAssignableFrom((Class) t), EnumType.class);
     }
 
-    public static Class<? extends Annotation> get(Class type) {
+    public static Class<? extends Annotation> get(Type type) {
         return map.entrySet().stream()
                 .filter(e -> e.getKey().test(type))
                 .map(Map.Entry::getValue)

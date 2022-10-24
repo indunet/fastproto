@@ -18,10 +18,15 @@ package org.indunet.fastproto.api.auto;
 
 import lombok.Data;
 import lombok.val;
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.AutoType;
 import org.indunet.fastproto.util.CodecUtils;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Random;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Auto object.
@@ -46,6 +51,12 @@ public class AutoTypeObject {
     @AutoType(offset = 10)
     Long long64;
 
+    @AutoType(offset = 18, endian = EndianPolicy.BIG)
+    Date date;
+
+    @AutoType(offset = 26, length = 8)
+    List<Integer> ints;
+
     public AutoTypeObject() {
         val random = new Random();
 
@@ -54,16 +65,24 @@ public class AutoTypeObject {
         this.short16 = (short) random.nextInt(Short.MAX_VALUE);
         this.int32 = random.nextInt();
         this.long64 = random.nextLong();
+        this.date = new Date();
+        this.ints = IntStream.range(0, 8)
+                .mapToObj(Integer::valueOf)
+                .collect(Collectors.toList());
     }
 
     public byte[] toBytes() {
-        val bytes = new byte[20];
+        val bytes = new byte[58];
 
         CodecUtils.boolType(bytes, 0, 1, this.bool1);
         CodecUtils.byteType(bytes, 2, this.byte8);
         CodecUtils.shortType(bytes, 4, this.short16);
         CodecUtils.int32Type(bytes, 6, this.int32);
         CodecUtils.int64Type(bytes, 10, this.long64);
+        CodecUtils.int64Type(bytes, 18, EndianPolicy.BIG, this.date.getTime());
+
+        IntStream.range(0, this.ints.size())
+                .forEach(i -> CodecUtils.int32Type(bytes, 26 + i * 4, this.ints.get(i)));
 
         return bytes;
     }

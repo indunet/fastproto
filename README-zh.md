@@ -23,7 +23,7 @@ FastProto是一款能够通过注解自定义协议的二进制序列化 & 反�
 
 ## *Under Developing*
 
-* 添加自动类型
+* 自动类型校验
 * 地址冲突检测
 * 代码结构 & 性能优化
 
@@ -144,7 +144,7 @@ public class Weather {
 
 ## *注解*
 
-### *基本类型注解*
+1. *基本类型注解*
 FastProto支持Java基础数据类型、时间类型、字符串类型、枚举类型和字节数组等，考虑到跨语言跨平台的数据交换，FastProto还引入了无符号类型。
 
 
@@ -166,7 +166,7 @@ FastProto支持Java基础数据类型、时间类型、字符串类型、枚举�
 |     @TimeType     |  Timestamp/Date/Calendar/Instant   |      long      | 8 字节 |  
 |     @EnumType     |                enum                |      enum      | 1 字节 |
 
-### *数组类型注解*
+2. *数组类型注解*
 
 |        注解        |                                       Java                                        |      C/C++       |
 |:----------------:|:---------------------------------------------------------------------------------:|:----------------:|
@@ -183,7 +183,7 @@ FastProto支持Java基础数据类型、时间类型、字符串类型、枚举�
 | @DoubleArrayType |                    Double[]/double[]/Collection&lt;Double&gt;                     |     double[]     |
 
 
-### 其它注解
+3. *其它注解*
 FastProto还提供了一些辅助注解，帮助用户进一步自定义二进制格式、解码和编码流程。
 
 |        注解        |    作用域    |     描述     |
@@ -195,7 +195,7 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 | @DecodingFormula |   Field   |    解码公式    |
 | @EncodingFormula |   Field   |    编码公式    |
 
-## *大小开端*
+3.1 *大小开端*
 FastProto默认使用小开端，可以通过`@DefaultEndian`注解修改全局开端类型，也可以通过endian属性修改特定字段开端，后者优先级更高。
 
 ```java
@@ -212,11 +212,11 @@ public class Weather {
 }
 ```
 
-## *解码 & 编码公式*
+3.2 *解码 & 编码公式*
 
 用户可以通过两种方式自定义公式，形式较为简单的公式建议使用Lambda表达式，形式较为复杂的公式建议自定义公式类并实现`java.lang.function.Function`接口。
 
-1. Lambda表达式
+* Lambda表达式
 
 ```java
 import org.indunet.fastproto.annotation.DecodingFormula;
@@ -233,7 +233,7 @@ public class Weather {
 
 ```
 
-2. 自定义公式类
+* 自定义公式类
 
 ```java
 import java.util.function.Function;
@@ -272,6 +272,22 @@ public class Weather {
 ```
 
 用户可以根据需要仅指定编码公式，或者仅指定解码公式，如果同时指定Lambda表达式和自定义公式类，后者有更高的优先级。
+
+3.3 *自动类型*
+
+如果字段被`@AutoType`修饰，那么FastProto会自动推测类型。
+
+```java
+import org.indunet.fastproto.annotation.AutoType;
+
+public class Weather {
+    @AutoType(offset = 10, endian = EndianPolicy.LITTLE)
+    int humidity;
+
+    @AutoType(offset = 14)
+    long pressure;
+}
+```
 
 ## *Scala*
 FastProto支持case class，但是Scala并不完全兼容Java注解，所以请使用如下方式引用FastProto。
