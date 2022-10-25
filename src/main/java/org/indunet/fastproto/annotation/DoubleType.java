@@ -37,7 +37,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DoubleType {
-    Class DEFAULT_JAVA_TYPE = Double.class;
     int SIZE = Double.SIZE >> 3;
     double MAX_VALUE = Double.MAX_VALUE;
     double MIN_VALUE = Double.MIN_VALUE;

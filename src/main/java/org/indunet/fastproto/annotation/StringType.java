@@ -36,11 +36,9 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface StringType {
-    Class DEFAULT_JAVA_TYPE = String.class;
-
     int offset();
 
-    int length() default -1;
+    int length();
 
     String charset() default "UTF-8";
 }

@@ -16,6 +16,7 @@
 
 package org.indunet.fastproto;
 
+import lombok.val;
 import org.indunet.fastproto.annotation.*;
 
 import java.lang.annotation.Annotation;
@@ -23,6 +24,8 @@ import java.lang.reflect.Proxy;
 import java.util.Arrays;
 
 /**
+ * Protocol type.
+ *
  * @author Deng Ran
  * @since 3.2.0
  */
@@ -44,6 +47,27 @@ public interface ProtocolType {
     Class<? extends Annotation> UINT32 = UInt32Type.class;
     Class<? extends Annotation> UINT64 = UInt64Type.class;
     Class<? extends Annotation> ENUM = EnumType.class;
+
+    static <T> T proxy(AutoType autoType, Class<T> dataTypeAnnotationClass) {
+        return (T) Proxy.newProxyInstance(ProtocolType.class.getClassLoader(), new Class<?>[] {dataTypeAnnotationClass}, (proxy, method, args) -> {
+            val mth = Arrays.stream(autoType.getClass().getMethods())
+                    .filter(m -> m.getName().equals(method.getName()))
+                    .findAny()
+                    .get();
+
+            if (Arrays.asList("offset", "byteOffset", "bitOffset", "length")
+                    .contains(mth.getName())) {
+                return ((int[]) mth.invoke(autoType, args))[0];
+            } else if (Arrays.asList("endian", "charset", "name")
+                    .contains(method.getName())) {
+                return mth.invoke(autoType, args);
+            } else if (mth.getName().equals("annotationType")) {
+                return dataTypeAnnotationClass;
+            } else {
+                return null;
+            }
+        });
+    }
 
     static ProtocolType proxy(Annotation typeAnnotation) {
         return (ProtocolType) Proxy.newProxyInstance(ProtocolType.class.getClassLoader(), new Class<?>[]{ProtocolType.class, typeAnnotation.annotationType()}, (proxy, method, args) -> {
@@ -106,6 +130,4 @@ public interface ProtocolType {
     Class<? extends Annotation> getType();
 
     int size();
-
-    Class defaultJavaType();
 }

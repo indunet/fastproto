@@ -36,9 +36,7 @@ import java.math.BigInteger;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UInt64ArrayType {
-    Class DEFAULT_JAVA_TYPE = BigInteger[].class;
-
     int offset();
 
-    int length() default -1;
+    int length();
 }

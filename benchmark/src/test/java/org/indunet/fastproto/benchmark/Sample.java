@@ -22,8 +22,6 @@ import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.util.CodecUtils;
 
-import java.io.ByteArrayOutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.Random;
 import java.util.stream.IntStream;
 
@@ -77,7 +75,7 @@ public class Sample {
     public Sample() {
         val random = new Random();
 
-        this.bool1 = random.nextInt() % 2 == 0 ? true : false;
+        this.bool1 = random.nextBoolean();
         this.byte8 = (byte) random.nextInt(Byte.MAX_VALUE);
         this.short16 = (short) random.nextInt(Short.MAX_VALUE);
         this.int32 = random.nextInt();

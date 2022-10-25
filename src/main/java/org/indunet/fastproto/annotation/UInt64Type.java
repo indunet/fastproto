@@ -38,7 +38,6 @@ import java.math.BigInteger;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UInt64Type {
-    Class DEFAULT_JAVA_TYPE = BigInteger.class;
     int SIZE = Long.SIZE >> 3;
     BigInteger MAX_VALUE = new BigInteger(String.valueOf(Long.MAX_VALUE))
             .subtract(new BigInteger(String.valueOf(Long.MIN_VALUE)));

@@ -17,6 +17,7 @@
 
 package org.indunet.fastproto.annotation;
 
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
 
@@ -26,17 +27,27 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Int32 array type
+ * Auto type.
  *
  * @author Deng Ran
- * @since 3.6.0
+ * @since 3.7.1
  */
 @DataType
 @Validator({DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface Int32ArrayType {
-    int offset();
+public @interface AutoType {
+    int[] offset() default {};
 
-    int length();
+    int[] byteOffset() default {};
+
+    int[] bitOffset() default {};
+
+    int[] length() default {};
+
+    EndianPolicy[] endian() default {};
+
+    String charset() default "UTF-8";
+
+    String name() default "";
 }

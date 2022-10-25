@@ -37,7 +37,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Int16Type {
-    Class DEFAULT_JAVA_TYPE = Integer.class;
     int SIZE = Short.SIZE >> 3;
     int MAX_VALUE = Short.MAX_VALUE;
     int MIN_VALUE = Short.MIN_VALUE;

@@ -24,7 +24,8 @@ solve the problem of cross-language and cross-platform data exchange, which is e
 
 ## *Under Developing*
 
-* Add auto type
+* Verification of auto type
+* Address conflict detection
 * Code structure & performance optimization
 
 ## *Compared with ProtoBuf*
@@ -48,7 +49,7 @@ FastProto is more recommended for the following scenarios:
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.7.0</version>
+    <version>3.7.1</version>
 </dependency>
 ```
 
@@ -151,7 +152,8 @@ public class Weather {
 
 ## *Annotations*
 
-### *Primitive Type Annotations*
+1. *Primitive Type Annotations*
+
 FastProto supports Java primitive data types, time type, String type, enum type and byte array type, taking into account 
 cross-language and cross-platform data exchange, FastProto also introduces unsigned types.
 
@@ -173,7 +175,7 @@ cross-language and cross-platform data exchange, FastProto also introduces unsig
 |       @TimeType       |  Timestamp/Date/Calendar/Instant  |      long      |  8 bytes  |  
 |       @EnumType       |               enum                |      enum      |  1 bytes  |
 
-### *Array Type Annotations*
+2. *Array Type Annotations*
 
 |    Annotation    |                                       Java                                        |      C/C++       |
 |:----------------:|:---------------------------------------------------------------------------------:|:----------------:|
@@ -189,7 +191,8 @@ cross-language and cross-platform data exchange, FastProto also introduces unsig
 | @FloatArrayType  |                      Float[]/float[]/Collection&lt;Float&gt;                      |     float[]      |
 | @DoubleArrayType |                    Double[]/double[]/Collection&lt;Double&gt;                     |     double[]     |
 
-### *Other Annotations*
+3. *Other Annotations*
+
 FastProto also provides some auxiliary annotations to help users further customize the binary format, decoding and encoding process.
 
 |    Annotation    | Scope |              Description              |
@@ -200,9 +203,11 @@ FastProto also provides some auxiliary annotations to help users further customi
 |   @FixedLength   | Class |   Enable fixed length of datagram.    |
 | @DecodingFormula | Field |           Decoding formula.           |
 | @EncodingFormula | Field |           Encoding formula.           |
+|    @AutoType     | Field |           Use default type.           |
 
 
-## Endianness
+3.1 *Endianness*
+
 FastProto uses little endian by default. You can modify the global endian through `@DefaultEndian` annotation, or you can 
 modify the endian of specific field through `endian` attribute which has a higher priority.
 
@@ -220,12 +225,12 @@ public class Weather {
 }
 ```
 
-## *Decoding & Encoding Formula*
+3.2 *Decoding & Encoding Formula*
 
 Users can customize formula in two ways. For simple formulas, it is recommended to use Lambda expression, while for more 
 complex formula, it is recommended to customize formula classes by implementing the `java.lang.function.Function` interface.
 
-1. Lambda Expression
+* Lambda Expression
 
 ```java
 import org.indunet.fastproto.annotation.DecodingFormula;
@@ -242,7 +247,7 @@ public class Weather {
 
 ```
 
-2. Custom Formula Class
+* Custom Formula Class
 
 ```java
 import java.util.function.Function;
@@ -283,7 +288,23 @@ public class Weather {
 Users can specify only the encoding formula or only the decoding formula as needed. If both lambda expression and custom 
 formula class are specified, the latter has a higher priority.
 
-## Scala
+3.3 *AutoType*
+
+FastProto can automatically infer type if field is annotated by `@AutoType`.
+
+```java
+import org.indunet.fastproto.annotation.AutoType;
+
+public class Weather {
+    @AutoType(offset = 10, endian = EndianPolicy.LITTLE)
+    int humidity;
+
+    @AutoType(offset = 14)
+    long pressure;
+}
+```
+
+## *Scala*
 FastProto supports case class，but Scala is not fully compatible with Java annotations, so please refer to FastProto as follows.
 
 ```scala

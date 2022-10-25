@@ -14,13 +14,15 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.codec;
+package org.indunet.fastproto.mapper;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.*;
+import org.indunet.fastproto.codec.*;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.exception.DecodingException;
+import org.indunet.fastproto.exception.ResolveException;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -36,7 +38,7 @@ import java.util.function.Function;
 import java.util.function.Predicate;
 
 /**
- * Codec factory.
+ * Codec mapper.
  *
  * @author Deng Ran
  * @since 3.2.1
@@ -219,6 +221,16 @@ public class CodecMapper {
                         MessageFormat.format(CodecError.FAIL_INITIALIZING_DECODE_FORMULA.getMessage(), clazz.getName()), e);
             }
         });
+    }
+
+    public static Class getDataTypeAnnotationClass(Class fieldType) {
+        return codecMap.entrySet().stream()
+                .filter(e -> e.getValue().keySet().stream()
+                        .anyMatch(p -> p.test(fieldType)))
+                .map(Map.Entry::getKey)
+                .findAny()
+                .orElseThrow(() -> new ResolveException(
+                        String.format("%s is not supported", fieldType.getName())));
     }
 
     public static Function<byte[], ?> getDecoder(CodecContext context, Class<? extends Function> clazz) {

@@ -22,6 +22,7 @@ import org.indunet.fastproto.annotation.EncodingFormula;
 import org.indunet.fastproto.exception.FormulaException;
 import org.indunet.fastproto.formula.FormulaBuilder;
 import org.indunet.fastproto.graph.Reference;
+import org.indunet.fastproto.mapper.JavaTypeMapper;
 
 /**
  * Formula flow.
@@ -47,7 +48,7 @@ public class FormulaFlow extends ResolvePipeline {
                     throw new FormulaException(String.format("fail initializing formula %s", clazz.getSimpleName()), e);
                 }
             } else if (!formula.lambda().isEmpty()) {
-                val inputType = reference.getProtocolType().defaultJavaType();
+                val inputType = JavaTypeMapper.get(reference.getDataTypeAnnotation().annotationType());
                 val builder = FormulaBuilder.create(inputType, formula.lambda());
 
                 reference.setDecodingLambda(builder.build());
