@@ -24,7 +24,6 @@ solve the problem of cross-language and cross-platform data exchange, which is e
 
 ## *Under Developing*
 
-* Verification of auto type
 * Address conflict detection
 * Code structure & performance optimization
 

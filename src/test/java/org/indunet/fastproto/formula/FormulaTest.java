@@ -22,7 +22,8 @@ import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.DecodingFormula;
 import org.indunet.fastproto.annotation.EncodingFormula;
 import org.indunet.fastproto.annotation.Int8Type;
-import org.indunet.fastproto.exception.FormulaException;
+import org.indunet.fastproto.exception.DecodingException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -52,7 +53,7 @@ public class FormulaTest {
     @Test
     public void testEncodeFormula() {
         val object = new TestObject1(101);
-        assertThrows(FormulaException.class, () -> FastProto.toBytes(object, 10));
+        assertThrows(EncodingException.class, () -> FastProto.toBytes(object, 10));
     }
 
     @AllArgsConstructor
@@ -73,7 +74,7 @@ public class FormulaTest {
     public void testDecodeFormula() {
         val datagram = new byte[10];
 
-        assertThrows(FormulaException.class, () -> FastProto.parse(datagram, TestObject2.class));
+        assertThrows(DecodingException.class, () -> FastProto.parse(datagram, TestObject2.class));
     }
 
     @Test

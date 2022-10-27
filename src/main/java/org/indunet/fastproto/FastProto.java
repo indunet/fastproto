@@ -30,30 +30,30 @@ import org.indunet.fastproto.pipeline.PipelineContext;
  */
 public class FastProto {
     /**
-     * Convert binary message into object.
+     * Convert byte array into object.
      *
-     * @param datagram      binary message
-     * @param protocolClass deserialized object
-     * @return deserialize object instance
+     * @param bytes      binary message
+     * @param clazz class of deserialized object
+     * @return deserialize object
      */
-    public static <T> T parse(@NonNull byte[] datagram, @NonNull Class<T> protocolClass) {
-        return parse(datagram, protocolClass, CodecFeature.DEFAULT);
+    public static <T> T parse(@NonNull byte[] bytes, @NonNull Class<T> clazz) {
+        return parse(bytes, clazz, CodecFeature.DEFAULT);
     }
 
     /**
-     * Convert binary message into object.
+     * Convert byte array into object.
      *
-     * @param datagram      binary message
-     * @param protocolClass deserialized object
+     * @param bytes      byte array
+     * @param clazz class of deserialized object
      * @param codecFeatures codec feature code
-     * @return deserialize object instance
+     * @return deserialize object
      */
-    public static <T> T parse(@NonNull byte[] datagram, @NonNull Class<T> protocolClass, long... codecFeatures) {
-        val graph = Resolver.resolve(protocolClass);
+    public static <T> T parse(@NonNull byte[] bytes, @NonNull Class<T> clazz, long... codecFeatures) {
+        val graph = Resolver.resolve(clazz);
         val codecFeature = CodecFeature.of(codecFeatures);
         val context = PipelineContext.builder()
-                .datagram(datagram)
-                .protocolClass(protocolClass)
+                .datagram(bytes)
+                .protocolClass(clazz)
                 .codecFeature(codecFeature)
                 .graph(graph)
                 .build();
@@ -63,35 +63,48 @@ public class FastProto {
         Pipeline.getDecodeFlow(feature | codecFeature)
                 .process(context);
 
-        return context.getObject(protocolClass);
+        return context.getObject(clazz);
     }
 
     /**
-     * Convert object into binary datagram.
+     * Convert object into byte array.
      *
      * @param object serialized object
-     * @return binary datagram.
+     * @return byte array.
      */
     public static byte[] toBytes(@NonNull Object object) {
         return toBytes(object, CodecFeature.DEFAULT);
     }
 
     /**
-     * Convert object into binary datagram.
+     * Convert object into byte array.
      *
      * @param object serialized object
-     * @param length the length of the datagram.
-     * @return binary datagram.
+     * @param length the length of the datagram
+     * @return byte array
      */
     public static byte[] toBytes(@NonNull Object object, int length) {
         return toBytes(object, new byte[length], CodecFeature.DEFAULT);
     }
 
-    public static void toBytes(@NonNull Object object, byte[] buffer) {
+    /**
+     * Convert object into byte array
+     *
+     * @param object serialized object
+     * @param buffer write result into buffer
+     * @return void
+     */
+    public static void toBytes(Object object, byte[] buffer) {
         toBytes(object, buffer, CodecFeature.DEFAULT);
     }
 
-    public static byte[] toBytes(@NonNull Object object, long... codecFeatures) {
+    /**
+     * Convert object into byte array.
+     *
+     * @param object serialized object
+     * @return byte array
+     */
+    public static byte[] toBytes(Object object, long... codecFeatures) {
         val graph = Resolver.resolve(object.getClass());
         val codecFeature = CodecFeature.of(codecFeatures);
         val context = PipelineContext.builder()
@@ -108,11 +121,25 @@ public class FastProto {
         return context.getDatagram();
     }
 
-    public static byte[] toBytes(@NonNull Object object, int length, long... codecFeatures) {
+    /**
+     * Convert object into byte array.
+     *
+     * @param object serialized object
+     * @param length the length of byte array
+     * @return byte array
+     */
+    public static byte[] toBytes(Object object, int length, long... codecFeatures) {
         return toBytes(object, new byte[length], codecFeatures);
     }
 
-    public static byte[] toBytes(@NonNull Object object, byte[] buffer, long... codecFeatures) {
+    /**
+     * Convert object into byte array.
+     *
+     * @param object serialized object
+     * @param buffer write result into buffer
+     * @return byte array
+     */
+    public static byte[] toBytes(Object object, byte[] buffer, long... codecFeatures) {
         val graph = Resolver.resolve(object.getClass());
         val codecFeature = CodecFeature.of(codecFeatures);
         val context = PipelineContext.builder()

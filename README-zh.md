@@ -23,7 +23,6 @@ FastProto是一款能够通过注解自定义协议的二进制序列化 & 反�
 
 ## *Under Developing*
 
-* 自动类型校验
 * 地址冲突检测
 * 代码结构 & 性能优化
 
@@ -298,7 +297,7 @@ import org.indunet.fastproto.annotation.scala._
 
 ## *基准测试*
 
-*   macOS, m1 8 cores, 16gb
+*   windows 11, i7 11th, 32gb
 *   openjdk 1.8.0_292
 *   二进制数据固定大小60字节，数据对象共包含13个不同类型的字段
 

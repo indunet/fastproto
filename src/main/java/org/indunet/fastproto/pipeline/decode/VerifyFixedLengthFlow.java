@@ -17,7 +17,7 @@
 package org.indunet.fastproto.pipeline.decode;
 
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.FixedLengthException;
+import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.PipelineContext;
 import org.indunet.fastproto.pipeline.FlowCode;
@@ -40,7 +40,7 @@ public class VerifyFixedLengthFlow extends Pipeline<PipelineContext> {
         int length = context.getDatagram().length;
 
         if (fixedLength != length) {
-            throw new FixedLengthException(MessageFormat.format(
+            throw new ResolveException(MessageFormat.format(
                     CodecError.FIXED_LENGTH_UNMATCH.getMessage(), fixedLength, length));
         }
 

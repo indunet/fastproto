@@ -18,6 +18,7 @@ package org.indunet.fastproto;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.*;
+import org.indunet.fastproto.exception.ResolveException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
@@ -57,7 +58,14 @@ public interface ProtocolType {
 
             if (Arrays.asList("offset", "byteOffset", "bitOffset", "length")
                     .contains(mth.getName())) {
-                return ((int[]) mth.invoke(autoType, args))[0];
+                val ints = (int[]) mth.invoke(autoType, args);
+
+                if (ints.length != 0) {
+                    return ints[0];
+                } else {
+                    throw new ResolveException(
+                            String.format("Autotype lack of property %s", mth.getName()));
+                }
             } else if (Arrays.asList("endian", "charset", "name")
                     .contains(method.getName())) {
                 return mth.invoke(autoType, args);
