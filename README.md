@@ -24,7 +24,6 @@ solve the problem of cross-language and cross-platform data exchange, which is e
 
 ## *Under Developing*
 
-* Verification of auto type
 * Address conflict detection
 * Code structure & performance optimization
 
@@ -49,7 +48,7 @@ FastProto is more recommended for the following scenarios:
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.7.1</version>
+    <version>3.8.0</version>
 </dependency>
 ```
 

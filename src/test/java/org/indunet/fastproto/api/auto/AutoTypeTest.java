@@ -18,10 +18,10 @@ package org.indunet.fastproto.api.auto;
 
 import lombok.val;
 import org.indunet.fastproto.FastProto;
+import org.indunet.fastproto.exception.ResolveException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit test of auto type.
@@ -32,17 +32,26 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 public class AutoTypeTest {
     @Test
     public void testParse() {
-        val expected = new AutoTypeObject();
+        val expected = new TestObject1();
         val bytes = expected.toBytes();
 
-        assertEquals(expected, FastProto.parse(bytes, AutoTypeObject.class));
+        assertEquals(expected, FastProto.parse(bytes, TestObject1.class));
     }
 
     @Test
     public void testToBytes() {
-        val object = new AutoTypeObject();
+        val object = new TestObject1();
         val expected = object.toBytes();
 
         assertArrayEquals(expected, FastProto.toBytes(object, expected.length));
+    }
+
+    @Test
+    public void testException() {
+        val object = new TestObject2();
+        val bytes = new byte[10];
+
+        assertThrows(ResolveException.class, () -> FastProto.parse(bytes, TestObject2.class));
+        assertThrows(ResolveException.class, () -> FastProto.toBytes(object, 10));
     }
 }

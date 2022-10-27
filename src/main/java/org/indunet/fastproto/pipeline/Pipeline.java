@@ -16,6 +16,7 @@
 
 package org.indunet.fastproto.pipeline;
 
+import lombok.val;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.graph.resolve.validate.ValidatorContext;
@@ -87,17 +88,32 @@ public abstract class Pipeline<T> {
 
     public abstract long getCode();
 
-    protected static ConcurrentMap<Long, Pipeline> decodeFlows = new ConcurrentHashMap<>();
-    protected static ConcurrentMap<Long, Pipeline> encodeFlows = new ConcurrentHashMap<>();
+    protected static Pipeline decodePipeline;
+    protected static Pipeline encodePipeline;
+
+    static {
+        val verifyFixedLengthFlow = new VerifyFixedLengthFlow();
+
+        verifyFixedLengthFlow.setNext(new DecodeFlow());
+
+        decodePipeline = verifyFixedLengthFlow;
+
+        val fixedLengthFlow = new FixedLengthFlow();
+
+        fixedLengthFlow.setNext(new InferLengthFlow())
+                .setNext(new EncodeFlow());
+
+        encodePipeline = fixedLengthFlow;
+    }
 
     protected static Pipeline<ValidatorContext> validateFlow;
 
-    public static Pipeline<PipelineContext> getDecodeFlow(long codecFeature) {
-        return decodeFlows.computeIfAbsent(codecFeature, __ -> create(decodeFlowClasses, codecFeature));
+    public static Pipeline<PipelineContext> getDecodeFlow() {
+        return decodePipeline;
     }
 
-    public static Pipeline<PipelineContext> getEncodeFlow(long codecFeature) {
-        return encodeFlows.computeIfAbsent(codecFeature, __ -> create(encodeFlowClasses, codecFeature));
+    public static Pipeline<PipelineContext> getEncodeFlow() {
+        return encodePipeline;
     }
 
     public static Pipeline create(Class<? extends Pipeline>[] flowClasses, long codecFeature) {

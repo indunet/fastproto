@@ -18,7 +18,6 @@ package org.indunet.fastproto.api;
 
 import lombok.SneakyThrows;
 import lombok.val;
-import org.indunet.fastproto.CodecFeature;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.DefaultEndian;
@@ -31,7 +30,7 @@ import org.indunet.fastproto.domain.datagram.StateDatagram;
 import org.indunet.fastproto.domain.tesla.Battery;
 import org.indunet.fastproto.domain.tesla.Motor;
 import org.indunet.fastproto.domain.tesla.Tesla;
-import org.indunet.fastproto.exception.FixedLengthException;
+import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.util.CodecUtils;
 import org.junit.jupiter.api.Test;
 
@@ -159,8 +158,6 @@ public class FastProtoTest {
         // Test decode.
         assertEquals(
                 FastProto.parse(datagram, Weather.class).toString(), weather.toString());
-        assertEquals(
-                FastProto.parse(datagram, Weather.class, CodecFeature.DEFAULT).toString(), weather.toString());
 
         // Test encode.
         byte[] cache = FastProto.toBytes(weather, 23);
@@ -243,7 +240,7 @@ public class FastProtoTest {
 
     @Test
     public void testSensor() {
-        assertThrows(FixedLengthException.class, () -> FastProto.parse(new byte[8], Sensor.class));
+        assertThrows(ResolveException.class, () -> FastProto.parse(new byte[8], Sensor.class));
 
         val sensor = new Sensor(10, 11);
         val datagram = FastProto.toBytes(sensor);

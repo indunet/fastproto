@@ -19,7 +19,8 @@ package org.indunet.fastproto.graph.resolve;
 import lombok.val;
 import org.indunet.fastproto.annotation.DecodingFormula;
 import org.indunet.fastproto.annotation.EncodingFormula;
-import org.indunet.fastproto.exception.FormulaException;
+import org.indunet.fastproto.exception.DecodingException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.formula.FormulaBuilder;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.mapper.JavaTypeMapper;
@@ -45,7 +46,7 @@ public class FormulaFlow extends ResolvePipeline {
                     reference.setDecodingFormulaClass(clazz);
                     reference.setDecodingFormula(clazz.newInstance());
                 } catch (InstantiationException | IllegalAccessException e) {
-                    throw new FormulaException(String.format("fail initializing formula %s", clazz.getSimpleName()), e);
+                    throw new DecodingException(String.format("fail initializing formula %s", clazz.getSimpleName()), e);
                 }
             } else if (!formula.lambda().isEmpty()) {
                 val inputType = JavaTypeMapper.get(reference.getDataTypeAnnotation().annotationType());
@@ -53,7 +54,7 @@ public class FormulaFlow extends ResolvePipeline {
 
                 reference.setDecodingLambda(builder.build());
             } else {
-                throw new FormulaException(
+                throw new DecodingException(
                         String.format("value and lambda of @DecodingFormula of %s should not be empty at the same time.",
                                 reference.getField().toString()));
             }
@@ -70,7 +71,7 @@ public class FormulaFlow extends ResolvePipeline {
                     reference.setEncodingFormulaClass(clazz);
                     reference.setEncodingFormula(clazz.newInstance());
                 } catch (InstantiationException | IllegalAccessException e) {
-                    throw new FormulaException(String.format("fail initializing formula %s", clazz.getSimpleName()), e);
+                    throw new EncodingException(String.format("fail initializing formula %s", clazz.getSimpleName()), e);
                 }
             } else if (!formula.lambda().isEmpty()) {
                 val inputType = reference.getField().getType();
@@ -78,7 +79,7 @@ public class FormulaFlow extends ResolvePipeline {
 
                 reference.setEncodingLambda(builder.build());
             } else {
-                throw new FormulaException(
+                throw new EncodingException(
                         String.format("value and lambda of @EncodingFormula of %s should not be empty at the same time.",
                                 reference.getField().toString()));
             }

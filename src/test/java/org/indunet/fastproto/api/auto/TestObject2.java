@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet.org
+ * Copyright 2019-2022 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,30 +14,19 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.exception;
+package org.indunet.fastproto.api.auto;
+
+import lombok.Data;
+import org.indunet.fastproto.annotation.AutoType;
 
 /**
+ * Test object2.
+ *
  * @author Deng Ran
- * @since 2.4.0
+ * @since 3.7.2
  */
-public class FixedLengthException extends CodecException {
-    public FixedLengthException() {
-
-    }
-
-    public FixedLengthException(CodecError error) {
-        this(error.getMessage());
-    }
-
-    public FixedLengthException(String message) {
-        super(message);
-    }
-
-    public FixedLengthException(CodecError error, Throwable cause) {
-        this(error.getMessage(), cause);
-    }
-
-    public FixedLengthException(String message, Throwable cause) {
-        super(message, cause);
-    }
+@Data
+public class TestObject2 {
+    @AutoType(offset = 0)
+    int[] ints = new int[] {1, 2, 3, 4};
 }

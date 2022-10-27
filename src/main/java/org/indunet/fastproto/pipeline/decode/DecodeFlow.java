@@ -37,7 +37,7 @@ public class DecodeFlow extends Pipeline<PipelineContext> {
     public void process(PipelineContext context) {
         // val assist = context.getTypeAssist();
         val reference = context.getGraph().root();
-        val datagram = context.getDatagram();
+        val datagram = context.getBytes();
 
         context.setObject(linearDecode(datagram, context.getGraph()));
 

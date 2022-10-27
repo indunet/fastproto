@@ -18,7 +18,7 @@ package org.indunet.fastproto.formula.compiler;
 
 import lombok.val;
 import lombok.var;
-import org.indunet.fastproto.exception.FormulaException;
+import org.indunet.fastproto.exception.ResolveException;
 
 import javax.tools.JavaCompiler;
 import javax.tools.JavaCompiler.CompilationTask;
@@ -26,7 +26,6 @@ import javax.tools.JavaFileObject;
 import javax.tools.StandardJavaFileManager;
 import javax.tools.ToolProvider;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +56,7 @@ public class JavaStringCompiler {
 			Boolean result = task.call();
 
 			if (result == null || !result.booleanValue()) {
-				throw new FormulaException("Fail compiling lambda expression.");
+				throw new ResolveException("Fail compiling lambda expression.");
 			}
 
 			return manager.getClassBytes();

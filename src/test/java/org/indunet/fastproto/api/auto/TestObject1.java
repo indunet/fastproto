@@ -29,13 +29,13 @@ import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 /**
- * Auto object.
+ * Test object2.
  *
  * @author Deng Ran
- * @since 3.7.1
+ * @since 3.7.2
  */
 @Data
-public class AutoTypeObject {
+public class TestObject1 {
     @AutoType(byteOffset = 0, bitOffset = 1)
     Boolean bool1;
 
@@ -57,7 +57,7 @@ public class AutoTypeObject {
     @AutoType(offset = 26, length = 8)
     List<Integer> ints;
 
-    public AutoTypeObject() {
+    public TestObject1() {
         val random = new Random();
 
         this.bool1 = random.nextBoolean();
