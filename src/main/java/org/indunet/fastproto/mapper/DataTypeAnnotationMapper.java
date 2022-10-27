@@ -47,9 +47,6 @@ public class DataTypeAnnotationMapper {
         map.put(c -> c.equals(Byte[].class), Int8ArrayType.class);
         map.put(t -> collectionType.apply(t, Byte.class), Int8ArrayType.class);
 
-        map.put(c -> c.equals(byte[].class), BinaryType.class);
-        map.put(t -> collectionType.apply(t, Integer.class), Int8ArrayType.class);
-
         map.put(c -> c.equals(short.class) || c.equals(Short.class), Int16Type.class);
         map.put(c -> c.equals(short[].class), Int16ArrayType.class);
         map.put(c -> c.equals(Short[].class), Int16ArrayType.class);
