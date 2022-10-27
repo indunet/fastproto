@@ -37,7 +37,7 @@ public class EncodeFlow extends Pipeline<PipelineContext> {
     public void process(PipelineContext context) {
         val graph = context.getGraph();
         val object = context.getObject();
-        val bytes = context.getDatagram();
+        val bytes = context.getBytes();
         val refs = graph.getValidReferences();
 
         graph.copy(object);

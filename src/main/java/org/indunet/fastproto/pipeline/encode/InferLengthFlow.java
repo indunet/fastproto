@@ -33,25 +33,27 @@ import org.indunet.fastproto.pipeline.PipelineContext;
 public class InferLengthFlow extends Pipeline<PipelineContext> {
     @Override
     public void process(PipelineContext context) {
-        val graph = context.getGraph();
+        if (context.getBytes() == null) {
+            val graph = context.getGraph();
 
-        int max = graph.stream()
-                .filter(r -> r.getReferenceType() == Reference.ReferenceType.FIELD)
-                .mapToInt(r -> {
-                    val type = r.getProtocolType();
+            int max = graph.stream()
+                    .filter(r -> r.getReferenceType() == Reference.ReferenceType.FIELD)
+                    .mapToInt(r -> {
+                        val type = r.getProtocolType();
 
-                    if (type.offset() < 0 || type.length() < 0) {
-                        throw new ResolveException(CodecError.UNABLE_INFER_LENGTH);
-                    } else {
-                        return type.offset() + type.size() + type.length();
-                    }
-                }).max()
-                .orElse(0);
+                        if (type.offset() < 0 || type.length() < 0) {
+                            throw new ResolveException(CodecError.UNABLE_INFER_LENGTH);
+                        } else {
+                            return type.offset() + type.size() + type.length();
+                        }
+                    }).max()
+                    .orElse(0);
 
-        if (max == 0) {
-            throw new ResolveException(CodecError.UNABLE_INFER_LENGTH);
-        } else {
-            context.setDatagram(new byte[max]);
+            if (max == 0) {
+                throw new ResolveException(CodecError.UNABLE_INFER_LENGTH);
+            } else {
+                context.setBytes(new byte[max]);
+            }
         }
 
         this.forward(context);

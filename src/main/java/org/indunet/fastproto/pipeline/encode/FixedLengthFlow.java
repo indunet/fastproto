@@ -30,10 +30,16 @@ import org.indunet.fastproto.pipeline.FlowCode;
 public class FixedLengthFlow extends Pipeline<PipelineContext> {
     @Override
     public void process(PipelineContext context) {
-        val ref = context.getGraph().root();
-        val len = ref.getEnableFixedLength().value();
+        if (context.getBytes() == null) {
+            val ref = context.getGraph().root();
 
-        context.setDatagram(new byte[len]);
+            if (ref.getEnableFixedLength() != null) {
+                val len = ref.getEnableFixedLength().value();
+
+                context.setBytes(new byte[len]);
+            }
+        }
+
         this.forward(context);
     }
 

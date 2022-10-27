@@ -18,7 +18,6 @@ package org.indunet.fastproto.api;
 
 import lombok.SneakyThrows;
 import lombok.val;
-import org.indunet.fastproto.CodecFeature;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.DefaultEndian;
@@ -159,8 +158,6 @@ public class FastProtoTest {
         // Test decode.
         assertEquals(
                 FastProto.parse(datagram, Weather.class).toString(), weather.toString());
-        assertEquals(
-                FastProto.parse(datagram, Weather.class, CodecFeature.DEFAULT).toString(), weather.toString());
 
         // Test encode.
         byte[] cache = FastProto.toBytes(weather, 23);
