@@ -18,6 +18,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.Int16ArrayType;
 import org.indunet.fastproto.annotation.Int16Type;
 import org.indunet.fastproto.exception.DecodingException;
@@ -25,6 +26,7 @@ import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.IntStream;
 
@@ -35,7 +37,7 @@ import java.util.stream.IntStream;
  * @since 3.6.0
  */
 public class ShortArrayCodec implements Codec<short[]> {
-    public short[] decode(byte[] bytes, int offset, int length) {
+    public short[] decode(byte[] bytes, int offset, int length, EndianPolicy policy) {
         try {
             val o = CodecUtils.reverse(bytes, offset);
             var l = length;
@@ -47,7 +49,7 @@ public class ShortArrayCodec implements Codec<short[]> {
             val values = new short[l];
 
             IntStream.range(0, l)
-                    .forEach(i -> values[i] = CodecUtils.shortType(bytes, o + i * Int16Type.SIZE));
+                    .forEach(i -> values[i] = CodecUtils.shortType(bytes, o + i * Int16Type.SIZE, policy));
 
             return values;
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
@@ -55,7 +57,7 @@ public class ShortArrayCodec implements Codec<short[]> {
         }
     }
 
-    public void encode(byte[] bytes, int offset, int length, short[] values) {
+    public void encode(byte[] bytes, int offset, int length, EndianPolicy policy, short[] values) {
         try {
             val o = CodecUtils.reverse(bytes, offset);
             var l = length;
@@ -65,7 +67,7 @@ public class ShortArrayCodec implements Codec<short[]> {
             }
 
             IntStream.range(0, l)
-                    .forEach(i -> CodecUtils.shortType(bytes, o + i * Int16Type.SIZE, values[i]));
+                    .forEach(i -> CodecUtils.shortType(bytes, o + i * Int16Type.SIZE, policy, values[i]));
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding short array type.", e);
         }
@@ -74,15 +76,21 @@ public class ShortArrayCodec implements Codec<short[]> {
     @Override
     public short[] decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(Int16ArrayType.class);
+        val policy = Arrays.stream(type.endian())
+                .findFirst()
+                .orElseGet(context::getDefaultEndianPolicy);
 
-        return this.decode(bytes, type.offset(), type.length());
+        return this.decode(bytes, type.offset(), type.length(), policy);
     }
 
     @Override
     public void encode(CodecContext context, byte[] bytes, short[] value) {
         val type = context.getDataTypeAnnotation(Int16ArrayType.class);
+        val policy = Arrays.stream(type.endian())
+                .findFirst()
+                .orElseGet(context::getDefaultEndianPolicy);
 
-        this.encode(bytes, type.offset(), type.length(), value);
+        this.encode(bytes, type.offset(), type.length(), policy, value);
     }
 
     public class WrapperCodec implements Codec<Short[]> {

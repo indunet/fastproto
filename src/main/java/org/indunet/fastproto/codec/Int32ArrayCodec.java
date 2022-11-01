@@ -18,6 +18,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.Int32ArrayType;
 import org.indunet.fastproto.annotation.Int32Type;
 import org.indunet.fastproto.exception.DecodingException;
@@ -37,7 +38,7 @@ import java.util.stream.Stream;
  * @since 3.6.0
  */
 public class Int32ArrayCodec implements Codec<int[]> {
-    public int[] decode(byte[] bytes, int offset, int length) {
+    public int[] decode(byte[] bytes, int offset, int length, EndianPolicy policy) {
         try {
             val o = CodecUtils.reverse(bytes, offset);
             var l = length;
@@ -47,14 +48,14 @@ public class Int32ArrayCodec implements Codec<int[]> {
             }
 
             return IntStream.range(0, l)
-                    .map(i -> CodecUtils.int32Type(bytes, o + i * Int32Type.SIZE))
+                    .map(i -> CodecUtils.int32Type(bytes, o + i * Int32Type.SIZE, policy))
                     .toArray();
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding int32 array type.", e);
         }
     }
 
-    public void encode(byte[] bytes, int offset, int length, int[] values) {
+    public void encode(byte[] bytes, int offset, int length, EndianPolicy policy, int[] values) {
         try {
             val o = CodecUtils.reverse(bytes, offset);
             var l = length;
@@ -64,7 +65,7 @@ public class Int32ArrayCodec implements Codec<int[]> {
             }
 
             IntStream.range(0, l)
-                    .forEach(i -> CodecUtils.int32Type(bytes, o + i * Int32Type.SIZE, values[i]));
+                    .forEach(i -> CodecUtils.int32Type(bytes, o + i * Int32Type.SIZE, policy, values[i]));
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding int32 array type.", e);
         }
@@ -73,15 +74,21 @@ public class Int32ArrayCodec implements Codec<int[]> {
     @Override
     public int[] decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(Int32ArrayType.class);
+        val policy = Arrays.stream(type.endian())
+                .findFirst()
+                .orElseGet(context::getDefaultEndianPolicy);
 
-        return this.decode(bytes, type.offset(), type.length());
+        return this.decode(bytes, type.offset(), type.length(), policy);
     }
 
     @Override
     public void encode(CodecContext context, byte[] bytes, int[] value) {
         val type = context.getDataTypeAnnotation(Int32ArrayType.class);
+        val policy = Arrays.stream(type.endian())
+                .findFirst()
+                .orElseGet(context::getDefaultEndianPolicy);
 
-        this.encode(bytes, type.offset(), type.length(), value);
+        this.encode(bytes, type.offset(), type.length(), policy, value);
     }
 
     public class WrapperCodec implements Codec<Integer[]> {

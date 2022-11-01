@@ -18,6 +18,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.UInt64ArrayType;
 import org.indunet.fastproto.annotation.UInt64Type;
 import org.indunet.fastproto.exception.DecodingException;
@@ -37,7 +38,7 @@ import java.util.stream.IntStream;
  * @since 3.6.0
  */
 public class UInt64ArrayCodec implements Codec<BigInteger[]> {
-    public BigInteger[] decode(byte[] bytes, int offset, int length) {
+    public BigInteger[] decode(byte[] bytes, int offset, int length, EndianPolicy policy) {
         try {
             val o = CodecUtils.reverse(bytes, offset);
             var l = length;
@@ -47,14 +48,14 @@ public class UInt64ArrayCodec implements Codec<BigInteger[]> {
             }
 
             return IntStream.range(0, l)
-                    .mapToObj(i -> CodecUtils.uint64Type(bytes, o + i * UInt64Type.SIZE))
+                    .mapToObj(i -> CodecUtils.uint64Type(bytes, o + i * UInt64Type.SIZE, policy))
                     .toArray(BigInteger[]::new);
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding uint64 array type.", e);
         }
     }
 
-    public void encode(byte[] bytes, int offset, int length, BigInteger[] values) {
+    public void encode(byte[] bytes, int offset, int length, EndianPolicy policy, BigInteger[] values) {
         try {
             val o = CodecUtils.reverse(bytes, offset);
             var l = length;
@@ -64,7 +65,7 @@ public class UInt64ArrayCodec implements Codec<BigInteger[]> {
             }
 
             IntStream.range(0, l)
-                    .forEach(i -> CodecUtils.uint64Type(bytes, o + i * UInt64Type.SIZE, values[i]));
+                    .forEach(i -> CodecUtils.uint64Type(bytes, o + i * UInt64Type.SIZE, policy, values[i]));
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException | NullPointerException e) {
             throw new EncodingException("Fail encoding uint64 array type.", e);
         }
@@ -73,15 +74,21 @@ public class UInt64ArrayCodec implements Codec<BigInteger[]> {
     @Override
     public BigInteger[] decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(UInt64ArrayType.class);
+        val policy = Arrays.stream(type.endian())
+                .findFirst()
+                .orElseGet(context::getDefaultEndianPolicy);
 
-        return this.decode(bytes, type.offset(), type.length());
+        return this.decode(bytes, type.offset(), type.length(), policy);
     }
 
     @Override
     public void encode(CodecContext context, byte[] bytes, BigInteger[] value) {
         val type = context.getDataTypeAnnotation(UInt64ArrayType.class);
+        val policy = Arrays.stream(type.endian())
+                .findFirst()
+                .orElseGet(context::getDefaultEndianPolicy);
 
-        this.encode(bytes, type.offset(), type.length(), value);
+        this.encode(bytes, type.offset(), type.length(), policy, value);
     }
 
     public class CollectionCodec implements Codec<Collection<BigInteger>> {
