@@ -18,6 +18,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
+import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.Int64ArrayType;
 import org.indunet.fastproto.annotation.Int64Type;
 import org.indunet.fastproto.exception.DecodingException;
@@ -38,7 +39,7 @@ import java.util.stream.Stream;
  * @since 3.6.0
  */
 public class Int64ArrayCodec implements Codec<long[]> {
-    public long[] decode(byte[] bytes, int offset, int length) {
+    public long[] decode(byte[] bytes, int offset, int length, EndianPolicy policy) {
         try {
             val o = CodecUtils.reverse(bytes, offset);
             var l = length;
@@ -48,14 +49,14 @@ public class Int64ArrayCodec implements Codec<long[]> {
             }
 
             return IntStream.range(0, l)
-                    .mapToLong(i -> CodecUtils.int64Type(bytes, o + i * Int64Type.SIZE))
+                    .mapToLong(i -> CodecUtils.int64Type(bytes, o + i * Int64Type.SIZE, policy))
                     .toArray();
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding int32 array type.", e);
         }
     }
 
-    public void encode(byte[] bytes, int offset, int length, long[] values) {
+    public void encode(byte[] bytes, int offset, int length, EndianPolicy policy, long[] values) {
         try {
             val o = CodecUtils.reverse(bytes, offset);
             var l = length;
@@ -65,7 +66,7 @@ public class Int64ArrayCodec implements Codec<long[]> {
             }
 
             IntStream.range(0, l)
-                    .forEach(i -> CodecUtils.int64Type(bytes, o + i * Int64Type.SIZE, values[i]));
+                    .forEach(i -> CodecUtils.int64Type(bytes, o + i * Int64Type.SIZE, policy, values[i]));
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding int32 array type.", e);
         }
@@ -74,15 +75,21 @@ public class Int64ArrayCodec implements Codec<long[]> {
     @Override
     public long[] decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(Int64ArrayType.class);
+        val policy = Arrays.stream(type.endian())
+                .findFirst()
+                .orElseGet(context::getDefaultEndianPolicy);
 
-        return this.decode(bytes, type.offset(), type.length());
+        return this.decode(bytes, type.offset(), type.length(), policy);
     }
 
     @Override
     public void encode(CodecContext context, byte[] bytes, long[] value) {
         val type = context.getDataTypeAnnotation(Int64ArrayType.class);
+        val policy = Arrays.stream(type.endian())
+                .findFirst()
+                .orElseGet(context::getDefaultEndianPolicy);
 
-        this.encode(bytes, type.offset(), type.length(), value);
+        this.encode(bytes, type.offset(), type.length(), policy, value);
     }
 
     public class WrapperCodec implements Codec<Long[]> {
