@@ -2,7 +2,7 @@
 
 [English](README.md) | 中文
 
-# *Fast Protocol*
+# *1. Fast Protocol*
 
 [![Build Status](https://app.travis-ci.com/indunet/fastproto.svg?branch=master)](https://app.travis-ci.com/indunet/fastproto)
 [![codecov](https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU)](https://codecov.io/gh/indunet/fastproto)
@@ -11,36 +11,22 @@
 [![JetBrain Support](https://img.shields.io/badge/JetBrain-support-blue)](https://www.jetbrains.com/community/opensource)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto是一款能够通过注解自定义协议的二进制序列化 & 反序列化工具，其采用Java编写，解决了跨语言和跨平台的数据交换问题，特别适用于物联网（IoT）领域。
+FastProto是一款Java编写的二进制数据处理工具，其通过注解自定义二进制协议，能够帮助开发者快速地实现二进制数据解析 & 封包。
 
-## *功能*
+## *1.1 功能*
 
-* 通过注解自定义协议的二进制序列化 & 反序列化
-* 支持基本数据类型、无符号类型、字符串类型、时间类型、数组类型和集合类型等
+* 二进制数据解析 & 封包
+* 支持Java基本数据类型、无符号类型、字符串类型、时间类型、数组类型和集合类型等
 * 支持反向寻址，适用于非固定长度二进制数据
 * 自定义开端字节顺序
 * 自定义编码公式 & 解码公式，支持Lambda表达式
 
-## *Under Developing*
+## *1.2 Under Developing*
 
 * 地址冲突检测
 * 代码结构 & 性能优化
 
-## *与ProtoBuf相比较*
-
-虽然ProtoBuf和FastProto都可以用于解决跨语言和跨平台的数据交换问题，但两者采用的方式完全不同：
-
-*   ProtoBuf通过编写schema自定义协议，而FastProto通过注解自定义协议；
-*   仅有数据交换双方均使用ProtoBuf才能实现数据交换，而FastProto采用自定义开放协议，任意一方使用均可；
-*   FastProto性能更加优越，自定义协议粒度更加精细
-
-以下场景更加推荐使用FastProto：
-
-* 二进制格式 & 开放协议
-* 性能要求苛刻，不能容忍通用数据格式（JSON/XML）带来的性能损失；
-* 数据源包含大量二进制内容，如通过现场总线（CAN/MVB/RS-485）采集的数据，并不适用于文本格式
-
-## *Maven*
+## *1.3 Maven*
 
 ```xml
 <dependency>
@@ -50,9 +36,9 @@ FastProto是一款能够通过注解自定义协议的二进制序列化 & 反�
 </dependency>
 ```
 
-## *快速入门*
+## *2. 快速入门*
 
-有这样一个应用场景，一台气象监测设备实时采集气象数据，并以二进制格式发送数据到气象站，数据报文20字节固定长度:
+有这样一个应用场景，一台气象监测设备实时采集气象数据，并以二进制格式发送数据到气象站，数据报文固定长度20字节，具体如下:
 
 >   65 00 7F 69 3D 84 7A 01 00 00 55 00 F1 FF 0D 00 00 00 07 00
 
@@ -72,10 +58,10 @@ FastProto是一款能够通过注解自定义协议的二进制序列化 & 反�
 | 18          | 3-7        |                | 预留          |      |           |
 | 19          |            |                | 预留          |      |           |
 
-1. **序列化 & 反序列化**
+### **2.1 解析 & 封包**
 
-气象站接收到数据后，需要将其反序列化成Java数据对象，以便后续的业务功能开发。
-首先，按照协议定义Java数据对象`Weather`，然后使用FastProto数据类型注解修饰各个属性，通过注解的offset属性指定信号的字节偏移量。
+气象站接收到数据后，需要将其解析成Java数据对象，以便后续的业务功能开发。
+首先，按照协议定义Java数据对象`Weather`，然后使用FastProto注解修饰各个字段，注解的offset属性信号的字节偏移量（地址）。
 
 ```java
 import org.indunet.fastproto.annotation.*;
@@ -107,7 +93,7 @@ public class Weather {
 }
 ```
 
-调用`FastProto::parse()`方法将二进制数据反序列化成Java数据对象`Weather`
+调用`FastProto::parse()`方法将二进制数据解析成Java数据对象`Weather`
 
 ```java
 // datagram sent by monitoring device.
@@ -116,13 +102,13 @@ byte[] datagram = ...
 Weather weather = FastProto.parse(datagram, Weather.class);
 ```
 
-调用`FastProto::toBytes()`方法将Java数据对象`Weather`序列成二进制数据,方法的第二个参数是字节数组长度，如果用户不指定，那么FastProto会自动推测。
+调用`FastProto::toBytes()`方法将Java数据对象`Weather`封包成二进制数据,其中方法的第二个参数是字节数组长度，如果用户不指定，那么FastProto会自动推测。
 
 ```java
 byte[] datagram = FastProto.toBytes(weather, 20);
 ```
 
-2. **公式**
+### **2.2 换算公式**
 
 也许你已经注意到压力信号对应一个换算公式，通常需要用户自行将序列化后的结果乘以0.1，这是物联网数据交换时极其常见的操作。
 为了帮助用户减少中间步骤，FastProto引入了编码公式注解`@EncodingFormula`和解码公式注解`@DecodingFormula`，上述简单的公式变换可以通过Lambda表达式实现。
@@ -141,9 +127,9 @@ public class Weather {
 }
 ```
 
-## *注解*
+## *3. 注解*
 
-1. *基本类型注解*
+### *3.1 基本类型注解*
 FastProto支持Java基础数据类型、时间类型、字符串类型、枚举类型和字节数组等，考虑到跨语言跨平台的数据交换，FastProto还引入了无符号类型。
 
 
@@ -165,7 +151,7 @@ FastProto支持Java基础数据类型、时间类型、字符串类型、枚举�
 |     @TimeType     |  Timestamp/Date/Calendar/Instant   |      long      | 8 字节 |  
 |     @EnumType     |                enum                |      enum      | 1 字节 |
 
-2. *数组类型注解*
+### *3.2 数组类型注解*
 
 |        注解        |                                       Java                                        |      C/C++       |
 |:----------------:|:---------------------------------------------------------------------------------:|:----------------:|
@@ -182,7 +168,7 @@ FastProto支持Java基础数据类型、时间类型、字符串类型、枚举�
 | @DoubleArrayType |                    Double[]/double[]/Collection&lt;Double&gt;                     |     double[]     |
 
 
-3. *其它注解*
+### *3.3 其它注解*
 FastProto还提供了一些辅助注解，帮助用户进一步自定义二进制格式、解码和编码流程。
 
 |        注解        |    作用域    |     描述     |
@@ -194,7 +180,7 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 | @DecodingFormula |   Field   |    解码公式    |
 | @EncodingFormula |   Field   |    编码公式    |
 
-3.1 *大小开端*
+#### *3.3.1 大小开端*
 FastProto默认使用小开端，可以通过`@DefaultEndian`注解修改全局开端类型，也可以通过endian属性修改特定字段开端，后者优先级更高。
 
 ```java
@@ -211,7 +197,7 @@ public class Weather {
 }
 ```
 
-3.2 *解码 & 编码公式*
+#### *3.3.2 解码 & 编码公式*
 
 用户可以通过两种方式自定义公式，形式较为简单的公式建议使用Lambda表达式，形式较为复杂的公式建议自定义公式类并实现`java.lang.function.Function`接口。
 
@@ -272,7 +258,7 @@ public class Weather {
 
 用户可以根据需要仅指定编码公式，或者仅指定解码公式，如果同时指定Lambda表达式和自定义公式类，后者有更高的优先级。
 
-3.3 *自动类型*
+#### *3.3.3 自动类型*
 
 如果字段被`@AutoType`修饰，那么FastProto会自动推测类型。
 
@@ -281,21 +267,38 @@ import org.indunet.fastproto.annotation.AutoType;
 
 public class Weather {
     @AutoType(offset = 10, endian = EndianPolicy.LITTLE)
-    int humidity;
+    int humidity;   // default Int32Type
 
     @AutoType(offset = 14)
-    long pressure;
+    long pressure;  // default Int64Type
 }
 ```
 
-## *Scala*
+#### *3.3.4 忽略*
+在特殊场景下，如果在解析时忽略某些字段，或者封包时忽略某些字段，那么可通过注解`@DecodingIgnore`和`@EncodingIgnore`实现。
+
+```java
+import org.indunet.fastproto.annotation.*;
+
+public class Weather {
+    @DecodingFormula
+    @Int16Type(offset = 10)
+    int humidity;   // ignore when parsing
+
+    @EncodingIgnore
+    @Int32Type(offset = 14)
+    long pressure; // ignore when packaging
+}
+```
+
+## *4. Scala*
 FastProto支持case class，但是Scala并不完全兼容Java注解，所以请使用如下方式引用FastProto。
 
 ```scala
 import org.indunet.fastproto.annotation.scala._
 ```
 
-## *基准测试*
+## *5. 基准测试*
 
 *   windows 11, i7 11th, 32gb
 *   openjdk 1.8.0_292
@@ -306,17 +309,17 @@ import org.indunet.fastproto.annotation.scala._
 | `FastProto::parse` |  吞吐量   |   10  | 240 | ± 4.6    |  次/毫秒   |
 | `FastProto::toBytes` | 吞吐量  |   10  | 317 | ± 11.9    |  次/毫秒   |
 
-## *Build Requirements*
+## *6. Build Requirements*
 
 *   Java 1.8+  
 *   Maven 3.5+    
 
-## *欢迎加入*
+## *7. 欢迎加入*
 
 FastProto取得了etBrain开源计划的支持，可提供核心开发人员免费的全家桶许可证。
 如果你对该项目感兴趣，并希望加入承担部分工作（开发/测试/文档），请通过邮件<deng_ran@foxmail.com>联系我。
 
-## *许可证*
+## *8. License*
 
 FastProto is released under the [Apache 2.0 license](license).
 
