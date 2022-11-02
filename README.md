@@ -2,7 +2,7 @@
 
 English | [中文](README-zh.md)
 
-# *1. Fast Protocol*
+# *Fast Protocol*
 
 [![Build Status](https://app.travis-ci.com/indunet/fastproto.svg?branch=master)](https://app.travis-ci.com/indunet/fastproto)
 [![codecov](https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU)](https://codecov.io/gh/indunet/fastproto)
@@ -14,7 +14,7 @@ English | [中文](README-zh.md)
 FastProto is a binary data processing tool written in Java, which customizes the binary protocol through annotations.
 It can help developers quickly implement binary data parsing & packaging.
 
-## *1.1 Features*
+## *Features*
 
 * Binary parsing & packaging
 * Support Java primitive type, unsigned type, string type, time type, array type and collection type 
@@ -22,22 +22,22 @@ It can help developers quickly implement binary data parsing & packaging.
 * Customize endianness (byte order)
 * Support decoding formula & encoding formula including lambda expression
 
-## *1.2 Under Developing*
+### *Under Developing*
 
 * Address conflict detection
 * Code structure & performance optimization
 
-## *1.3 Maven*
+### *Maven*
 
 ```xml
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.8.1</version>
+    <version>3.8.2</version>
 </dependency>
 ```
 
-## *2. Quick Start*
+## *1. Quick Start*
 
 Imagine such an application, there is a monitoring device collecting weather data in realtime and sends to
 the weather station in binary format，the binary data has fixed length of 20 bytes:
@@ -60,7 +60,7 @@ The binary data contains 8 different types of signals, the specific protocol is 
 | 18          | 3-7        |                   | reserved          |      |           |
 | 19          |            |                   | reserved          |      |           |
 
-### **2.1 Parsing & Packaging**
+### **1.1 Parsing & Packaging**
 
 After the weather station receives the data, it needs to be converted into Java data objects for subsequent business function development.
 First, define the Java data object `Weather` according to the protocol, and then use the FastProto data type annotation to annotate each attribute.
@@ -112,7 +112,7 @@ If the user does not specify it, FastProto will automatically guess the length.
 ```java
 byte[] datagram = FastProto.toBytes(weather, 20);
 ```
-### **2.2 Formula**
+### **1.2 Formula**
 
 Perhaps you have noticed that the pressure signal corresponds to a conversion formula, usually requiring the user to multiply
 the serialized result by 0.1, which is an extremely common operation in IoT data exchange.
@@ -133,9 +133,9 @@ public class Weather {
 }
 ```
 
-## *3. Annotations*
+## *2. Annotations*
 
-### *3.1 Primitive Type Annotations*
+### *2.1 Primitive Type Annotations*
 
 FastProto supports Java primitive data types, time type, String type, enum type and byte array type, taking into account 
 cross-language and cross-platform data exchange, FastProto also introduces unsigned types.
@@ -158,7 +158,7 @@ cross-language and cross-platform data exchange, FastProto also introduces unsig
 |       @TimeType       |  Timestamp/Date/Calendar/Instant  |      long      |  8 bytes  |  
 |       @EnumType       |               enum                |      enum      |  1 bytes  |
 
-### *3.2 Array Type Annotations*
+### *2.2 Array Type Annotations*
 
 |    Annotation    |                                       Java                                        |      C/C++       |
 |:----------------:|:---------------------------------------------------------------------------------:|:----------------:|
@@ -174,7 +174,7 @@ cross-language and cross-platform data exchange, FastProto also introduces unsig
 | @FloatArrayType  |                      Float[]/float[]/Collection&lt;Float&gt;                      |     float[]      |
 | @DoubleArrayType |                    Double[]/double[]/Collection&lt;Double&gt;                     |     double[]     |
 
-### *3.3 Other Annotations*
+### *2.3 Other Annotations*
 
 FastProto also provides some auxiliary annotations to help users further customize the binary format, decoding and encoding process.
 
@@ -189,7 +189,7 @@ FastProto also provides some auxiliary annotations to help users further customi
 |    @AutoType     | Field |           Use default type.           |
 
 
-#### *3.3.1 Endianness*
+#### *2.3.1 Endianness*
 
 FastProto uses little endian by default. You can modify the global endian through `@DefaultEndian` annotation, or you can 
 modify the endian of specific field through `endian` attribute which has a higher priority.
@@ -208,7 +208,7 @@ public class Weather {
 }
 ```
 
-#### *3.3.2 Decoding & Encoding Formula*
+#### *2.3.2 Decoding & Encoding Formula*
 
 Users can customize formula in two ways. For simple formulas, it is recommended to use Lambda expression, while for more 
 complex formula, it is recommended to customize formula classes by implementing the `java.lang.function.Function` interface.
@@ -271,7 +271,7 @@ public class Weather {
 Users can specify only the encoding formula or only the decoding formula as needed. If both lambda expression and custom 
 formula class are specified, the latter has a higher priority.
 
-#### *3.3.3 AutoType*
+#### *2.3.3 AutoType*
 
 FastProto can automatically infer type if field is annotated by `@AutoType`.
 
@@ -287,7 +287,7 @@ public class Weather {
 }
 ```
 
-#### *3.3.4 Ignore*
+#### *2.3.4 Ignore*
 In special cases, if you want to ignore certain fields during parsing, or ignore certain fields during packaging, 
 you can use `@DecodingIgnore` and `@EncodingIgnore`.
 
@@ -305,14 +305,14 @@ public class Weather {
 }
 ```
 
-## *4. Scala*
+## *3. Scala*
 FastProto supports case class，but Scala is not fully compatible with Java annotations, so please refer to FastProto as follows.
 
 ```scala
 import org.indunet.fastproto.annotation.scala._
 ```
 
-## *5. Benchmark*
+## *4. Benchmark*
 
 *   windows 11, i7 11th, 32gb
 *   openjdk 1.8.0_292
@@ -323,19 +323,19 @@ import org.indunet.fastproto.annotation.scala._
 | `FastProto::parse` |  throughput   |   10  |  240  | ± 4.6  |  ops/ms   |
 | `FastProto::toBytes` | throughput  |   10  |  317  | ± 11.9 |  ops/ms   |
 
-## *6. Build Requirements*
+## *5. Build Requirements*
 
 *   Java 1.8+
 *   Maven 3.5+
 
-## *7. Welcome*
+## *6. Welcome*
 
 FastProto has obtained the support of JetBrain Open Source Project, which can provide free license of all product pack for
 all core contributors.
 If you are interested in this project and want to join and undertake part of the work (development/testing/documentation),
 please feel free to contact me via email <deng_ran@foxmail.com>
 
-## *8. License*
+## *7. License*
 
 FastProto is released under the [Apache 2.0 license](license).
 
