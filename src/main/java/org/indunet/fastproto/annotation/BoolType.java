@@ -41,6 +41,15 @@ public @interface BoolType {
     int MAX_BIT_OFFSET = 7;
     int MIN_BIT_OFFSET = 0;
 
+    int BIT_0 = 0;
+    int BIT_1 = 1;
+    int BIT_2 = 2;
+    int BIT_3 = 3;
+    int BIT_4 = 4;
+    int BIT_5 = 5;
+    int BIT_6 = 6;
+    int BIT_7 = 7;
+
     int byteOffset();
 
     int bitOffset();
