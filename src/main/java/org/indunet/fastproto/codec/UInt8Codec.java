@@ -33,7 +33,7 @@ public class UInt8Codec implements Codec<Integer> {
         try {
             return CodecUtils.uint8Type(bytes, offset);
         } catch(ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new DecodingException("Fail decoding int8 type.", e);
+            throw new DecodingException("Fail decoding uint8 type.", e);
         }
     }
 
@@ -41,7 +41,7 @@ public class UInt8Codec implements Codec<Integer> {
         try {
             CodecUtils.uint8Type(bytes, offset, value);
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new EncodingException("Fail encoding int8 type.", e);
+            throw new EncodingException("Fail encoding uint8 type.", e);
         }
     }
 
