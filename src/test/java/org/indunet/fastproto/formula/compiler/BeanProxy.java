@@ -1,9 +1,10 @@
 package org.indunet.fastproto.formula.compiler;
 
 /**
- * Sample interface.
- * 
- * @author michael
+ * Bean Proxy.
+ *
+ * @author Deng Ran
+ * @since 3.8.2
  */
 public interface BeanProxy {
 

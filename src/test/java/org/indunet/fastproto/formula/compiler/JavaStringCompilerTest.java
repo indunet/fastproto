@@ -9,6 +9,12 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.*;
 
 
+/**
+ * Unit test of Java String Compiler.
+ *
+ * @author Deng Ran
+ * @since 3.8.2
+ */
 public class JavaStringCompilerTest {
 	JavaStringCompiler compiler = new JavaStringCompiler();
 
