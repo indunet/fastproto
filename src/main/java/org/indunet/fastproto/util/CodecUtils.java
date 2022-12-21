@@ -128,43 +128,6 @@ public class CodecUtils {
         byteType(datagram, offset, value);
     }
 
-    public static char charType(@NonNull byte[] datagram, int offset, EndianPolicy policy) {
-        int o = reverse(datagram, offset);
-        int value = 0;
-
-        if (policy == EndianPolicy.BIG) {
-            value = (datagram[o] & 0xFF) * 256 + (datagram[o + 1] & 0xFF);
-        } else {
-            value = (datagram[o + 1] & 0xFF) * 256 + (datagram[o] & 0xFF);
-        }
-
-        return (char) value;
-    }
-
-    public static char charType(@NonNull byte[] datagram, int offset) {
-        return charType(datagram, offset, EndianPolicy.LITTLE);
-    }
-
-    public static void charType(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull char value) {
-        int o = reverse(datagram, offset);
-
-        if (policy == EndianPolicy.BIG) {
-            datagram[o] = (byte) (value >>> 8);
-            datagram[o + 1] = (byte) value;
-        } else {
-            datagram[o + 1] = (byte) (value >>> 8);
-            datagram[o] = (byte) value;
-        }
-    }
-
-    public static void charType(@NonNull byte[] datagram, int offset, @NonNull char value) {
-        charType(datagram, offset, EndianPolicy.LITTLE, value);
-    }
-
-    public static void type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull char value) {
-        charType(datagram, offset, policy, value);
-    }
-
     public static int uint8Type(@NonNull final byte[] datagram, int offset) {
         int o = reverse(datagram, offset);
 

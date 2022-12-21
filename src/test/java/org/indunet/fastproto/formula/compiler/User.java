@@ -1,9 +1,10 @@
 package org.indunet.fastproto.formula.compiler;
 
 /**
- * Sample class as JavaBean.
- * 
- * @author michael
+ * User.
+ *
+ * @author Deng Ran
+ * @since 3.8.2
  */
 public class User {
 

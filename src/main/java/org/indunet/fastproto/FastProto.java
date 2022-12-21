@@ -51,6 +51,16 @@ public class FastProto {
     }
 
     /**
+     * Convert byte array into map or object.
+     *
+     * @param bytes      byte array
+     * @return decoder
+     */
+    public static Decoder parse(byte[] bytes) {
+        return new Decoder(bytes);
+    }
+
+    /**
      * Convert object into byte array.
      *
      * @param object serialized object
@@ -103,5 +113,14 @@ public class FastProto {
 
         Pipeline.getEncodeFlow()
                 .process(context);
+    }
+
+    /**
+     * Generate byte array.
+     *
+     * @return byte array
+     */
+    public static Encoder toBytes() {
+        return new Encoder();
     }
 }
