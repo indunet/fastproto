@@ -62,6 +62,8 @@ public class ArrayObject {
     float[] floats = new float[16];
     @DoubleArrayType(offset = 592, length = 16)
     double[] doubles;
+    @BoolArrayType(byteOffset = 720, bitOffset = 3, length = 5)
+    boolean[] bools;
 
     public ArrayObject() {
         val random = new Random();
@@ -99,6 +101,7 @@ public class ArrayObject {
         this.doubles = IntStream.range(0, 16)
                 .mapToDouble(__ -> random.nextDouble())
                 .toArray();
+        this.bools = new boolean[] {false, true, false, true, false};
     }
 
     public byte[] toBytes() throws IOException {
@@ -116,6 +119,7 @@ public class ArrayObject {
         stream.write(BinaryUtils.uint64Of(this.getUint64s(), EndianPolicy.LITTLE));
         stream.write(BinaryUtils.valueOf(this.getFloats(), EndianPolicy.LITTLE));
         stream.write(BinaryUtils.valueOf(this.getDoubles(), EndianPolicy.LITTLE));
+        stream.write(new byte[] {(byte) 0b0000_1010});
         stream.flush();
 
         return stream.toByteArray();

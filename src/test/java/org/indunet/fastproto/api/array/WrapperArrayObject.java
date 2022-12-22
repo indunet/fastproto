@@ -63,6 +63,8 @@ public class WrapperArrayObject {
     Float[] floats = new Float[16];
     @DoubleArrayType(offset = 592, length = 16)
     Double[] doubles;
+    @BoolArrayType(byteOffset = 720, bitOffset = 3, length = 5)
+    Boolean[] bools;
 
     public WrapperArrayObject() {
         val random = new Random();
@@ -103,6 +105,7 @@ public class WrapperArrayObject {
         this.doubles = IntStream.range(0, 16)
                 .mapToObj(__ -> random.nextDouble())
                 .toArray(Double[]::new);
+        this.bools = new Boolean[] {false, true, false, true, false};
     }
 
     public byte[] toBytes() throws IOException {
@@ -136,6 +139,8 @@ public class WrapperArrayObject {
         stream.write(BinaryUtils.valueOf(Arrays.stream(this.getDoubles())
                 .mapToDouble(Double::doubleValue)
                 .toArray(), EndianPolicy.LITTLE));
+        stream.write(new byte[] {(byte) 0b0000_1010});
+
         stream.flush();
 
         return stream.toByteArray();

@@ -27,7 +27,7 @@ It simplifies the process of binary data processing, and developers do not need 
 
 ### *Under Developing*
 
-* Address conflict detection
+* Working without annotations
 * Code structure & performance optimization
 
 ### *Maven*

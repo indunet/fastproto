@@ -17,14 +17,10 @@
 package org.indunet.fastproto.api.array;
 
 import lombok.val;
-import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
 
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.util.Arrays;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
