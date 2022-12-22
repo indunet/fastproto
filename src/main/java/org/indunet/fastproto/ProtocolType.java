@@ -93,7 +93,13 @@ public interface ProtocolType {
                     }
                 case "length":
                     if (Arrays.stream(typeAnnotation.getClass().getMethods())
-                            .noneMatch(m -> m.getName().equals("length"))) {
+                            .anyMatch(m -> m.getName().equals("length"))) {
+                        return Arrays.stream(typeAnnotation.getClass().getMethods())
+                                .filter(m -> m.getName().equals("length"))
+                                .findAny()
+                                .get()
+                                .invoke(typeAnnotation, args);
+                    } else {
                         return 0;
                     }
                 case "defaultJavaType":
@@ -107,6 +113,12 @@ public interface ProtocolType {
                     }
                 default:
                     if (typeAnnotation.annotationType() == BoolType.class && method.getName().equals("offset")) {
+                        return Arrays.stream(typeAnnotation.getClass().getMethods())
+                                .filter(m -> m.getName().equals("byteOffset"))
+                                .findAny()
+                                .get()
+                                .invoke(typeAnnotation, args);
+                    } else if (typeAnnotation.annotationType() == BoolArrayType.class && method.getName().equals("offset")) {
                         return Arrays.stream(typeAnnotation.getClass().getMethods())
                                 .filter(m -> m.getName().equals("byteOffset"))
                                 .findAny()

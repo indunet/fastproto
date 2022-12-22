@@ -63,6 +63,8 @@ public class CollectionObject {
     List<Float> floats;
     @DoubleArrayType(offset = 592, length = 16)
     List<Double> doubles;
+    @BoolArrayType(byteOffset = 720, bitOffset = 3, length = 5)
+    List<Boolean> bools;
 
     public CollectionObject() {
         val random = new Random();
@@ -103,6 +105,13 @@ public class CollectionObject {
         this.doubles = IntStream.range(0, 16)
                 .mapToObj(__ -> random.nextDouble())
                 .collect(Collectors.toList());
+
+        this.bools = new ArrayList<Boolean>();
+        this.bools.add(false);
+        this.bools.add(true);
+        this.bools.add(false);
+        this.bools.add(true);
+        this.bools.add(false);
     }
 
     public byte[] toBytes() throws IOException {
@@ -140,6 +149,7 @@ public class CollectionObject {
         stream.write(BinaryUtils.valueOf(this.getDoubles().stream()
                 .mapToDouble(Double::doubleValue)
                 .toArray(), EndianPolicy.LITTLE));
+        stream.write(new byte[] {(byte) 0b0000_1010});
 
         stream.flush();
 

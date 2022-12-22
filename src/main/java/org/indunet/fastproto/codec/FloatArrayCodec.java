@@ -59,7 +59,6 @@ public class FloatArrayCodec implements Codec<float[]> {
 
     public void encode(byte[] bytes, int offset, int length, EndianPolicy policy, float[] values) {
         try {
-            val o = CodecUtils.reverse(bytes, offset);
             var l = length;
 
             if (l < 0) {
