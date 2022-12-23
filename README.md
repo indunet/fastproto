@@ -27,7 +27,9 @@ It simplifies the process of binary data processing, and developers do not need 
 
 ### *Under Developing*
 
-* Working without annotations
+* Add char type in working without annotations
+* Write doc of Encoder api doc and Decoder api
+* Add dynamic byte array
 * Code structure & performance optimization
 
 ### *Maven*
@@ -36,7 +38,7 @@ It simplifies the process of binary data processing, and developers do not need 
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.8.2</version>
+    <version>3.8.3</version>
 </dependency>
 ```
 
@@ -338,29 +340,36 @@ in a simple way. FastProto provides simple API to solve the above problems, as f
 
 ### *4.1 Parse Binary Data*
 
-```java
+* *Parse without data object*
 
-Map<String, Object> map = FastProto.parse(bytes)
-        .boolType("f1", 0, 0)
-        .int8Type("f2", 1)      // Parse signed 8-bit integer data at byte offset 1, field name f2
-        .int16Type("f3", 2)
-        .get();                 // 3 fields are parsed and stored in the Map
+```java
+boolean f1 = FastProto.parse(bytes)
+        .boolType(0, 0)
+        .getAsBoolean();
+int f2 = FastProto.parse(bytes)
+        .int8Type(1)      // Parse signed 8-bit integer data at byte offset 1
+        .getAsInt();
+int f3 = FastProto.parse(bytes)
+        .int16Type(2)     // Parse signed 16-bit integer data at byte offset 2
+        .getAsInt();
 ```
 
-```java
-byte[] bytes = ... // 待解析的二进制数据
+* *Parse with data object*
 
-public class JavaObject {
+```java
+byte[] bytes = ... // Binary data to be parsed
+
+public class DataObject {
     Boolean f1;
     Integer f2;
     Integer f3;
 }
 
 JavaObject obj = FastProto.parse(bytes)
-        .boolType("f1", 0, 0)           
-        .int8Type("f2", 1)              // Parse signed 8-bit integer data at byte offset 1, field name f2
-        .int16Type("f3", 2)
-        .mapTo(JavaObject.class);       // Map parsing result into Java data object according to the field name
+        .boolType(0, 0, "f1")           
+        .int8Type(1, "f2")              // Parse signed 8-bit integer data at byte offset 1, field name f2
+        .int16Type(2, "f3")
+        .mapTo(DataObject.class);       // Map parsing result into Java data object according to the field name
 ```
 
 ### *4.2 Create Binary Data Block*
@@ -371,7 +380,7 @@ byte[] bytes = FastProto.toBytes()
         .uint8Type(0, 1)        // Write unsigned 8-bit integer data 1 at byte offset 0
         .uint16Type(2, 3, 4)    // Write 2 unsigned 16-bit integer data 3 and 4 consecutively at byte offset 2
         .uint32Type(6, EndianPolicy.BIG, 32)
-        .get();
+        .getMap();
 ```
 
 

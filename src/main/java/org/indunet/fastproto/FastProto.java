@@ -51,10 +51,10 @@ public class FastProto {
     }
 
     /**
-     * Convert byte array into map or object.
+     * Helps developers parse binary data through chain api.
      *
-     * @param bytes      byte array
-     * @return decoder
+     * @param bytes binary data need parsing
+     * @return Decoder object which supplies chain api
      */
     public static Decoder parse(byte[] bytes) {
         return new Decoder(bytes);
@@ -100,7 +100,7 @@ public class FastProto {
      *
      * @param object serialized object
      * @param buffer write result into buffer
-     * @return byte array
+     * @return void
      */
     public static void toBytes(Object object, byte[] buffer) {
         val graph = Resolver.resolve(object.getClass());
@@ -116,9 +116,9 @@ public class FastProto {
     }
 
     /**
-     * Generate byte array.
+     * Helps developers create binary data through chain api.
      *
-     * @return byte array
+     * @return Encoder object which supplies chain api.
      */
     public static Encoder toBytes() {
         return new Encoder();

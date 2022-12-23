@@ -16,17 +16,37 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class DecoderTest {
     @Test
-    public void testGet() {
-        val bytes = new byte[]{1, 2, 3, 0};
-        val map = FastProto.parse(bytes)
-                .boolType("bool", 0, 0)
-                .int8Type("int8", 1)
-                .int16Type("int16", 2)
-                .get();
+    public void testGetAsType() {
+        val bytes = new byte[]{1, 2, 3, 0, 0, 0, 1, 0};
 
-        assertEquals(true, map.get("bool"));
-        assertEquals(2, map.get("int8"));
-        assertEquals(3, map.get("int16"));
+        assertEquals(true, FastProto.parse(bytes)
+                .boolType(0, 0)
+                .getAsBoolean());
+        assertEquals(2, FastProto.parse(bytes)
+                .int8Type(1)
+                .getAsInt());
+        assertEquals(3, FastProto.parse(bytes)
+                .int16Type(2)
+                .getAsInt());
+        assertEquals(256, FastProto.parse(bytes)
+                .int32Type(4, EndianPolicy.BIG)
+                .getAsInt());
+    }
+
+    @Test
+    public void testAsMap() {
+        val bytes = new byte[] {1, 2, 3, 0, 0, 0, 0, 1};
+        val map = FastProto.parse(bytes)
+                .boolType(0, 0)
+                .int8Type(1)
+                .int16Type(2)
+                .uint32Type(4, EndianPolicy.BIG)
+                .getAsMap();
+
+        assertEquals(true, map.get("0"));
+        assertEquals(2, map.get("1"));
+        assertEquals(3, map.get("2"));
+        assertEquals(1l, map.get("3"));
     }
 
     @Test
@@ -34,8 +54,8 @@ public class DecoderTest {
         val bytes = new byte[]{78, 0, 8, 0};
         val expected = new Wheel(78, 8);
         val actual = FastProto.parse(bytes)
-                .int8Type("diameter", 0)
-                .int16Type("thickness", 2)
+                .int8Type(0, "diameter")
+                .int16Type(2, "thickness")
                 .mapTo(Wheel.class);
 
         assertEquals(expected.toString(), actual.toString());

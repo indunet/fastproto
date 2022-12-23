@@ -12,7 +12,7 @@ import java.util.stream.IntStream;
  * @author Deng Ran
  * @since 3.8.3
  */
-public class Encoder {
+class Encoder {
     byte[] bytes;
     protected EndianPolicy endianPolicy = EndianPolicy.LITTLE;
 
