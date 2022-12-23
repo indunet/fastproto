@@ -11,7 +11,7 @@
 [![JetBrain Support](https://img.shields.io/badge/JetBrain-support-blue)](https://www.jetbrains.com/community/opensource)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto是一款Java编写的二进制数据处理工具，开发者可以通过注解来标记二进制数据中的字段信息（字节偏移、数据类型、大小开端等），然后调用简单的API即可实现解析和封包二进制数据。
+FastProto是一款Java编写的二进制数据处理工具，开发者可以通过注解来标记二进制数据中的字段信息（数据类型、字节偏移、大小开端等），然后调用简单的API即可实现解析和封包二进制数据。
 它简化了二进制数据处理的流程，开发者并不需要编写复杂的代码。
 
 ## *功能*
@@ -123,8 +123,8 @@ public class Weather {
     ...
 
     @UInt32Type(offset = 14)
-    @DecodingFormula(lambda = "x -> x * 0.1")
-    @EncodingFormula(lambda = "x -> (long) (x * 10)")
+    @DecodingFormula(lambda = "x -> x * 0.1")           // 解析后得到的pressure等于uint32 * 0.1
+    @EncodingFormula(lambda = "x -> (long) (x * 10)")   // 写入二进制的数据等于强制转换为长整型的(pressure * 0.1)
     double pressure;
 }
 ```
@@ -167,6 +167,7 @@ FastProto支持Java基础数据类型，考虑到跨语言跨平台的数据交�
 |        注解        |                                       Java                                        |      C/C++       |
 |:----------------:|:---------------------------------------------------------------------------------:|:----------------:|
 |   @BinaryType    |                       Byte[]/byte[]/Collection&lt;Byte&gt;                        |      char[]      |
+|  @BoolArrayType  |                    Boolean[]/boolean[]/Collection&lt;Boolean&gt;                     |      bool[]      |
 |  @Int8ArrayType  |  Byte[]/byte[]/Integer[]/int[]/Collection&lt;Byte&gt;/Collection&lt;Integer&gt;   |      char[]      |
 | @Int16ArrayType  | Short[]/short[]/Integer[]/int[]/Collection&lt;Short&gt;/Collection&lt;Integer&gt; |     short[]      |
 | @Int32ArrayType  |                     Integer[]/int[]/Collection&lt;Integer&gt;                     |      int[]       |
@@ -313,7 +314,51 @@ FastProto支持case class，但是Scala并不完全兼容Java注解，所以请�
 import org.indunet.fastproto.annotation.scala._
 ```
 
-## *4. 基准测试*
+
+## *4. 不使用注解的解析和封包*
+
+在一些特殊的情况下，开发者不希望或者无法使用注解修饰数据对象，例如数据对象来自第三方库，开发者不能修改源代码，又如开发者仅希望通过简单的方法创建二进制数据块。
+FastProto提供了精简的API解决了上述问题，具体如下：
+
+### *4.1 解析二进制数据*
+
+```java
+
+Map<String, Object> map = FastProto.parse(bytes)
+        .boolType("f1", 0, 0)
+        .int8Type("f2", 1)      // 在字节偏移量1位置解析有符号8位整型数据，字段名称f2
+        .int16Type("f3", 2)
+        .get();                 // 共解析了3个字段，并存放在Map中
+```
+
+```java
+byte[] bytes = ... // 待解析的二进制数据
+
+public class JavaObject {
+    Boolean f1;
+    Integer f2;
+    Integer f3;
+}
+
+JavaObject obj = FastProto.parse(bytes)
+        .boolType("f1", 0, 0)           
+        .int8Type("f2", 1)              // 在字节偏移量1位置解析有符号8位整型数据，字段名称f2
+        .int16Type("f3", 2)
+        .mapTo(JavaObject.class);       // 也可以将解析结果按照字段名称映射成Java数据对象
+```
+
+### *4.2 创建二进制数据块*
+
+```java
+byte[] bytes = FastProto.toBytes()
+        .length(16)             // 二进制数据块的长度
+        .uint8Type(0, 1)        // 在字节偏移量0位置写入无符号8位整型数据1
+        .uint16Type(2, 3, 4)    // 在字节偏移量2位置连续写入2个无符号16位整型数据3和4
+        .uint32Type(6, EndianPolicy.BIG, 32)
+        .get();
+```
+
+## *5. 基准测试*
 
 *   windows 11, i7 11th, 32gb
 *   openjdk 1.8.0_292
@@ -324,12 +369,12 @@ import org.indunet.fastproto.annotation.scala._
 | `FastProto::parse` |  吞吐量   |   10  | 240 | ± 4.6    |  次/毫秒   |
 | `FastProto::toBytes` | 吞吐量  |   10  | 317 | ± 11.9    |  次/毫秒   |
 
-## *5. 构建要求*
+## *6. 构建要求*
 
 *   Java 1.8+  
 *   Maven 3.5+    
 
-## *6. 贡献*
+## *7. 贡献*
 
 FastProto取得了etBrain开源计划的支持，可提供核心开发人员免费的全家桶许可证。
 如果你对该项目感兴趣，并希望加入承担部分工作（开发/测试/文档），请通过邮件<deng_ran@foxmail.com>联系我。
