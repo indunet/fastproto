@@ -11,7 +11,7 @@ English | [中文](README-zh.md)
 [![JetBrain Support](https://img.shields.io/badge/JetBrain-support-blue)](https://www.jetbrains.com/community/opensource)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto is a binary data processing tool written in Java. Developers can mark the field information in binary data (byte offset, data type, size start, etc.) through annotations,
+FastProto is a binary data processing tool written in Java. Developers can mark the field information in binary data (data type, byte offset, endianness, etc.) through annotations,
 and then invoke simple API to realize parsing and packaging binary data.
 It simplifies the process of binary data processing, and developers do not need to write complicated code.
 
@@ -177,6 +177,7 @@ FastProto supports Java primitive data types, taking into account cross-language
 |    Annotation    |                                       Java                                        |      C/C++       |
 |:----------------:|:---------------------------------------------------------------------------------:|:----------------:|
 |   @BinaryType    |                       Byte[]/byte[]/Collection&lt;Byte&gt;                        |      char[]      |
+|  @BoolArrayType  |                    Boolean[]/boolean[]/Collection&lt;Boolean&gt;                     |      bool[]      |
 |  @Int8ArrayType  |  Byte[]/byte[]/Integer[]/int[]/Collection&lt;Byte&gt;/Collection&lt;Integer&gt;   |      char[]      |
 | @Int16ArrayType  | Short[]/short[]/Integer[]/int[]/Collection&lt;Short&gt;/Collection&lt;Integer&gt; |     short[]      |
 | @Int32ArrayType  |                     Integer[]/int[]/Collection&lt;Integer&gt;                     |      int[]       |
@@ -238,8 +239,8 @@ public class Weather {
     ...
 
     @UInt32Type(offset = 14)
-    @DecodingFormula(lambda = "x -> x * 0.1")
-    @EncodingFormula(lambda = "x -> (long) (x * 10)")
+    @DecodingFormula(lambda = "x -> x * 0.1")           // pressure after parsing equals uint32 * 0.1
+    @EncodingFormula(lambda = "x -> (long) (x * 10)")   // Data written into binary equals (pressure * 0.1) cast to long
     double pressure;
 }
 
@@ -329,8 +330,52 @@ FastProto supports case class，but Scala is not fully compatible with Java anno
 import org.indunet.fastproto.annotation.scala._
 ```
 
+## *4. Parse and Package without Annotations*
 
-## *4. Benchmark*
+In some special cases, developers do not want or cannot use annotations to decorate data objects, for example, data objects 
+come from third-party libraries, developers cannot modify the source code, and developers only want to create binary data blocks
+in a simple way. FastProto provides simple API to solve the above problems, as follows:
+
+### *4.1 Parse Binary Data*
+
+```java
+
+Map<String, Object> map = FastProto.parse(bytes)
+        .boolType("f1", 0, 0)
+        .int8Type("f2", 1)      // Parse signed 8-bit integer data at byte offset 1, field name f2
+        .int16Type("f3", 2)
+        .get();                 // 3 fields are parsed and stored in the Map
+```
+
+```java
+byte[] bytes = ... // 待解析的二进制数据
+
+public class JavaObject {
+    Boolean f1;
+    Integer f2;
+    Integer f3;
+}
+
+JavaObject obj = FastProto.parse(bytes)
+        .boolType("f1", 0, 0)           
+        .int8Type("f2", 1)              // Parse signed 8-bit integer data at byte offset 1, field name f2
+        .int16Type("f3", 2)
+        .mapTo(JavaObject.class);       // Map parsing result into Java data object according to the field name
+```
+
+### *4.2 Create Binary Data Block*
+
+```java
+byte[] bytes = FastProto.toBytes()
+        .length(16)             // The length of the binary data block
+        .uint8Type(0, 1)        // Write unsigned 8-bit integer data 1 at byte offset 0
+        .uint16Type(2, 3, 4)    // Write 2 unsigned 16-bit integer data 3 and 4 consecutively at byte offset 2
+        .uint32Type(6, EndianPolicy.BIG, 32)
+        .get();
+```
+
+
+## *5. Benchmark*
 
 *   windows 11, i7 11th, 32gb
 *   openjdk 1.8.0_292
@@ -342,13 +387,13 @@ import org.indunet.fastproto.annotation.scala._
 | `FastProto::toBytes` | throughput  |   10  |  317  | ± 11.9 |  ops/ms   |
 
 
-## *5. Build Requirements*
+## *6. Build Requirements*
 
 *   Java 1.8+
 *   Maven 3.5+
 
 
-## *6. Contribution*
+## *7. Contribution*
 
 FastProto has obtained the support of JetBrain Open Source Project, which can provide free license of all product pack for
 all core contributors.
@@ -356,7 +401,7 @@ If you are interested in this project and want to join and undertake part of the
 please feel free to contact me via email <deng_ran@foxmail.com>
 
 
-## *7. License*
+## *8. License*
 
 FastProto is released under the [Apache 2.0 license](license).
 
