@@ -33,7 +33,7 @@ FastProto是一款Java编写的二进制数据处理工具，开发者可以通�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.8.2</version>
+    <version>3.8.3</version>
 </dependency>
 ```
 
@@ -322,29 +322,36 @@ FastProto提供了精简的API解决了上述问题，具体如下：
 
 ### *4.1 解析二进制数据*
 
-```java
+* *直接解析，不需要数据对象*
 
-Map<String, Object> map = FastProto.parse(bytes)
-        .boolType("f1", 0, 0)
-        .int8Type("f2", 1)      // 在字节偏移量1位置解析有符号8位整型数据，字段名称f2
-        .int16Type("f3", 2)
-        .get();                 // 共解析了3个字段，并存放在Map中
+```java
+boolean f1 = FastProto.parse(bytes)
+        .boolType(0, 0)
+        .getAsBoolean();
+int f2 = FastProto.parse(bytes)
+        .int8Type(1)      // 在字节偏移量1位置解析有符号8位整型数据
+        .getAsInt();
+int f3 = FastProto.parse(bytes)
+        .int16Type(2)     // 在字节偏移量2位置解析有符号16位整型数据
+        .getAsInt();
 ```
+
+* *解析后映射成数据对象*
 
 ```java
 byte[] bytes = ... // 待解析的二进制数据
 
-public class JavaObject {
+public class DataObject {
     Boolean f1;
     Integer f2;
     Integer f3;
 }
 
 JavaObject obj = FastProto.parse(bytes)
-        .boolType("f1", 0, 0)           
-        .int8Type("f2", 1)              // 在字节偏移量1位置解析有符号8位整型数据，字段名称f2
-        .int16Type("f3", 2)
-        .mapTo(JavaObject.class);       // 也可以将解析结果按照字段名称映射成Java数据对象
+        .boolType(0, 0, "f1")           
+        .int8Type(1, "f2")              // 在字节偏移量1位置解析有符号8位整型数据，字段名称f2
+        .int16Type(2, "f3")
+        .mapTo(JavaObject.class);       // 将解析结果按照字段名称映射成指定的数据对象
 ```
 
 ### *4.2 创建二进制数据块*
