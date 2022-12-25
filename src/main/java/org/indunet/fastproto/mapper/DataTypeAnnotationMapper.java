@@ -74,7 +74,7 @@ public class DataTypeAnnotationMapper {
 
         map.put(c -> c.equals(boolean.class) || c.equals(Boolean.class), BoolType.class);
 
-        map.put(c -> c.equals(char.class) || c.equals(Character.class), CharType.class);
+        map.put(c -> c.equals(char.class) || c.equals(Character.class), AsciiType.class);
 
         map.put(c -> c.equals(Date.class), TimeType.class);
         map.put(c -> c.equals(Timestamp.class), TimeType.class);
