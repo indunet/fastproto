@@ -32,11 +32,11 @@ public class BinaryUtils {
     }
 
     public static byte[] valueOf(double value) {
-        return valueOf(Double.doubleToLongBits(value));
+        return valueOf(Double.doubleToRawLongBits(value));
     }
 
     public static byte[] valueOf(double value, EndianPolicy policy) {
-        return valueOf(Double.doubleToLongBits(value), policy);
+        return valueOf(Double.doubleToRawLongBits(value), policy);
     }
 
     public static byte[] valueOf(int value) {
