@@ -38,8 +38,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BoolType {
     int SIZE = 1;
-    int MAX_BIT_OFFSET = 7;
-    int MIN_BIT_OFFSET = 0;
 
     int BIT_0 = 0;
     int BIT_1 = 1;
