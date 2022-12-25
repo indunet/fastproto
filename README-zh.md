@@ -137,20 +137,21 @@ public class Weather {
 FastProto支持Java基础数据类型，考虑到跨语言跨平台的数据交换，还引入了无符号类型。
 
 
-|        注解         |                Java                |     C/C++      |  大小  |
-|:-----------------:|:----------------------------------:|:--------------:|:----:|
-|     @BoolType     |          Boolean/boolean           |      bool      | 1 位  |    
-| @CharType(仅ASCII) |           Character/char           |      char      | 1 字节 |   
-|    @Int32Type     |            Integer/int             |      int       | 4 字节 | 
-|    @Int64Type     |             Long/long              |      long      | 8 字节 |   
-|    @FloatType     |            Float/float             |     float      | 4 字节 |  
-|    @DoubleType    |           Double/double            |     double     | 8 字节 |  
-|     @Int8Type     |       Byte/byte/Integer/int        |      char      | 1 字节 |  
-|    @Int16Type     |      Short/short/Integer/int       |     short      | 2 字节 |  
-|    @UInt8Type     |            Integer/int             | unsigned char  | 1 字节 |   
-|    @UInt16Type    |            Integer/int             | unsigned short | 2 字节 |   
-|    @UInt32Type    |             Long/long              |  unsigned int  | 4 字节 |   
-|    @UInt64Type    |             BigInteger             | unsigned long  | 8 字节 |  
+|     注解      |                Java                |     C/C++      |  大小  |
+|:-----------:|:----------------------------------:|:--------------:|:----:|
+|  @BoolType  |          Boolean/boolean           |      bool      | 1 位  |    
+|  @AsciiTye  |           Character/char           |      char      | 1 字节 |   
+|  @CharTye   |           Character/char           |       --       | 2 字节 |   
+| @Int32Type  |            Integer/int             |      int       | 4 字节 | 
+| @Int64Type  |             Long/long              |      long      | 8 字节 |   
+| @FloatType  |            Float/float             |     float      | 4 字节 |  
+| @DoubleType |           Double/double            |     double     | 8 字节 |  
+|  @Int8Type  |       Byte/byte/Integer/int        |      char      | 1 字节 |  
+| @Int16Type  |      Short/short/Integer/int       |     short      | 2 字节 |  
+| @UInt8Type  |            Integer/int             | unsigned char  | 1 字节 |   
+| @UInt16Type |            Integer/int             | unsigned short | 2 字节 |   
+| @UInt32Type |             Long/long              |  unsigned int  | 4 字节 |   
+| @UInt64Type |             BigInteger             | unsigned long  | 8 字节 |  
 
 
 ### *2.2 复合数据类型注解*
@@ -193,7 +194,9 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 | @DecodingFormula |   Field   |    解码公式    |
 | @EncodingFormula |   Field   |    编码公式    |
 
+
 #### *2.4.1 大小开端*
+
 FastProto默认使用小开端，可以通过`@DefaultEndian`注解修改全局开端类型，也可以通过endian属性修改特定字段开端，后者优先级更高。
 
 ```java

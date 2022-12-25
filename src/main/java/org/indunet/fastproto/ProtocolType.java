@@ -33,7 +33,7 @@ import java.util.Arrays;
 public interface ProtocolType {
     Class<? extends Annotation> BINARY = BinaryType.class;
     Class<? extends Annotation> BOOL = BoolType.class;
-    Class<? extends Annotation> CHAR = CharType.class;
+    Class<? extends Annotation> CHAR = AsciiType.class;
     Class<? extends Annotation> DOUBLE = DoubleType.class;
     Class<? extends Annotation> FLOAT = FloatType.class;
     Class<? extends Annotation> INT32 = Int32Type.class;

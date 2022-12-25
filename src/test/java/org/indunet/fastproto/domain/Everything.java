@@ -84,7 +84,7 @@ public class Everything {
     @TimeType(offset = 56)
     Timestamp aTimestamp;
 
-    @CharType(offset = 64)
+    @AsciiType(offset = 64)
     Character aCharacter;
 
     @UInt8Type(offset = 66)

@@ -36,7 +36,7 @@ public class JavaTypeMapper {
 
     static {
         map.put(BoolType.class, Boolean.class);
-        map.put(CharType.class, Character.class);
+        map.put(AsciiType.class, Character.class);
         map.put(FloatType.class, Float.class);
         map.put(FloatArrayType.class, float[].class);
         map.put(DoubleType.class, Double.class);

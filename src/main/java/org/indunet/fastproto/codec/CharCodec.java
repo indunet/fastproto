@@ -17,58 +17,54 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.annotation.AsciiType;
+import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.annotation.CharType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
+import java.util.Arrays;
+
 /**
- * ASCII type codec.
+ * Char type codec.
  *
  * @author Deng Ran
- * @since 3.2.1
+ * @since 3.8.4
  */
-public class AsciiCodec implements Codec<Character> {
-    public Character decode(final byte[] datagram, int offset) {
+public class CharCodec implements Codec<Character> {
+    public Character decode(final byte[] datagram, int offset, EndianPolicy policy) {
         try {
-            val num = CodecUtils.uint8Type(datagram, offset);
-
-            if (num > Byte.MAX_VALUE) {
-                throw new DecodingException(
-                        String.format("%d is not valid ascii.", num));
-            } else {
-                return (char) num;
-            }
+            return (char) CodecUtils.uint16Type(datagram, offset, policy);
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new DecodingException("Fail decoding ascii type.", e);
+            throw new DecodingException("Fail decoding char type.", e);
         }
     }
 
-    public void encode(byte[] datagram, int offset, char value) {
+    public void encode(byte[] datagram, int offset, EndianPolicy policy, char value) {
         try {
-            int num = value;
-
-            if (num > Byte.MAX_VALUE) {
-                throw new EncodingException(String.format("%c is not valid ascii.", value));
-            } else {
-                CodecUtils.uint8Type(datagram, offset, value);
-            }
+            CodecUtils.uint16Type(datagram, offset, policy, value);
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new EncodingException("Fail encoding ascii type.", e);
+            throw new EncodingException("Fail encoding char type.", e);
         }
     }
-    
+
     @Override
     public Character decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(AsciiType.class);
-    
-        return this.decode(bytes, type.offset());
+        val type = context.getDataTypeAnnotation(CharType.class);
+        val policy = Arrays.stream(type.endian())
+                .findFirst()
+                .orElseGet(context::getDefaultEndianPolicy);
+
+        return this.decode(bytes, type.offset(), policy);
     }
-    
+
     @Override
     public void encode(CodecContext context, byte[] bytes, Character value) {
-        val type = context.getDataTypeAnnotation(AsciiType.class);
-    
-        this.encode(bytes, type.offset(), value);
+        val type = context.getDataTypeAnnotation(CharType.class);
+        val policy = Arrays.stream(type.endian())
+                .findFirst()
+                .orElseGet(context::getDefaultEndianPolicy);
+
+        this.encode(bytes, type.offset(), policy, value);
     }
 }

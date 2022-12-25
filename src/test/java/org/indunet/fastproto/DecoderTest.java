@@ -68,4 +68,35 @@ public class DecoderTest {
         Integer diameter;
         Integer thickness;
     }
+
+    @Test
+    public void testMapToArg() {
+        val bytes = new byte[]{78, 0, 8, 0, 0, 0, 0, 81};
+        val expected = new DataObject(78, 8, 81l);
+        val actual = FastProto.parse(bytes)
+                .int8Type(0, "f1")
+                .int16Type(2, "f2")
+                .uint32Type(4, EndianPolicy.BIG, "f3")
+                .mapTo(DataObject.class);
+
+        assertEquals(expected.toString(), actual.toString());
+    }
+
+    @Data
+    public static class DataObject {
+        Integer f1;
+        Integer f2;
+        Long f3;
+
+        public DataObject(Integer f1, Integer f2) {
+            this.f1 = f1;
+            this.f2 = f2;
+        }
+
+        public DataObject(Integer f1, Integer f2, Long f3) {
+            this.f3 = f3;
+            this.f2 = f2;
+            this.f1 = f1;
+        }
+    }
 }

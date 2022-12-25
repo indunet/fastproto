@@ -1,13 +1,17 @@
 package org.indunet.fastproto;
 
 import lombok.val;
+import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.math.BigInteger;
 import java.util.Arrays;
-import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
@@ -17,8 +21,9 @@ import java.util.stream.Collectors;
  * @since 3.8.3
  */
 class Decoder {
+    protected static ConcurrentHashMap<Class, Constructor> constructorMap = new ConcurrentHashMap<>();
     protected byte[] bytes;
-    protected Map<String, Object> map = new HashMap<>();
+    protected Map<String, Object> map = new LinkedHashMap<>();
     protected EndianPolicy endianPolicy = EndianPolicy.LITTLE;
     protected int ordinal = 0;
     protected Object last;
@@ -261,10 +266,41 @@ class Decoder {
     }
 
     public <T> T mapTo(Class<T> clazz) {
-        try {
-            T obj = clazz.newInstance();
+        Constructor<T> constructor = constructorMap.computeIfAbsent(clazz, __ -> {
+            val constructors = clazz.getConstructors();
 
-            val fields = Arrays.stream(clazz.getDeclaredFields())
+            // only one constructor
+            if (constructors.length == 1) {
+                return constructors[0];
+            } else if (Arrays.stream(constructors)
+                    .anyMatch(c -> c.getParameterCount() == 0)) {
+                return Arrays.stream(constructors)
+                        .filter(c -> c.getParameterCount() == 0)
+                        .findFirst()
+                        .get();
+            } else if (Arrays.stream(constructors)
+                    .anyMatch(c -> c.getParameterCount() == this.map.size())) {
+                return Arrays.stream(constructors)
+                        .filter(c -> c.getParameterCount() == this.map.size())
+                        .findFirst()
+                        .get();
+            } else {
+                throw new CodecException("Could not find a valid constructor");
+            }
+        });
+
+        if (constructor.getParameterCount() == 0) {
+            return this.mapToNoArg(constructor);
+        } else {
+            return this.mapToArg(constructor);
+        }
+    }
+
+    protected <T> T mapToNoArg(Constructor<T> constructor) {
+        try {
+            T obj = constructor.newInstance();
+
+            val fields = Arrays.stream(constructor.getDeclaringClass().getDeclaredFields())
                     .peek(f -> f.setAccessible(true))
                     .collect(Collectors.toList());
 
@@ -275,8 +311,20 @@ class Decoder {
             }
 
             return obj;
-        } catch (InstantiationException | IllegalAccessException e) {
-            throw new DecodingException(String.format("Fail mapping to Object %s", clazz.getName()), e);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new DecodingException(String.format("Fail mapping to Object", constructor.getName()), e);
+        }
+    }
+
+    protected <T> T mapToArg(Constructor<T> constructor) {
+        try {
+            Object[] args = this.map.entrySet().stream()
+                    .map(Map.Entry::getValue)
+                    .toArray();
+
+            return constructor.newInstance(args);
+        } catch (InstantiationException | IllegalAccessException | InvocationTargetException e) {
+            throw new DecodingException(String.format("Fail mapping to Object %s", constructor.getName()), e);
         }
     }
 }
