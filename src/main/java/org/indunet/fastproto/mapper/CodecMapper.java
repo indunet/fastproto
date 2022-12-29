@@ -30,6 +30,7 @@ import java.math.BigInteger;
 import java.sql.Timestamp;
 import java.text.MessageFormat;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.BiConsumer;
@@ -183,10 +184,12 @@ public class CodecMapper {
         val timestampCodec = new TimestampCodec();
         val calendarCodec = new CalendarCodec();
         val instantCodec = new InstantCodec();
+        val localDateTimeCodec = new LocalDateTimeCodec();
         codecMap.get(TimeType.class).put(c -> c.equals(Date.class), dateCodec);
         codecMap.get(TimeType.class).put(c -> c.equals(Timestamp.class), timestampCodec);
         codecMap.get(TimeType.class).put(c -> c.equals(Calendar.class), calendarCodec);
         codecMap.get(TimeType.class).put(c -> c.equals(Instant.class), instantCodec);
+        codecMap.get(TimeType.class).put(c -> c.equals(LocalDateTime.class), localDateTimeCodec);
 
         val stringCodec = new StringCodec();
         val stringBufferCodec = new StringBufferCodec();

@@ -6,7 +6,7 @@
 
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.8.4</version>
+    <version>3.9.0</version>
     <packaging>jar</packaging>
     <name>FastProto</name>
     <description>FastProto is a binary data processing tool written in Java.</description>
@@ -211,6 +211,7 @@
                 <configuration>
                     <source>8</source>
                     <target>8</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
                 <dependencies>
                     <dependency>

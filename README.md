@@ -150,20 +150,17 @@ FastProto supports Java primitive data types, taking into account cross-language
 |:-----------:|:---------------------------------:|:--------------:|:-------:|
 |  @BoolType  |          Boolean/boolean          |      bool      |  1 bit  |    
 | @AsciiType  |          Character/char           |      char      | 1 bytes |   
-|  @CharType  |          Character/char           |       --       | 2 bytes |   
-| @Int32Type  |            Integer/int            |      int       | 4 bytes | 
-| @Int64Type  |             Long/long             |      long      | 8 bytes |   
-| @FloatType  |            Float/float            |     float      | 4 bytes |  
-| @DoubleType |           Double/double           |     double     | 8 bytes |  
+|  @CharType  |          Character/char           |       --       | 2 bytes |
 |  @Int8Type  |       Byte/byte/Integer/int       |      char      | 1 byte  |  
 | @Int16Type  |     Short/short / Integer/int     |     short      | 2 bytes |  
+| @Int32Type  |            Integer/int            |      int       | 4 bytes | 
+| @Int64Type  |             Long/long             |      long      | 8 bytes |
 | @UInt8Type  |            Integer/int            | unsigned char  | 1 byte  |   
 | @UInt16Type |            Integer/int            | unsigned short | 2 bytes |   
 | @UInt32Type |             Long/long             |  unsigned int  | 4 bytes |   
-| @UInt64Type |            BigInteger             | unsigned long  | 8 bytes |  
-| @StringType | String/StringBuilder/StringBuffer |       --       | N bytes |   
-|  @TimeType  |  Timestamp/Date/Calendar/Instant  |      long      | 8 bytes |  
-|  @EnumType  |               enum                |      enum      | 1 bytes |
+| @UInt64Type |            BigInteger             | unsigned long  | 8 bytes |
+| @FloatType  |            Float/float            |     float      | 4 bytes |  
+| @DoubleType |           Double/double           |     double     | 8 bytes |
 
 
 ### *2.2 Compound Data Type Annotations*

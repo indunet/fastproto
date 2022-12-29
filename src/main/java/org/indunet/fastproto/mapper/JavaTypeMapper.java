@@ -36,11 +36,9 @@ public class JavaTypeMapper {
 
     static {
         map.put(BoolType.class, Boolean.class);
+        map.put(BoolArrayType.class, boolean[].class);
         map.put(AsciiType.class, Character.class);
-        map.put(FloatType.class, Float.class);
-        map.put(FloatArrayType.class, float[].class);
-        map.put(DoubleType.class, Double.class);
-        map.put(DoubleArrayType.class, double[].class);
+        map.put(CharType.class, Character.class);
         map.put(Int8Type.class, Integer.class);
         map.put(Int8ArrayType.class, int[].class);
         map.put(BinaryType.class, byte[].class);
@@ -58,6 +56,10 @@ public class JavaTypeMapper {
         map.put(UInt32ArrayType.class, long[].class);
         map.put(UInt64Type.class, BigInteger.class);
         map.put(UInt64ArrayType.class, BigInteger[].class);
+        map.put(FloatType.class, Float.class);
+        map.put(FloatArrayType.class, float[].class);
+        map.put(DoubleType.class, Double.class);
+        map.put(DoubleArrayType.class, double[].class);
         map.put(TimeType.class, Date.class);
         map.put(StringType.class, String.class);
         map.put(EnumType.class, Enum.class);

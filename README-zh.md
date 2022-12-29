@@ -141,17 +141,17 @@ FastProto支持Java基础数据类型，考虑到跨语言跨平台的数据交�
 |:-----------:|:----------------------------------:|:--------------:|:----:|
 |  @BoolType  |          Boolean/boolean           |      bool      | 1 位  |    
 |  @AsciiTye  |           Character/char           |      char      | 1 字节 |   
-|  @CharTye   |           Character/char           |       --       | 2 字节 |   
-| @Int32Type  |            Integer/int             |      int       | 4 字节 | 
-| @Int64Type  |             Long/long              |      long      | 8 字节 |   
-| @FloatType  |            Float/float             |     float      | 4 字节 |  
-| @DoubleType |           Double/double            |     double     | 8 字节 |  
+|  @CharTye   |           Character/char           |       --       | 2 字节 |
 |  @Int8Type  |       Byte/byte/Integer/int        |      char      | 1 字节 |  
 | @Int16Type  |      Short/short/Integer/int       |     short      | 2 字节 |  
+| @Int32Type  |            Integer/int             |      int       | 4 字节 | 
+| @Int64Type  |             Long/long              |      long      | 8 字节 |
 | @UInt8Type  |            Integer/int             | unsigned char  | 1 字节 |   
 | @UInt16Type |            Integer/int             | unsigned short | 2 字节 |   
 | @UInt32Type |             Long/long              |  unsigned int  | 4 字节 |   
-| @UInt64Type |             BigInteger             | unsigned long  | 8 字节 |  
+| @UInt64Type |             BigInteger             | unsigned long  | 8 字节 |
+| @FloatType  |            Float/float             |     float      | 4 字节 |  
+| @DoubleType |           Double/double            |     double     | 8 字节 |
 
 
 ### *2.2 复合数据类型注解*

@@ -1,6 +1,5 @@
 package org.indunet.fastproto.annotation;
 
-import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
 
@@ -10,20 +9,18 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Char type which takes 2 bytes, corresponding to Java Character/char.
+ * Ascii array type, corresponding to Java Character[]/char[].
  *
  * @author Deng Ran
  * @see DataType
- * @since 3.8.4
+ * @since 3.9.1
  */
 @DataType
 @Validator({DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CharType {
-    int SIZE = Character.SIZE >>> 3;
-
+public @interface AsciiArrayType {
     int offset();
 
-    EndianPolicy[] endian() default {};
+    int length();
 }
