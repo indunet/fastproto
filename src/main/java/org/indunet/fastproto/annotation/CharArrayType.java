@@ -10,20 +10,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Char type which takes 2 bytes, corresponding to Java Character/char.
+ * Char array type, corresponding to Java Integer/int.
  *
  * @author Deng Ran
  * @see DataType
- * @since 3.8.4
+ * @since 3.9.1
  */
 @DataType
 @Validator({DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface CharType {
-    int SIZE = Character.SIZE >>> 3;
-
+public @interface CharArrayType {
     int offset();
+
+    int length();
 
     EndianPolicy[] endian() default {};
 }

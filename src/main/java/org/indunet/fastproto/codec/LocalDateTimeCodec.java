@@ -24,37 +24,41 @@ import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.Arrays;
 
 /**
- * Instant type codec.
+ * LocalDateTime type codec
  *
  * @author Deng Ran
- * @since 3.3.1
+ * @since 3.9.1
  */
-public class InstantCodec implements Codec<Instant> {
-    public Instant decode(final byte[] bytes, int offset, EndianPolicy policy) {
+public class LocalDateTimeCodec implements Codec<LocalDateTime> {
+    public LocalDateTime decode(final byte[] bytes, int offset, EndianPolicy policy) {
         try {
             val millis = CodecUtils.int64Type(bytes, offset, policy);
+            val instant = Instant.ofEpochMilli(millis);
 
-            return Instant.ofEpochMilli(millis);
+            return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new DecodingException("Fail decoding time(Instant) type.", e);
+            throw new DecodingException("Fail decoding time(LocalDateTime) type.", e);
         }
     }
 
-    public void encode(byte[] bytes, int offset, EndianPolicy policy, Instant value) {
+    public void encode(byte[] bytes, int offset, EndianPolicy policy, LocalDateTime value) {
         try {
-            val millis = value.toEpochMilli();
+            val zoneOffset = ZoneId.systemDefault().getRules().getOffset(Instant.now());
+            val millis = value.toInstant(zoneOffset).toEpochMilli();
 
             CodecUtils.int64Type(bytes, offset, policy, millis);
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new EncodingException("Fail encoding time(Instant) type.", e);
+            throw new EncodingException("Fail encoding time(LocalDateTime) type.", e);
         }
     }
-    
+
     @Override
-    public Instant decode(CodecContext context, byte[] bytes) {
+    public LocalDateTime decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(TimeType.class);
         val policy = Arrays.stream(type.endian())
                 .findFirst()
@@ -62,12 +66,12 @@ public class InstantCodec implements Codec<Instant> {
 
         return this.decode(bytes, type.offset(), policy);
     }
-    
+
     @Override
-    public void encode(CodecContext context, byte[] bytes, Instant value) {
+    public void encode(CodecContext context, byte[] bytes, LocalDateTime value) {
         val policy = context.getDefaultEndianPolicy();
         val type = context.getDataTypeAnnotation(TimeType.class);
-    
+
         this.encode(bytes, type.offset(), policy, value);
     }
 }
