@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.annotation;
 
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
 
@@ -45,5 +45,5 @@ public @interface UInt64Type {
 
     int offset();
 
-    EndianPolicy[] endian() default {};
+    ByteOrder[] byteOrder() default {};
 }

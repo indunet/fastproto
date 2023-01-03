@@ -1,6 +1,6 @@
 package org.indunet.fastproto.codec;
 
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.BinaryUtils;
@@ -32,9 +32,9 @@ public class LocalDateTimeCodecTest {
         long current = System.currentTimeMillis();
 
         return Stream.of(
-                Arguments.arguments(BinaryUtils.valueOf(current), 0, EndianPolicy.LITTLE,
+                Arguments.arguments(BinaryUtils.valueOf(current), 0, ByteOrder.LITTLE,
                         LocalDateTime.ofInstant(Instant.ofEpochMilli(current), ZoneId.systemDefault())),
-                Arguments.arguments(BinaryUtils.valueOf(current, EndianPolicy.BIG), 0, EndianPolicy.BIG,
+                Arguments.arguments(BinaryUtils.valueOf(current, ByteOrder.BIG), 0, ByteOrder.BIG,
                         LocalDateTime.ofInstant(Instant.ofEpochMilli(current), ZoneId.systemDefault()))
         ).collect(Collectors.toList());
     }
@@ -43,16 +43,16 @@ public class LocalDateTimeCodecTest {
         long current = System.currentTimeMillis();
 
         return Stream.of(
-                Arguments.arguments(new byte[8], 0, EndianPolicy.LITTLE,
+                Arguments.arguments(new byte[8], 0, ByteOrder.LITTLE,
                         LocalDateTime.ofInstant(Instant.ofEpochMilli(current), ZoneId.systemDefault()), BinaryUtils.valueOf(current)),
-                Arguments.arguments(new byte[8], -8, EndianPolicy.BIG,
-                        LocalDateTime.ofInstant(Instant.ofEpochMilli(current), ZoneId.systemDefault()), BinaryUtils.valueOf(current, EndianPolicy.BIG))
+                Arguments.arguments(new byte[8], -8, ByteOrder.BIG,
+                        LocalDateTime.ofInstant(Instant.ofEpochMilli(current), ZoneId.systemDefault()), BinaryUtils.valueOf(current, ByteOrder.BIG))
         ).collect(Collectors.toList());
     }
 
     @ParameterizedTest
     @MethodSource
-    public void testDecode1(byte[] datagram, int byteOffset, EndianPolicy policy, LocalDateTime expected) {
+    public void testDecode1(byte[] datagram, int byteOffset, ByteOrder policy, LocalDateTime expected) {
         assertEquals(expected, codec.decode(datagram, byteOffset, policy));
     }
 
@@ -60,14 +60,14 @@ public class LocalDateTimeCodecTest {
     public void testDecode2() {
         byte[] datagram = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 0, EndianPolicy.LITTLE));
+        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 0, ByteOrder.LITTLE));
 
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 10, EndianPolicy.LITTLE));
+        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 10, ByteOrder.LITTLE));
     }
 
     @ParameterizedTest
     @MethodSource
-    public void testEncode1(byte[] datagram, int byteOffset, EndianPolicy policy, LocalDateTime value, byte[] expected) {
+    public void testEncode1(byte[] datagram, int byteOffset, ByteOrder policy, LocalDateTime value, byte[] expected) {
         this.codec.encode(datagram, byteOffset, policy, value);
 
         assertArrayEquals(datagram, expected);
@@ -78,16 +78,16 @@ public class LocalDateTimeCodecTest {
         byte[] datagram = new byte[10];
 
         assertThrows(NullPointerException.class,
-                () -> this.codec.encode(null, 0, EndianPolicy.LITTLE,
+                () -> this.codec.encode(null, 0, ByteOrder.LITTLE,
                         LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault())));
         assertThrows(NullPointerException.class,
-                () -> this.codec.encode(null, 0, EndianPolicy.LITTLE, null));
+                () -> this.codec.encode(null, 0, ByteOrder.LITTLE, null));
 
         assertThrows(EncodingException.class,
-                () -> this.codec.encode(datagram, -1, EndianPolicy.LITTLE,
+                () -> this.codec.encode(datagram, -1, ByteOrder.LITTLE,
                         LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault())));
         assertThrows(EncodingException.class,
-                () -> this.codec.encode(datagram, 10, EndianPolicy.LITTLE,
+                () -> this.codec.encode(datagram, 10, ByteOrder.LITTLE,
                         LocalDateTime.ofInstant(Instant.ofEpochMilli(System.currentTimeMillis()), ZoneId.systemDefault())));
     }
 }

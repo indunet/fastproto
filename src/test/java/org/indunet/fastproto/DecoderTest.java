@@ -29,7 +29,7 @@ public class DecoderTest {
                 .int16Type(2)
                 .getAsInt());
         assertEquals(256, FastProto.parse(bytes)
-                .int32Type(4, EndianPolicy.BIG)
+                .int32Type(4, ByteOrder.BIG)
                 .getAsInt());
     }
 
@@ -40,7 +40,7 @@ public class DecoderTest {
                 .boolType(0, 0)
                 .int8Type(1)
                 .int16Type(2)
-                .uint32Type(4, EndianPolicy.BIG)
+                .uint32Type(4, ByteOrder.BIG)
                 .getAsMap();
 
         assertEquals(true, map.get("0"));
@@ -76,7 +76,7 @@ public class DecoderTest {
         val actual = FastProto.parse(bytes)
                 .int8Type(0, "f1")
                 .int16Type(2, "f2")
-                .uint32Type(4, EndianPolicy.BIG, "f3")
+                .uint32Type(4, ByteOrder.BIG, "f3")
                 .mapTo(DataObject.class);
 
         assertEquals(expected.toString(), actual.toString());

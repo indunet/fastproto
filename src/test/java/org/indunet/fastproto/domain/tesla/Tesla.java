@@ -17,8 +17,8 @@
 package org.indunet.fastproto.domain.tesla;
 
 import lombok.*;
-import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.DefaultEndian;
+import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.annotation.DefaultByteOrder;
 import org.indunet.fastproto.annotation.BoolType;
 import org.indunet.fastproto.annotation.FloatType;
 import org.indunet.fastproto.annotation.Int64Type;
@@ -31,7 +31,7 @@ import java.sql.Timestamp;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@DefaultEndian(EndianPolicy.LITTLE)
+@DefaultByteOrder(ByteOrder.LITTLE)
 public class Tesla {
     @Int64Type(offset = 0)
     Long id;

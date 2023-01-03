@@ -18,7 +18,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.UInt16ArrayType;
 import org.indunet.fastproto.annotation.UInt16Type;
 import org.indunet.fastproto.exception.DecodingException;
@@ -38,7 +38,7 @@ import java.util.stream.Stream;
  * @since 3.6.0
  */
 public class UInt16ArrayCodec implements Codec<int[]> {
-    public int[] decode(byte[] bytes, int offset, int length, EndianPolicy policy) {
+    public int[] decode(byte[] bytes, int offset, int length, ByteOrder byteOrder) {
         try {
             val o = CodecUtils.reverse(bytes, offset);
             var l = length;
@@ -48,14 +48,14 @@ public class UInt16ArrayCodec implements Codec<int[]> {
             }
 
             return IntStream.range(0, l)
-                    .map(i -> CodecUtils.uint16Type(bytes, o + i * UInt16Type.SIZE, policy))
+                    .map(i -> CodecUtils.uint16Type(bytes, o + i * UInt16Type.SIZE, byteOrder))
                     .toArray();
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding uint16 array type.", e);
         }
     }
 
-    public void encode(byte[] bytes, int offset, int length, EndianPolicy policy, int[] values) {
+    public void encode(byte[] bytes, int offset, int length, ByteOrder byteOrder, int[] values) {
         try {
             val o = CodecUtils.reverse(bytes, offset);
             var l = length;
@@ -65,7 +65,7 @@ public class UInt16ArrayCodec implements Codec<int[]> {
             }
 
             IntStream.range(0, l)
-                    .forEach(i -> CodecUtils.uint16Type(bytes, o + i * UInt16Type.SIZE, policy, values[i]));
+                    .forEach(i -> CodecUtils.uint16Type(bytes, o + i * UInt16Type.SIZE, byteOrder, values[i]));
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding uint16 array type.", e);
         }
@@ -74,21 +74,21 @@ public class UInt16ArrayCodec implements Codec<int[]> {
     @Override
     public int[] decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(UInt16ArrayType.class);
-        val policy = Arrays.stream(type.endian())
+        val byteOrder = Arrays.stream(type.byteOrder())
                 .findFirst()
-                .orElseGet(context::getDefaultEndianPolicy);
+                .orElseGet(context::getDefaultByteOrder);
 
-        return this.decode(bytes, type.offset(), type.length(), policy);
+        return this.decode(bytes, type.offset(), type.length(), byteOrder);
     }
 
     @Override
     public void encode(CodecContext context, byte[] bytes, int[] value) {
         val type = context.getDataTypeAnnotation(UInt16ArrayType.class);
-        val policy = Arrays.stream(type.endian())
+        val byteOrder = Arrays.stream(type.byteOrder())
                 .findFirst()
-                .orElseGet(context::getDefaultEndianPolicy);
+                .orElseGet(context::getDefaultByteOrder);
 
-        this.encode(bytes, type.offset(), type.length(), policy, value);
+        this.encode(bytes, type.offset(), type.length(), byteOrder, value);
     }
 
     public class WrapperCodec implements Codec<Integer[]> {

@@ -17,7 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.CharType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
@@ -32,17 +32,17 @@ import java.util.Arrays;
  * @since 3.8.4
  */
 public class CharCodec implements Codec<Character> {
-    public Character decode(final byte[] datagram, int offset, EndianPolicy policy) {
+    public Character decode(final byte[] datagram, int offset, ByteOrder byteOrder) {
         try {
-            return (char) CodecUtils.uint16Type(datagram, offset, policy);
+            return (char) CodecUtils.uint16Type(datagram, offset, byteOrder);
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding char type.", e);
         }
     }
 
-    public void encode(byte[] datagram, int offset, EndianPolicy policy, char value) {
+    public void encode(byte[] datagram, int offset, ByteOrder byteOrder, char value) {
         try {
-            CodecUtils.uint16Type(datagram, offset, policy, value);
+            CodecUtils.uint16Type(datagram, offset, byteOrder, value);
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding char type.", e);
         }
@@ -51,9 +51,9 @@ public class CharCodec implements Codec<Character> {
     @Override
     public Character decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(CharType.class);
-        val policy = Arrays.stream(type.endian())
+        val policy = Arrays.stream(type.byteOrder())
                 .findFirst()
-                .orElseGet(context::getDefaultEndianPolicy);
+                .orElseGet(context::getDefaultByteOrder);
 
         return this.decode(bytes, type.offset(), policy);
     }
@@ -61,9 +61,9 @@ public class CharCodec implements Codec<Character> {
     @Override
     public void encode(CodecContext context, byte[] bytes, Character value) {
         val type = context.getDataTypeAnnotation(CharType.class);
-        val policy = Arrays.stream(type.endian())
+        val policy = Arrays.stream(type.byteOrder())
                 .findFirst()
-                .orElseGet(context::getDefaultEndianPolicy);
+                .orElseGet(context::getDefaultByteOrder);
 
         this.encode(bytes, type.offset(), policy, value);
     }

@@ -16,8 +16,7 @@
 
 package org.indunet.fastproto.annotation;
 
-import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
-import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
+import org.indunet.fastproto.ByteOrder;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -25,20 +24,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * ASCII type which takes 1 byte, can be used to annotate field type of Character/char.
- *
- * @param offset The byte offset of the field in the binary data.
+ * Specify endian according to hardware platform.
  *
  * @author Deng Ran
- * @see DataType
  * @since 1.0.0
  */
-@DataType
-@Validator({DecodingFormulaValidator.class, EncodingFormulaValidator.class})
-@Target(ElementType.FIELD)
+@Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AsciiType {
-    int SIZE = 1;
-
-    int offset();
+public @interface DefaultByteOrder {
+    ByteOrder value();
 }

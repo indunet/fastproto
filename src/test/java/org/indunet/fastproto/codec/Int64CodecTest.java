@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.codec;
 
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.BinaryUtils;
@@ -42,24 +42,24 @@ public class Int64CodecTest {
 
     public static List<Arguments> testDecode1() {
         return Stream.of(
-                Arguments.arguments(new byte[]{-1, -1, -1, -1, -1, -1, -1, -1}, EndianPolicy.LITTLE, -1L),
-                Arguments.arguments(new byte[]{0, 0, 0, 0, 1, 0, 0, 1}, EndianPolicy.LITTLE, (long) Math.pow(256, 4) + (long) Math.pow(256, 7)),
-                Arguments.arguments(new byte[]{0, 0, 0, 0, 1, 0, 0, 1}, EndianPolicy.BIG, (long) Math.pow(256, 3) + 1)
+                Arguments.arguments(new byte[]{-1, -1, -1, -1, -1, -1, -1, -1}, ByteOrder.LITTLE, -1L),
+                Arguments.arguments(new byte[]{0, 0, 0, 0, 1, 0, 0, 1}, ByteOrder.LITTLE, (long) Math.pow(256, 4) + (long) Math.pow(256, 7)),
+                Arguments.arguments(new byte[]{0, 0, 0, 0, 1, 0, 0, 1}, ByteOrder.BIG, (long) Math.pow(256, 3) + 1)
         ).collect(Collectors.toList());
     }
 
     public static List<Arguments> testEncode1() {
         return Stream.of(
-                Arguments.arguments(new byte[8], 0, EndianPolicy.LITTLE, -101L, BinaryUtils.valueOf(-101L)),
-                Arguments.arguments(new byte[8], -8, EndianPolicy.LITTLE, -101L, BinaryUtils.valueOf(-101L)),
-                Arguments.arguments(new byte[8], 0, EndianPolicy.BIG, (long) Integer.MAX_VALUE,
-                        BinaryUtils.valueOf((long) Integer.MAX_VALUE, EndianPolicy.BIG))
+                Arguments.arguments(new byte[8], 0, ByteOrder.LITTLE, -101L, BinaryUtils.valueOf(-101L)),
+                Arguments.arguments(new byte[8], -8, ByteOrder.LITTLE, -101L, BinaryUtils.valueOf(-101L)),
+                Arguments.arguments(new byte[8], 0, ByteOrder.BIG, (long) Integer.MAX_VALUE,
+                        BinaryUtils.valueOf((long) Integer.MAX_VALUE, ByteOrder.BIG))
         ).collect(Collectors.toList());
     }
 
     @ParameterizedTest
     @MethodSource
-    public void testDecode1(byte[] datagram, EndianPolicy policy, long value) {
+    public void testDecode1(byte[] datagram, ByteOrder policy, long value) {
         assertEquals(codec.decode(datagram, 0, policy), value);
         assertEquals(codec.decode(datagram, -8, policy), value);
     }
@@ -68,15 +68,15 @@ public class Int64CodecTest {
     public void testDecode2() {
         byte[] datagram = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 0, EndianPolicy.LITTLE));
+        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 0, ByteOrder.LITTLE));
 
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, -1, EndianPolicy.LITTLE));
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 10, EndianPolicy.LITTLE));
+        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, -1, ByteOrder.LITTLE));
+        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 10, ByteOrder.LITTLE));
     }
 
     @ParameterizedTest
     @MethodSource
-    public void testEncode1(byte[] datagram, int byteOffset, EndianPolicy policy, long value, byte[] expected) {
+    public void testEncode1(byte[] datagram, int byteOffset, ByteOrder policy, long value, byte[] expected) {
         this.codec.encode(datagram, byteOffset, policy, value);
 
         assertArrayEquals(expected, datagram);
@@ -86,11 +86,11 @@ public class Int64CodecTest {
     public void testEncode2() {
         byte[] datagram = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.encode(null, 0, EndianPolicy.BIG, 8));
+        assertThrows(NullPointerException.class, () -> this.codec.encode(null, 0, ByteOrder.BIG, 8));
 
         assertThrows(EncodingException.class,
-                () -> this.codec.encode(datagram, -1, EndianPolicy.LITTLE, -1L));
+                () -> this.codec.encode(datagram, -1, ByteOrder.LITTLE, -1L));
         assertThrows(EncodingException.class,
-                () -> this.codec.encode(datagram, 8, EndianPolicy.LITTLE, -1L));
+                () -> this.codec.encode(datagram, 8, ByteOrder.LITTLE, -1L));
     }
 }

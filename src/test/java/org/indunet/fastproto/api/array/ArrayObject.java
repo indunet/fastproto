@@ -18,7 +18,8 @@ package org.indunet.fastproto.api.array;
 
 import lombok.Data;
 import lombok.val;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.BitOrder;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.util.BinaryUtils;
 
@@ -62,7 +63,7 @@ public class ArrayObject {
     float[] floats = new float[16];
     @DoubleArrayType(offset = 592, length = 16)
     double[] doubles;
-    @BoolArrayType(byteOffset = 720, bitOffset = 3, length = 5)
+    @BoolArrayType(byteOffset = 720, bitOffset = 3, length = 5, bitOrder = BitOrder.MSB_0)
     boolean[] bools;
 
     public ArrayObject() {
@@ -108,17 +109,17 @@ public class ArrayObject {
         val stream = new ByteArrayOutputStream();
 
         stream.write(this.getBytes());
-        stream.write(BinaryUtils.valueOf(this.getShorts(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.valueOf(this.getShorts(), ByteOrder.LITTLE));
         stream.write(BinaryUtils.int8Of(this.getInt8s()));
-        stream.write(BinaryUtils.int16Of(this.getInt16s(), EndianPolicy.LITTLE));
-        stream.write(BinaryUtils.int32Of(this.getInt32s(), EndianPolicy.LITTLE));
-        stream.write(BinaryUtils.valueOf(this.getInt64s(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.int16Of(this.getInt16s(), ByteOrder.LITTLE));
+        stream.write(BinaryUtils.int32Of(this.getInt32s(), ByteOrder.LITTLE));
+        stream.write(BinaryUtils.valueOf(this.getInt64s(), ByteOrder.LITTLE));
         stream.write(BinaryUtils.uint8Of(this.getUint8s()));
-        stream.write(BinaryUtils.uint16Of(this.getUint16s(), EndianPolicy.LITTLE));
-        stream.write(BinaryUtils.uint32Of(this.getUint32s(), EndianPolicy.LITTLE));
-        stream.write(BinaryUtils.uint64Of(this.getUint64s(), EndianPolicy.LITTLE));
-        stream.write(BinaryUtils.valueOf(this.getFloats(), EndianPolicy.LITTLE));
-        stream.write(BinaryUtils.valueOf(this.getDoubles(), EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.uint16Of(this.getUint16s(), ByteOrder.LITTLE));
+        stream.write(BinaryUtils.uint32Of(this.getUint32s(), ByteOrder.LITTLE));
+        stream.write(BinaryUtils.uint64Of(this.getUint64s(), ByteOrder.LITTLE));
+        stream.write(BinaryUtils.valueOf(this.getFloats(), ByteOrder.LITTLE));
+        stream.write(BinaryUtils.valueOf(this.getDoubles(), ByteOrder.LITTLE));
         stream.write(new byte[] {(byte) 0b0000_1010});
         stream.flush();
 

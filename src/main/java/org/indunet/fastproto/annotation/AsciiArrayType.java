@@ -9,7 +9,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Ascii array type, corresponding to Java Character[]/char[].
+ * Ascii array type which use ascii charset, each character takes 1 byte, can be used to annotate field type of Character[]/char[].
+
+ * @param offset The byte offset of the field in the binary data.
+ * @param length The length of the ascii array.
  *
  * @author Deng Ran
  * @see DataType

@@ -18,7 +18,7 @@ package org.indunet.fastproto.scala
 
 import org.indunet.fastproto.scala.iot.inverter.{Fan, Inverter}
 import org.indunet.fastproto.util.CodecUtils
-import org.indunet.fastproto.{EndianPolicy, FastProto}
+import org.indunet.fastproto.{ByteOrder, FastProto}
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
@@ -34,8 +34,8 @@ class FastProtoTest {
     datagram(0) = 1
     datagram(2) = 2
 
-    CodecUtils.floatType(datagram, 4, EndianPolicy.LITTLE, 10.2f)
-    CodecUtils.uint16Type(datagram, 8, EndianPolicy.BIG, 192)
+    CodecUtils.floatType(datagram, 4, ByteOrder.LITTLE, 10.2f)
+    CodecUtils.uint16Type(datagram, 8, ByteOrder.BIG, 192)
 
     val expected = Inverter(1, 2, Fan(10.2f, false), 192)
     val inverter = FastProto.parse(datagram, classOf[Inverter])

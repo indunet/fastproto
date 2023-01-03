@@ -24,7 +24,7 @@ class Decoder {
     protected static ConcurrentHashMap<Class, Constructor> constructorMap = new ConcurrentHashMap<>();
     protected byte[] bytes;
     protected Map<String, Object> map = new LinkedHashMap<>();
-    protected EndianPolicy endianPolicy = EndianPolicy.LITTLE;
+    protected ByteOrder endianPolicy = ByteOrder.LITTLE;
     protected int ordinal = 0;
     protected Object last;
 
@@ -46,7 +46,7 @@ class Decoder {
         return this;
     }
 
-    public Decoder defaultEndian(EndianPolicy endianPolicy) {
+    public Decoder defaultEndian(ByteOrder endianPolicy) {
         this.endianPolicy = endianPolicy;
 
         return this;
@@ -76,11 +76,11 @@ class Decoder {
         return this.put(name, CodecUtils.uint16Type(this.bytes, offset, this.endianPolicy));
     }
 
-    public Decoder uint16Type(int offset, EndianPolicy endianPolicy) {
+    public Decoder uint16Type(int offset, ByteOrder endianPolicy) {
         return this.put(CodecUtils.uint16Type(this.bytes, offset, endianPolicy));
     }
 
-    public Decoder uint16Type(int offset, EndianPolicy endianPolicy, String name) {
+    public Decoder uint16Type(int offset, ByteOrder endianPolicy, String name) {
         return this.put(name, CodecUtils.uint16Type(this.bytes, offset, endianPolicy));
     }
 
@@ -92,11 +92,11 @@ class Decoder {
         return this.put(name, CodecUtils.uint32Type(this.bytes, offset, this.endianPolicy));
     }
 
-    public Decoder uint32Type(int offset, EndianPolicy endianPolicy) {
+    public Decoder uint32Type(int offset, ByteOrder endianPolicy) {
         return this.put(CodecUtils.uint32Type(this.bytes, offset, endianPolicy));
     }
 
-    public Decoder uint32Type(int offset, EndianPolicy endianPolicy, String name) {
+    public Decoder uint32Type(int offset, ByteOrder endianPolicy, String name) {
         return this.put(name, CodecUtils.uint32Type(this.bytes, offset, endianPolicy));
     }
 
@@ -108,11 +108,11 @@ class Decoder {
         return this.put(name, CodecUtils.uint64Type(this.bytes, offset, this.endianPolicy));
     }
 
-    public Decoder uint64Type(int offset, EndianPolicy endianPolicy) {
+    public Decoder uint64Type(int offset, ByteOrder endianPolicy) {
         return this.put(CodecUtils.uint64Type(this.bytes, offset, endianPolicy));
     }
 
-    public Decoder uint64Type(int offset, EndianPolicy endianPolicy, String name) {
+    public Decoder uint64Type(int offset, ByteOrder endianPolicy, String name) {
         return this.put(name, CodecUtils.uint64Type(this.bytes, offset, endianPolicy));
     }
 
@@ -140,11 +140,11 @@ class Decoder {
         return this.put(name, CodecUtils.shortType(this.bytes, offset, this.endianPolicy));
     }
 
-    public Decoder shortType(int offset, EndianPolicy endianPolicy) {
+    public Decoder shortType(int offset, ByteOrder endianPolicy) {
         return this.put(CodecUtils.shortType(this.bytes, offset, endianPolicy));
     }
 
-    public Decoder shortType(int offset, EndianPolicy endianPolicy, String name) {
+    public Decoder shortType(int offset, ByteOrder endianPolicy, String name) {
         return this.put(name, CodecUtils.shortType(this.bytes, offset, endianPolicy));
     }
 
@@ -156,11 +156,11 @@ class Decoder {
         return this.put(name, CodecUtils.int16Type(this.bytes, offset, this.endianPolicy));
     }
 
-    public Decoder int16Type(int offset, EndianPolicy endianPolicy) {
+    public Decoder int16Type(int offset, ByteOrder endianPolicy) {
         return this.put(CodecUtils.int16Type(this.bytes, offset, endianPolicy));
     }
 
-    public Decoder int16Type(int offset, EndianPolicy endianPolicy, String name) {
+    public Decoder int16Type(int offset, ByteOrder endianPolicy, String name) {
         return this.put(name, CodecUtils.int16Type(this.bytes, offset, endianPolicy));
     }
 
@@ -172,11 +172,11 @@ class Decoder {
         return this.put(name, CodecUtils.int32Type(this.bytes, offset, this.endianPolicy));
     }
 
-    public Decoder int32Type(int offset, EndianPolicy endianPolicy) {
+    public Decoder int32Type(int offset, ByteOrder endianPolicy) {
         return this.put(CodecUtils.int32Type(this.bytes, offset, endianPolicy));
     }
 
-    public Decoder int32Type(int offset, EndianPolicy endianPolicy, String name) {
+    public Decoder int32Type(int offset, ByteOrder endianPolicy, String name) {
         return this.put(name, CodecUtils.int32Type(this.bytes, offset, endianPolicy));
     }
 
@@ -188,11 +188,11 @@ class Decoder {
         return this.put(name, CodecUtils.int64Type(this.bytes, offset, this.endianPolicy));
     }
 
-    public Decoder int64Type(int offset, EndianPolicy endianPolicy) {
+    public Decoder int64Type(int offset, ByteOrder endianPolicy) {
         return this.put(CodecUtils.int64Type(this.bytes, offset, endianPolicy));
     }
 
-    public Decoder int64Type(int offset, EndianPolicy endianPolicy, String name) {
+    public Decoder int64Type(int offset, ByteOrder endianPolicy, String name) {
         return this.put(name, CodecUtils.int64Type(this.bytes, offset, endianPolicy));
     }
 
@@ -204,11 +204,11 @@ class Decoder {
         return this.put(name, CodecUtils.floatType(this.bytes, offset, this.endianPolicy));
     }
 
-    public Decoder floatType(int offset, EndianPolicy endianPolicy) {
+    public Decoder floatType(int offset, ByteOrder endianPolicy) {
         return this.put(CodecUtils.floatType(this.bytes, offset, endianPolicy));
     }
 
-    public Decoder floatType(int offset, EndianPolicy endianPolicy, String name) {
+    public Decoder floatType(int offset, ByteOrder endianPolicy, String name) {
         return this.put(name, CodecUtils.floatType(this.bytes, offset, endianPolicy));
     }
 
@@ -220,11 +220,11 @@ class Decoder {
         return this.put(name, CodecUtils.doubleType(this.bytes, offset, this.endianPolicy));
     }
 
-    public Decoder doubleType(int offset, EndianPolicy endianPolicy) {
+    public Decoder doubleType(int offset, ByteOrder endianPolicy) {
         return this.put(CodecUtils.doubleType(this.bytes, offset, endianPolicy));
     }
 
-    public Decoder doubleType(int offset, EndianPolicy endianPolicy, String name) {
+    public Decoder doubleType(int offset, ByteOrder endianPolicy, String name) {
         return this.put(name, CodecUtils.doubleType(this.bytes, offset, endianPolicy));
     }
 

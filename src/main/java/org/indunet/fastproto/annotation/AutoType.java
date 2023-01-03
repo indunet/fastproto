@@ -17,7 +17,8 @@
 
 package org.indunet.fastproto.annotation;
 
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.BitOrder;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
 
@@ -45,7 +46,9 @@ public @interface AutoType {
 
     int[] length() default {};
 
-    EndianPolicy[] endian() default {};
+    ByteOrder[] byteOrder() default {};
+
+    BitOrder[] bitOrder() default {};
 
     String charset() default "UTF-8";
 

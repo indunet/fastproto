@@ -42,7 +42,8 @@ public class CodecFlow extends ResolvePipeline {
                 .dataTypeAnnotation(reference.getDataTypeAnnotation())
                 .fieldType(reference.getField().getType())
                 .field(reference.getField())
-                .defaultEndianPolicy(reference.getEndianPolicy())
+                .defaultByteOrder(reference.getByteOrder())
+                .defaultBitOrder(reference.getBitOrder())
                 .build();
 
         if (reference.getDecodingFormulaClass() != null) {

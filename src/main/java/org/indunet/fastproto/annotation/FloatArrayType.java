@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.annotation;
 
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
 
@@ -26,7 +26,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Float array type
+ * Float array type, each float takes 4 bytes, it can be used to annotate field type of Float[]/float[]/List<Float>/Set<Float>.
+
+ * @param offset The byte offset of the field in the binary data.
+ * @param length The length of the float array.
+ * @param endian Byte order of the float, BIG or LITTLE can be set, FloatArrayType uses LITTLE by default.
  *
  * @author Deng Ran
  * @since 3.6.0
@@ -40,5 +44,5 @@ public @interface FloatArrayType {
 
     int length();
 
-    EndianPolicy[] endian() default {};
+    ByteOrder[] byteOrder() default {};
 }

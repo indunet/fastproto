@@ -19,7 +19,7 @@ package org.indunet.fastproto.util;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.DynamicByteBuffer;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.*;
 
 import java.math.BigInteger;
@@ -195,10 +195,10 @@ public class CodecUtils {
         byteBuffer.set(offset, (byte) value);
     }
 
-    public static int uint16Type(@NonNull final byte[] datagram, int offset, EndianPolicy policy) {
+    public static int uint16Type(@NonNull final byte[] datagram, int offset, ByteOrder policy) {
         int o = reverse(datagram, offset);
 
-        if (policy == EndianPolicy.BIG) {
+        if (policy == ByteOrder.BIG) {
             return (datagram[o] & 0xFF) * 256 + (datagram[o + 1] & 0xFF);
         } else {
             return (datagram[o + 1] & 0xFF) * 256 + (datagram[o] & 0xFF);
@@ -206,17 +206,17 @@ public class CodecUtils {
     }
 
     public static int uint16Type(@NonNull final byte[] datagram, int offset) {
-        return uint16Type(datagram, offset, EndianPolicy.LITTLE);
+        return uint16Type(datagram, offset, ByteOrder.LITTLE);
     }
 
-    public static void uint16Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull int value) {
+    public static void uint16Type(@NonNull byte[] datagram, int offset, ByteOrder policy, @NonNull int value) {
         if (value < UInt16Type.MIN_VALUE || value > UInt16Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of uint16 range.");
         }
 
         int o = reverse(datagram, offset);
 
-        if (policy == EndianPolicy.BIG) {
+        if (policy == ByteOrder.BIG) {
             datagram[o + 1] = (byte) (value);
             datagram[o] = (byte) (value >>> 8);
         } else {
@@ -225,12 +225,12 @@ public class CodecUtils {
         }
     }
 
-    public static void uint16Type(DynamicByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull int value) {
+    public static void uint16Type(DynamicByteBuffer byteBuffer, int offset, ByteOrder policy, @NonNull int value) {
         if (value < UInt16Type.MIN_VALUE || value > UInt16Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of uint16 range.");
         }
 
-        if (policy == EndianPolicy.BIG) {
+        if (policy == ByteOrder.BIG) {
             byteBuffer.set(offset + 1, (byte) (value));
             byteBuffer.set(offset, (byte) (value >>> 8));
         } else {
@@ -240,14 +240,14 @@ public class CodecUtils {
     }
 
     public static void uint16Type(@NonNull byte[] datagram, int offset, @NonNull int value) {
-        uint16Type(datagram, offset, EndianPolicy.LITTLE, value);
+        uint16Type(datagram, offset, ByteOrder.LITTLE, value);
     }
 
-    public static int int16Type(@NonNull final byte[] datagram, int offset, EndianPolicy policy) {
+    public static int int16Type(@NonNull final byte[] datagram, int offset, ByteOrder policy) {
         int o = reverse(datagram, offset);
         short value = 0;
 
-        if (policy == EndianPolicy.BIG) {
+        if (policy == ByteOrder.BIG) {
             value |= (datagram[o + 1] & 0x00FF);
             value |= (datagram[o] << 8);
         } else {
@@ -259,17 +259,17 @@ public class CodecUtils {
     }
 
     public static int int16Type(@NonNull final byte[] datagram, int offset) {
-        return int16Type(datagram, offset, EndianPolicy.LITTLE);
+        return int16Type(datagram, offset, ByteOrder.LITTLE);
     }
 
-    public static void int16Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull int value) {
+    public static void int16Type(@NonNull byte[] datagram, int offset, ByteOrder policy, @NonNull int value) {
         if (value < Int16Type.MIN_VALUE || value > Int16Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of int16 range.");
         }
 
         int o = reverse(datagram, offset);
 
-        if (policy == EndianPolicy.BIG) {
+        if (policy == ByteOrder.BIG) {
             datagram[o + 1] = (byte) (value);
             datagram[o] = (byte) (value >>> 8);
         } else {
@@ -278,12 +278,12 @@ public class CodecUtils {
         }
     }
 
-    public static void int16Type(DynamicByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull int value) {
+    public static void int16Type(DynamicByteBuffer byteBuffer, int offset, ByteOrder policy, @NonNull int value) {
         if (value < Int16Type.MIN_VALUE || value > Int16Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of int16 range.");
         }
 
-        if (policy == EndianPolicy.BIG) {
+        if (policy == ByteOrder.BIG) {
             byteBuffer.set(offset + 1, (byte) value);
             byteBuffer.set(offset, (byte) (value >>> 8));
         } else {
@@ -293,17 +293,17 @@ public class CodecUtils {
     }
 
     public static void int16Type(@NonNull byte[] datagram, int offset, @NonNull int value) {
-        int16Type(datagram, offset, EndianPolicy.LITTLE, value);
+        int16Type(datagram, offset, ByteOrder.LITTLE, value);
     }
 
-    public static short shortType(@NonNull final byte[] datagram, int offset, EndianPolicy policy) {
+    public static short shortType(@NonNull final byte[] datagram, int offset, ByteOrder policy) {
         int o = reverse(datagram, offset);
         short value = 0;
 
-        if (policy == EndianPolicy.LITTLE) {
+        if (policy == ByteOrder.LITTLE) {
             value |= (datagram[o] & 0x00FF);
             value |= (datagram[o + 1] << 8);
-        } else if (policy == EndianPolicy.BIG) {
+        } else if (policy == ByteOrder.BIG) {
             value |= (datagram[o + 1] & 0x00FF);
             value |= (datagram[o] << 8);
         }
@@ -312,39 +312,39 @@ public class CodecUtils {
     }
 
     public static short shortType(@NonNull final byte[] datagram, int offset) {
-        return shortType(datagram, offset, EndianPolicy.LITTLE);
+        return shortType(datagram, offset, ByteOrder.LITTLE);
     }
 
-    public static void shortType(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull short value) {
+    public static void shortType(@NonNull byte[] datagram, int offset, ByteOrder policy, @NonNull short value) {
         int o = reverse(datagram, offset);
 
-        if (policy == EndianPolicy.LITTLE) {
+        if (policy == ByteOrder.LITTLE) {
             datagram[o] = (byte) (value);
             datagram[o + 1] = (byte) (value >>> 8);
-        } else if (policy == EndianPolicy.BIG) {
+        } else if (policy == ByteOrder.BIG) {
             datagram[o + 1] = (byte) (value);
             datagram[o] = (byte) (value >>> 8);
         }
     }
 
     public static void shortType(@NonNull byte[] datagram, int offset, @NonNull short value) {
-        shortType(datagram, offset, EndianPolicy.LITTLE, value);
+        shortType(datagram, offset, ByteOrder.LITTLE, value);
     }
 
-    public static void type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull short value) {
+    public static void type(@NonNull byte[] datagram, int offset, ByteOrder policy, @NonNull short value) {
         shortType(datagram, offset, policy, value);
     }
 
-    public static int int32Type(@NonNull final byte[] datagram, int offset, EndianPolicy policy) {
+    public static int int32Type(@NonNull final byte[] datagram, int offset, ByteOrder policy) {
         int o = reverse(datagram, offset);
         int value = 0;
 
-        if (policy == EndianPolicy.LITTLE) {
+        if (policy == ByteOrder.LITTLE) {
             value |= (datagram[o] & 0xFF);
             value |= ((datagram[o + 1] & 0xFF) << 8);
             value |= ((datagram[o + 2] & 0xFF) << 16);
             value |= ((datagram[o + 3] & 0xFF) << 24);
-        } else if (policy == EndianPolicy.BIG) {
+        } else if (policy == ByteOrder.BIG) {
             value |= (datagram[o + 3] & 0xFF);
             value |= ((datagram[o + 2] & 0xFF) << 8);
             value |= ((datagram[o + 1] & 0xFF) << 16);
@@ -355,18 +355,18 @@ public class CodecUtils {
     }
 
     public static int int32Type(@NonNull final byte[] datagram, int offset) {
-        return int32Type(datagram, offset, EndianPolicy.LITTLE);
+        return int32Type(datagram, offset, ByteOrder.LITTLE);
     }
 
-    public static void int32Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull int value) {
+    public static void int32Type(@NonNull byte[] datagram, int offset, ByteOrder policy, @NonNull int value) {
         int o = reverse(datagram, offset);
 
-        if (policy == EndianPolicy.LITTLE) {
+        if (policy == ByteOrder.LITTLE) {
             datagram[o] = (byte) (value);
             datagram[o + 1] = (byte) (value >>> 8);
             datagram[o + 2] = (byte) (value >>> 16);
             datagram[o + 3] = (byte) (value >>> 24);
-        } else if (policy == EndianPolicy.BIG) {
+        } else if (policy == ByteOrder.BIG) {
             datagram[o + 3] = (byte) (value);
             datagram[o + 2] = (byte) (value >>> 8);
             datagram[o + 1] = (byte) (value >>> 16);
@@ -374,13 +374,13 @@ public class CodecUtils {
         }
     }
 
-    public static void int32Type(DynamicByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull int value) {
-        if (policy == EndianPolicy.LITTLE) {
+    public static void int32Type(DynamicByteBuffer byteBuffer, int offset, ByteOrder policy, @NonNull int value) {
+        if (policy == ByteOrder.LITTLE) {
             byteBuffer.set(offset, (byte) value);
             byteBuffer.set(offset + 1, (byte) (value >>> 8));
             byteBuffer.set(offset + 2, (byte) (value >>> 16));
             byteBuffer.set(offset + 3, (byte) (value >>> 24));
-        } else if (policy == EndianPolicy.BIG) {
+        } else if (policy == ByteOrder.BIG) {
             byteBuffer.set(offset + 3, (byte) value);
             byteBuffer.set(offset + 2, (byte) (value >>> 8));
             byteBuffer.set(offset + 1, (byte) (value >>> 16));
@@ -389,23 +389,23 @@ public class CodecUtils {
     }
 
     public static void int32Type(@NonNull byte[] datagram, int offset, @NonNull int value) {
-        int32Type(datagram, offset, EndianPolicy.LITTLE, value);
+        int32Type(datagram, offset, ByteOrder.LITTLE, value);
     }
 
-    public static void type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull int value) {
+    public static void type(@NonNull byte[] datagram, int offset, ByteOrder policy, @NonNull int value) {
         int32Type(datagram, offset, policy, value);
     }
 
-    public static long uint32Type(@NonNull final byte[] datagram, int offset, EndianPolicy policy) {
+    public static long uint32Type(@NonNull final byte[] datagram, int offset, ByteOrder policy) {
         int o = reverse(datagram, offset);
         long value = 0;
 
-        if (policy == EndianPolicy.LITTLE) {
+        if (policy == ByteOrder.LITTLE) {
             value |= (datagram[o] & 0xFF);
             value |= ((datagram[o + 1] & 0xFFL) << 8);
             value |= ((datagram[o + 2] & 0xFFL) << 16);
             value |= ((datagram[o + 3] & 0xFFL) << 24);
-        } else if (policy == EndianPolicy.BIG) {
+        } else if (policy == ByteOrder.BIG) {
             value |= (datagram[o + 3] & 0xFF);
             value |= ((datagram[o + 2] & 0xFFL) << 8);
             value |= ((datagram[o + 1] & 0xFFL) << 16);
@@ -416,17 +416,17 @@ public class CodecUtils {
     }
 
     public static long uint32Type(@NonNull final byte[] datagram, int offset) {
-        return uint32Type(datagram, offset, EndianPolicy.LITTLE);
+        return uint32Type(datagram, offset, ByteOrder.LITTLE);
     }
 
-    public static void uint32Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull long value) {
+    public static void uint32Type(@NonNull byte[] datagram, int offset, ByteOrder policy, @NonNull long value) {
         if (value < UInt32Type.MIN_VALUE || value > UInt32Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of uint32 range.");
         }
 
         int o = reverse(datagram, offset);
 
-        if (policy == EndianPolicy.BIG) {
+        if (policy == ByteOrder.BIG) {
             datagram[o + 3] = (byte) (value);
             datagram[o + 2] = (byte) (value >>> 8);
             datagram[o + 1] = (byte) (value >>> 16);
@@ -439,12 +439,12 @@ public class CodecUtils {
         }
     }
 
-    public static void uint32Type(DynamicByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull long value) {
+    public static void uint32Type(DynamicByteBuffer byteBuffer, int offset, ByteOrder policy, @NonNull long value) {
         if (value < UInt32Type.MIN_VALUE || value > UInt32Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of uint32 range.");
         }
 
-        if (policy == EndianPolicy.BIG) {
+        if (policy == ByteOrder.BIG) {
             byteBuffer.set(offset + 3, (byte) (value));
             byteBuffer.set(offset + 2, (byte) (value >>> 8));
             byteBuffer.set(offset + 1, (byte) (value >>> 16));
@@ -458,15 +458,15 @@ public class CodecUtils {
     }
 
     public static void uint32Type(@NonNull byte[] datagram, int offset, @NonNull long value) {
-        uint32Type(datagram, offset, EndianPolicy.LITTLE, value);
+        uint32Type(datagram, offset, ByteOrder.LITTLE, value);
     }
 
-    public static BigInteger uint64Type(@NonNull final byte[] datagram, int offset, EndianPolicy policy) {
+    public static BigInteger uint64Type(@NonNull final byte[] datagram, int offset, ByteOrder policy) {
         int o = reverse(datagram, offset);
         long low = 0;
         long high = 0;
 
-        if (policy == EndianPolicy.LITTLE) {
+        if (policy == ByteOrder.LITTLE) {
             low |= (datagram[o] & 0xFF);
             low |= ((datagram[o + 1] & 0xFFL) << 8);
             low |= ((datagram[o + 2] & 0xFFL) << 16);
@@ -476,7 +476,7 @@ public class CodecUtils {
             high |= ((datagram[o + 5] & 0xFFL) << 8);
             high |= ((datagram[o + 6] & 0xFFL) << 16);
             high |= ((datagram[o + 7] & 0xFFL) << 24);
-        } else if (policy == EndianPolicy.BIG) {
+        } else if (policy == ByteOrder.BIG) {
             low |= (datagram[o + 7] & 0xFF);
             low |= ((datagram[o + 6] & 0xFFL) << 8);
             low |= ((datagram[o + 5] & 0xFFL) << 16);
@@ -494,10 +494,10 @@ public class CodecUtils {
     }
 
     public static BigInteger uint64Type(@NonNull final byte[] datagram, int offset) {
-        return uint64Type(datagram, offset, EndianPolicy.LITTLE);
+        return uint64Type(datagram, offset, ByteOrder.LITTLE);
     }
 
-    public static void uint64Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, BigInteger value) {
+    public static void uint64Type(@NonNull byte[] datagram, int offset, ByteOrder policy, BigInteger value) {
         if (value.compareTo(UInt64Type.MAX_VALUE) > 0 || value.compareTo(UInt64Type.MIN_VALUE) < 0) {
             throw new IllegalArgumentException("Out of uinteger64 range.");
         }
@@ -510,7 +510,7 @@ public class CodecUtils {
                 .shiftRight(32)
                 .longValueExact();
 
-        if (policy == EndianPolicy.BIG) {
+        if (policy == ByteOrder.BIG) {
             datagram[o + 7] = (byte) (low);
             datagram[o + 6] = (byte) (low >>> 8);
             datagram[o + 5] = (byte) (low >>> 16);
@@ -533,7 +533,7 @@ public class CodecUtils {
         }
     }
 
-    public static void uint64Type(DynamicByteBuffer byteBuffer, int offset, EndianPolicy policy, BigInteger value) {
+    public static void uint64Type(DynamicByteBuffer byteBuffer, int offset, ByteOrder policy, BigInteger value) {
         if (value.compareTo(UInt64Type.MAX_VALUE) > 0 || value.compareTo(UInt64Type.MIN_VALUE) < 0) {
             throw new IllegalArgumentException("Out of uinteger64 range.");
         }
@@ -545,7 +545,7 @@ public class CodecUtils {
                 .shiftRight(32)
                 .longValueExact();
 
-        if (policy == EndianPolicy.BIG) {
+        if (policy == ByteOrder.BIG) {
             byteBuffer.set(offset + 7, (byte) low);
             byteBuffer.set(offset + 6, (byte) (low >>> 8));
             byteBuffer.set(offset + 5, (byte) (low >>> 16));
@@ -569,18 +569,18 @@ public class CodecUtils {
     }
 
     public static void uint64Type(@NonNull byte[] datagram, int offset, BigInteger value) {
-        uint64Type(datagram, offset, EndianPolicy.LITTLE, value);
+        uint64Type(datagram, offset, ByteOrder.LITTLE, value);
     }
 
-    public static void type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull BigInteger value) {
+    public static void type(@NonNull byte[] datagram, int offset, ByteOrder policy, @NonNull BigInteger value) {
         uint64Type(datagram, offset, policy, value);
     }
 
-    public static long int64Type(@NonNull final byte[] datagram, int offset, EndianPolicy policy) {
+    public static long int64Type(@NonNull final byte[] datagram, int offset, ByteOrder policy) {
         int o = reverse(datagram, offset);
         long value = 0;
 
-        if (policy == EndianPolicy.LITTLE) {
+        if (policy == ByteOrder.LITTLE) {
             value |= (datagram[o] & 0xFF);
             value |= ((datagram[o + 1] & 0xFFL) << 8);
             value |= ((datagram[o + 2] & 0xFFL) << 16);
@@ -590,7 +590,7 @@ public class CodecUtils {
             value |= ((datagram[o + 5] & 0xFFL) << 40);
             value |= ((datagram[o + 6] & 0xFFL) << 48);
             value |= ((datagram[o + 7] & 0xFFL) << 56);
-        } else if (policy == EndianPolicy.BIG) {
+        } else if (policy == ByteOrder.BIG) {
             value |= (datagram[o + 7] & 0xFF);
             value |= ((datagram[o + 6] & 0xFFL) << 8);
             value |= ((datagram[o + 5] & 0xFFL) << 16);
@@ -606,13 +606,13 @@ public class CodecUtils {
     }
 
     public static long int64Type(@NonNull final byte[] datagram, int offset) {
-        return int64Type(datagram, offset, EndianPolicy.LITTLE);
+        return int64Type(datagram, offset, ByteOrder.LITTLE);
     }
 
-    public static void int64Type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull long value) {
+    public static void int64Type(@NonNull byte[] datagram, int offset, ByteOrder policy, @NonNull long value) {
         int o = reverse(datagram, offset);
 
-        if (policy == EndianPolicy.BIG) {
+        if (policy == ByteOrder.BIG) {
             datagram[o + 7] = (byte) (value);
             datagram[o + 6] = (byte) (value >>> 8);
             datagram[o + 5] = (byte) (value >>> 16);
@@ -635,8 +635,8 @@ public class CodecUtils {
         }
     }
 
-    public static void int64Type(DynamicByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull long value) {
-        if (policy == EndianPolicy.BIG) {
+    public static void int64Type(DynamicByteBuffer byteBuffer, int offset, ByteOrder policy, @NonNull long value) {
+        if (policy == ByteOrder.BIG) {
             byteBuffer.set(offset + 7, (byte) value);
             byteBuffer.set(offset + 6, (byte) (value >>> 8));
             byteBuffer.set(offset + 5, (byte) (value >>> 16));
@@ -660,23 +660,23 @@ public class CodecUtils {
     }
 
     public static void int64Type(@NonNull byte[] datagram, int offset, @NonNull long value) {
-        int64Type(datagram, offset, EndianPolicy.LITTLE, value);
+        int64Type(datagram, offset, ByteOrder.LITTLE, value);
     }
 
-    public static void type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull long value) {
+    public static void type(@NonNull byte[] datagram, int offset, ByteOrder policy, @NonNull long value) {
         int64Type(datagram, offset, policy, value);
     }
 
-    public static float floatType(@NonNull final byte[] datagram, int offset, EndianPolicy policy) {
+    public static float floatType(@NonNull final byte[] datagram, int offset, ByteOrder policy) {
         int o = reverse(datagram, offset);
         int value = 0;
 
-        if (policy == EndianPolicy.LITTLE) {
+        if (policy == ByteOrder.LITTLE) {
             value |= (datagram[o] & 0xFF);
             value |= ((datagram[o + 1] & 0xFF) << 8);
             value |= ((datagram[o + 2] & 0xFF) << 16);
             value |= ((datagram[o + 3] & 0xFF) << 24);
-        } else if (policy == EndianPolicy.BIG) {
+        } else if (policy == ByteOrder.BIG) {
             value |= (datagram[o + 3] & 0xFF);
             value |= ((datagram[o + 2] & 0xFF) << 8);
             value |= ((datagram[o + 1] & 0xFF) << 16);
@@ -687,19 +687,19 @@ public class CodecUtils {
     }
 
     public static float floatType(@NonNull final byte[] datagram, int offset) {
-        return floatType(datagram, offset, EndianPolicy.LITTLE);
+        return floatType(datagram, offset, ByteOrder.LITTLE);
     }
 
-    public static void floatType(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull float value) {
+    public static void floatType(@NonNull byte[] datagram, int offset, ByteOrder policy, @NonNull float value) {
         int o = reverse(datagram, offset);
         int bits = Float.floatToIntBits(value);
 
-        if (policy == EndianPolicy.LITTLE) {
+        if (policy == ByteOrder.LITTLE) {
             datagram[o] = (byte) bits;
             datagram[o + 1] = (byte) (bits >>> 8);
             datagram[o + 2] = (byte) (bits >>> 16);
             datagram[o + 3] = (byte) (bits >>> 24);
-        } else if (policy == EndianPolicy.BIG) {
+        } else if (policy == ByteOrder.BIG) {
             datagram[o + 3] = (byte) (bits);
             datagram[o + 2] = (byte) (bits >>> 8);
             datagram[o + 1] = (byte) (bits >>> 16);
@@ -707,15 +707,15 @@ public class CodecUtils {
         }
     }
 
-    public static void floatType(DynamicByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull float value) {
+    public static void floatType(DynamicByteBuffer byteBuffer, int offset, ByteOrder policy, @NonNull float value) {
         int bits = Float.floatToIntBits(value);
 
-        if (policy == EndianPolicy.LITTLE) {
+        if (policy == ByteOrder.LITTLE) {
             byteBuffer.set(offset, (byte) bits);
             byteBuffer.set(offset + 1, (byte) (bits >>> 8));
             byteBuffer.set(offset + 2, (byte) (bits >>> 16));
             byteBuffer.set(offset + 3, (byte) (bits >>> 24));
-        } else if (policy == EndianPolicy.BIG) {
+        } else if (policy == ByteOrder.BIG) {
             byteBuffer.set(offset + 3, (byte) bits);
             byteBuffer.set(offset + 2, (byte) (bits >>> 8));
             byteBuffer.set(offset + 1, (byte) (bits >>> 16));
@@ -724,18 +724,18 @@ public class CodecUtils {
     }
 
     public static void floatType(@NonNull byte[] datagram, int offset, @NonNull float value) {
-        floatType(datagram, offset, EndianPolicy.LITTLE, value);
+        floatType(datagram, offset, ByteOrder.LITTLE, value);
     }
 
-    public static void type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull float value) {
+    public static void type(@NonNull byte[] datagram, int offset, ByteOrder policy, @NonNull float value) {
         floatType(datagram, offset, policy, value);
     }
 
-    public static double doubleType(@NonNull final byte[] datagram, int offset, EndianPolicy policy) {
+    public static double doubleType(@NonNull final byte[] datagram, int offset, ByteOrder policy) {
         int o = reverse(datagram, offset);
         long value = 0;
 
-        if (policy == EndianPolicy.LITTLE) {
+        if (policy == ByteOrder.LITTLE) {
             value |= (datagram[o] & 0xFFL);
             value |= ((datagram[o + 1] & 0xFFL) << 8);
             value |= ((datagram[o + 2] & 0xFFL) << 16);
@@ -745,7 +745,7 @@ public class CodecUtils {
             value |= ((datagram[o + 5] & 0xFFL) << 40);
             value |= ((datagram[o + 6] & 0xFFL) << 48);
             value |= ((datagram[o + 7] & 0xFFL) << 56);
-        } else if (policy == EndianPolicy.BIG) {
+        } else if (policy == ByteOrder.BIG) {
             value |= (datagram[o + 7] & 0xFFL);
             value |= ((datagram[o + 6] & 0xFFL) << 8);
             value |= ((datagram[o + 5] & 0xFFL) << 16);
@@ -761,14 +761,14 @@ public class CodecUtils {
     }
 
     public static double doubleType(@NonNull final byte[] datagram, int offset) {
-        return doubleType(datagram, offset, EndianPolicy.LITTLE);
+        return doubleType(datagram, offset, ByteOrder.LITTLE);
     }
 
-    public static void doubleType(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull double value) {
+    public static void doubleType(@NonNull byte[] datagram, int offset, ByteOrder policy, @NonNull double value) {
         int o = reverse(datagram, offset);
         long bits = Double.doubleToRawLongBits(value);
 
-        if (policy == EndianPolicy.BIG) {
+        if (policy == ByteOrder.BIG) {
             datagram[o + 7] = (byte) (bits);
             datagram[o + 6] = (byte) (bits >>> 8);
             datagram[o + 5] = (byte) (bits >>> 16);
@@ -791,10 +791,10 @@ public class CodecUtils {
         }
     }
 
-    public static void doubleType(DynamicByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull double value) {
+    public static void doubleType(DynamicByteBuffer byteBuffer, int offset, ByteOrder policy, @NonNull double value) {
         long bits = Double.doubleToRawLongBits(value);
 
-        if (policy == EndianPolicy.BIG) {
+        if (policy == ByteOrder.BIG) {
             byteBuffer.set(offset + 7, (byte) bits);
             byteBuffer.set(offset + 6, (byte) (bits >>> 8));
             byteBuffer.set(offset + 5, (byte) (bits >>> 16));
@@ -818,10 +818,10 @@ public class CodecUtils {
     }
 
     public static void doubleType(@NonNull byte[] datagram, int offset, @NonNull double value) {
-        doubleType(datagram, offset, EndianPolicy.LITTLE, value);
+        doubleType(datagram, offset, ByteOrder.LITTLE, value);
     }
 
-    public static void type(@NonNull byte[] datagram, int offset, EndianPolicy policy, @NonNull double value) {
+    public static void type(@NonNull byte[] datagram, int offset, ByteOrder policy, @NonNull double value) {
         doubleType(datagram, offset, policy, value);
     }
 }

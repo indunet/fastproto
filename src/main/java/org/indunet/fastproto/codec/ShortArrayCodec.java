@@ -18,7 +18,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.Int16ArrayType;
 import org.indunet.fastproto.annotation.Int16Type;
 import org.indunet.fastproto.exception.DecodingException;
@@ -37,7 +37,7 @@ import java.util.stream.IntStream;
  * @since 3.6.0
  */
 public class ShortArrayCodec implements Codec<short[]> {
-    public short[] decode(byte[] bytes, int offset, int length, EndianPolicy policy) {
+    public short[] decode(byte[] bytes, int offset, int length, ByteOrder policy) {
         try {
             val o = CodecUtils.reverse(bytes, offset);
             var l = length;
@@ -57,7 +57,7 @@ public class ShortArrayCodec implements Codec<short[]> {
         }
     }
 
-    public void encode(byte[] bytes, int offset, int length, EndianPolicy policy, short[] values) {
+    public void encode(byte[] bytes, int offset, int length, ByteOrder policy, short[] values) {
         try {
             val o = CodecUtils.reverse(bytes, offset);
             var l = length;
@@ -76,21 +76,21 @@ public class ShortArrayCodec implements Codec<short[]> {
     @Override
     public short[] decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(Int16ArrayType.class);
-        val policy = Arrays.stream(type.endian())
+        val byteOrder = Arrays.stream(type.byteOrder())
                 .findFirst()
-                .orElseGet(context::getDefaultEndianPolicy);
+                .orElseGet(context::getDefaultByteOrder);
 
-        return this.decode(bytes, type.offset(), type.length(), policy);
+        return this.decode(bytes, type.offset(), type.length(), byteOrder);
     }
 
     @Override
     public void encode(CodecContext context, byte[] bytes, short[] value) {
         val type = context.getDataTypeAnnotation(Int16ArrayType.class);
-        val policy = Arrays.stream(type.endian())
+        val byteOrder = Arrays.stream(type.byteOrder())
                 .findFirst()
-                .orElseGet(context::getDefaultEndianPolicy);
+                .orElseGet(context::getDefaultByteOrder);
 
-        this.encode(bytes, type.offset(), type.length(), policy, value);
+        this.encode(bytes, type.offset(), type.length(), byteOrder, value);
     }
 
     public class WrapperCodec implements Codec<Short[]> {

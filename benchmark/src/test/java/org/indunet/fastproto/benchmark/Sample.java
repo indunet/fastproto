@@ -18,7 +18,7 @@ package org.indunet.fastproto.benchmark;
 
 import lombok.Data;
 import lombok.val;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.util.CodecUtils;
 
@@ -100,16 +100,16 @@ public class Sample {
 
         CodecUtils.type(bytes, 0, 1, this.getBool1());
         CodecUtils.type(bytes, 1, this.getByte8());
-        CodecUtils.type(bytes, 2, EndianPolicy.LITTLE, this.getShort16());
-        CodecUtils.type(bytes, 4, EndianPolicy.LITTLE, this.getInt32());
-        CodecUtils.type(bytes, 8, EndianPolicy.LITTLE, this.getLong64());
-        CodecUtils.type(bytes, 16, EndianPolicy.LITTLE, this.getFloat32());
-        CodecUtils.type(bytes, 20, EndianPolicy.LITTLE, this.getDouble64());
+        CodecUtils.type(bytes, 2, ByteOrder.LITTLE, this.getShort16());
+        CodecUtils.type(bytes, 4, ByteOrder.LITTLE, this.getInt32());
+        CodecUtils.type(bytes, 8, ByteOrder.LITTLE, this.getLong64());
+        CodecUtils.type(bytes, 16, ByteOrder.LITTLE, this.getFloat32());
+        CodecUtils.type(bytes, 20, ByteOrder.LITTLE, this.getDouble64());
         CodecUtils.int8Type(bytes, 28, this.getInt8());
-        CodecUtils.int16Type(bytes, 30, EndianPolicy.LITTLE, this.getInt16());
+        CodecUtils.int16Type(bytes, 30, ByteOrder.LITTLE, this.getInt16());
         CodecUtils.uint8Type(bytes, 32, this.getUint8());
-        CodecUtils.uint16Type(bytes, 34, EndianPolicy.LITTLE, this.getUint16());
-        CodecUtils.uint32Type(bytes, 36, EndianPolicy.LITTLE, this.getUint32());
+        CodecUtils.uint16Type(bytes, 34, ByteOrder.LITTLE, this.getUint16());
+        CodecUtils.uint32Type(bytes, 36, ByteOrder.LITTLE, this.getUint32());
         CodecUtils.type(bytes, 40, this.getBytes());
 
         return bytes;

@@ -17,7 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.UInt16Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
@@ -32,17 +32,17 @@ import java.util.Arrays;
  * @since 3.2.1
  */
 public class UInt16Codec implements Codec<Integer> {
-    public int decode(byte[] bytes, int offset, EndianPolicy policy) {
+    public int decode(byte[] bytes, int offset, ByteOrder byteOrder) {
         try {
-            return CodecUtils.uint16Type(bytes, offset, policy);
+            return CodecUtils.uint16Type(bytes, offset, byteOrder);
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding uint16 type.", e);
         }
     }
 
-    public void encode(byte[] bytes, int offset, EndianPolicy policy, int value) {
+    public void encode(byte[] bytes, int offset, ByteOrder byteOrder, int value) {
         try {
-            CodecUtils.uint16Type(bytes, offset, policy, value);
+            CodecUtils.uint16Type(bytes, offset, byteOrder, value);
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding uint16 type.", e);
         }
@@ -51,20 +51,20 @@ public class UInt16Codec implements Codec<Integer> {
     @Override
     public Integer decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(UInt16Type.class);
-        val policy = Arrays.stream(type.endian())
+        val byteOrder = Arrays.stream(type.byteOrder())
                 .findFirst()
-                .orElseGet(context::getDefaultEndianPolicy);
+                .orElseGet(context::getDefaultByteOrder);
 
-        return this.decode(bytes, type.offset(), policy);
+        return this.decode(bytes, type.offset(), byteOrder);
     }
 
     @Override
     public void encode(CodecContext context, byte[] bytes, Integer value) {
         val type = context.getDataTypeAnnotation(UInt16Type.class);
-        val policy = Arrays.stream(type.endian())
+        val byteOrder = Arrays.stream(type.byteOrder())
                 .findFirst()
-                .orElseGet(context::getDefaultEndianPolicy);
+                .orElseGet(context::getDefaultByteOrder);
 
-        this.encode(bytes, type.offset(), policy, value);
+        this.encode(bytes, type.offset(), byteOrder, value);
     }
 }

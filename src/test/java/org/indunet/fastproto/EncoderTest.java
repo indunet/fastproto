@@ -23,7 +23,7 @@ public class EncoderTest {
                 .length(expected.length)
                 .uint8Type(0, 1)
                 .uint16Type(2, 3, 4)
-                .uint32Type(6, EndianPolicy.BIG, 32)
+                .uint32Type(6, ByteOrder.BIG, 32)
                 .get();
 
         assertArrayEquals(expected, actual);
@@ -43,7 +43,7 @@ public class EncoderTest {
                 .length(expected.length)
                 .boolType(0, 0, true)
                 .int8Type(1, 1)
-                .int16Type(2, EndianPolicy.BIG, 3)
+                .int16Type(2, ByteOrder.BIG, 3)
                 .floatType(4, 1.0f)
                 .doubleType(8, 1.1)
                 .get();
@@ -53,7 +53,7 @@ public class EncoderTest {
         actual = FastProto.toBytes()
                 .boolType(0, 0, true)
                 .int8Type(1, 1)
-                .int16Type(2, EndianPolicy.BIG, 3)
+                .int16Type(2, ByteOrder.BIG, 3)
                 .floatType(4, 1.0f)
                 .doubleType(8, 1.1)
                 .get();

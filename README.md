@@ -38,7 +38,7 @@ It simplifies the process of binary data processing, and developers do not need 
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.8.3</version>
+    <version>3.9.1</version>
 </dependency>
 ```
 
@@ -194,33 +194,40 @@ FastProto supports Java primitive data types, taking into account cross-language
 
 FastProto also provides some auxiliary annotations to help users further customize the binary format, decoding and encoding process.
 
-|    Annotation    | Scope |              Description              |
-|:----------------:|:-----:|:-------------------------------------:|
-|  @DefaultEndian  | Class | Endianness, default as little endian. |
-| @DecodingIgnore  | Field |    Ignore the field when decoding.    |
-| @EncodingIgnore  | Field |    Ignore the field when encoding.    |
-|   @FixedLength   | Class |   Enable fixed length of datagram.    |
-| @DecodingFormula | Field |           Decoding formula.           |
-| @EncodingFormula | Field |           Encoding formula.           |
-|    @AutoType     | Field |           Use default type.           |
+|    Annotation     | Scope |                       Description                       |
+|:-----------------:|:-----:|:-------------------------------------------------------:|
+| @DefaultByteOrder | Class | Default byte order, use little endian if not specified. |
+| @DefaultBitOrder  | Class |     Default bit order, use LSB_0 if not specified.      |
+|  @DecodingIgnore  | Field |             Ignore the field when decoding.             |
+|  @EncodingIgnore  | Field |             Ignore the field when encoding.             |
+|   @FixedLength    | Class |            Enable fixed length of datagram.             |
+| @DecodingFormula  | Field |                    Decoding formula.                    |
+| @EncodingFormula  | Field |                    Encoding formula.                    |
+|     @AutoType     | Field |                    Use default type.                    |
 
 
-#### *2.4.1 Endianness*
+#### *2.4.1 Byte Order and Bit Order*
 
-FastProto uses little endian by default. You can modify the global endian through `@DefaultEndian` annotation, or you can 
-modify the endian of specific field through `endian` attribute which has a higher priority.
+FastProto uses little endian by default. You can modify the global byte order through `@DefaultByteOrder` annotation, or you can 
+modify the byte order of specific field through `byteOrder` attribute which has a higher priority.
+
+Similarly, FastProto uses LSB_0 by default. You can modify the global bit order through `@DefaultBitOrder` annotation, or you can
+modify the bit order of specific field through `bitOrder` attribute which has a higher priority.
 
 ```java
-import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.DefaultEndian;
+import org.indunet.fastproto.BitOrder;
+import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.annotation.DefaultBitOrder;
+import org.indunet.fastproto.annotation.DefaultByteOrder;
 
-@DefaultEndian(EndianPolicy.BIG)
+@DefaultByteOrder(ByteOrder.BIG)
+@DefaultBitOrder(BitOrder.LSB_0)
 public class Weather {
-    @UInt16Type(offset = 10, endian = EndianPolicy.LITTLE)
+    @UInt16Type(offset = 10, endian = ByteOrder.LITTLE)
     int humidity;
 
-    @UInt32Type(offset = 14)
-    long pressure;
+    @BoolType(byteOffset = 18, bitOffset = 1, bitOrder = BitOrder.MSB_0)
+    boolean humidityValid;
 }
 ```
 
@@ -295,7 +302,7 @@ FastProto can automatically infer type if field is annotated by `@AutoType`.
 import org.indunet.fastproto.annotation.AutoType;
 
 public class Weather {
-    @AutoType(offset = 10, endian = EndianPolicy.LITTLE)
+    @AutoType(offset = 10, byteOrder = byteOrder.LITTLE)
     int humidity;   // default Int32Type
 
     @AutoType(offset = 14)
@@ -377,8 +384,8 @@ byte[] bytes = FastProto.toBytes()
         .length(16)             // The length of the binary data block
         .uint8Type(0, 1)        // Write unsigned 8-bit integer data 1 at byte offset 0
         .uint16Type(2, 3, 4)    // Write 2 unsigned 16-bit integer data 3 and 4 consecutively at byte offset 2
-        .uint32Type(6, EndianPolicy.BIG, 32)
-        .getMap();
+        .uint32Type(6, ByteOrder.BIG, 32)
+        .get();
 ```
 
 
