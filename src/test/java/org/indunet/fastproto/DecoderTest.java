@@ -34,6 +34,23 @@ public class DecoderTest {
     }
 
     @Test
+    public void testAlign() {
+        val bytes = new byte[] {0x01, 0x02, 0x11, 0x12};
+        val first = FastProto.parse(bytes)
+                .align(2)
+                .int8Type()
+                .getAsInt();
+        val third = FastProto.parse(bytes)
+                .int8Type()
+                .align(2)
+                .int8Type()
+                .getAsInt();
+
+        assertEquals(0x01, first);
+        assertEquals(0x11, third);
+    }
+
+    @Test
     public void testAsMap() {
         val bytes = new byte[] {1, 2, 3, 0, 0, 0, 0, 1};
         val map = FastProto.parse(bytes)

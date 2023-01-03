@@ -8,6 +8,7 @@ import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Unit test of Encoder
@@ -59,5 +60,15 @@ public class EncoderTest {
                 .get();
 
         assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testAlign() {
+        val bytes = FastProto.toBytes()
+                .int8Type(2, (byte) 0x10)
+                .align(8)
+                .get();
+
+        assertEquals(8, bytes.length);
     }
 }

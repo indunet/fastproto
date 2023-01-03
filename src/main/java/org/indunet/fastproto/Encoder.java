@@ -12,18 +12,18 @@ import java.util.stream.IntStream;
  * @author Deng Ran
  * @since 3.8.3
  */
-class Encoder {
-    DynamicByteBuffer byteBuffer = new DynamicByteBuffer();
-    protected ByteOrder endianPolicy = ByteOrder.LITTLE;
+final class Encoder {
+    ByteBuffer byteBuffer = new ByteBuffer();
+    ByteOrder byteOrder = ByteOrder.LITTLE;
 
     public Encoder length(int length) {
-        this.byteBuffer.setCapacity(length);
+        this.byteBuffer = new ByteBuffer(length);
 
         return this;
     }
 
     public Encoder defaultEndian(ByteOrder endianPolicy) {
-        this.endianPolicy = endianPolicy;
+        this.byteOrder = endianPolicy;
 
         return this;
     }
@@ -44,7 +44,7 @@ class Encoder {
     public Encoder uint16Type(int offset, int... values) {
         IntStream.range(0, values.length)
                 .forEach(i ->
-                        CodecUtils.uint16Type(this.byteBuffer, offset + i * UInt16Type.SIZE, this.endianPolicy, values[i]));
+                        CodecUtils.uint16Type(this.byteBuffer, offset + i * UInt16Type.SIZE, this.byteOrder, values[i]));
 
         return this;
     }
@@ -60,7 +60,7 @@ class Encoder {
     public Encoder uint32Type(int offset, long... values) {
         IntStream.range(0, values.length)
                 .forEach(i ->
-                        CodecUtils.uint32Type(this.byteBuffer, offset + i * UInt32Type.SIZE, this.endianPolicy, values[i]));
+                        CodecUtils.uint32Type(this.byteBuffer, offset + i * UInt32Type.SIZE, this.byteOrder, values[i]));
 
         return this;
     }
@@ -76,7 +76,7 @@ class Encoder {
     public Encoder uint64Type(int offset, BigInteger... values) {
         IntStream.range(0, values.length)
                 .forEach(i ->
-                        CodecUtils.uint64Type(this.byteBuffer, offset + i * UInt64Type.SIZE, this.endianPolicy, values[i]));
+                        CodecUtils.uint64Type(this.byteBuffer, offset + i * UInt64Type.SIZE, this.byteOrder, values[i]));
 
         return this;
     }
@@ -106,7 +106,7 @@ class Encoder {
     public Encoder int16Type(int offset, short... values) {
         IntStream.range(0, values.length)
                 .forEach(i ->
-                        CodecUtils.int16Type(this.byteBuffer, offset + i * Int16Type.SIZE, this.endianPolicy, values[i]));
+                        CodecUtils.int16Type(this.byteBuffer, offset + i * Int16Type.SIZE, this.byteOrder, values[i]));
 
         return this;
     }
@@ -122,7 +122,7 @@ class Encoder {
     public Encoder int16Type(int offset, int... values) {
         IntStream.range(0, values.length)
                 .forEach(i ->
-                        CodecUtils.int16Type(this.byteBuffer, offset + i * Int16Type.SIZE, this.endianPolicy, values[i]));
+                        CodecUtils.int16Type(this.byteBuffer, offset + i * Int16Type.SIZE, this.byteOrder, values[i]));
 
         return this;
     }
@@ -138,7 +138,7 @@ class Encoder {
     public Encoder int32Type(int offset, int... values) {
         IntStream.range(0, values.length)
                 .forEach(i ->
-                        CodecUtils.int32Type(this.byteBuffer, offset + i * Int32Type.SIZE, this.endianPolicy, values[i]));
+                        CodecUtils.int32Type(this.byteBuffer, offset + i * Int32Type.SIZE, this.byteOrder, values[i]));
 
         return this;
     }
@@ -154,7 +154,7 @@ class Encoder {
     public Encoder int64Type(int offset, long... values) {
         IntStream.range(0, values.length)
                 .forEach(i ->
-                        CodecUtils.int64Type(this.byteBuffer, offset + i * Int64Type.SIZE, this.endianPolicy, values[i]));
+                        CodecUtils.int64Type(this.byteBuffer, offset + i * Int64Type.SIZE, this.byteOrder, values[i]));
 
         return this;
     }
@@ -170,7 +170,7 @@ class Encoder {
     public Encoder floatType(int offset, float... values) {
         IntStream.range(0, values.length)
                 .forEach(i ->
-                        CodecUtils.floatType(this.byteBuffer, offset + i * FloatType.SIZE, this.endianPolicy, values[i]));
+                        CodecUtils.floatType(this.byteBuffer, offset + i * FloatType.SIZE, this.byteOrder, values[i]));
 
         return this;
     }
@@ -186,7 +186,7 @@ class Encoder {
     public Encoder doubleType(int offset, double... values) {
         IntStream.range(0, values.length)
                 .forEach(i ->
-                        CodecUtils.doubleType(this.byteBuffer, offset + i * DoubleType.SIZE, this.endianPolicy, values[i]));
+                        CodecUtils.doubleType(this.byteBuffer, offset + i * DoubleType.SIZE, this.byteOrder, values[i]));
 
         return this;
     }
@@ -195,6 +195,23 @@ class Encoder {
         IntStream.range(0, values.length)
                 .forEach(i ->
                         CodecUtils.doubleType(this.byteBuffer, offset + i * DoubleType.SIZE, endianPolicy, values[i]));
+
+        return this;
+    }
+
+    public Encoder align(int alignment) {
+        if (alignment <= 0 || (alignment & 0x01) != 0) {
+            throw new IllegalArgumentException("alignment must be a positive even number");
+        }
+
+        int index = this.byteBuffer.getWriteIndex();
+        int after = ((index + (alignment - 1)) & ~(alignment - 1));
+
+        if (after > 0) {
+            this.byteBuffer.set(after - 1, (byte) 0);
+        } else {
+            this.byteBuffer.resetWriteIndex();
+        }
 
         return this;
     }
