@@ -11,15 +11,15 @@ import static org.junit.Assert.*;
  * @author Deng Ran
  * @since 3.8.4
  */
-public class DynamicByteBufferTest {
+public class ByteBufferTest {
     @Test
     public void testAppend() {
-        DynamicByteBuffer byteBuffer = new DynamicByteBuffer();
+        ByteBuffer byteBuffer = new ByteBuffer();
 
-        byteBuffer.append((byte) 1);
-        byteBuffer.append((byte) 2);
-        byteBuffer.append((byte) 3);
-        byteBuffer.append((byte) 4);
+        byteBuffer.write((byte) 1);
+        byteBuffer.write((byte) 2);
+        byteBuffer.write((byte) 3);
+        byteBuffer.write((byte) 4);
 
         assertEquals(1, byteBuffer.get(0));
         assertEquals(2, byteBuffer.get(1));
@@ -29,7 +29,7 @@ public class DynamicByteBufferTest {
 
     @Test
     public void testSetAndGet() {
-        DynamicByteBuffer byteBuffer = new DynamicByteBuffer();
+        ByteBuffer byteBuffer = new ByteBuffer();
         byte[] expected = {8, 9, 10, 11};
 
         byteBuffer.set(0, (byte) 8);

@@ -18,7 +18,7 @@ package org.indunet.fastproto.util;
 
 import lombok.NonNull;
 import lombok.val;
-import org.indunet.fastproto.DynamicByteBuffer;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.EndianPolicy;
 import org.indunet.fastproto.annotation.*;
 
@@ -109,7 +109,7 @@ public class CodecUtils {
         }
     }
 
-    public static void boolType(DynamicByteBuffer byteBuffer, int byteOffset, int bitOffset, boolean value) {
+    public static void boolType(ByteBuffer byteBuffer, int byteOffset, int bitOffset, boolean value) {
         if (bitOffset < BoolType.BIT_0 || bitOffset > BoolType.BIT_7) {
             throw new IllegalArgumentException("Out of byte range.");
         }
@@ -137,7 +137,7 @@ public class CodecUtils {
         datagram[o] = value;
     }
 
-    public static void byteType(DynamicByteBuffer byteBuffer, int offset, byte value) {
+    public static void byteType(ByteBuffer byteBuffer, int offset, byte value) {
         byteBuffer.set(offset, value);
     }
 
@@ -161,7 +161,7 @@ public class CodecUtils {
         datagram[o] = (byte) value;
     }
 
-    public static void uint8Type(DynamicByteBuffer byteArray, int offset, @NonNull int value) {
+    public static void uint8Type(ByteBuffer byteArray, int offset, @NonNull int value) {
         if (value < UInt8Type.MIN_VALUE || value > UInt8Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of uint8 range.");
         }
@@ -187,7 +187,7 @@ public class CodecUtils {
         datagram[o] = (byte) value;
     }
 
-    public static void int8Type(DynamicByteBuffer byteBuffer, int offset, @NonNull int value) {
+    public static void int8Type(ByteBuffer byteBuffer, int offset, @NonNull int value) {
         if (value < Int8Type.MIN_VALUE || value > Int8Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of int8 range.");
         }
@@ -225,7 +225,7 @@ public class CodecUtils {
         }
     }
 
-    public static void uint16Type(DynamicByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull int value) {
+    public static void uint16Type(ByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull int value) {
         if (value < UInt16Type.MIN_VALUE || value > UInt16Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of uint16 range.");
         }
@@ -278,7 +278,7 @@ public class CodecUtils {
         }
     }
 
-    public static void int16Type(DynamicByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull int value) {
+    public static void int16Type(ByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull int value) {
         if (value < Int16Type.MIN_VALUE || value > Int16Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of int16 range.");
         }
@@ -374,7 +374,7 @@ public class CodecUtils {
         }
     }
 
-    public static void int32Type(DynamicByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull int value) {
+    public static void int32Type(ByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull int value) {
         if (policy == EndianPolicy.LITTLE) {
             byteBuffer.set(offset, (byte) value);
             byteBuffer.set(offset + 1, (byte) (value >>> 8));
@@ -439,7 +439,7 @@ public class CodecUtils {
         }
     }
 
-    public static void uint32Type(DynamicByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull long value) {
+    public static void uint32Type(ByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull long value) {
         if (value < UInt32Type.MIN_VALUE || value > UInt32Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of uint32 range.");
         }
@@ -533,7 +533,7 @@ public class CodecUtils {
         }
     }
 
-    public static void uint64Type(DynamicByteBuffer byteBuffer, int offset, EndianPolicy policy, BigInteger value) {
+    public static void uint64Type(ByteBuffer byteBuffer, int offset, EndianPolicy policy, BigInteger value) {
         if (value.compareTo(UInt64Type.MAX_VALUE) > 0 || value.compareTo(UInt64Type.MIN_VALUE) < 0) {
             throw new IllegalArgumentException("Out of uinteger64 range.");
         }
@@ -635,7 +635,7 @@ public class CodecUtils {
         }
     }
 
-    public static void int64Type(DynamicByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull long value) {
+    public static void int64Type(ByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull long value) {
         if (policy == EndianPolicy.BIG) {
             byteBuffer.set(offset + 7, (byte) value);
             byteBuffer.set(offset + 6, (byte) (value >>> 8));
@@ -707,7 +707,7 @@ public class CodecUtils {
         }
     }
 
-    public static void floatType(DynamicByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull float value) {
+    public static void floatType(ByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull float value) {
         int bits = Float.floatToIntBits(value);
 
         if (policy == EndianPolicy.LITTLE) {
@@ -791,7 +791,7 @@ public class CodecUtils {
         }
     }
 
-    public static void doubleType(DynamicByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull double value) {
+    public static void doubleType(ByteBuffer byteBuffer, int offset, EndianPolicy policy, @NonNull double value) {
         long bits = Double.doubleToRawLongBits(value);
 
         if (policy == EndianPolicy.BIG) {

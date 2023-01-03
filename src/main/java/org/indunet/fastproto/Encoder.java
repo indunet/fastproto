@@ -13,11 +13,11 @@ import java.util.stream.IntStream;
  * @since 3.8.3
  */
 class Encoder {
-    DynamicByteBuffer byteBuffer = new DynamicByteBuffer();
+    ByteBuffer byteBuffer = new ByteBuffer();
     protected EndianPolicy endianPolicy = EndianPolicy.LITTLE;
 
     public Encoder length(int length) {
-        this.byteBuffer.setCapacity(length);
+        this.byteBuffer = new ByteBuffer(length);
 
         return this;
     }
