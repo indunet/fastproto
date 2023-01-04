@@ -26,6 +26,7 @@ final class Decoder {
     ByteBuffer byteBuffer;
     Map<String, Object> map = new LinkedHashMap<>();
     ByteOrder byteOrder = ByteOrder.LITTLE;
+    BitOrder bitOrder = BitOrder.LSB_0;
     int ordinal = 0;
     Object last;
 
@@ -53,8 +54,14 @@ final class Decoder {
         return this;
     }
 
-    public Decoder defaultEndian(ByteOrder endianPolicy) {
-        this.byteOrder = endianPolicy;
+    public Decoder defaultByteOrder(ByteOrder byteOrder) {
+        this.byteOrder = byteOrder;
+
+        return this;
+    }
+
+    public Decoder defaultBitOrder(BitOrder bitOrder) {
+        this.bitOrder = bitOrder;
 
         return this;
     }
@@ -67,176 +74,340 @@ final class Decoder {
         return this.put(name, CodecUtils.boolType(this.bytes, byteOffset, bitOffset));
     }
 
-    public Decoder uint8Type(int offset) {
+    public Decoder readUInt8(int offset) {
         return this.put(CodecUtils.uint8Type(this.bytes, offset));
     }
 
-    public Decoder uint8Type(int offset, String name) {
+    public Decoder readUInt8(int offset, String name) {
         return this.put(name, CodecUtils.uint8Type(this.bytes, offset));
     }
 
-    public Decoder uint16Type(int offset) {
+    public Decoder readUInt8() {
+        return this.put(CodecUtils.uint8Type(this.byteBuffer, this.byteBuffer.getReadIndex()));
+    }
+
+    public Decoder readUInt8(String name) {
+        return this.put(name, CodecUtils.uint8Type(this.byteBuffer, this.byteBuffer.getReadIndex()));
+    }
+
+    public Decoder readUInt16(int offset) {
         return this.put(CodecUtils.uint16Type(this.bytes, offset, this.byteOrder));
     }
 
-    public Decoder uint16Type(int offset, String name) {
+    public Decoder readUInt16(int offset, String name) {
         return this.put(name, CodecUtils.uint16Type(this.bytes, offset, this.byteOrder));
     }
 
-    public Decoder uint16Type(int offset, ByteOrder endianPolicy) {
-        return this.put(CodecUtils.uint16Type(this.bytes, offset, endianPolicy));
+    public Decoder readUInt16(int offset, ByteOrder byteOrder) {
+        return this.put(CodecUtils.uint16Type(this.bytes, offset, byteOrder));
     }
 
-    public Decoder uint16Type(int offset, ByteOrder endianPolicy, String name) {
-        return this.put(name, CodecUtils.uint16Type(this.bytes, offset, endianPolicy));
+    public Decoder readUInt16(int offset, ByteOrder byteOrder, String name) {
+        return this.put(name, CodecUtils.uint16Type(this.bytes, offset, byteOrder));
     }
 
-    public Decoder uint32Type(int offset) {
+    public Decoder readUInt16() {
+        return this.put(CodecUtils.uint16Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readUInt16(String name) {
+        return this.put(name, CodecUtils.uint16Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readUInt16(ByteOrder byteOrder) {
+        return this.put(CodecUtils.uint16Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readUInt16(ByteOrder byteOrder, String name) {
+        return this.put(name, CodecUtils.uint16Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readUInt32(int offset) {
         return this.put(CodecUtils.uint32Type(this.bytes, offset, this.byteOrder));
     }
 
-    public Decoder uint32Type(int offset, String name) {
+    public Decoder readUInt32(int offset, String name) {
         return this.put(name, CodecUtils.uint32Type(this.bytes, offset, this.byteOrder));
     }
 
-    public Decoder uint32Type(int offset, ByteOrder endianPolicy) {
-        return this.put(CodecUtils.uint32Type(this.bytes, offset, endianPolicy));
+    public Decoder readUInt32(int offset, ByteOrder byteOrder) {
+        return this.put(CodecUtils.uint32Type(this.bytes, offset, byteOrder));
     }
 
-    public Decoder uint32Type(int offset, ByteOrder endianPolicy, String name) {
-        return this.put(name, CodecUtils.uint32Type(this.bytes, offset, endianPolicy));
+    public Decoder readUInt32(int offset, ByteOrder byteOrder, String name) {
+        return this.put(name, CodecUtils.uint32Type(this.bytes, offset, byteOrder));
     }
 
-    public Decoder uint64Type(int offset) {
+    public Decoder readUInt32() {
+        return this.put(CodecUtils.uint32Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readUInt32(String name) {
+        return this.put(name, CodecUtils.uint32Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readUInt32(ByteOrder byteOrder) {
+        return this.put(CodecUtils.uint32Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readUInt32(ByteOrder byteOrder, String name) {
+        return this.put(name, CodecUtils.uint32Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readUInt64(int offset) {
         return this.put(CodecUtils.uint64Type(this.bytes, offset, this.byteOrder));
     }
 
-    public Decoder uint64Type(int offset, String name) {
+    public Decoder readUInt64(int offset, String name) {
         return this.put(name, CodecUtils.uint64Type(this.bytes, offset, this.byteOrder));
     }
 
-    public Decoder uint64Type(int offset, ByteOrder endianPolicy) {
-        return this.put(CodecUtils.uint64Type(this.bytes, offset, endianPolicy));
+    public Decoder readUInt64(int offset, ByteOrder byteOrder) {
+        return this.put(CodecUtils.uint64Type(this.bytes, offset, byteOrder));
     }
 
-    public Decoder uint64Type(int offset, ByteOrder endianPolicy, String name) {
-        return this.put(name, CodecUtils.uint64Type(this.bytes, offset, endianPolicy));
+    public Decoder readUInt64(int offset, ByteOrder byteOrder, String name) {
+        return this.put(name, CodecUtils.uint64Type(this.bytes, offset, byteOrder));
     }
 
-    public Decoder byteType(int offset) {
+    public Decoder readUInt64() {
+        return this.put(CodecUtils.uint64Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readUInt64(String name) {
+        return this.put(name, CodecUtils.uint64Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readUInt64(ByteOrder byteOrder) {
+        return this.put(CodecUtils.uint64Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readUInt64(ByteOrder byteOrder, String name) {
+        return this.put(name, CodecUtils.uint64Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readByte(int offset) {
         return this.put(CodecUtils.byteType(this.bytes, offset));
     }
 
-    public Decoder byteType(int offset, String name) {
+    public Decoder readByte(int offset, String name) {
         return this.put(name, CodecUtils.byteType(this.bytes, offset));
     }
 
-    public Decoder int8Type() {
-        return this.put((int) this.byteBuffer.read());
+    public Decoder readByte() {
+        return this.put(this.byteBuffer.get(this.byteBuffer.getReadIndex()));
     }
 
-    public Decoder int8Type(int offset) {
+    public Decoder readByte(String name) {
+        return this.put(name, this.byteBuffer.get(this.byteBuffer.getReadIndex()));
+    }
+
+    public Decoder readInt8(int offset) {
         return this.put(CodecUtils.int8Type(this.bytes, offset));
     }
 
-    public Decoder int8Type(int offset, String name) {
+    public Decoder readInt8(int offset, String name) {
         return this.put(name, CodecUtils.int8Type(this.bytes, offset));
     }
 
-    public Decoder shortType(int offset) {
+    public Decoder readInt8() {
+        return this.put((int) this.byteBuffer.get(this.byteBuffer.getReadIndex()));
+    }
+
+    public Decoder readInt8(String name) {
+        return this.put(name, (int) this.byteBuffer.get(this.byteBuffer.getReadIndex()));
+    }
+
+    public Decoder readShort(int offset) {
         return this.put(CodecUtils.shortType(this.bytes, offset, this.byteOrder));
     }
 
-    public Decoder shortType(int offset, String name) {
+    public Decoder readShort(int offset, String name) {
         return this.put(name, CodecUtils.shortType(this.bytes, offset, this.byteOrder));
     }
 
-    public Decoder shortType(int offset, ByteOrder endianPolicy) {
-        return this.put(CodecUtils.shortType(this.bytes, offset, endianPolicy));
+    public Decoder readShort(int offset, ByteOrder byteOrder) {
+        return this.put(CodecUtils.shortType(this.bytes, offset, byteOrder));
     }
 
-    public Decoder shortType(int offset, ByteOrder endianPolicy, String name) {
-        return this.put(name, CodecUtils.shortType(this.bytes, offset, endianPolicy));
+    public Decoder readShort(int offset, ByteOrder byteOrder, String name) {
+        return this.put(name, CodecUtils.shortType(this.bytes, offset, byteOrder));
     }
 
-    public Decoder int16Type(int offset) {
+    public Decoder readShort() {
+        return this.put(CodecUtils.shortType(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readShort(String name) {
+        return this.put(name, CodecUtils.shortType(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readShort(ByteOrder byteOrder) {
+        return this.put(CodecUtils.shortType(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readShort(ByteOrder byteOrder, String name) {
+        return this.put(name, CodecUtils.shortType(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readInt16(int offset) {
         return this.put(CodecUtils.int16Type(this.bytes, offset, this.byteOrder));
     }
 
-    public Decoder int16Type(int offset, String name) {
+    public Decoder readInt16(int offset, String name) {
         return this.put(name, CodecUtils.int16Type(this.bytes, offset, this.byteOrder));
     }
 
-    public Decoder int16Type(int offset, ByteOrder endianPolicy) {
-        return this.put(CodecUtils.int16Type(this.bytes, offset, endianPolicy));
+    public Decoder readInt16(int offset, ByteOrder byteOrder) {
+        return this.put(CodecUtils.int16Type(this.bytes, offset, byteOrder));
     }
 
-    public Decoder int16Type(int offset, ByteOrder endianPolicy, String name) {
-        return this.put(name, CodecUtils.int16Type(this.bytes, offset, endianPolicy));
+    public Decoder readInt16(int offset, ByteOrder byteOrder, String name) {
+        return this.put(name, CodecUtils.int16Type(this.bytes, offset, byteOrder));
     }
 
-    public Decoder int32Type(int offset) {
+    public Decoder readInt16() {
+        return this.put(CodecUtils.int16Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readInt16(String name) {
+        return this.put(name, CodecUtils.int16Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readInt16(ByteOrder byteOrder) {
+        return this.put(CodecUtils.int16Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readInt16(ByteOrder byteOrder, String name) {
+        return this.put(name, CodecUtils.int16Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readInt32(int offset) {
         return this.put(CodecUtils.int32Type(this.bytes, offset, this.byteOrder));
     }
 
-    public Decoder int32Type(int offset, String name) {
+    public Decoder readInt32(int offset, String name) {
         return this.put(name, CodecUtils.int32Type(this.bytes, offset, this.byteOrder));
     }
 
-    public Decoder int32Type(int offset, ByteOrder endianPolicy) {
-        return this.put(CodecUtils.int32Type(this.bytes, offset, endianPolicy));
+    public Decoder readInt32(int offset, ByteOrder byteOrder) {
+        return this.put(CodecUtils.int32Type(this.bytes, offset, byteOrder));
     }
 
-    public Decoder int32Type(int offset, ByteOrder endianPolicy, String name) {
-        return this.put(name, CodecUtils.int32Type(this.bytes, offset, endianPolicy));
+    public Decoder readInt32(int offset, ByteOrder byteOrder, String name) {
+        return this.put(name, CodecUtils.int32Type(this.bytes, offset, byteOrder));
     }
 
-    public Decoder int64Type(int offset) {
+    public Decoder readInt32() {
+        return this.put(CodecUtils.int32Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readInt32(String name) {
+        return this.put(name, CodecUtils.int32Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readInt32(ByteOrder byteOrder) {
+        return this.put(CodecUtils.int32Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readInt32(ByteOrder byteOrder, String name) {
+        return this.put(name, CodecUtils.int32Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readInt64(int offset) {
         return this.put(CodecUtils.int64Type(this.bytes, offset, this.byteOrder));
     }
 
-    public Decoder int64Type(int offset, String name) {
+    public Decoder readInt64(int offset, String name) {
         return this.put(name, CodecUtils.int64Type(this.bytes, offset, this.byteOrder));
     }
 
-    public Decoder int64Type(int offset, ByteOrder endianPolicy) {
-        return this.put(CodecUtils.int64Type(this.bytes, offset, endianPolicy));
+    public Decoder readInt64(int offset, ByteOrder byteOrder) {
+        return this.put(CodecUtils.int64Type(this.bytes, offset, byteOrder));
     }
 
-    public Decoder int64Type(int offset, ByteOrder endianPolicy, String name) {
-        return this.put(name, CodecUtils.int64Type(this.bytes, offset, endianPolicy));
+    public Decoder readInt64(int offset, ByteOrder byteOrder, String name) {
+        return this.put(name, CodecUtils.int64Type(this.bytes, offset, byteOrder));
     }
 
-    public Decoder floatType(int offset) {
+    public Decoder readInt64() {
+        return this.put(CodecUtils.int64Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readInt64(String name) {
+        return this.put(name, CodecUtils.int64Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readInt64(ByteOrder byteOrder) {
+        return this.put(CodecUtils.int64Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readInt64(ByteOrder byteOrder, String name) {
+        return this.put(name, CodecUtils.int64Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readFloat(int offset) {
         return this.put(CodecUtils.floatType(this.bytes, offset, this.byteOrder));
     }
 
-    public Decoder floatType(int offset, String name) {
+    public Decoder readFloat(int offset, String name) {
         return this.put(name, CodecUtils.floatType(this.bytes, offset, this.byteOrder));
     }
 
-    public Decoder floatType(int offset, ByteOrder endianPolicy) {
-        return this.put(CodecUtils.floatType(this.bytes, offset, endianPolicy));
+    public Decoder readFloat(int offset, ByteOrder byteOrder) {
+        return this.put(CodecUtils.floatType(this.bytes, offset, byteOrder));
     }
 
-    public Decoder floatType(int offset, ByteOrder endianPolicy, String name) {
-        return this.put(name, CodecUtils.floatType(this.bytes, offset, endianPolicy));
+    public Decoder readFloat(int offset, ByteOrder byteOrder, String name) {
+        return this.put(name, CodecUtils.floatType(this.bytes, offset, byteOrder));
     }
 
-    public Decoder doubleType(int offset) {
+    public Decoder readFloat() {
+        return this.put(CodecUtils.floatType(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readFloat(String name) {
+        return this.put(name, CodecUtils.floatType(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readFloat(ByteOrder byteOrder) {
+        return this.put(CodecUtils.floatType(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readFloat(ByteOrder byteOrder, String name) {
+        return this.put(name, CodecUtils.floatType(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readDouble(int offset) {
         return this.put(CodecUtils.doubleType(this.bytes, offset, this.byteOrder));
     }
 
-    public Decoder doubleType(int offset, String name) {
+    public Decoder readDouble(int offset, String name) {
         return this.put(name, CodecUtils.doubleType(this.bytes, offset, this.byteOrder));
     }
 
-    public Decoder doubleType(int offset, ByteOrder endianPolicy) {
-        return this.put(CodecUtils.doubleType(this.bytes, offset, endianPolicy));
+    public Decoder readDouble(int offset, ByteOrder byteOrder) {
+        return this.put(CodecUtils.doubleType(this.bytes, offset, byteOrder));
     }
 
-    public Decoder doubleType(int offset, ByteOrder endianPolicy, String name) {
-        return this.put(name, CodecUtils.doubleType(this.bytes, offset, endianPolicy));
+    public Decoder readDouble(int offset, ByteOrder byteOrder, String name) {
+        return this.put(name, CodecUtils.doubleType(this.bytes, offset, byteOrder));
+    }
+
+    public Decoder readDouble() {
+        return this.put(CodecUtils.doubleType(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readDouble(String name) {
+        return this.put(name, CodecUtils.doubleType(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readDouble(ByteOrder byteOrder) {
+        return this.put(CodecUtils.doubleType(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readDouble(ByteOrder byteOrder, String name) {
+        return this.put(name, CodecUtils.doubleType(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
     }
 
     public boolean getAsBoolean() {
@@ -282,11 +453,6 @@ final class Decoder {
         }
 
         return this;
-    }
-
-    @Deprecated
-    public Map<String, Object> get() {
-        return this.map;
     }
 
     public Map<String, Object> getAsMap() {

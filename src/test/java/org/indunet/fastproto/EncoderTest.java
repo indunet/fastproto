@@ -7,6 +7,8 @@ import org.indunet.fastproto.annotation.FloatType;
 import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
 
+import java.math.BigInteger;
+
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -22,9 +24,9 @@ public class EncoderTest {
         val expected = new byte[]{1, 0, 3, 0, 4, 0, 0, 0, 0, 32};
         val actual = FastProto.toBytes()
                 .length(expected.length)
-                .uint8Type(0, 1)
-                .uint16Type(2, 3, 4)
-                .uint32Type(6, ByteOrder.BIG, 32)
+                .writeUInt8(0, 1)
+                .writeUInt16(2, 3, 4)
+                .writeUInt32(6, ByteOrder.BIG, 32)
                 .get();
 
         assertArrayEquals(expected, actual);
@@ -43,21 +45,66 @@ public class EncoderTest {
         var actual = FastProto.toBytes()
                 .length(expected.length)
                 .boolType(0, 0, true)
-                .int8Type(1, 1)
-                .int16Type(2, ByteOrder.BIG, 3)
-                .floatType(4, 1.0f)
-                .doubleType(8, 1.1)
+                .writeInt8(1, 1)
+                .writeInt16(2, ByteOrder.BIG, 3)
+                .writeFloat(4, 1.0f)
+                .writeDouble(8, 1.1)
                 .get();
 
         assertArrayEquals(expected, actual);
 
         actual = FastProto.toBytes()
                 .boolType(0, 0, true)
-                .int8Type(1, 1)
-                .int16Type(2, ByteOrder.BIG, 3)
-                .floatType(4, 1.0f)
-                .doubleType(8, 1.1)
+                .writeInt8(1, 1)
+                .writeInt16(2, ByteOrder.BIG, 3)
+                .writeFloat(4, 1.0f)
+                .writeDouble(8, 1.1)
                 .get();
+
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testWriteAndAppend1() {
+        val actual = FastProto.toBytes()
+                .appendByte((byte) 0x01)
+                .align(2)
+                .appendShort((short) 0x0102)
+                .appendInt8(0x01, 0x02)
+                .appendInt16(0x0102, 0x0304)
+                .appendInt32(0x01020304)
+                .appendInt64(0x0102030405060708l)
+                .get();
+        val expected = new byte[]{0x01, 0, 0x02, 0x01, 0x01, 0x02, 0x02, 0x01, 0x04, 0x03, 0x04, 0x03, 0x02, 0x01,
+                0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01};
+
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testWriteAndAppend2() {
+        val actual = FastProto.toBytes()
+                .appendUInt8(0x01, 0x02)
+                .appendUInt16(0x0102, 0x0304)
+                .appendUInt32(0x01020304)
+                .appendUInt64(BigInteger.valueOf(0x0102030405060708l))
+                .get();
+        val expected = new byte[]{0x01, 0x02, 0x02, 0x01, 0x04, 0x03, 0x04, 0x03, 0x02, 0x01,
+                0x08, 0x07, 0x06, 0x05, 0x04, 0x03, 0x02, 0x01};
+
+        assertArrayEquals(expected, actual);
+    }
+
+    @Test
+    public void testWriteAndAppend3() {
+        val actual = FastProto.toBytes()
+                .appendFloat(3.14f)
+                .appendDouble(2.71)
+                .get();
+        val expected = new byte[12];
+
+        System.arraycopy(BinaryUtils.valueOf(3.14f), 0, expected, 0, 4);
+        System.arraycopy(BinaryUtils.valueOf(2.71), 0, expected, 4, 8);
 
         assertArrayEquals(expected, actual);
     }
@@ -65,7 +112,7 @@ public class EncoderTest {
     @Test
     public void testAlign() {
         val bytes = FastProto.toBytes()
-                .int8Type(2, (byte) 0x10)
+                .writeInt8(2, (byte) 0x10)
                 .align(8)
                 .get();
 
