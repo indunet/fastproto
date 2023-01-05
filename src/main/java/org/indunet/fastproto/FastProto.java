@@ -123,4 +123,14 @@ public class FastProto {
     public static Encoder toBytes() {
         return new Encoder();
     }
+
+    /**
+     * Helps developers create binary data through chain api.
+     *
+     * @param  length the length of the byte array
+     * @return Encoder object which supplies chain api.
+     */
+    public static Encoder toBytes(int length) {
+        return new Encoder(length);
+    }
 }

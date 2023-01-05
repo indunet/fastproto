@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.val;
+import org.indunet.fastproto.annotation.DoubleType;
+import org.indunet.fastproto.annotation.FloatType;
+import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -27,7 +30,7 @@ public class DecoderTest {
                 0x03, 0x04, 0x05, 0x06,
                 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
         };
-        val map = FastProto.parse(bytes)
+        val actual = FastProto.parse(bytes)
                 .defaultByteOrder(ByteOrder.BIG)
                 .readByte("byte1")
                 .readShort("short16")
@@ -37,12 +40,12 @@ public class DecoderTest {
                 .readInt64("int64")
                 .getAsMap();
 
-        assertEquals((byte) 0x01, map.get("byte1"));
-        assertEquals((short) 0x0102, map.get("short16"));
-        assertEquals(0x01, map.get("int8"));
-        assertEquals(0x0102, map.get("int16"));
-        assertEquals(0x03040506, map.get("int32"));
-        assertEquals(0x0102030405060708l, map.get("int64"));
+        assertEquals((byte) 0x01, actual.get("byte1"));
+        assertEquals((short) 0x0102, actual.get("short16"));
+        assertEquals(0x01, actual.get("int8"));
+        assertEquals(0x0102, actual.get("int16"));
+        assertEquals(0x03040506, actual.get("int32"));
+        assertEquals(0x0102030405060708l, actual.get("int64"));
     }
 
     @Test
@@ -53,7 +56,7 @@ public class DecoderTest {
                 0x03, 0x04, 0x05, 0x06,
                 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
         };
-        val map = FastProto.parse(bytes)
+        val actual = FastProto.parse(bytes)
                 .defaultByteOrder(ByteOrder.LITTLE)
                 .readUInt8("uint8")
                 .readUInt16("uint16")
@@ -61,10 +64,25 @@ public class DecoderTest {
                 .readUInt64("uint64")
                 .getAsMap();
 
-        assertEquals(0x01, map.get("uint8"));
-        assertEquals(0x0201, map.get("uint16"));
-        assertEquals(0x06050403l, map.get("uint32"));
-        assertEquals(BigInteger.valueOf(0x0807060504030201l), map.get("uint64"));
+        assertEquals(0x01, actual.get("uint8"));
+        assertEquals(0x0201, actual.get("uint16"));
+        assertEquals(0x06050403l, actual.get("uint32"));
+        assertEquals(BigInteger.valueOf(0x0807060504030201l), actual.get("uint64"));
+    }
+
+    @Test
+    public void testRead3() {
+        val bytes = new byte[12];
+        System.arraycopy(BinaryUtils.valueOf(3.14f), 0, bytes, 0, FloatType.SIZE);
+        System.arraycopy(BinaryUtils.valueOf(2.71), 0, bytes, 4, DoubleType.SIZE);
+
+        val actual = FastProto.parse(bytes)
+                .readFloat("float32")
+                .readDouble("double64")
+                .getAsMap();
+
+        assertEquals(3.14f, actual.get("float32"));
+        assertEquals(2.71, actual.get("double64"));
     }
 
     @Test
@@ -120,7 +138,7 @@ public class DecoderTest {
 
     @Test
     public void testMapTo() {
-        val bytes = new byte[]{78, 0, 8, 0};
+        val bytes = new byte[] {78, 0, 8, 0};
         val expected = new Wheel(78, 8);
         val actual = FastProto.parse(bytes)
                 .readInt8(0, "diameter")

@@ -13,14 +13,16 @@ import java.util.stream.IntStream;
  * @since 3.8.3
  */
 final class Encoder {
-    ByteBuffer byteBuffer = new ByteBuffer();
+    ByteBuffer byteBuffer;
     ByteOrder byteOrder = ByteOrder.LITTLE;
     BitOrder bitOrder = BitOrder.LSB_0;
 
-    public Encoder length(int length) {
-        this.byteBuffer = new ByteBuffer(length);
+    public Encoder() {
+        this.byteBuffer = new ByteBuffer();
+    }
 
-        return this;
+    public Encoder(int length) {
+        this.byteBuffer = new ByteBuffer(length);
     }
 
     public Encoder defaultByteOrder(ByteOrder byteOrder) {

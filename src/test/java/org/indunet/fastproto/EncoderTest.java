@@ -22,8 +22,7 @@ public class EncoderTest {
     @Test
     public void testGet1() {
         val expected = new byte[]{1, 0, 3, 0, 4, 0, 0, 0, 0, 32};
-        val actual = FastProto.toBytes()
-                .length(expected.length)
+        val actual = FastProto.toBytes(expected.length)
                 .writeUInt8(0, 1)
                 .writeUInt16(2, 3, 4)
                 .writeUInt32(6, ByteOrder.BIG, 32)
@@ -42,8 +41,7 @@ public class EncoderTest {
         System.arraycopy(BinaryUtils.valueOf(1.0f), 0, expected, 4, FloatType.SIZE);
         System.arraycopy(BinaryUtils.valueOf(1.1), 0, expected, 8, DoubleType.SIZE);
 
-        var actual = FastProto.toBytes()
-                .length(expected.length)
+        var actual = FastProto.toBytes(expected.length)
                 .boolType(0, 0, true)
                 .writeInt8(1, 1)
                 .writeInt16(2, ByteOrder.BIG, 3)
