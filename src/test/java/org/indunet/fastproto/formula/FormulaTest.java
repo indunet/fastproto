@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2021 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,14 +21,15 @@ import lombok.val;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.DecodingFormula;
 import org.indunet.fastproto.annotation.EncodingFormula;
-import org.indunet.fastproto.annotation.type.Int8Type;
-import org.indunet.fastproto.exception.DecodeFormulaException;
-import org.indunet.fastproto.exception.EncodeFormulaException;
+import org.indunet.fastproto.annotation.Int8Type;
+import org.indunet.fastproto.exception.DecodingException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.junit.jupiter.api.Test;
 
+import java.io.IOException;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * @author Deng Ran
@@ -52,7 +53,7 @@ public class FormulaTest {
     @Test
     public void testEncodeFormula() {
         val object = new TestObject1(101);
-        assertThrows(EncodeFormulaException.class, () -> FastProto.toBytes(object, 10));
+        assertThrows(EncodingException.class, () -> FastProto.toBytes(object, 10));
     }
 
     @AllArgsConstructor
@@ -73,6 +74,22 @@ public class FormulaTest {
     public void testDecodeFormula() {
         val datagram = new byte[10];
 
-        assertThrows(DecodeFormulaException.class, () -> FastProto.parse(datagram, TestObject2.class));
+        assertThrows(DecodingException.class, () -> FastProto.parse(datagram, TestObject2.class));
+    }
+
+    @Test
+    public void testDecodingLambda() throws IOException {
+        val expected = new LambdaObject();
+        val bytes = expected.toBytes();
+
+        assertEquals(expected, FastProto.parse(bytes, LambdaObject.class));
+    }
+
+    @Test
+    public void testEncodingLambda() throws IOException {
+        val object = new LambdaObject();
+        val expected = object.toBytes();
+
+        assertArrayEquals(expected, FastProto.toBytes(object, expected.length));
     }
 }

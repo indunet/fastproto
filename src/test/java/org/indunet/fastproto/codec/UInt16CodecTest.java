@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.codec;
 
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.junit.jupiter.api.Test;
@@ -38,28 +38,28 @@ public class UInt16CodecTest {
         datagram[0] = 1;
         datagram[1] = 2;
 
-        assertEquals(this.codec.decode(datagram, 0, EndianPolicy.LITTLE), 1 + 2 * 256);
-        assertEquals(this.codec.decode(datagram, 0, EndianPolicy.BIG), 256 + 2);
+        assertEquals(this.codec.decode(datagram, 0, ByteOrder.LITTLE), 1 + 2 * 256);
+        assertEquals(this.codec.decode(datagram, 0, ByteOrder.BIG), 256 + 2);
 
-        assertEquals(this.codec.decode(datagram, -10, EndianPolicy.BIG), 256 + 2);
+        assertEquals(this.codec.decode(datagram, -10, ByteOrder.BIG), 256 + 2);
     }
 
     @Test
     public void testDecode2() {
         byte[] datagram = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 0, EndianPolicy.LITTLE));
+        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 0, ByteOrder.LITTLE));
 
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, -11, EndianPolicy.LITTLE));
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 10, EndianPolicy.LITTLE));
+        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, -11, ByteOrder.LITTLE));
+        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 10, ByteOrder.LITTLE));
     }
 
     @Test
     public void testEncode1() {
         byte[] datagram = new byte[4];
 
-        this.codec.encode(datagram, 0, EndianPolicy.LITTLE, 0x0102);
-        this.codec.encode(datagram, 2 - datagram.length, EndianPolicy.BIG, 0x0304);
+        this.codec.encode(datagram, 0, ByteOrder.LITTLE, 0x0102);
+        this.codec.encode(datagram, 2 - datagram.length, ByteOrder.BIG, 0x0304);
 
         byte[] cache = new byte[]{0x02, 0x01, 0x03, 0x04};
         assertArrayEquals(datagram, cache);
@@ -70,8 +70,8 @@ public class UInt16CodecTest {
         byte[] datagram = new byte[10];
 
         assertThrows(EncodingException.class,
-                () -> this.codec.encode(datagram, 10, EndianPolicy.LITTLE, 1));
+                () -> this.codec.encode(datagram, 10, ByteOrder.LITTLE, 1));
         assertThrows(EncodingException.class,
-                () -> this.codec.encode(datagram, 10, EndianPolicy.LITTLE, Integer.MAX_VALUE));
+                () -> this.codec.encode(datagram, 10, ByteOrder.LITTLE, Integer.MAX_VALUE));
     }
 }

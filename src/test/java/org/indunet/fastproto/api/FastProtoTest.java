@@ -18,11 +18,10 @@ package org.indunet.fastproto.api;
 
 import lombok.SneakyThrows;
 import lombok.val;
-import org.indunet.fastproto.CodecFeature;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.annotation.DefaultEndian;
-import org.indunet.fastproto.annotation.type.UInt64Type;
+import org.indunet.fastproto.annotation.DefaultByteOrder;
+import org.indunet.fastproto.annotation.UInt64Type;
 import org.indunet.fastproto.domain.Everything;
 import org.indunet.fastproto.domain.Sensor;
 import org.indunet.fastproto.domain.Weather;
@@ -31,7 +30,7 @@ import org.indunet.fastproto.domain.datagram.StateDatagram;
 import org.indunet.fastproto.domain.tesla.Battery;
 import org.indunet.fastproto.domain.tesla.Motor;
 import org.indunet.fastproto.domain.tesla.Tesla;
-import org.indunet.fastproto.exception.FixedLengthException;
+import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.util.CodecUtils;
 import org.junit.jupiter.api.Test;
 
@@ -72,17 +71,17 @@ public class FastProtoTest {
                 .build();
 
         // Init datagram.
-        CodecUtils.type(datagram, 0, EndianPolicy.LITTLE, tesla.getId());
-        CodecUtils.type(datagram, 8, EndianPolicy.LITTLE, tesla.getTime().getTime());
-        CodecUtils.type(datagram, 16, EndianPolicy.LITTLE, tesla.getSpeed());
+        CodecUtils.type(datagram, 0, ByteOrder.LITTLE, tesla.getId());
+        CodecUtils.type(datagram, 8, ByteOrder.LITTLE, tesla.getTime().getTime());
+        CodecUtils.type(datagram, 16, ByteOrder.LITTLE, tesla.getSpeed());
         CodecUtils.type(datagram, 20, 0, tesla.isActive());
-        CodecUtils.type(datagram, 22, EndianPolicy.LITTLE, tesla.getBattery().getCapacity());
+        CodecUtils.type(datagram, 22, ByteOrder.LITTLE, tesla.getBattery().getCapacity());
         CodecUtils.type(datagram, 24, 0, tesla.getBattery().isLocked());
-        CodecUtils.type(datagram, 26, EndianPolicy.LITTLE, tesla.getBattery().getVoltage());
-        CodecUtils.type(datagram, 30, EndianPolicy.LITTLE, tesla.getBattery().getTemperature());
-        CodecUtils.type(datagram, 34, EndianPolicy.LITTLE, tesla.getMotor().getVoltage());
-        CodecUtils.type(datagram, 36, EndianPolicy.LITTLE, tesla.getMotor().getCurrent());
-        CodecUtils.type(datagram, 40, EndianPolicy.LITTLE, tesla.getMotor().getTemperature());
+        CodecUtils.type(datagram, 26, ByteOrder.LITTLE, tesla.getBattery().getVoltage());
+        CodecUtils.type(datagram, 30, ByteOrder.LITTLE, tesla.getBattery().getTemperature());
+        CodecUtils.type(datagram, 34, ByteOrder.LITTLE, tesla.getMotor().getVoltage());
+        CodecUtils.type(datagram, 36, ByteOrder.LITTLE, tesla.getMotor().getCurrent());
+        CodecUtils.type(datagram, 40, ByteOrder.LITTLE, tesla.getMotor().getTemperature());
 
         // Test decode with multi-thread.
         IntStream.range(0, 10).parallel()
@@ -115,10 +114,10 @@ public class FastProtoTest {
 
         // Init datagram.
         CodecUtils.uint8Type(datagram, 0, metrics.getId());
-        CodecUtils.type(datagram, 2, EndianPolicy.LITTLE, metrics.getTime().getTime());
-        CodecUtils.uint16Type(datagram, 10, EndianPolicy.LITTLE, metrics.getHumidity());
-        CodecUtils.int16Type(datagram, 12, EndianPolicy.LITTLE, metrics.getTemperature());
-        CodecUtils.uint32Type(datagram, 14, EndianPolicy.LITTLE, metrics.getPressure());
+        CodecUtils.type(datagram, 2, ByteOrder.LITTLE, metrics.getTime().getTime());
+        CodecUtils.uint16Type(datagram, 10, ByteOrder.LITTLE, metrics.getHumidity());
+        CodecUtils.int16Type(datagram, 12, ByteOrder.LITTLE, metrics.getTemperature());
+        CodecUtils.uint32Type(datagram, 14, ByteOrder.LITTLE, metrics.getPressure());
         CodecUtils.type(datagram, 18, 0, metrics.isHumidityValid());
         CodecUtils.type(datagram, 18, 1, metrics.isTemperatureValid());
         CodecUtils.type(datagram, 18, 2, metrics.isPressureValid());
@@ -148,10 +147,10 @@ public class FastProtoTest {
 
         // Init datagram.
         CodecUtils.uint8Type(datagram, 0, weather.getId());
-        CodecUtils.type(datagram, 2, EndianPolicy.LITTLE, weather.getTime().getTime());
-        CodecUtils.uint16Type(datagram, 10, EndianPolicy.LITTLE, weather.getHumidity());
-        CodecUtils.int16Type(datagram, 12, EndianPolicy.LITTLE, weather.getTemperature());
-        CodecUtils.uint32Type(datagram, 14, EndianPolicy.LITTLE, weather.getPressure());
+        CodecUtils.type(datagram, 2, ByteOrder.LITTLE, weather.getTime().getTime());
+        CodecUtils.uint16Type(datagram, 10, ByteOrder.LITTLE, weather.getHumidity());
+        CodecUtils.int16Type(datagram, 12, ByteOrder.LITTLE, weather.getTemperature());
+        CodecUtils.uint32Type(datagram, 14, ByteOrder.LITTLE, weather.getPressure());
         CodecUtils.type(datagram, 18, 0, weather.isHumidityValid());
         CodecUtils.type(datagram, 18, 1, weather.isTemperatureValid());
         CodecUtils.type(datagram, 18, 2, weather.isPressureValid());
@@ -159,8 +158,6 @@ public class FastProtoTest {
         // Test decode.
         assertEquals(
                 FastProto.parse(datagram, Weather.class).toString(), weather.toString());
-        assertEquals(
-                FastProto.parse(datagram, Weather.class, CodecFeature.DEFAULT).toString(), weather.toString());
 
         // Test encode.
         byte[] cache = FastProto.toBytes(weather, 23);
@@ -201,24 +198,24 @@ public class FastProtoTest {
         // Init datagram.
         CodecUtils.type(datagram, 0, 1, everything.getABoolean());
         CodecUtils.type(datagram, 1, everything.getAByte());
-        CodecUtils.type(datagram, 2, EndianPolicy.LITTLE, everything.getAShort());
-        CodecUtils.type(datagram, 4, EndianPolicy.LITTLE, everything.getAInteger());
-        CodecUtils.type(datagram, 8, EndianPolicy.LITTLE, everything.getALong());
-        CodecUtils.type(datagram, 16, EndianPolicy.LITTLE, everything.getAFloat());
-        CodecUtils.type(datagram, 20, EndianPolicy.LITTLE, everything.getADouble());
+        CodecUtils.type(datagram, 2, ByteOrder.LITTLE, everything.getAShort());
+        CodecUtils.type(datagram, 4, ByteOrder.LITTLE, everything.getAInteger());
+        CodecUtils.type(datagram, 8, ByteOrder.LITTLE, everything.getALong());
+        CodecUtils.type(datagram, 16, ByteOrder.LITTLE, everything.getAFloat());
+        CodecUtils.type(datagram, 20, ByteOrder.LITTLE, everything.getADouble());
         CodecUtils.int8Type(datagram, 28, everything.getAInteger8());
-        CodecUtils.int16Type(datagram, 30, EndianPolicy.LITTLE, everything.getAInteger16());
+        CodecUtils.int16Type(datagram, 30, ByteOrder.LITTLE, everything.getAInteger16());
         CodecUtils.uint8Type(datagram, 32, everything.getAUInteger8());
-        CodecUtils.uint16Type(datagram, 34, EndianPolicy.LITTLE, everything.getAUInteger16());
-        CodecUtils.uint32Type(datagram, 36, EndianPolicy.LITTLE, everything.getAUInteger32());
+        CodecUtils.uint16Type(datagram, 34, ByteOrder.LITTLE, everything.getAUInteger16());
+        CodecUtils.uint32Type(datagram, 36, ByteOrder.LITTLE, everything.getAUInteger32());
         CodecUtils.type(datagram, 40, everything.getAByteArray());
         CodecUtils.type(datagram, 50, everything.getAString().getBytes());
-        CodecUtils.type(datagram, 56, EndianPolicy.LITTLE, everything.getATimestamp().getTime());
-        CodecUtils.type(datagram, 64, EndianPolicy.LITTLE, everything.getACharacter());
-        CodecUtils.type(datagram, 70, EndianPolicy.LITTLE, everything.getAUInteger64());
-        CodecUtils.type(datagram, 78, EndianPolicy.LITTLE, millis);
-        CodecUtils.type(datagram, 86, EndianPolicy.LITTLE, millis);
-        CodecUtils.type(datagram, 94, EndianPolicy.LITTLE, millis);
+        CodecUtils.type(datagram, 56, ByteOrder.LITTLE, everything.getATimestamp().getTime());
+        CodecUtils.type(datagram, 64, ByteOrder.LITTLE, everything.getACharacter());
+        CodecUtils.type(datagram, 70, ByteOrder.LITTLE, everything.getAUInteger64());
+        CodecUtils.type(datagram, 78, ByteOrder.LITTLE, millis);
+        CodecUtils.type(datagram, 86, ByteOrder.LITTLE, millis);
+        CodecUtils.type(datagram, 94, ByteOrder.LITTLE, millis);
 
         // There is a formula.
         CodecUtils.uint8Type(datagram, 66, (int) (everything.getSpeed() * 10));
@@ -243,7 +240,7 @@ public class FastProtoTest {
 
     @Test
     public void testSensor() {
-        assertThrows(FixedLengthException.class, () -> FastProto.parse(new byte[8], Sensor.class));
+        assertThrows(ResolveException.class, () -> FastProto.parse(new byte[8], Sensor.class));
 
         val sensor = new Sensor(10, 11);
         val datagram = FastProto.toBytes(sensor);
@@ -282,7 +279,7 @@ public class FastProtoTest {
         assertArrayEquals(datagram, FastProto.toBytes(phone, Phone.getLength()));
     }
 
-    @DefaultEndian(EndianPolicy.BIG)
+    @DefaultByteOrder(ByteOrder.BIG)
     public static class NonObject {
 
     }

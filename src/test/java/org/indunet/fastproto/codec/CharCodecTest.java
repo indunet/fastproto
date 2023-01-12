@@ -16,57 +16,66 @@
 
 package org.indunet.fastproto.codec;
 
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.exception.DecodingException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
- * Unit test of char type codec.
+ * Unit test of CharCodec
  *
  * @author Deng Ran
- * @since 3.2.1
+ * @since 3.8.4
  */
 public class CharCodecTest {
-    AsciiCodec codec = new AsciiCodec();
+    CharCodec codec = new CharCodec();
 
     @Test
     public void testDecode1() {
-        byte[] datagram = new byte[10];
-        datagram[0] = 'a';
-        datagram[2] = 'A';
+        byte[] bytes = new byte[10];
 
-        assertEquals('a', (char) codec.decode(datagram, 0));
-        assertEquals('A', (char) codec.decode(datagram, 2));
-        assertEquals('A', (char) codec.decode(datagram, 2 - datagram.length));
+        bytes[0] = (byte) ('中' & 0xFF);
+        bytes[1] = (byte) ('中' >>> 8 & 0xFF);
+
+        bytes[3] = (byte) ('文' & 0xFF);
+        bytes[2] = (byte) ('文' >>> 8 & 0xFF);
+
+        assertEquals('中', codec.decode(bytes, 0, ByteOrder.LITTLE));
+        assertEquals('文', codec.decode(bytes, 2, ByteOrder.BIG));
     }
 
     @Test
     public void testDecode2() {
-        byte[] datagram = new byte[10];
+        byte[] bytes = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 10));
+        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 10, ByteOrder.LITTLE));
 
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 10));
+        assertThrows(DecodingException.class, () -> this.codec.decode(bytes, 10, ByteOrder.BIG));
     }
 
     @Test
     public void testEncode1() {
-        byte[] datagram = new byte[10];
+        byte[] actual = new byte[10];
 
-        this.codec.encode(datagram, 0, 'A');
-        this.codec.encode(datagram, 2 - datagram.length, 'a');
+        this.codec.encode(actual, 0, ByteOrder.LITTLE, '中');
+        this.codec.encode(actual, 2 - actual.length, ByteOrder.BIG, '文');
 
-        byte[] cache = new byte[10];
-        cache[0] = 65;
-        cache[2] = 97;
-        assertArrayEquals(cache, datagram);
+        byte[] expected = new byte[10];
+
+        expected[0] = (byte) ('中' & 0xFF);
+        expected[1] = (byte) ('中' >>> 8 & 0xFF);
+
+        expected[3] = (byte) ('文' & 0xFF);
+        expected[2] = (byte) ('文' >>> 8 & 0xFF);
+
+        assertArrayEquals(expected, actual);
     }
 
     @Test
     public void testEncode2() {
         byte[] datagram = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.encode(null, 0, 'A'));
+        assertThrows(NullPointerException.class, () -> this.codec.encode(null, 0, ByteOrder.BIG, 'A'));
     }
 }

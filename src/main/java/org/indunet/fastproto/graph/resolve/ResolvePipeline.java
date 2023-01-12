@@ -15,7 +15,7 @@ public abstract class ResolvePipeline extends Pipeline<Reference> {
     }
 
     public static ResolvePipeline getClassPipeline() {
-        val head = new EndianFlow();
+        val head = new ByteOrderFlow();
 
         head.setNext(new FixedLengthFlow())
             .setNext(new ConstructorFlow())
@@ -27,7 +27,8 @@ public abstract class ResolvePipeline extends Pipeline<Reference> {
     public static ResolvePipeline getFieldPipeline() {
         val typeAnnotationFlow = new TypeAnnotationFlow();
 
-        typeAnnotationFlow.setNext(new EndianFlow())
+        typeAnnotationFlow.setNext(new ByteOrderFlow())
+                .setNext(new BitOrderFlow())
                 .setNext(new FormulaFlow())
                 .setNext(new CodecFlow())
                 .setNext(new CodecIgnoreFlow());

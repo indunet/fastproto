@@ -17,8 +17,8 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.type.UInt32Type;
+import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.annotation.UInt32Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
@@ -32,7 +32,7 @@ import java.util.Arrays;
  * @since 3.2.1
  */
 public class UInt32Codec implements Codec<Long> {
-    public long decode(byte[] bytes, int offset, EndianPolicy policy) {
+    public long decode(byte[] bytes, int offset, ByteOrder policy) {
         try {
             return CodecUtils.uint32Type(bytes, offset, policy);
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -40,7 +40,7 @@ public class UInt32Codec implements Codec<Long> {
         }
     }
 
-    public void encode(byte[] bytes, int offset, EndianPolicy policy, long value) {
+    public void encode(byte[] bytes, int offset, ByteOrder policy, long value) {
         try {
             CodecUtils.uint32Type(bytes, offset, policy, value);
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
@@ -51,20 +51,20 @@ public class UInt32Codec implements Codec<Long> {
     @Override
     public Long decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(UInt32Type.class);
-        val policy = Arrays.stream(type.endian())
+        val byteOrder = Arrays.stream(type.byteOrder())
                 .findFirst()
-                .orElseGet(context::getDefaultEndianPolicy);
+                .orElseGet(context::getDefaultByteOrder);
 
-        return this.decode(bytes, type.offset(), policy);
+        return this.decode(bytes, type.offset(), byteOrder);
     }
 
     @Override
     public void encode(CodecContext context, byte[] bytes, Long value) {
         val type = context.getDataTypeAnnotation(UInt32Type.class);
-        val policy = Arrays.stream(type.endian())
+        val byteOrder = Arrays.stream(type.byteOrder())
                 .findFirst()
-                .orElseGet(context::getDefaultEndianPolicy);
+                .orElseGet(context::getDefaultByteOrder);
 
-        this.encode(bytes, type.offset(), policy, value);
+        this.encode(bytes, type.offset(), byteOrder, value);
     }
 }

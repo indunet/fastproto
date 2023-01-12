@@ -18,7 +18,8 @@ package org.indunet.fastproto.codec;
 
 import lombok.Builder;
 import lombok.Data;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.BitOrder;
+import org.indunet.fastproto.ByteOrder;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -32,7 +33,8 @@ import java.lang.reflect.Field;
 @Data
 @Builder
 public class CodecContext {
-    EndianPolicy defaultEndianPolicy;
+    ByteOrder defaultByteOrder;
+    BitOrder defaultBitOrder;
     Class<?> fieldType;
     Field field;
     Annotation dataTypeAnnotation;

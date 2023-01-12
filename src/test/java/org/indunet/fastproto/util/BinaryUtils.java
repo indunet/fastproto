@@ -17,7 +17,7 @@
 package org.indunet.fastproto.util;
 
 import lombok.val;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 
 import java.math.BigInteger;
 import java.util.stream.IntStream;
@@ -27,31 +27,31 @@ public class BinaryUtils {
         return valueOf(Float.floatToIntBits(value));
     }
 
-    public static byte[] valueOf(float value, EndianPolicy policy) {
+    public static byte[] valueOf(float value, ByteOrder policy) {
         return valueOf(Float.floatToIntBits(value), policy);
     }
 
     public static byte[] valueOf(double value) {
-        return valueOf(Double.doubleToLongBits(value));
+        return valueOf(Double.doubleToRawLongBits(value));
     }
 
-    public static byte[] valueOf(double value, EndianPolicy policy) {
-        return valueOf(Double.doubleToLongBits(value), policy);
+    public static byte[] valueOf(double value, ByteOrder policy) {
+        return valueOf(Double.doubleToRawLongBits(value), policy);
     }
 
     public static byte[] valueOf(int value) {
-        return valueOf(value, EndianPolicy.LITTLE);
+        return valueOf(value, ByteOrder.LITTLE);
     }
 
-    public static byte[] valueOf(int value, EndianPolicy endian) {
+    public static byte[] valueOf(int value, ByteOrder endian) {
         byte[] bytes = new byte[4];
 
-        if (endian == EndianPolicy.LITTLE) {
+        if (endian == ByteOrder.LITTLE) {
             bytes[0] = (byte) (value & 0xFF);
             bytes[1] = (byte) (value >> 8 & 0xFF);
             bytes[2] = (byte) (value >> 16 & 0xFF);
             bytes[3] = (byte) (value >> 24 & 0xFF);
-        } else if (endian == EndianPolicy.BIG) {
+        } else if (endian == ByteOrder.BIG) {
             bytes[3] = (byte) (value & 0xFF);
             bytes[2] = (byte) (value >> 8 & 0xFF);
             bytes[1] = (byte) (value >> 16 & 0xFF);
@@ -61,7 +61,7 @@ public class BinaryUtils {
         return bytes;
     }
 
-    public static byte[] valueOf(double[] values, EndianPolicy policy) {
+    public static byte[] valueOf(double[] values, ByteOrder policy) {
         val bytes = new byte[values.length * 8];
 
         IntStream.range(0, values.length)
@@ -70,7 +70,7 @@ public class BinaryUtils {
         return bytes;
     }
 
-    public static byte[] valueOf(float[] values, EndianPolicy policy) {
+    public static byte[] valueOf(float[] values, ByteOrder policy) {
         val bytes = new byte[values.length * 4];
 
         IntStream.range(0, values.length)
@@ -88,15 +88,29 @@ public class BinaryUtils {
         return bytes;
     }
 
-    public static byte[] int16Of(int[] values, EndianPolicy policy) {
+    public static byte[] int16Of(int value, ByteOrder policy) {
+        val bytes = new byte[2];
+
+        if (policy == ByteOrder.LITTLE) {
+            bytes[0] = (byte) (value % 256);
+            bytes[1] = (byte) (value / 256);
+        } else {
+            bytes[0] = (byte) (value / 256);
+            bytes[1] = (byte) (value % 256);
+        }
+
+        return bytes;
+    }
+
+    public static byte[] int16Of(int[] values, ByteOrder policy) {
         val bytes = new byte[values.length * 2];
 
         IntStream.range(0, values.length)
                 .forEach(i -> {
-                    if (policy == EndianPolicy.LITTLE) {
+                    if (policy == ByteOrder.LITTLE) {
                         bytes[i * 2] = (byte) (values[i] & 0xFF);
                         bytes[i * 2 + 1] = (byte) (values[i] >> 8 & 0xFF);
-                    } else if (policy == EndianPolicy.BIG) {
+                    } else if (policy == ByteOrder.BIG) {
                         bytes[i * 2 + 1] = (byte) (values[i] & 0xFF);
                         bytes[i * 2] = (byte) (values[i] >> 8 & 0xFF);
                     }
@@ -114,7 +128,7 @@ public class BinaryUtils {
         return bs;
     }
 
-    public static byte[] valueOf(Short[] shorts, EndianPolicy policy) {
+    public static byte[] valueOf(Short[] shorts, ByteOrder policy) {
         val ss = new short[shorts.length];
 
         IntStream.range(0, shorts.length)
@@ -123,7 +137,7 @@ public class BinaryUtils {
         return valueOf(ss, policy);
     }
 
-    public static byte[] valueOf(Float[] floats, EndianPolicy policy) {
+    public static byte[] valueOf(Float[] floats, ByteOrder policy) {
         val fs = new float[floats.length];
 
         IntStream.range(0, floats.length)
@@ -132,15 +146,15 @@ public class BinaryUtils {
         return valueOf(fs, policy);
     }
 
-    public static byte[] valueOf(short[] values, EndianPolicy policy) {
+    public static byte[] valueOf(short[] values, ByteOrder policy) {
         val bytes = new byte[values.length * 2];
 
         IntStream.range(0, values.length)
                 .forEach(i -> {
-                    if (policy == EndianPolicy.LITTLE) {
+                    if (policy == ByteOrder.LITTLE) {
                         bytes[i * 2] = (byte) (values[i] & 0xFF);
                         bytes[i * 2 + 1] = (byte) (values[i] >> 8 & 0xFF);
-                    } else if (policy == EndianPolicy.BIG) {
+                    } else if (policy == ByteOrder.BIG) {
                         bytes[i * 2 + 1] = (byte) (values[i] & 0xFF);
                         bytes[i * 2] = (byte) (values[i] >> 8 & 0xFF);
                     }
@@ -149,7 +163,7 @@ public class BinaryUtils {
         return bytes;
     }
 
-    public static byte[] int32Of(int[] values, EndianPolicy policy) {
+    public static byte[] int32Of(int[] values, ByteOrder policy) {
         val bytes = new byte[values.length * 4];
 
         IntStream.range(0, values.length)
@@ -158,12 +172,12 @@ public class BinaryUtils {
         return bytes;
     }
 
-    public static byte[] uint16Of(int[] values, EndianPolicy policy) {
+    public static byte[] uint16Of(int[] values, ByteOrder policy) {
         val bytes = new byte[values.length * 2];
 
         IntStream.range(0, values.length)
                 .forEach(i -> {
-                    if (policy == EndianPolicy.BIG) {
+                    if (policy == ByteOrder.BIG) {
                         bytes[i * 2 + 1] = (byte) values[i];
                         bytes[i * 2] = (byte) (values[i] >>> 8);
                     } else {
@@ -175,7 +189,7 @@ public class BinaryUtils {
         return bytes;
     }
 
-    public static byte[] valueOf(long[] values, EndianPolicy policy) {
+    public static byte[] valueOf(long[] values, ByteOrder policy) {
         val bytes = new byte[values.length * 8];
 
         IntStream.range(0, values.length)
@@ -184,7 +198,7 @@ public class BinaryUtils {
         return bytes;
     }
 
-    public static byte[] uint32Of(long[] values, EndianPolicy policy) {
+    public static byte[] uint32Of(long[] values, ByteOrder policy) {
         val bytes = new byte[values.length * 4];
 
         IntStream.range(0, values.length)
@@ -193,7 +207,7 @@ public class BinaryUtils {
         return bytes;
     }
 
-    public static byte[] uint64Of(BigInteger[] values, EndianPolicy policy) {
+    public static byte[] uint64Of(BigInteger[] values, ByteOrder policy) {
         val bytes = new byte[values.length * 8];
 
         IntStream.range(0, values.length)
@@ -217,18 +231,18 @@ public class BinaryUtils {
     }
 
     public static byte[] uint32of(long value) {
-        return uint32of(value, EndianPolicy.LITTLE);
+        return uint32of(value, ByteOrder.LITTLE);
     }
 
-    public static byte[] uint32of(long value, EndianPolicy policy) {
+    public static byte[] uint32of(long value, ByteOrder policy) {
         byte[] bytes = new byte[4];
 
-        if (policy == EndianPolicy.LITTLE) {
+        if (policy == ByteOrder.LITTLE) {
             bytes[0] = (byte) (value & 0xFF);
             bytes[1] = (byte) (value >> 8 & 0xFF);
             bytes[2] = (byte) (value >> 16 & 0xFF);
             bytes[3] = (byte) (value >> 24 & 0xFF);
-        } else if (policy == EndianPolicy.BIG) {
+        } else if (policy == ByteOrder.BIG) {
             bytes[3] = (byte) (value & 0xFF);
             bytes[2] = (byte) (value >> 8 & 0xFF);
             bytes[1] = (byte) (value >> 16 & 0xFF);
@@ -239,13 +253,13 @@ public class BinaryUtils {
     }
 
     public static byte[] valueOf(long value) {
-        return valueOf(value, EndianPolicy.LITTLE);
+        return valueOf(value, ByteOrder.LITTLE);
     }
 
-    public static byte[] valueOf(long value, EndianPolicy endian) {
+    public static byte[] valueOf(long value, ByteOrder endian) {
         byte[] bytes = new byte[8];
 
-        if (endian == EndianPolicy.LITTLE) {
+        if (endian == ByteOrder.LITTLE) {
             bytes[0] |= (value & 0xFFL);
             bytes[1] = (byte) (value >> 8 & 0xFFL);
             bytes[2] = (byte) (value >> 16 & 0xFFL);
@@ -254,7 +268,7 @@ public class BinaryUtils {
             bytes[5] = (byte) (value >> 40 & 0xFFL);
             bytes[6] = (byte) (value >> 48 & 0xFFL);
             bytes[7] = (byte) (value >> 56 & 0xFFL);
-        } else if (endian == EndianPolicy.BIG) {
+        } else if (endian == ByteOrder.BIG) {
             bytes[7] = (byte) (value & 0xFF);
             bytes[6] = (byte) (value >> 8 & 0xFFL);
             bytes[5] = (byte) (value >> 16 & 0xFFL);

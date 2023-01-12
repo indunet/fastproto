@@ -20,7 +20,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.indunet.fastproto.annotation.type.*;
+import org.indunet.fastproto.annotation.*;
 
 import java.sql.Timestamp;
 

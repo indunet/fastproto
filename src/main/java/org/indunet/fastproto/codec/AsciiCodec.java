@@ -17,13 +17,13 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.annotation.type.CharType;
+import org.indunet.fastproto.annotation.AsciiType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 /**
- * Char type codec.
+ * ASCII type codec.
  *
  * @author Deng Ran
  * @since 3.2.1
@@ -40,13 +40,13 @@ public class AsciiCodec implements Codec<Character> {
                 return (char) num;
             }
         } catch (ArrayIndexOutOfBoundsException e) {
-            throw new DecodingException("Fail decoding char type.", e);
+            throw new DecodingException("Fail decoding ascii type.", e);
         }
     }
 
     public void encode(byte[] datagram, int offset, char value) {
         try {
-            int num = Character.getNumericValue(value);
+            int num = value;
 
             if (num > Byte.MAX_VALUE) {
                 throw new EncodingException(String.format("%c is not valid ascii.", value));
@@ -54,20 +54,20 @@ public class AsciiCodec implements Codec<Character> {
                 CodecUtils.uint8Type(datagram, offset, value);
             }
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new EncodingException("Fail encoding char type.", e);
+            throw new EncodingException("Fail encoding ascii type.", e);
         }
     }
     
     @Override
     public Character decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(CharType.class);
+        val type = context.getDataTypeAnnotation(AsciiType.class);
     
         return this.decode(bytes, type.offset());
     }
     
     @Override
     public void encode(CodecContext context, byte[] bytes, Character value) {
-        val type = context.getDataTypeAnnotation(CharType.class);
+        val type = context.getDataTypeAnnotation(AsciiType.class);
     
         this.encode(bytes, type.offset(), value);
     }

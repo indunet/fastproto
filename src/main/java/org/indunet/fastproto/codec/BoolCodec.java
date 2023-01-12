@@ -17,10 +17,13 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.annotation.type.BoolType;
+import org.indunet.fastproto.BitOrder;
+import org.indunet.fastproto.annotation.BoolType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
+
+import java.util.Arrays;
 
 /**
  * Bool type codec.
@@ -48,14 +51,32 @@ public class BoolCodec implements Codec<Boolean> {
     @Override
     public Boolean decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(BoolType.class);
-    
-        return this.decode(bytes, type.byteOffset(), type.bitOffset());
+        val bitOrder = Arrays.stream(type.bitOrder())
+                .findFirst()
+                .orElseGet(context::getDefaultBitOrder);
+
+        if (bitOrder == BitOrder.LSB_0) {
+            return this.decode(bytes, type.byteOffset(), type.bitOffset());
+        } else if (bitOrder == BitOrder.MSB_0) {
+            return this.decode(bytes, type.byteOffset(), 7 - type.bitOffset());
+        } else {
+            throw new DecodingException("Illegal mode, only LSB_0 or MSB_0 can be used.");
+        }
     }
     
     @Override
     public void encode(CodecContext context, byte[] bytes, Boolean value) {
         val type = context.getDataTypeAnnotation(BoolType.class);
-        
-        this.encode(bytes, type.byteOffset(), type.bitOffset(), value);
+        val bitOrder = Arrays.stream(type.bitOrder())
+                .findFirst()
+                .orElseGet(context::getDefaultBitOrder);
+
+        if (bitOrder == BitOrder.LSB_0) {
+            this.encode(bytes, type.byteOffset(), type.bitOffset(), value);
+        } else if (bitOrder == BitOrder.MSB_0) {
+            this.encode(bytes, type.byteOffset(), 7 - type.bitOffset(), value);
+        } else {
+            throw new EncodingException("Illegal mode, only LSB_0 or MSB_0 can be used.");
+        }
     }
 }

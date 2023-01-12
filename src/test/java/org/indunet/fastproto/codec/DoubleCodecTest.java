@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.codec;
 
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.BinaryUtils;
@@ -37,11 +37,11 @@ public class DoubleCodecTest {
 
     @Test
     public void testDecode1() {
-        assertEquals(this.codec.decode(BinaryUtils.valueOf(pi), 0, EndianPolicy.LITTLE), pi, 0.001);
-        assertEquals(this.codec.decode(BinaryUtils.valueOf(e), 0, EndianPolicy.LITTLE), e, 0.001);
+        assertEquals(this.codec.decode(BinaryUtils.valueOf(pi), 0, ByteOrder.LITTLE), pi, 0.001);
+        assertEquals(this.codec.decode(BinaryUtils.valueOf(e), 0, ByteOrder.LITTLE), e, 0.001);
 
-        assertEquals(this.codec.decode(BinaryUtils.valueOf(pi, EndianPolicy.BIG), 0, EndianPolicy.BIG), pi, 0.001);
-        assertEquals(this.codec.decode(BinaryUtils.valueOf(pi, EndianPolicy.BIG), -8, EndianPolicy.BIG), pi, 0.001);
+        assertEquals(this.codec.decode(BinaryUtils.valueOf(pi, ByteOrder.BIG), 0, ByteOrder.BIG), pi, 0.001);
+        assertEquals(this.codec.decode(BinaryUtils.valueOf(pi, ByteOrder.BIG), -8, ByteOrder.BIG), pi, 0.001);
     }
 
     @Test
@@ -49,12 +49,12 @@ public class DoubleCodecTest {
         byte[] datagram = new byte[10];
 
         assertThrows(NullPointerException.class,
-                () -> this.codec.decode(null, 10, EndianPolicy.LITTLE));
+                () -> this.codec.decode(null, 10, ByteOrder.LITTLE));
 
         assertThrows(DecodingException.class,
-                () -> this.codec.decode(datagram, -1, EndianPolicy.LITTLE));
+                () -> this.codec.decode(datagram, -1, ByteOrder.LITTLE));
         assertThrows(DecodingException.class,
-                () -> this.codec.decode(datagram, 8, EndianPolicy.LITTLE));
+                () -> this.codec.decode(datagram, 8, ByteOrder.LITTLE));
     }
 
     @Test
@@ -63,14 +63,14 @@ public class DoubleCodecTest {
         double pi = 3.141;
         double e = 2.718;
 
-        this.codec.encode(datagram, 0, EndianPolicy.LITTLE, e);
+        this.codec.encode(datagram, 0, ByteOrder.LITTLE, e);
         assertArrayEquals(datagram, BinaryUtils.valueOf(e));
 
-        this.codec.encode(datagram, 0, EndianPolicy.LITTLE, pi);
+        this.codec.encode(datagram, 0, ByteOrder.LITTLE, pi);
         assertArrayEquals(datagram, BinaryUtils.valueOf(pi));
 
-        this.codec.encode(datagram, 0 - datagram.length, EndianPolicy.BIG, pi);
-        assertArrayEquals(datagram, BinaryUtils.valueOf(pi, EndianPolicy.BIG));
+        this.codec.encode(datagram, 0 - datagram.length, ByteOrder.BIG, pi);
+        assertArrayEquals(datagram, BinaryUtils.valueOf(pi, ByteOrder.BIG));
     }
 
     @Test
@@ -80,8 +80,8 @@ public class DoubleCodecTest {
         assertThrows(NullPointerException.class, () -> this.codec.encode(null, 0, null, 3.14));
 
         assertThrows(EncodingException.class, () ->
-                this.codec.encode(datagram, -1, EndianPolicy.LITTLE, 3.141));
+                this.codec.encode(datagram, -1, ByteOrder.LITTLE, 3.141));
         assertThrows(EncodingException.class, () ->
-                this.codec.encode(datagram, 10, EndianPolicy.LITTLE, 3.141));
+                this.codec.encode(datagram, 10, ByteOrder.LITTLE, 3.141));
     }
 }

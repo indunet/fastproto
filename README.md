@@ -10,50 +10,40 @@ English | [中文](README-zh.md)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
 [![JetBrain Support](https://img.shields.io/badge/JetBrain-support-blue)](https://www.jetbrains.com/community/opensource)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
-[![Gitee](https://img.shields.io/badge/repo-gitee-blue)](https://gitee.com/indunet/fastproto)
 
-FastProto is a binary serialization & deserialization tool that can customize protocol through annotations. It is written in Java and 
-solve the problem of cross-language and cross-platform data exchange, which is especially suitable for the Internet of Things (IoT).
+FastProto is a binary data processing tool written in Java. Developers can mark the field information in binary data (data type, byte offset, endianness, etc.) through annotations,
+and then invoke simple API to realize parsing and packaging binary data.
+It simplifies the process of binary data processing, and developers do not need to write complicated code.
+
 
 ## *Features*
 
-* Binary serialization & deserialization, customize protocol through annotations
-* Support primitive type, unsigned type, string type, time type, array type and collection type 
-* Support reverse addressing, suitable for non-fixed length binary data
+* Mark field information through annotations, quickly parse and package binary data
+* Support Java primitive type, unsigned type, string type, time type, array type and collection type, etc.
+* Support reverse addressing, suitable for non-fixed-length binary data, for example -1 means the end of binary data
 * Customize endianness (byte order)
-* Support decoding formula & encoding formula
+* Support decoding formula & encoding formula including lambda expression
 
-## *Under Developing*
 
-* Dynamically compile encoding & decoding formulas in lambda
+### *Under Developing*
+
+* Add char type in working without annotations
+* Write doc of Encoder api doc and Decoder api
+* Add dynamic byte array
 * Code structure & performance optimization
 
-## *Compared with ProtoBuf*
-
-Although both ProtoBuf and FastProto are used to solve the problem of cross-language and cross-platform data exchange, 
-they have completely different ways of solving the problem:
-
-*   ProtoBuf customizes the protocol by writing schema, and FastProto customizes the protocol by annotations
-*   ProtoBuf is available only when using by both side, while FastProto can be used by each side because of open protocol
-*   FastProto performance is more superior, custom protocol granularity is more refined
-
-FastProto is more recommended for the following scenarios:
-
-* Binary data format & open protocol
-* The performance requirements are demanding, and the performance loss caused by common data formats (JSON/XML) cannot be tolerated
-* The data source contains a lot of binary content, such as data collected through fieldbus (CAN/MVB/RS-485), which is not suitable for text format
-
-## *Maven*
+### *Maven*
 
 ```xml
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.6.2</version>
+    <version>3.9.1</version>
 </dependency>
 ```
 
-## *Quick Start*
+
+## *1. Quick Start*
 
 Imagine such an application, there is a monitoring device collecting weather data in realtime and sends to
 the weather station in binary format，the binary data has fixed length of 20 bytes:
@@ -76,14 +66,14 @@ The binary data contains 8 different types of signals, the specific protocol is 
 | 18          | 3-7        |                   | reserved          |      |           |
 | 19          |            |                   | reserved          |      |           |
 
-1. **Serialization & Deserialization**
+### *1.1 Parse and Package Binary Data*
 
 After the weather station receives the data, it needs to be converted into Java data objects for subsequent business function development.
 First, define the Java data object `Weather` according to the protocol, and then use the FastProto data type annotation to annotate each attribute.
-It should be noted that the `offset` attribute of any data type annotation corresponds to the byte offset of the signal.
+It should be noted that the `offset` attribute of annotation corresponds to the byte offset of the signal.
 
 ```java
-import org.indunet.fastproto.annotation.type.*;
+import org.indunet.fastproto.annotation.*;
 
 public class Weather {
     @UInt8Type(offset = 0)
@@ -112,7 +102,7 @@ public class Weather {
 }
 ```
 
-Invoke the `FastProto::parse()` method to deserialize the binary data into the Java data object `Weather`
+Invoke the `FastProto::parse()` method to parse the binary data into the Java data object `Weather`
 
 ```java
 // datagram sent by monitoring device.
@@ -121,93 +111,73 @@ byte[] datagram = ...
 Weather weather = FastProto.parse(datagram, Weather.class);
 ```
 
-Invoke the `FastProto::toBytes()` method to serialize the Java data object `Weather` into binary data.
+Invoke the `FastProto::toBytes()` method to package the Java data object `Weather` into binary data.
 The second parameter of this method is the length of the binary data. 
 If the user does not specify it, FastProto will automatically guess the length.
 
 ```java
 byte[] datagram = FastProto.toBytes(weather, 20);
 ```
-
-2. **Decoding Formula & Encoding Formula**
+### *1.2 Transformation Formula*
 
 Perhaps you have noticed that the pressure signal corresponds to a conversion formula, usually requiring the user to multiply
 the serialized result by 0.1, which is an extremely common operation in IoT data exchange.
-To help users reduce intermediate steps, FastProto introduces encoding formulas and decoding formulas.
-
-The custom decoding formula needs to implement the `java.lang.function.Function` interface, and then specify the decoding
-formula through annotation `@DecodingFormula`
+To help users reduce intermediate steps, FastProto introduces decoding formula annotation `@DecodingFormula` and encoding formula annotation `@EncodingFormula`,
+the above simple formula transformation can be implemented by Lambda expression.
 
 ```java
-public class PressureDecodeFormula implements Function<Long, Double> {
-    @Override
-    public Double apply(Long value) {
-        return value * 0.1;
-    }
-}
-```
+import org.indunet.fastproto.annotation.DecodingFormula;
+import org.indunet.fastproto.annotation.EncodingFormula;
 
-```java
 public class Weather {
     ...
 
-    @UInt32Type(offset = 14, decodingFormula = DecodeSpeedFormula.class)
-    double pressure;
-}
-```
-
-Similarly, In the same way, the encoding formula also needs to implement the `java.lang.function.Function` interface, and
-then specify the encoding formula through annotation `@EncodingFormula`.
-
-```java
-public class PressureEncodeFormula implements Function<Double, Long> {
-    @Override
-    public Long apply(Double value) {
-        return (long) (value * 10);
-    }
-}
-```
-
-```java
-public class Weather {
-    ...
-    
     @UInt32Type(offset = 14)
-    @DecodingFormula(PressureDecodeFormula.class)
-    @EncodingFormula(PressureEncodeFormula.class)
+    @DecodingFormula(lambda = "x -> x * 0.1")
+    @EncodingFormula(lambda = "x -> (long) (x * 10)")
     double pressure;
 }
 ```
 
-## *Annotations*
 
-### *Primitive Type Annotations*
-FastProto supports Java primitive data types, time type, String type, enum type and byte array type, taking into account 
-cross-language and cross-platform data exchange, FastProto also introduces unsigned types.
+## *2. Annotations*
+
+### *2.1 Primitive Data Type Annotations*
+
+FastProto supports Java primitive data types, taking into account cross-language and cross-platform data exchange, unsigned types are also introduced.
+
+| Annotation  |               Java                |     C/C++      |  Size   |
+|:-----------:|:---------------------------------:|:--------------:|:-------:|
+|  @BoolType  |          Boolean/boolean          |      bool      |  1 bit  |    
+| @AsciiType  |          Character/char           |      char      | 1 bytes |   
+|  @CharType  |          Character/char           |       --       | 2 bytes |
+|  @Int8Type  |       Byte/byte/Integer/int       |      char      | 1 byte  |  
+| @Int16Type  |     Short/short / Integer/int     |     short      | 2 bytes |  
+| @Int32Type  |            Integer/int            |      int       | 4 bytes | 
+| @Int64Type  |             Long/long             |      long      | 8 bytes |
+| @UInt8Type  |            Integer/int            | unsigned char  | 1 byte  |   
+| @UInt16Type |            Integer/int            | unsigned short | 2 bytes |   
+| @UInt32Type |             Long/long             |  unsigned int  | 4 bytes |   
+| @UInt64Type |            BigInteger             | unsigned long  | 8 bytes |
+| @FloatType  |            Float/float            |     float      | 4 bytes |  
+| @DoubleType |           Double/double           |     double     | 8 bytes |
+
+
+### *2.2 Compound Data Type Annotations*
 
 |      Annotation       |               Java                |     C/C++      |   Size    |
 |:---------------------:|:---------------------------------:|:--------------:|:---------:|
-|       @BoolType       |          Boolean/boolean          |      bool      |   1 bit   |    
-| @CharType(ASCII Only) |          Character/char           |      char      |  1 bytes  |   
-|      @Int32Type       |            Integer/int            |      int       |  4 bytes  | 
-|      @Int64Type       |             Long/long             |      long      |  8 bytes  |   
-|      @FloatType       |            Float/float            |     float      |  4 bytes  |  
-|      @DoubleType      |           Double/double           |     double     |  8 bytes  |  
-|       @Int8Type       |       Byte/byte/Integer/int       |      char      |  1 byte   |  
-|      @Int16Type       |     Short/short / Integer/int     |     short      |  2 bytes  |  
-|      @UInt8Type       |            Integer/int            | unsigned char  |  1 byte   |   
-|      @UInt16Type      |            Integer/int            | unsigned short |  2 bytes  |   
-|      @UInt32Type      |             Long/long             |  unsigned int  |  4 bytes  |   
-|      @UInt64Type      |            BigInteger             | unsigned long  |  8 bytes  |  
 |      @StringType      | String/StringBuilder/StringBuffer |       --       |  N bytes  |   
 |       @TimeType       |  Timestamp/Date/Calendar/Instant  |      long      |  8 bytes  |  
 |       @EnumType       |               enum                |      enum      |  1 bytes  |
 
-### *Array Type Annotations*
+
+### *2.3 Array Data Type Annotations*
 
 |    Annotation    |                                       Java                                        |      C/C++       |
 |:----------------:|:---------------------------------------------------------------------------------:|:----------------:|
 |   @BinaryType    |                       Byte[]/byte[]/Collection&lt;Byte&gt;                        |      char[]      |
+|  @BoolArrayType  |                    Boolean[]/boolean[]/Collection&lt;Boolean&gt;                     |      bool[]      |
 |  @Int8ArrayType  |  Byte[]/byte[]/Integer[]/int[]/Collection&lt;Byte&gt;/Collection&lt;Integer&gt;   |      char[]      |
 | @Int16ArrayType  | Short[]/short[]/Integer[]/int[]/Collection&lt;Short&gt;/Collection&lt;Integer&gt; |     short[]      |
 | @Int32ArrayType  |                     Integer[]/int[]/Collection&lt;Integer&gt;                     |      int[]       |
@@ -219,68 +189,233 @@ cross-language and cross-platform data exchange, FastProto also introduces unsig
 | @FloatArrayType  |                      Float[]/float[]/Collection&lt;Float&gt;                      |     float[]      |
 | @DoubleArrayType |                    Double[]/double[]/Collection&lt;Double&gt;                     |     double[]     |
 
-### *Other Annotations*
+
+### *2.4 Supplementary Annotations*
+
 FastProto also provides some auxiliary annotations to help users further customize the binary format, decoding and encoding process.
 
-|   Annotation    |   Scope   |                    Description                    |
-|:---------------:|:---------:|:-------------------------------------------------:|
-| @DefaultEndian  |   Class   |       Endianness, default as little endian.       |
-| @DecodingIgnore |   Field   |          Ignore the field when decoding.          |
-| @EncodingIgnore |   Field   |          Ignore the field when encoding.          |
-|  @FixedLength   |   Class   |         Enable fixed length of datagram.          |
+|    Annotation     | Scope |                       Description                       |
+|:-----------------:|:-----:|:-------------------------------------------------------:|
+| @DefaultByteOrder | Class | Default byte order, use little endian if not specified. |
+| @DefaultBitOrder  | Class |     Default bit order, use LSB_0 if not specified.      |
+|  @DecodingIgnore  | Field |             Ignore the field when decoding.             |
+|  @EncodingIgnore  | Field |             Ignore the field when encoding.             |
+|   @FixedLength    | Class |            Enable fixed length of datagram.             |
+| @DecodingFormula  | Field |                    Decoding formula.                    |
+| @EncodingFormula  | Field |                    Encoding formula.                    |
+|     @AutoType     | Field |                    Use default type.                    |
 
 
-## Endianness
-FastProto uses little endian by default. You can modify the global endian through `@DefaultEndian` annotation, or you can 
-modify the endian of specific field through `endian` attribute which has a higher priority.
+#### *2.4.1 Byte Order and Bit Order*
+
+FastProto uses little endian by default. You can modify the global byte order through `@DefaultByteOrder` annotation, or you can 
+modify the byte order of specific field through `byteOrder` attribute which has a higher priority.
+
+Similarly, FastProto uses LSB_0 by default. You can modify the global bit order through `@DefaultBitOrder` annotation, or you can
+modify the bit order of specific field through `bitOrder` attribute which has a higher priority.
 
 ```java
-import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.DefaultEndian;
+import org.indunet.fastproto.BitOrder;
+import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.annotation.DefaultBitOrder;
+import org.indunet.fastproto.annotation.DefaultByteOrder;
 
-@DefaultEndian(EndianPolicy.BIG)
+@DefaultByteOrder(ByteOrder.BIG)
+@DefaultBitOrder(BitOrder.LSB_0)
 public class Weather {
-    @UInt16Type(offset = 10, endian = EndianPolicy.LITTLE)
+    @UInt16Type(offset = 10, endian = ByteOrder.LITTLE)
     int humidity;
 
-    @UInt32Type(offset = 14)
-    long pressure;
+    @BoolType(byteOffset = 18, bitOffset = 1, bitOrder = BitOrder.MSB_0)
+    boolean humidityValid;
 }
 ```
 
-## Scala
+#### *2.4.2 Decoding and Encoding Formula*
+
+Users can customize formula in two ways. For simple formulas, it is recommended to use Lambda expression, while for more 
+complex formula, it is recommended to customize formula classes by implementing the `java.lang.function.Function` interface.
+
+* *Lambda Expression*
+
+```java
+import org.indunet.fastproto.annotation.DecodingFormula;
+import org.indunet.fastproto.annotation.EncodingFormula;
+
+public class Weather {
+    ...
+
+    @UInt32Type(offset = 14)
+    @DecodingFormula(lambda = "x -> x * 0.1")           // pressure after parsing equals uint32 * 0.1
+    @EncodingFormula(lambda = "x -> (long) (x * 10)")   // Data written into binary equals (pressure * 0.1) cast to long
+    double pressure;
+}
+
+```
+
+* *Custom Formula Class*
+
+```java
+import java.util.function.Function;
+
+public class PressureDecodeFormula implements Function<Long, Double> {
+    @Override
+    public Double apply(Long value) {
+        return value * 0.1;
+    }
+}
+```
+
+```java
+import java.util.function.Function;
+
+public class PressureEncodeFormula implements Function<Double, Long> {
+    @Override
+    public Long apply(Double value) {
+        return (long) (value * 10);
+    }
+}
+```
+
+```java
+import org.indunet.fastproto.annotation.DecodingFormula;
+import org.indunet.fastproto.annotation.EncodingFormula;
+
+public class Weather {
+    ...
+
+    @UInt32Type(offset = 14)
+    @DecodingFormula(PressureDecodeFormula.class)
+    @EncodingFormula(PressureEncodeFormula.class)
+    double pressure;
+}
+```
+
+Users can specify only the encoding formula or only the decoding formula as needed. If both lambda expression and custom 
+formula class are specified, the latter has a higher priority.
+
+#### *2.4.3 AutoType*
+
+FastProto can automatically infer type if field is annotated by `@AutoType`.
+
+```java
+import org.indunet.fastproto.annotation.AutoType;
+
+public class Weather {
+    @AutoType(offset = 10, byteOrder = byteOrder.LITTLE)
+    int humidity;   // default Int32Type
+
+    @AutoType(offset = 14)
+    long pressure;  // default Int64Type
+}
+```
+
+
+#### *2.4.4 Ignore Field*
+In special cases, if you want to ignore certain fields during parsing, or ignore certain fields during packaging, 
+you can use `@DecodingIgnore` and `@EncodingIgnore`.
+
+```java
+import org.indunet.fastproto.annotation.*;
+
+public class Weather {
+    @DecodingFormula
+    @Int16Type(offset = 10)
+    int humidity;   // ignore when parsing
+
+    @EncodingIgnore
+    @Int32Type(offset = 14)
+    long pressure; // ignore when packaging
+}
+```
+
+
+## *3. Scala*
 FastProto supports case class，but Scala is not fully compatible with Java annotations, so please refer to FastProto as follows.
 
 ```scala
 import org.indunet.fastproto.annotation.scala._
 ```
 
-## *Benchmark*
+## *4. Parse and Package without Annotations*
 
-*   macOS, m1 8 cores, 16gb
+In some special cases, developers do not want or cannot use annotations to decorate data objects, for example, data objects 
+come from third-party libraries, developers cannot modify the source code, and developers only want to create binary data blocks
+in a simple way. FastProto provides simple API to solve the above problems, as follows:
+
+### *4.1 Parse Binary Data*
+
+* *Parse without data object*
+
+```java
+boolean f1 = FastProto.parse(bytes)
+        .boolType(0, 0)
+        .getAsBoolean();
+int f2 = FastProto.parse(bytes)
+        .int8Type(1)      // Parse signed 8-bit integer data at byte offset 1
+        .getAsInt();
+int f3 = FastProto.parse(bytes)
+        .int16Type(2)     // Parse signed 16-bit integer data at byte offset 2
+        .getAsInt();
+```
+
+* *Parse with data object*
+
+```java
+byte[] bytes = ... // Binary data to be parsed
+
+public class DataObject {
+    Boolean f1;
+    Integer f2;
+    Integer f3;
+}
+
+JavaObject obj = FastProto.parse(bytes)
+        .boolType(0, 0, "f1")           
+        .int8Type(1, "f2")              // Parse signed 8-bit integer data at byte offset 1, field name f2
+        .int16Type(2, "f3")
+        .mapTo(DataObject.class);       // Map parsing result into Java data object according to the field name
+```
+
+### *4.2 Create Binary Data Block*
+
+```java
+byte[] bytes = FastProto.toBytes()
+        .length(16)             // The length of the binary data block
+        .uint8Type(0, 1)        // Write unsigned 8-bit integer data 1 at byte offset 0
+        .uint16Type(2, 3, 4)    // Write 2 unsigned 16-bit integer data 3 and 4 consecutively at byte offset 2
+        .uint32Type(6, ByteOrder.BIG, 32)
+        .get();
+```
+
+
+## *5. Benchmark*
+
+*   windows 11, i7 11th, 32gb
 *   openjdk 1.8.0_292
-*   datagram of 128 bytes and nested protocol class of 48 fields
+*   binary data of 60 bytes and protocol class of 13 fields
 
-|Benchmark |    Mode  | Samples  | Score |   Error   |   Units   |
-|:--------:|:--------:|:--------:|:-----:|:---------:|:---------:|
-| `FastProto::parse` |  throughput   |   10  |  132  | ± 1.6    |  ops/ms   |
-| `FastProto::toBytes` | throughput  |   10  |  201  | ± 1.5    |  ops/ms   |
+|Benchmark |    Mode  | Samples  | Score | Error  |   Units   |
+|:--------:|:--------:|:--------:|:-----:|:------:|:---------:|
+| `FastProto::parse` |  throughput   |   10  |  240  | ± 4.6  |  ops/ms   |
+| `FastProto::toBytes` | throughput  |   10  |  317  | ± 11.9 |  ops/ms   |
 
-## *Build Requirements*
+
+## *6. Build Requirements*
 
 *   Java 1.8+
 *   Maven 3.5+
 
-## *Welcome*
+
+## *7. Contribution*
 
 FastProto has obtained the support of JetBrain Open Source Project, which can provide free license of all product pack for
 all core contributors.
 If you are interested in this project and want to join and undertake part of the work (development/testing/documentation),
 please feel free to contact me via email <deng_ran@foxmail.com>
 
-Gitee Repository: [gitee.com/indunet/fastproto](https://gitee.com/indunet/fastproto)
 
-## *License*
+## *8. License*
 
 FastProto is released under the [Apache 2.0 license](license).
 

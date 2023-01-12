@@ -29,11 +29,10 @@ import org.indunet.fastproto.graph.Graph;
 @Data
 @Builder
 public class PipelineContext {
-    byte[] datagram;
+    byte[] bytes;
     Graph graph;
     Object object;
-    Class<?> protocolClass;
-    long codecFeature;
+    Class<?> clazz;
 
     public <T> T getObject(Class<T> clazz) {
         return (T) object;

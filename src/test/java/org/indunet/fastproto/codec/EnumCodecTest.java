@@ -19,7 +19,7 @@ package org.indunet.fastproto.codec;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.val;
-import org.indunet.fastproto.annotation.type.EnumType;
+import org.indunet.fastproto.annotation.EnumType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.junit.jupiter.api.Test;

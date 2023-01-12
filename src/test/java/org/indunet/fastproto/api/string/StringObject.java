@@ -17,7 +17,7 @@
 package org.indunet.fastproto.api.string;
 
 import lombok.Data;
-import org.indunet.fastproto.annotation.type.StringType;
+import org.indunet.fastproto.annotation.StringType;
 
 /**
  * String object.

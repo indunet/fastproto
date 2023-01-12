@@ -6,10 +6,10 @@
 
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.6.2</version>
+    <version>3.9.0</version>
     <packaging>jar</packaging>
     <name>FastProto</name>
-    <description>FastProto is a protocolized binary serialization &amp; deserialization tool written in Java, which allows developers to customize binary format through annotations.</description>
+    <description>FastProto is a binary data processing tool written in Java.</description>
 
     <url>http://fastproto.indunet.org</url>
     <inceptionYear>2019</inceptionYear>
@@ -147,13 +147,8 @@
         <junit.version>5.7.2</junit.version>
         <lombok.version>1.18.16</lombok.version>
         <scala.version>2.11.12</scala.version>
-        <kafka.version>2.4.1</kafka.version>
-        <kafka.junit5>3.2.2</kafka.junit5>
         <jmh-core>1.3.2</jmh-core>
         <jmh-generator-annprocess>1.3.2</jmh-generator-annprocess>
-        <netty.version>4.1.65.Final</netty.version>
-        <snappy.version>1.1.8.4</snappy.version>
-        <lz4.version>1.8.0</lz4.version>
     </properties>
 
     <dependencies>
@@ -200,24 +195,10 @@
         </dependency>
 
         <dependency>
-            <groupId>com.esotericsoftware</groupId>
-            <artifactId>kryo</artifactId>
-            <version>5.1.1</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13.1</version>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>org.xerial.snappy</groupId>
-            <artifactId>snappy-java</artifactId>
-            <version>${snappy.version}</version>
-            <optional>true</optional>
-        </dependency>
-
-        <dependency>
-            <groupId>org.lz4</groupId>
-            <artifactId>lz4-java</artifactId>
-            <version>${lz4.version}</version>
-            <optional>true</optional>
         </dependency>
     </dependencies>
 
@@ -230,6 +211,7 @@
                 <configuration>
                     <source>8</source>
                     <target>8</target>
+                    <encoding>UTF-8</encoding>
                 </configuration>
                 <dependencies>
                     <dependency>
@@ -251,6 +233,25 @@
                         <version>5.3.2</version>
                     </dependency>
                 </dependencies>
+            </plugin>
+
+            <plugin>
+                <groupId>org.scala-tools</groupId>
+                <artifactId>maven-scala-plugin</artifactId>
+                <version>2.15.2</version>
+                <configuration>
+                    <recompileMode>modified-only</recompileMode>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>main-scalac</id>
+                        <phase>process-resources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                            <goal>compile</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>

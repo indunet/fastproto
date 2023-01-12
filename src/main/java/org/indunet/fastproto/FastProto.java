@@ -30,103 +30,107 @@ import org.indunet.fastproto.pipeline.PipelineContext;
  */
 public class FastProto {
     /**
-     * Convert binary message into object.
+     * Convert byte array into object.
      *
-     * @param datagram      binary message
-     * @param protocolClass deserialized object
-     * @return deserialize object instance
+     * @param bytes      byte array
+     * @param clazz class of deserialized object
+     * @return deserialize object
      */
-    public static <T> T parse(@NonNull byte[] datagram, @NonNull Class<T> protocolClass) {
-        return parse(datagram, protocolClass, CodecFeature.DEFAULT);
-    }
-
-    /**
-     * Convert binary message into object.
-     *
-     * @param datagram      binary message
-     * @param protocolClass deserialized object
-     * @param codecFeatures codec feature code
-     * @return deserialize object instance
-     */
-    public static <T> T parse(@NonNull byte[] datagram, @NonNull Class<T> protocolClass, long... codecFeatures) {
-        val graph = Resolver.resolve(protocolClass);
-        val codecFeature = CodecFeature.of(codecFeatures);
+    public static <T> T parse(@NonNull byte[] bytes, @NonNull Class<T> clazz) {
+        val graph = Resolver.resolve(clazz);
         val context = PipelineContext.builder()
-                .datagram(datagram)
-                .protocolClass(protocolClass)
-                .codecFeature(codecFeature)
+                .bytes(bytes)
+                .clazz(clazz)
                 .graph(graph)
                 .build();
 
-        val feature = CodecFeature.of(graph.root());
-
-        Pipeline.getDecodeFlow(feature | codecFeature)
+        Pipeline.getDecodeFlow()
                 .process(context);
 
-        return context.getObject(protocolClass);
+        return context.getObject(clazz);
     }
 
     /**
-     * Convert object into binary datagram.
+     * Helps developers parse binary data through chain api.
+     *
+     * @param bytes binary data need parsing
+     * @return Decoder object which supplies chain api
+     */
+    public static Decoder parse(byte[] bytes) {
+        return new Decoder(bytes);
+    }
+
+    /**
+     * Convert object into byte array.
      *
      * @param object serialized object
-     * @return binary datagram.
+     * @return byte array
      */
-    public static byte[] toBytes(@NonNull Object object) {
-        return toBytes(object, CodecFeature.DEFAULT);
+    public static byte[] toBytes(Object object) {
+        val graph = Resolver.resolve(object.getClass());
+        val context = PipelineContext.builder()
+                .object(object)
+                .clazz(object.getClass())
+                .graph(graph)
+                .build();
+
+        Pipeline.getEncodeFlow()
+                .process(context);
+
+        return context.getBytes();
     }
 
     /**
-     * Convert object into binary datagram.
+     * Convert object into byte array.
      *
      * @param object serialized object
-     * @param length the length of the datagram.
-     * @return binary datagram.
+     * @param length the length of byte array
+     * @return byte array
      */
-    public static byte[] toBytes(@NonNull Object object, int length) {
-        return toBytes(object, new byte[length], CodecFeature.DEFAULT);
+    public static byte[] toBytes(Object object, int length) {
+        val bytes = new byte[length];
+
+        toBytes(object, bytes);
+
+        return bytes;
     }
 
-    public static void toBytes(@NonNull Object object, byte[] buffer) {
-        toBytes(object, buffer, CodecFeature.DEFAULT);
-    }
-
-    public static byte[] toBytes(@NonNull Object object, long... codecFeatures) {
+    /**
+     * Convert object into byte array.
+     *
+     * @param object serialized object
+     * @param buffer write result into buffer
+     * @return void
+     */
+    public static void toBytes(Object object, byte[] buffer) {
         val graph = Resolver.resolve(object.getClass());
-        val codecFeature = CodecFeature.of(codecFeatures);
         val context = PipelineContext.builder()
                 .object(object)
-                .protocolClass(object.getClass())
-                .codecFeature(codecFeature)
+                .clazz(object.getClass())
+                .bytes(buffer)
                 .graph(graph)
                 .build();
-        val feature = CodecFeature.of(graph.root());
 
-        Pipeline.getEncodeFlow(feature | codecFeature)
+        Pipeline.getEncodeFlow()
                 .process(context);
-
-        return context.getDatagram();
     }
 
-    public static byte[] toBytes(@NonNull Object object, int length, long... codecFeatures) {
-        return toBytes(object, new byte[length], codecFeatures);
+    /**
+     * Helps developers create binary data through chain api.
+     *
+     * @return Encoder object which supplies chain api.
+     */
+    public static Encoder toBytes() {
+        return new Encoder();
     }
 
-    public static byte[] toBytes(@NonNull Object object, byte[] buffer, long... codecFeatures) {
-        val graph = Resolver.resolve(object.getClass());
-        val codecFeature = CodecFeature.of(codecFeatures);
-        val context = PipelineContext.builder()
-                .object(object)
-                .protocolClass(object.getClass())
-                .codecFeature(codecFeature)
-                .datagram(buffer)
-                .graph(graph)
-                .build();
-        val feature = CodecFeature.of(graph.root());
-
-        Pipeline.getEncodeFlow(feature | CodecFeature.NON_INFER_LENGTH | codecFeature)
-                .process(context);
-
-        return context.getDatagram();
+    /**
+     * Helps developers create binary data through chain api.
+     *
+     * @param  length the length of the byte array
+     * @return Encoder object which supplies chain api.
+     */
+    public static Encoder toBytes(int length) {
+        return new Encoder(length);
     }
 }

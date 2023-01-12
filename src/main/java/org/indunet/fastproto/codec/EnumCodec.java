@@ -19,7 +19,7 @@ package org.indunet.fastproto.codec;
 import lombok.NonNull;
 import lombok.val;
 import lombok.var;
-import org.indunet.fastproto.annotation.type.EnumType;
+import org.indunet.fastproto.annotation.EnumType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;

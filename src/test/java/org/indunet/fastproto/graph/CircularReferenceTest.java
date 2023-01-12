@@ -19,7 +19,7 @@ package org.indunet.fastproto.graph;
 import lombok.Data;
 import lombok.val;
 import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.annotation.type.Int8Type;
+import org.indunet.fastproto.annotation.Int8Type;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

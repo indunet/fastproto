@@ -17,7 +17,7 @@
 package org.indunet.fastproto.api.time;
 
 import lombok.Data;
-import org.indunet.fastproto.annotation.type.TimeType;
+import org.indunet.fastproto.annotation.TimeType;
 
 import java.sql.Timestamp;
 import java.time.Instant;

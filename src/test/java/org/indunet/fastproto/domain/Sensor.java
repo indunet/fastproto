@@ -20,8 +20,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.indunet.fastproto.annotation.FixedLength;
-import org.indunet.fastproto.annotation.type.Int16Type;
-import org.indunet.fastproto.annotation.type.UInt16Type;
+import org.indunet.fastproto.annotation.Int16Type;
+import org.indunet.fastproto.annotation.UInt16Type;
 
 /**
  * @author Deng Ran

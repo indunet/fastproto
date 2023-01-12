@@ -16,8 +16,9 @@
 
 package org.indunet.fastproto.pipeline.decode;
 
+import lombok.val;
 import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.FixedLengthException;
+import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.PipelineContext;
 import org.indunet.fastproto.pipeline.FlowCode;
@@ -33,15 +34,17 @@ import java.text.MessageFormat;
 public class VerifyFixedLengthFlow extends Pipeline<PipelineContext> {
     @Override
     public void process(PipelineContext context) {
-        int fixedLength = context.getGraph()
-                .root()
-                .getEnableFixedLength()
-                .value();
-        int length = context.getDatagram().length;
+        val ref = context.getGraph().root();
 
-        if (fixedLength != length) {
-            throw new FixedLengthException(MessageFormat.format(
-                    CodecError.FIXED_LENGTH_UNMATCH.getMessage(), fixedLength, length));
+        if (ref.getEnableFixedLength() != null) {
+            int fixedLength = ref.getEnableFixedLength()
+                    .value();
+            int length = context.getBytes().length;
+
+            if (fixedLength != length) {
+                throw new ResolveException(MessageFormat.format(
+                        CodecError.FIXED_LENGTH_UNMATCH.getMessage(), fixedLength, length));
+            }
         }
 
         this.forward(context);

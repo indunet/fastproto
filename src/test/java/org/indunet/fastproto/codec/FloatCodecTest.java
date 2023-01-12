@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.codec;
 
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.BinaryUtils;
@@ -38,21 +38,21 @@ public class FloatCodecTest {
 
     @Test
     public void testDecode1() {
-        assertEquals(codec.decode(BinaryUtils.valueOf(pi), 0, EndianPolicy.LITTLE), pi, 0.0001);
-        assertEquals(codec.decode(BinaryUtils.valueOf(e), 0, EndianPolicy.LITTLE), e, 0.0001);
+        assertEquals(codec.decode(BinaryUtils.valueOf(pi), 0, ByteOrder.LITTLE), pi, 0.0001);
+        assertEquals(codec.decode(BinaryUtils.valueOf(e), 0, ByteOrder.LITTLE), e, 0.0001);
 
-        assertEquals(codec.decode(BinaryUtils.valueOf(e, EndianPolicy.BIG), 0, EndianPolicy.BIG), e, 0.0001);
-        assertEquals(codec.decode(BinaryUtils.valueOf(e, EndianPolicy.BIG), -4, EndianPolicy.BIG), e, 0.0001);
+        assertEquals(codec.decode(BinaryUtils.valueOf(e, ByteOrder.BIG), 0, ByteOrder.BIG), e, 0.0001);
+        assertEquals(codec.decode(BinaryUtils.valueOf(e, ByteOrder.BIG), -4, ByteOrder.BIG), e, 0.0001);
     }
 
     @Test
     public void testDecode2() {
         byte[] datagram = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 0, EndianPolicy.LITTLE));
+        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 0, ByteOrder.LITTLE));
 
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, -1, EndianPolicy.BIG));
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 8, EndianPolicy.BIG));
+        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, -1, ByteOrder.BIG));
+        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 8, ByteOrder.BIG));
     }
 
     @Test
@@ -61,14 +61,14 @@ public class FloatCodecTest {
         float pi = 3.141f;
         float e = 2.718f;
 
-        this.codec.encode(datagram, 0, EndianPolicy.LITTLE, pi);
+        this.codec.encode(datagram, 0, ByteOrder.LITTLE, pi);
         assertArrayEquals(datagram, BinaryUtils.valueOf(pi));
 
-        this.codec.encode(datagram, 0, EndianPolicy.LITTLE, e);
+        this.codec.encode(datagram, 0, ByteOrder.LITTLE, e);
         assertArrayEquals(datagram, BinaryUtils.valueOf(e));
 
-        this.codec.encode(datagram, 0 - datagram.length, EndianPolicy.BIG, e);
-        assertArrayEquals(datagram, BinaryUtils.valueOf(e, EndianPolicy.BIG));
+        this.codec.encode(datagram, 0 - datagram.length, ByteOrder.BIG, e);
+        assertArrayEquals(datagram, BinaryUtils.valueOf(e, ByteOrder.BIG));
     }
 
     @Test
@@ -78,8 +78,8 @@ public class FloatCodecTest {
         assertThrows(NullPointerException.class, () -> this.codec.encode(null, 0, null, 3.14f));
 
         assertThrows(EncodingException.class, () ->
-                this.codec.encode(datagram, 10, EndianPolicy.LITTLE, 3.141f));
+                this.codec.encode(datagram, 10, ByteOrder.LITTLE, 3.141f));
         assertThrows(EncodingException.class, () ->
-                this.codec.encode(datagram, -1, EndianPolicy.LITTLE, 3.141f));
+                this.codec.encode(datagram, -1, ByteOrder.LITTLE, 3.141f));
     }
 }

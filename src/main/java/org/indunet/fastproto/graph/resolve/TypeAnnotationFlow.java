@@ -18,10 +18,13 @@ package org.indunet.fastproto.graph.resolve;
 
 import lombok.val;
 import org.indunet.fastproto.ProtocolType;
+import org.indunet.fastproto.annotation.AutoType;
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.graph.Reference;
+import org.indunet.fastproto.mapper.DataTypeAnnotationMapper;
 
+import java.lang.annotation.Annotation;
 import java.util.Arrays;
 
 /**
@@ -34,16 +37,24 @@ public class TypeAnnotationFlow extends ResolvePipeline {
     @Override
     public void process(Reference reference) {
         val field = reference.getField();
-
         val typeAnnotation = Arrays.stream(field.getAnnotations())
                 .filter(a -> a.annotationType().isAnnotationPresent(DataType.class))
                 .findAny()
                 .orElseThrow(ResolveException::new);
 
-        reference.setDataTypeAnnotation(typeAnnotation);
+        if (typeAnnotation instanceof AutoType) {
+            Class<? extends Annotation> type = DataTypeAnnotationMapper.get(field.getGenericType());
+            Annotation proxy = ProtocolType.proxy((AutoType) typeAnnotation, type);
+
+            reference.setDataTypeAnnotation(proxy);
+            reference.setProtocolType(ProtocolType.proxy(proxy));
+        } else {
+            reference.setDataTypeAnnotation(typeAnnotation);
+            reference.setProtocolType(ProtocolType.proxy(typeAnnotation));
+        }
+
         reference.setReferenceType(Reference.ReferenceType.FIELD);
 
-        reference.setProtocolType(ProtocolType.proxy(typeAnnotation));
 
         this.forward(reference);
     }

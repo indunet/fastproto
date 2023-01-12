@@ -16,34 +16,48 @@
 
 package org.indunet.fastproto;
 
-import org.indunet.fastproto.annotation.type.*;
+import lombok.val;
+import org.indunet.fastproto.annotation.*;
+import org.indunet.fastproto.exception.ResolveException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
 import java.util.Arrays;
 
 /**
+ * Protocol type.
+ *
  * @author Deng Ran
  * @since 3.2.0
  */
 public interface ProtocolType {
-    Class<? extends Annotation> BINARY = BinaryType.class;
-    Class<? extends Annotation> BOOL = BoolType.class;
-    Class<? extends Annotation> CHAR = CharType.class;
-    Class<? extends Annotation> DOUBLE = DoubleType.class;
-    Class<? extends Annotation> FLOAT = FloatType.class;
-    Class<? extends Annotation> INT32 = Int32Type.class;
-    Class<? extends Annotation> INT64 = Int64Type.class;
-    Class<? extends Annotation> STRING = StringType.class;
-    Class<? extends Annotation> TIME = TimeType.class;
+    static <T> T proxy(AutoType autoType, Class<T> dataTypeAnnotationClass) {
+        return (T) Proxy.newProxyInstance(ProtocolType.class.getClassLoader(), new Class<?>[] {dataTypeAnnotationClass}, (proxy, method, args) -> {
+            val mth = Arrays.stream(autoType.getClass().getMethods())
+                    .filter(m -> m.getName().equals(method.getName()))
+                    .findAny()
+                    .get();
 
-    Class<? extends Annotation> INT8 = Int8Type.class;
-    Class<? extends Annotation> INT16 = Int16Type.class;
-    Class<? extends Annotation> UINT8 = UInt8Type.class;
-    Class<? extends Annotation> UINT16 = UInt16Type.class;
-    Class<? extends Annotation> UINT32 = UInt32Type.class;
-    Class<? extends Annotation> UINT64 = UInt64Type.class;
-    Class<? extends Annotation> ENUM = EnumType.class;
+            if (Arrays.asList("offset", "byteOffset", "bitOffset", "length")
+                    .contains(mth.getName())) {
+                val ints = (int[]) mth.invoke(autoType, args);
+
+                if (ints.length != 0) {
+                    return ints[0];
+                } else {
+                    throw new ResolveException(
+                            String.format("Autotype lack of property %s", mth.getName()));
+                }
+            } else if (Arrays.asList("byteOrder", "bitOrder", "charset", "name")
+                    .contains(method.getName())) {
+                return mth.invoke(autoType, args);
+            } else if (mth.getName().equals("annotationType")) {
+                return dataTypeAnnotationClass;
+            } else {
+                return null;
+            }
+        });
+    }
 
     static ProtocolType proxy(Annotation typeAnnotation) {
         return (ProtocolType) Proxy.newProxyInstance(ProtocolType.class.getClassLoader(), new Class<?>[]{ProtocolType.class, typeAnnotation.annotationType()}, (proxy, method, args) -> {
@@ -61,11 +75,32 @@ public interface ProtocolType {
                     }
                 case "length":
                     if (Arrays.stream(typeAnnotation.getClass().getMethods())
-                            .noneMatch(m -> m.getName().equals("length"))) {
+                            .anyMatch(m -> m.getName().equals("length"))) {
+                        return Arrays.stream(typeAnnotation.getClass().getMethods())
+                                .filter(m -> m.getName().equals("length"))
+                                .findAny()
+                                .get()
+                                .invoke(typeAnnotation, args);
+                    } else {
                         return 0;
+                    }
+                case "defaultJavaType":
+                    try {
+                        return (Class) typeAnnotation
+                                .annotationType()
+                                .getDeclaredField("DEFAULT_JAVA_TYPE")
+                                .get(null);
+                    } catch (IllegalAccessException | NoSuchFieldException e) {
+                        return null;
                     }
                 default:
                     if (typeAnnotation.annotationType() == BoolType.class && method.getName().equals("offset")) {
+                        return Arrays.stream(typeAnnotation.getClass().getMethods())
+                                .filter(m -> m.getName().equals("byteOffset"))
+                                .findAny()
+                                .get()
+                                .invoke(typeAnnotation, args);
+                    } else if (typeAnnotation.annotationType() == BoolArrayType.class && method.getName().equals("offset")) {
                         return Arrays.stream(typeAnnotation.getClass().getMethods())
                                 .filter(m -> m.getName().equals("byteOffset"))
                                 .findAny()
@@ -92,7 +127,9 @@ public interface ProtocolType {
 
     String field();
 
-    EndianPolicy[] endianPolicy();
+    ByteOrder[] endian();
+
+    int mode();
 
     Class<? extends Annotation> getType();
 

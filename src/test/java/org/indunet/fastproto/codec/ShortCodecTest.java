@@ -17,7 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.junit.jupiter.api.Test;
@@ -38,33 +38,33 @@ public class ShortCodecTest {
         byte[] datagram = {0, 1, 2, 3, -1, -1, -2, -1};
 
         // For little endian.
-        assertEquals(codec.decode(datagram, 0, EndianPolicy.LITTLE), 256);
-        assertEquals(codec.decode(datagram, 2, EndianPolicy.LITTLE), 2 + 3 * 256);
-        assertEquals(codec.decode(datagram, 4, EndianPolicy.LITTLE), -1);
-        assertEquals(codec.decode(datagram, 6, EndianPolicy.LITTLE), -2);
+        assertEquals(codec.decode(datagram, 0, ByteOrder.LITTLE), 256);
+        assertEquals(codec.decode(datagram, 2, ByteOrder.LITTLE), 2 + 3 * 256);
+        assertEquals(codec.decode(datagram, 4, ByteOrder.LITTLE), -1);
+        assertEquals(codec.decode(datagram, 6, ByteOrder.LITTLE), -2);
 
         // For big endian.
-        assertEquals(codec.decode(datagram, 0, EndianPolicy.BIG), 0x0001);
-        assertEquals(codec.decode(datagram, 2, EndianPolicy.BIG), 0x0203);
-        assertEquals(codec.decode(datagram, 2 - datagram.length, EndianPolicy.BIG), 0x0203);
+        assertEquals(codec.decode(datagram, 0, ByteOrder.BIG), 0x0001);
+        assertEquals(codec.decode(datagram, 2, ByteOrder.BIG), 0x0203);
+        assertEquals(codec.decode(datagram, 2 - datagram.length, ByteOrder.BIG), 0x0203);
     }
 
     @Test
     public void testDecode2() {
         byte[] datagram = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 0, EndianPolicy.LITTLE));
+        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 0, ByteOrder.LITTLE));
 
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, -1, EndianPolicy.LITTLE));
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 10, EndianPolicy.LITTLE));
+        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, -1, ByteOrder.LITTLE));
+        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 10, ByteOrder.LITTLE));
     }
 
     @Test
     public void testEncode1() {
         val datagram = new byte[4];
 
-        this.codec.encode(datagram, 0, EndianPolicy.BIG, (short) 0x0102);
-        this.codec.encode(datagram, 2 - datagram.length, EndianPolicy.LITTLE, (short) 0x0304);
+        this.codec.encode(datagram, 0, ByteOrder.BIG, (short) 0x0102);
+        this.codec.encode(datagram, 2 - datagram.length, ByteOrder.LITTLE, (short) 0x0304);
 
         val cache = new byte[]{1, 2, 4, 3};
         assertArrayEquals(datagram, cache);
@@ -74,9 +74,9 @@ public class ShortCodecTest {
     public void testEncode2() {
         val datagram = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.encode(null, 0, EndianPolicy.BIG, (short) 1));
+        assertThrows(NullPointerException.class, () -> this.codec.encode(null, 0, ByteOrder.BIG, (short) 1));
 
-        assertThrows(EncodingException.class, () -> this.codec.encode(datagram, -1, EndianPolicy.BIG, (short) 0));
-        assertThrows(EncodingException.class, () -> this.codec.encode(datagram, 10, EndianPolicy.LITTLE, (short) 0));
+        assertThrows(EncodingException.class, () -> this.codec.encode(datagram, -1, ByteOrder.BIG, (short) 0));
+        assertThrows(EncodingException.class, () -> this.codec.encode(datagram, 10, ByteOrder.LITTLE, (short) 0));
     }
 }

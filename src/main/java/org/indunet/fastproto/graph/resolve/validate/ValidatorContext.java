@@ -37,6 +37,6 @@ public class ValidatorContext {
     Annotation typeAnnotation;
     ProtocolType protocolType;
     Class<? extends Annotation> typeAnnotationClass;
-    Class<? extends Function> decodingFormula;
-    Class<? extends Function> encodingFormula;
+    Class<? extends Function> decodingFormulaClass;
+    Class<? extends Function> encodingFormulaClass;
 }
