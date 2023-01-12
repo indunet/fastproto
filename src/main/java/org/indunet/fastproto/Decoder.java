@@ -435,160 +435,320 @@ final class Decoder {
         return this.put(CodecUtils.int16Type(this.bytes, offset, this.byteOrder));
     }
 
+    public Decoder readInt16(int offset, Function<Integer, ?> formula) {
+        return this.put(formula.apply(CodecUtils.int16Type(this.bytes, offset, this.byteOrder)));
+    }
+
     public Decoder readInt16(int offset, String name) {
         return this.put(name, CodecUtils.int16Type(this.bytes, offset, this.byteOrder));
+    }
+
+    public Decoder readInt16(int offset, String name, Function<Integer, ?> formula) {
+        return this.put(name, formula.apply(CodecUtils.int16Type(this.bytes, offset, this.byteOrder)));
     }
 
     public Decoder readInt16(int offset, ByteOrder byteOrder) {
         return this.put(CodecUtils.int16Type(this.bytes, offset, byteOrder));
     }
 
+    public Decoder readInt16(int offset, ByteOrder byteOrder, Function<Integer, ?> formula) {
+        return this.put(formula.apply(CodecUtils.int16Type(this.bytes, offset, byteOrder)));
+    }
+
     public Decoder readInt16(int offset, ByteOrder byteOrder, String name) {
         return this.put(name, CodecUtils.int16Type(this.bytes, offset, byteOrder));
+    }
+
+    public Decoder readInt16(int offset, ByteOrder byteOrder, String name, Function<Integer, ?> formula) {
+        return this.put(name, formula.apply(CodecUtils.int16Type(this.bytes, offset, byteOrder)));
     }
 
     public Decoder readInt16() {
         return this.put(CodecUtils.int16Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
     }
 
+    public Decoder readInt16(Function<Integer, ?> formula) {
+        return this.put(formula.apply(CodecUtils.int16Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder)));
+    }
+
     public Decoder readInt16(String name) {
         return this.put(name, CodecUtils.int16Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readInt16(String name, Function<Integer, ?> formula) {
+        return this.put(name, formula.apply(CodecUtils.int16Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder)));
     }
 
     public Decoder readInt16(ByteOrder byteOrder) {
         return this.put(CodecUtils.int16Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
     }
 
+    public Decoder readInt16(ByteOrder byteOrder, Function<Integer, ?> formula) {
+        return this.put(formula.apply(CodecUtils.int16Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder)));
+    }
+
     public Decoder readInt16(ByteOrder byteOrder, String name) {
         return this.put(name, CodecUtils.int16Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readInt16(ByteOrder byteOrder, String name, Function<Integer, ?> formula) {
+        return this.put(name, formula.apply(CodecUtils.int16Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder)));
     }
 
     public Decoder readInt32(int offset) {
         return this.put(CodecUtils.int32Type(this.bytes, offset, this.byteOrder));
     }
 
+    public Decoder readInt32(int offset, Function<Integer, ?> formula) {
+        return this.put(formula.apply(CodecUtils.int32Type(this.bytes, offset, this.byteOrder)));
+    }
+
     public Decoder readInt32(int offset, String name) {
         return this.put(name, CodecUtils.int32Type(this.bytes, offset, this.byteOrder));
+    }
+
+    public Decoder readInt32(int offset, String name, Function<Integer, ?> formula) {
+        return this.put(name, formula.apply(CodecUtils.int32Type(this.bytes, offset, this.byteOrder)));
     }
 
     public Decoder readInt32(int offset, ByteOrder byteOrder) {
         return this.put(CodecUtils.int32Type(this.bytes, offset, byteOrder));
     }
 
+    public Decoder readInt32(int offset, ByteOrder byteOrder, Function<Integer, ?> formula) {
+        return this.put(formula.apply(CodecUtils.int32Type(this.bytes, offset, byteOrder)));
+    }
+
     public Decoder readInt32(int offset, ByteOrder byteOrder, String name) {
         return this.put(name, CodecUtils.int32Type(this.bytes, offset, byteOrder));
+    }
+
+    public Decoder readInt32(int offset, ByteOrder byteOrder, String name, Function<Integer, ?> formula) {
+        return this.put(name, formula.apply(CodecUtils.int32Type(this.bytes, offset, byteOrder)));
     }
 
     public Decoder readInt32() {
         return this.put(CodecUtils.int32Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
     }
 
+    public Decoder readInt32(Function<Integer, ?> formula) {
+        return this.put(formula.apply(CodecUtils.int32Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder)));
+    }
+
     public Decoder readInt32(String name) {
         return this.put(name, CodecUtils.int32Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readInt32(String name, Function<Integer, ?> formula) {
+        return this.put(name, formula.apply(CodecUtils.int32Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder)));
     }
 
     public Decoder readInt32(ByteOrder byteOrder) {
         return this.put(CodecUtils.int32Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
     }
 
+    public Decoder readInt32(ByteOrder byteOrder, Function<Integer, ?> formula) {
+        return this.put(formula.apply(CodecUtils.int32Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder)));
+    }
+
     public Decoder readInt32(ByteOrder byteOrder, String name) {
         return this.put(name, CodecUtils.int32Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readInt32(ByteOrder byteOrder, String name, Function<Integer, ?> formula) {
+        return this.put(name, formula.apply(CodecUtils.int32Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder)));
     }
 
     public Decoder readInt64(int offset) {
         return this.put(CodecUtils.int64Type(this.bytes, offset, this.byteOrder));
     }
 
+    public Decoder readInt64(int offset, Function<Long, ?> formula) {
+        return this.put(formula.apply(CodecUtils.int64Type(this.bytes, offset, this.byteOrder)));
+    }
+
     public Decoder readInt64(int offset, String name) {
         return this.put(name, CodecUtils.int64Type(this.bytes, offset, this.byteOrder));
+    }
+
+    public Decoder readInt64(int offset, String name, Function<Long, ?> formula) {
+        return this.put(name, formula.apply(CodecUtils.int64Type(this.bytes, offset, this.byteOrder)));
     }
 
     public Decoder readInt64(int offset, ByteOrder byteOrder) {
         return this.put(CodecUtils.int64Type(this.bytes, offset, byteOrder));
     }
 
+    public Decoder readInt64(int offset, ByteOrder byteOrder, Function<Long, ?> formula) {
+        return this.put(formula.apply(CodecUtils.int64Type(this.bytes, offset, byteOrder)));
+    }
+
     public Decoder readInt64(int offset, ByteOrder byteOrder, String name) {
         return this.put(name, CodecUtils.int64Type(this.bytes, offset, byteOrder));
+    }
+
+    public Decoder readInt64(int offset, ByteOrder byteOrder, String name, Function<Long, ?> formula) {
+        return this.put(name, formula.apply(CodecUtils.int64Type(this.bytes, offset, byteOrder)));
     }
 
     public Decoder readInt64() {
         return this.put(CodecUtils.int64Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
     }
 
+    public Decoder readInt64(Function<Long, ?> formula) {
+        return this.put(formula.apply(CodecUtils.int64Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder)));
+    }
+
     public Decoder readInt64(String name) {
         return this.put(name, CodecUtils.int64Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readInt64(String name, Function<Long, ?> formula) {
+        return this.put(name, formula.apply(CodecUtils.int64Type(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder)));
     }
 
     public Decoder readInt64(ByteOrder byteOrder) {
         return this.put(CodecUtils.int64Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
     }
 
+    public Decoder readInt64(ByteOrder byteOrder, Function<Long, ?> formula) {
+        return this.put(formula.apply(CodecUtils.int64Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder)));
+    }
+
     public Decoder readInt64(ByteOrder byteOrder, String name) {
         return this.put(name, CodecUtils.int64Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readInt64(ByteOrder byteOrder, String name, Function<Long, ?> formula) {
+        return this.put(name, formula.apply(CodecUtils.int64Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder)));
     }
 
     public Decoder readFloat(int offset) {
         return this.put(CodecUtils.floatType(this.bytes, offset, this.byteOrder));
     }
 
+    public Decoder readFloat(int offset, Function<Float, ?> formula) {
+        return this.put(formula.apply(CodecUtils.floatType(this.bytes, offset, this.byteOrder)));
+    }
+
     public Decoder readFloat(int offset, String name) {
         return this.put(name, CodecUtils.floatType(this.bytes, offset, this.byteOrder));
+    }
+
+    public Decoder readFloat(int offset, String name, Function<Float, ?> formula) {
+        return this.put(name, formula.apply(CodecUtils.floatType(this.bytes, offset, this.byteOrder)));
     }
 
     public Decoder readFloat(int offset, ByteOrder byteOrder) {
         return this.put(CodecUtils.floatType(this.bytes, offset, byteOrder));
     }
 
+    public Decoder readFloat(int offset, ByteOrder byteOrder, Function<Float, ?> formula) {
+        return this.put(formula.apply(CodecUtils.floatType(this.bytes, offset, byteOrder)));
+    }
+
     public Decoder readFloat(int offset, ByteOrder byteOrder, String name) {
         return this.put(name, CodecUtils.floatType(this.bytes, offset, byteOrder));
+    }
+
+    public Decoder readFloat(int offset, ByteOrder byteOrder, String name, Function<Float, ?> formula) {
+        return this.put(name, formula.apply(CodecUtils.floatType(this.bytes, offset, byteOrder)));
     }
 
     public Decoder readFloat() {
         return this.put(CodecUtils.floatType(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
     }
 
+    public Decoder readFloat(Function<Float, ?> formula) {
+        return this.put(formula.apply(CodecUtils.floatType(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder)));
+    }
+
     public Decoder readFloat(String name) {
         return this.put(name, CodecUtils.floatType(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readFloat(String name, Function<Float, ?> formula) {
+        return this.put(name, formula.apply(CodecUtils.floatType(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder)));
     }
 
     public Decoder readFloat(ByteOrder byteOrder) {
         return this.put(CodecUtils.floatType(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
     }
 
+    public Decoder readFloat(ByteOrder byteOrder, Function<Float, ?> formula) {
+        return this.put(formula.apply(CodecUtils.floatType(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder)));
+    }
+
     public Decoder readFloat(ByteOrder byteOrder, String name) {
         return this.put(name, CodecUtils.floatType(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readFloat(ByteOrder byteOrder, String name, Function<Float, ?> formula) {
+        return this.put(name, formula.apply(CodecUtils.floatType(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder)));
     }
 
     public Decoder readDouble(int offset) {
         return this.put(CodecUtils.doubleType(this.bytes, offset, this.byteOrder));
     }
 
+    public Decoder readDouble(int offset, Function<Double, ?> formula) {
+        return this.put(formula.apply(CodecUtils.doubleType(this.bytes, offset, this.byteOrder)));
+    }
+
     public Decoder readDouble(int offset, String name) {
         return this.put(name, CodecUtils.doubleType(this.bytes, offset, this.byteOrder));
+    }
+
+    public Decoder readDouble(int offset, String name, Function<Double, ?> formula) {
+        return this.put(name, formula.apply(CodecUtils.doubleType(this.bytes, offset, this.byteOrder)));
     }
 
     public Decoder readDouble(int offset, ByteOrder byteOrder) {
         return this.put(CodecUtils.doubleType(this.bytes, offset, byteOrder));
     }
 
+    public Decoder readDouble(int offset, ByteOrder byteOrder, Function<Double, ?> formula) {
+        return this.put(formula.apply(CodecUtils.doubleType(this.bytes, offset, byteOrder)));
+    }
+
     public Decoder readDouble(int offset, ByteOrder byteOrder, String name) {
         return this.put(name, CodecUtils.doubleType(this.bytes, offset, byteOrder));
+    }
+
+    public Decoder readDouble(int offset, ByteOrder byteOrder, String name, Function<Double, ?> formula) {
+        return this.put(name, formula.apply(CodecUtils.doubleType(this.bytes, offset, byteOrder)));
     }
 
     public Decoder readDouble() {
         return this.put(CodecUtils.doubleType(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
     }
 
+    public Decoder readDouble(Function<Double, ?> formula) {
+        return this.put(formula.apply(CodecUtils.doubleType(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder)));
+    }
+
     public Decoder readDouble(String name) {
         return this.put(name, CodecUtils.doubleType(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder));
+    }
+
+    public Decoder readDouble(String name, Function<Double, ?> formula) {
+        return this.put(name, formula.apply(CodecUtils.doubleType(this.byteBuffer, this.byteBuffer.getReadIndex(), this.byteOrder)));
     }
 
     public Decoder readDouble(ByteOrder byteOrder) {
         return this.put(CodecUtils.doubleType(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
     }
 
+    public Decoder readDouble(ByteOrder byteOrder, Function<Double, ?> formula) {
+        return this.put(formula.apply(CodecUtils.doubleType(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder)));
+    }
+
     public Decoder readDouble(ByteOrder byteOrder, String name) {
         return this.put(name, CodecUtils.doubleType(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder));
+    }
+
+    public Decoder readDouble(ByteOrder byteOrder, String name, Function<Double, ?> formula) {
+        return this.put(name, formula.apply(CodecUtils.doubleType(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder)));
     }
 
     public boolean getAsBoolean() {

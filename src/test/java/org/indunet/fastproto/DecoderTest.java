@@ -86,6 +86,71 @@ public class DecoderTest {
     }
 
     @Test
+    public void testRead4() {
+        val bytes = new byte[] {
+                0x01,
+                0x01, 0x02,
+                0x01,
+                0x01, 0x02,
+                0x03, 0x04, 0x05, 0x06,
+                0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
+        };
+        val actual = FastProto.parse(bytes)
+                .defaultByteOrder(ByteOrder.BIG)
+                .readByte("byte1", x -> x * 0.1)
+                .readShort("short16", x -> x * 10)
+                .readInt8("int8", x -> x * 0.2)
+                .readInt16("int16", x -> x / 10)
+                .readInt32("int32", x -> x / 100.0)
+                .readInt64("int64", x -> x * 0.01)
+                .getAsMap();
+
+        assertEquals((byte) 0x01 * 0.1, actual.get("byte1"));
+        assertEquals((short) 0x0102 * 10, actual.get("short16"));
+        assertEquals(0x01 * 0.2, actual.get("int8"));
+        assertEquals(0x0102 / 10, actual.get("int16"));
+        assertEquals(0x03040506 / 100.0, actual.get("int32"));
+        assertEquals(0x0102030405060708l * 0.01, actual.get("int64"));
+    }
+
+    @Test
+    public void testRead5() {
+        val bytes = new byte[] {
+                0x01,
+                0x01, 0x02,
+                0x03, 0x04, 0x05, 0x06,
+                0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08
+        };
+        val actual = FastProto.parse(bytes)
+                .defaultByteOrder(ByteOrder.LITTLE)
+                .readUInt8("uint8", x -> x * 0.1)
+                .readUInt16("uint16", x -> x * 10)
+                .readUInt32("uint32", x -> x / 100.0)
+                .readUInt64("uint64", x ->  x.multiply(BigInteger.valueOf(10l)))
+                .getAsMap();
+
+        assertEquals(0x01 * 0.1, actual.get("uint8"));
+        assertEquals(0x0201 * 10, actual.get("uint16"));
+        assertEquals(0x06050403l / 100.0, actual.get("uint32"));
+        assertEquals(BigInteger.valueOf(0x0807060504030201l).multiply(BigInteger.valueOf(10l)), actual.get("uint64"));
+    }
+
+    @Test
+    public void testRead6() {
+        val bytes = new byte[12];
+        System.arraycopy(BinaryUtils.valueOf(3.14f), 0, bytes, 0, FloatType.SIZE);
+        System.arraycopy(BinaryUtils.valueOf(2.71), 0, bytes, 4, DoubleType.SIZE);
+
+        val actual = FastProto.parse(bytes)
+                .readFloat("float32", x -> x * 0.1)
+                .readDouble("double64", x -> x * 10)
+                .getAsMap();
+
+        assertEquals(3.14f * 0.1, actual.get("float32"));
+        assertEquals(2.71 * 10, actual.get("double64"));
+    }
+
+    @Test
     public void testGetAsType() {
         val bytes = new byte[]{1, 2, 3, 0, 0, 0, 1, 0};
 
