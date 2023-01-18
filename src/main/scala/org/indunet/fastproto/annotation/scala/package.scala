@@ -16,10 +16,14 @@
 
 package org.indunet.fastproto.annotation
 
-import org.indunet.fastproto.annotation.{BinaryType => JavaBinaryType, BoolType => JavaBoolType, CharType => JavaCharType, AsciiType => JavaAsciiType, DefaultByteOrder => JavaDefaultEndian, DoubleArrayType => JavaDoubleArrayType, DoubleType => JavaDoubleType, EnumType => JavaEnumType, FloatArrayType => JavaFloatArrayType, FloatType => JavaFloatType, Int16ArrayType => JavaInt16ArrayType, Int16Type => JavaInt16Type, Int32ArrayType => JavaInt32ArrayType, Int32Type => JavaInt32Type, Int64ArrayType => JavaInt64ArrayType, Int64Type => JavaInt64Type, Int8ArrayType => JavaInt8ArrayType, Int8Type => JavaInt8Type, StringType => JavaStringType, TimeType => JavaTimeType, UInt16ArrayType => JavaUInt16ArrayType, UInt16Type => JavaUInt16Type, UInt32ArrayType => JavaUInt32ArrayType, UInt32Type => JavaUInt32Type, UInt64ArrayType => JavaUInt64ArrayType, UInt64Type => JavaUInt64Type, UInt8ArrayType => JavaUInt8ArrayType, UInt8Type => JavaUInt8Type}
+import org.indunet.fastproto.annotation.{BinaryType => JavaBinaryType, BoolType => JavaBoolType, CharType => JavaCharType, AsciiType => JavaAsciiType, DoubleArrayType => JavaDoubleArrayType, DoubleType => JavaDoubleType, EnumType => JavaEnumType, FloatArrayType => JavaFloatArrayType, FloatType => JavaFloatType, Int16ArrayType => JavaInt16ArrayType, Int16Type => JavaInt16Type, Int32ArrayType => JavaInt32ArrayType, Int32Type => JavaInt32Type, Int64ArrayType => JavaInt64ArrayType, Int64Type => JavaInt64Type, Int8ArrayType => JavaInt8ArrayType, Int8Type => JavaInt8Type, StringType => JavaStringType, TimeType => JavaTimeType, UInt16ArrayType => JavaUInt16ArrayType, UInt16Type => JavaUInt16Type, UInt32ArrayType => JavaUInt32ArrayType, UInt32Type => JavaUInt32Type, UInt64ArrayType => JavaUInt64ArrayType, UInt64Type => JavaUInt64Type, UInt8ArrayType => JavaUInt8ArrayType, UInt8Type => JavaUInt8Type}
 import org.indunet.fastproto.annotation.{AutoType => JavaAutoType}
 import org.indunet.fastproto.annotation.{EncodingIgnore => JavaEncodingIgnore}
 import org.indunet.fastproto.annotation.{DecodingIgnore => JavaDecodingIgnore}
+import org.indunet.fastproto.annotation.{BoolArrayType => JavaBoolArrayType}
+import org.indunet.fastproto.annotation.{CharArrayType => JavaCharArrayType}
+import org.indunet.fastproto.annotation.{DefaultByteOrder => JavaDefaultByteOrder}
+import org.indunet.fastproto.annotation.{DefaultBitOrder => JavaDefaultBitOrder}
 
 import org.indunet.fastproto.annotation.{FixedLength => JavaFixedLength}
 
@@ -34,8 +38,10 @@ import _root_.scala.annotation.meta.field
 package object scala {
   type BinaryType = JavaBinaryType @field
   type BoolType = JavaBoolType @field
+  type BoolArrayType = JavaBoolArrayType @field
   type AsciiType = JavaAsciiType @field
   type CharType = JavaCharType @field
+  type CharArrayType = JavaCharArrayType @field
   type DoubleType = JavaDoubleType @field
   type DoubleArrayType = JavaDoubleArrayType @field
   type EnumType = JavaEnumType @field
@@ -61,7 +67,8 @@ package object scala {
   type UInt64ArrayType = JavaUInt64ArrayType @field
   type AutoType = JavaAutoType @field
 
-  type DefaultEndian = JavaDefaultEndian @field
+  type DefaultByteOrder = JavaDefaultByteOrder @field
+  type DefaultBitOrder = JavaDefaultBitOrder @field
   type DecodingIgnore = JavaDecodingIgnore @field
   type EncodingIgnore = JavaEncodingIgnore @field
 

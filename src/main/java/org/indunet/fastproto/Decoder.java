@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
  * @author Deng Ran
  * @since 3.8.3
  */
-final class Decoder {
+public final class Decoder {
     static ConcurrentHashMap<Class, Constructor> constructorMap = new ConcurrentHashMap<>();
     byte[] bytes;
     ByteBuffer byteBuffer;

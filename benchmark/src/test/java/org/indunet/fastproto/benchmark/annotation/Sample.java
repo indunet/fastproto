@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.benchmark;
+package org.indunet.fastproto.benchmark.annotation;
 
 import lombok.Data;
 import lombok.val;
@@ -28,6 +28,8 @@ import java.util.stream.IntStream;
 import static java.lang.Math.abs;
 
 /**
+ * Benchmark sample.
+ *
  * @author Deng Ran
  * @since 1.4.0
  */

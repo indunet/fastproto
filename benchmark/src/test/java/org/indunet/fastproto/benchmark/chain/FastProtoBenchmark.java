@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.benchmark;
+package org.indunet.fastproto.benchmark.chain;
 
 import lombok.val;
 import org.indunet.fastproto.FastProto;
@@ -26,11 +26,13 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.concurrent.TimeUnit;
 
+import static java.lang.Math.abs;
+
 /**
- * FastProto benchmark.
+ * FastProto benchmark of chain api.
  *
  * @author Deng Ran
- * @since 1.4.0
+ * @since 3.9.1
  */
 @State(Scope.Benchmark)
 public class FastProtoBenchmark {
@@ -50,13 +52,37 @@ public class FastProtoBenchmark {
     @Benchmark
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void parse() {
-        FastProto.parse(bytes, Sample.class);
+        FastProto.parse(bytes)
+                    .readByte("byte8")
+                    .readShort("short16")
+                    .readInt32("int32")
+                    .readInt64("long64")
+                    .readFloat("float32")
+                    .readDouble("double64")
+                    .readInt8("int8")
+                    .readInt16("int16")
+                    .readUInt8("uint8")
+                    .readUInt16("uint16")
+                    .readUInt32("uint32")
+                    .mapTo(Sample.class);
     }
 
     @Benchmark
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void toBytes() {
-        FastProto.toBytes(sample, this.bytes.length);
+        FastProto.toBytes(this.bytes.length)
+                .appendInt8(this.sample.byte8)
+                .appendInt16(this.sample.int16)
+                .appendInt32(this.sample.int32)
+                .appendInt64(this.sample.long64)
+                .appendFloat(this.sample.float32)
+                .appendDouble(this.sample.double64)
+                .appendInt8(this.sample.int8)
+                .appendInt16(this.sample.int16)
+                .appendUInt8(this.sample.uint8)
+                .appendUInt16(this.sample.uint16)
+                .appendUInt32(this.sample.uint32)
+                .get();
     }
 
     @Setup

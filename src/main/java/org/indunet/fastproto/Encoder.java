@@ -12,7 +12,7 @@ import java.util.stream.IntStream;
  * @author Deng Ran
  * @since 3.8.3
  */
-final class Encoder {
+public final class Encoder {
     ByteBuffer byteBuffer;
     ByteOrder byteOrder = ByteOrder.LITTLE;
     BitOrder bitOrder = BitOrder.LSB_0;
