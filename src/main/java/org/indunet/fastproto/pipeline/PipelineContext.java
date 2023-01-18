@@ -18,6 +18,7 @@ package org.indunet.fastproto.pipeline;
 
 import lombok.Builder;
 import lombok.Data;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.graph.Graph;
 
 /**
@@ -30,6 +31,7 @@ import org.indunet.fastproto.graph.Graph;
 @Builder
 public class PipelineContext {
     byte[] bytes;
+    ByteBuffer byteBuffer;
     Graph graph;
     Object object;
     Class<?> clazz;

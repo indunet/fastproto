@@ -71,6 +71,7 @@ public class FastProto {
         val context = PipelineContext.builder()
                 .object(object)
                 .clazz(object.getClass())
+                .byteBuffer(new ByteBuffer())
                 .graph(graph)
                 .build();
 
@@ -108,6 +109,7 @@ public class FastProto {
                 .object(object)
                 .clazz(object.getClass())
                 .bytes(buffer)
+                .byteBuffer(new ByteBuffer(buffer))
                 .graph(graph)
                 .build();
 

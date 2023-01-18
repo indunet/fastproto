@@ -27,6 +27,7 @@ import java.lang.annotation.Target;
  * @author Deng Ran
  * @since 2.4.0
  */
+@Deprecated
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FixedLength {
