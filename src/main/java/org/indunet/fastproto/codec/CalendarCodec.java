@@ -17,7 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.TimeType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
@@ -33,7 +33,7 @@ import java.util.Calendar;
  * @since 3.2.1
  */
 public class CalendarCodec implements Codec<Calendar> {
-    public Calendar decode(byte[] bytes, int offset, EndianPolicy policy) {
+    public Calendar decode(byte[] bytes, int offset, ByteOrder policy) {
         try {
             val millis = CodecUtils.int64Type(bytes, offset, policy);
             val calendar = Calendar.getInstance();
@@ -46,11 +46,11 @@ public class CalendarCodec implements Codec<Calendar> {
         }
     }
 
-    public void encode(byte[] bytes, int offset, EndianPolicy policy, Calendar calendar) {
+    public void encode(byte[] bytes, int offset, ByteOrder byteOrder, Calendar calendar) {
         try {
             val millis = calendar.getTimeInMillis();
 
-            CodecUtils.int64Type(bytes, offset, policy, millis);
+            CodecUtils.int64Type(bytes, offset, byteOrder, millis);
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new EncodingException("Fail encoding time(calendar) type.", e);
         }
@@ -59,9 +59,9 @@ public class CalendarCodec implements Codec<Calendar> {
     @Override
     public Calendar decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(TimeType.class);
-        val policy = Arrays.stream(type.endian())
+        val policy = Arrays.stream(type.byteOrder())
                 .findFirst()
-                .orElseGet(context::getDefaultEndianPolicy);
+                .orElseGet(context::getDefaultByteOrder);
 
         return this.decode(bytes, type.offset(), policy);
     }
@@ -69,10 +69,10 @@ public class CalendarCodec implements Codec<Calendar> {
     @Override
     public void encode(CodecContext context, byte[] bytes, Calendar value) {
         val type = context.getDataTypeAnnotation(TimeType.class);
-        val policy = Arrays.stream(type.endian())
+        val byteOrder = Arrays.stream(type.byteOrder())
                 .findFirst()
-                .orElseGet(context::getDefaultEndianPolicy);
+                .orElseGet(context::getDefaultByteOrder);
 
-        this.encode(bytes, type.offset(), policy, value);
+        this.encode(bytes, type.offset(), byteOrder, value);
     }
 }

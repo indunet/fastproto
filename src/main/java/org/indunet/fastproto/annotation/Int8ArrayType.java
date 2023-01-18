@@ -25,7 +25,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Int8 array type
+ * Int8 array type, each int8 takes 1 byte, it can be used to annotate field type of
+ * Byte[]/byte[]/Integer[]/int[]/List<Byte>/Set<Byte>/List<Integer>/Set<Integer>.
+
+ * @param offset The byte offset of the field in the binary data.
+ * @param length The length of the int8 array.
  *
  * @author Deng Ran
  * @since 3.6.0

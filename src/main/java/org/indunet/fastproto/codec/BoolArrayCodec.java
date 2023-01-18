@@ -1,11 +1,13 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.BitOrder;
 import org.indunet.fastproto.annotation.BoolArrayType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CollectionUtils;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.IntStream;
 
@@ -20,8 +22,11 @@ public class BoolArrayCodec implements Codec<boolean[]> {
     public boolean[] decode(CodecContext context, byte[] bytes) {
         try {
             val type = context.getDataTypeAnnotation(BoolArrayType.class);
+            val bitOrder = Arrays.stream(type.bitOrder())
+                    .findFirst()
+                    .orElseGet(context::getDefaultBitOrder);
 
-            return this.decode(bytes, type.byteOffset(), type.bitOffset(), type.length(), type.mode());
+            return this.decode(bytes, type.byteOffset(), type.bitOffset(), type.length(), bitOrder);
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding boolean array type.", e);
         }
@@ -31,14 +36,17 @@ public class BoolArrayCodec implements Codec<boolean[]> {
     public void encode(CodecContext context, byte[] bytes, boolean[] values) {
         try {
             val type = context.getDataTypeAnnotation(BoolArrayType.class);
+            val bitOrder = Arrays.stream(type.bitOrder())
+                    .findFirst()
+                    .orElseGet(context::getDefaultBitOrder);
 
-            this.encode(bytes, type.byteOffset(), type.bitOffset(), type.mode(), values);
+            this.encode(bytes, type.byteOffset(), type.bitOffset(), bitOrder, values);
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding boolean array type.", e);
         }
     }
 
-    public boolean[] decode(byte[] bytes, int byteOffset, int bitOffset, int length, int mode) {
+    public boolean[] decode(byte[] bytes, int byteOffset, int bitOffset, int length, BitOrder bitOrder) {
         boolean[] result = new boolean[length];
         int byteIndex = byteOffset + bitOffset / 8;
         int bitIndex = bitOffset % 8;
@@ -46,9 +54,9 @@ public class BoolArrayCodec implements Codec<boolean[]> {
         for (int i = 0; i < length; i++) {
             int value = 0;
 
-            if (mode == BoolArrayType.MSB_0) {
+            if (bitOrder == BitOrder.MSB_0) {
                 value = bytes[byteIndex] & (0x80 >>> bitIndex);
-            } else if (mode == BoolArrayType.LSB_0) {
+            } else if (bitOrder == BitOrder.LSB_0) {
                 value = bytes[byteIndex] & (0x01 << bitIndex);
             } else {
                 throw new IllegalArgumentException("mode must be MSB_0 or LSB_0");
@@ -65,18 +73,18 @@ public class BoolArrayCodec implements Codec<boolean[]> {
         return result;
     }
 
-    public void encode(byte[] bytes, int byteOffset, int bitOffset, int mode, boolean[] values) {
+    public void encode(byte[] bytes, int byteOffset, int bitOffset, BitOrder bitOrder, boolean[] values) {
         int byteIndex = byteOffset + bitOffset / 8;
         int bitIndex = bitOffset % 8;
 
         for (boolean value : values) {
-            if (mode == BoolArrayType.MSB_0) {
+            if (bitOrder == BitOrder.MSB_0) {
                 if (value) {
                     bytes[byteIndex] |= 0x80 >>> bitIndex;
                 } else {
                     bytes[byteIndex] &= ~(0x80 >>> bitIndex);
                 }
-            } else if (mode == BoolArrayType.LSB_0) {
+            } else if (bitOrder == BitOrder.LSB_0) {
                 if (value) {
                     bytes[byteIndex] |= 0x01 << bitIndex;
                 } else {

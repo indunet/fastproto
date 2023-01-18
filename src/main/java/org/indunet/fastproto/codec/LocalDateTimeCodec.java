@@ -17,7 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.TimeType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
@@ -35,9 +35,9 @@ import java.util.Arrays;
  * @since 3.9.1
  */
 public class LocalDateTimeCodec implements Codec<LocalDateTime> {
-    public LocalDateTime decode(final byte[] bytes, int offset, EndianPolicy policy) {
+    public LocalDateTime decode(final byte[] bytes, int offset, ByteOrder byteOrder) {
         try {
-            val millis = CodecUtils.int64Type(bytes, offset, policy);
+            val millis = CodecUtils.int64Type(bytes, offset, byteOrder);
             val instant = Instant.ofEpochMilli(millis);
 
             return LocalDateTime.ofInstant(instant, ZoneId.systemDefault());
@@ -46,12 +46,12 @@ public class LocalDateTimeCodec implements Codec<LocalDateTime> {
         }
     }
 
-    public void encode(byte[] bytes, int offset, EndianPolicy policy, LocalDateTime value) {
+    public void encode(byte[] bytes, int offset, ByteOrder byteOrder, LocalDateTime value) {
         try {
             val zoneOffset = ZoneId.systemDefault().getRules().getOffset(Instant.now());
             val millis = value.toInstant(zoneOffset).toEpochMilli();
 
-            CodecUtils.int64Type(bytes, offset, policy, millis);
+            CodecUtils.int64Type(bytes, offset, byteOrder, millis);
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new EncodingException("Fail encoding time(LocalDateTime) type.", e);
         }
@@ -60,18 +60,18 @@ public class LocalDateTimeCodec implements Codec<LocalDateTime> {
     @Override
     public LocalDateTime decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(TimeType.class);
-        val policy = Arrays.stream(type.endian())
+        val byteOrder = Arrays.stream(type.byteOrder())
                 .findFirst()
-                .orElseGet(context::getDefaultEndianPolicy);
+                .orElseGet(context::getDefaultByteOrder);
 
-        return this.decode(bytes, type.offset(), policy);
+        return this.decode(bytes, type.offset(), byteOrder);
     }
 
     @Override
     public void encode(CodecContext context, byte[] bytes, LocalDateTime value) {
-        val policy = context.getDefaultEndianPolicy();
+        val byteOrder = context.getDefaultByteOrder();
         val type = context.getDataTypeAnnotation(TimeType.class);
 
-        this.encode(bytes, type.offset(), policy, value);
+        this.encode(bytes, type.offset(), byteOrder, value);
     }
 }

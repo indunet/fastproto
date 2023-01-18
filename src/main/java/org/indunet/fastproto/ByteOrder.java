@@ -24,22 +24,22 @@ import org.indunet.fastproto.exception.CodecException;
 import java.util.Arrays;
 
 /**
- * Endian policy.
+ * Byte order policy.
  *
  * @author Deng Ran
  * @since 1.0.0
  */
 @Getter
 @AllArgsConstructor
-public enum EndianPolicy {
+public enum ByteOrder {
     BIG(0x01, "Big"),
     LITTLE(0x02, "Little");
 
     int code;
     String name;
 
-    public static EndianPolicy byName(String name) {
-        return Arrays.stream(EndianPolicy.values())
+    public static ByteOrder byName(String name) {
+        return Arrays.stream(ByteOrder.values())
                 .filter(p -> p.getName().equals(name))
                 .findFirst()
                 .orElseThrow(() -> new CodecException(CodecError.INVALID_ENDIAN_POLICY));

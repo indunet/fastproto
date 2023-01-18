@@ -17,7 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.BinaryUtils;
@@ -44,7 +44,7 @@ public class CalendarCodecTest {
 
     @ParameterizedTest
     @MethodSource
-    public void testDecode1(byte[] datagram, int byteOffset, EndianPolicy policy, Calendar expected) {
+    public void testDecode1(byte[] datagram, int byteOffset, ByteOrder policy, Calendar expected) {
         assertEquals(expected, codec.decode(datagram, byteOffset, policy));
     }
 
@@ -55,8 +55,8 @@ public class CalendarCodecTest {
         calendar.setTimeInMillis(millis);
 
         return Stream.of(
-                Arguments.arguments(BinaryUtils.valueOf(millis), 0, EndianPolicy.LITTLE, calendar),
-                Arguments.arguments(BinaryUtils.valueOf(millis, EndianPolicy.BIG), 0, EndianPolicy.BIG, calendar)
+                Arguments.arguments(BinaryUtils.valueOf(millis), 0, ByteOrder.LITTLE, calendar),
+                Arguments.arguments(BinaryUtils.valueOf(millis, ByteOrder.BIG), 0, ByteOrder.BIG, calendar)
         ).collect(Collectors.toList());
     }
 
@@ -64,14 +64,14 @@ public class CalendarCodecTest {
     public void testDecode2() {
         byte[] bytes = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 0, EndianPolicy.LITTLE));
+        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 0, ByteOrder.LITTLE));
 
-        assertThrows(DecodingException.class, () -> this.codec.decode(bytes, 10, EndianPolicy.LITTLE));
+        assertThrows(DecodingException.class, () -> this.codec.decode(bytes, 10, ByteOrder.LITTLE));
     }
 
     @ParameterizedTest
     @MethodSource
-    public void testEncode1(byte[] datagram, int byteOffset, EndianPolicy policy, Calendar value, byte[] expected) {
+    public void testEncode1(byte[] datagram, int byteOffset, ByteOrder policy, Calendar value, byte[] expected) {
         this.codec.encode(datagram, byteOffset, policy, value);
         assertArrayEquals(datagram, expected);
     }
@@ -83,8 +83,8 @@ public class CalendarCodecTest {
         calendar.setTimeInMillis(millis);
 
         return Stream.of(
-                Arguments.arguments(new byte[8], 0, EndianPolicy.LITTLE, calendar, BinaryUtils.valueOf(millis)),
-                Arguments.arguments(new byte[8], -8, EndianPolicy.BIG, calendar, BinaryUtils.valueOf(millis, EndianPolicy.BIG))
+                Arguments.arguments(new byte[8], 0, ByteOrder.LITTLE, calendar, BinaryUtils.valueOf(millis)),
+                Arguments.arguments(new byte[8], -8, ByteOrder.BIG, calendar, BinaryUtils.valueOf(millis, ByteOrder.BIG))
         ).collect(Collectors.toList());
     }
 
@@ -96,10 +96,10 @@ public class CalendarCodecTest {
         calendar.setTimeInMillis(System.currentTimeMillis());
 
         assertThrows(NullPointerException.class,
-                () -> this.codec.encode(null, 0, EndianPolicy.LITTLE, calendar));
+                () -> this.codec.encode(null, 0, ByteOrder.LITTLE, calendar));
         assertThrows(NullPointerException.class,
-                () -> this.codec.encode(null, 0, EndianPolicy.LITTLE, null));
+                () -> this.codec.encode(null, 0, ByteOrder.LITTLE, null));
         assertThrows(EncodingException.class,
-                () -> this.codec.encode(bytes, 10, EndianPolicy.LITTLE, calendar));
+                () -> this.codec.encode(bytes, 10, ByteOrder.LITTLE, calendar));
     }
 }

@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.annotation;
 
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.BitOrder;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -24,13 +24,13 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Specify endian according to hardware platform.
+ * Specify bit order according to requirements.
  *
  * @author Deng Ran
- * @since 1.0.0
+ * @since 3.9.1
  */
 @Target(ElementType.TYPE)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface DefaultEndian {
-    EndianPolicy value();
+public @interface DefaultBitOrder {
+    BitOrder value();
 }

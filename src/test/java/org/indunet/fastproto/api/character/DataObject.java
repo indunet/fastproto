@@ -1,7 +1,7 @@
 package org.indunet.fastproto.api.character;
 
 import lombok.Data;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.AsciiType;
 import org.indunet.fastproto.annotation.CharType;
 
@@ -17,9 +17,9 @@ public class DataObject {
     char ascii1 = 'a';
     @AsciiType(offset = 1)
     Character ascii2 = 'b';
-    @CharType(offset = 2, endian = EndianPolicy.LITTLE)
+    @CharType(offset = 2, byteOrder = ByteOrder.LITTLE)
     char char1 = '中';
-    @CharType(offset = 4, endian = EndianPolicy.BIG)
+    @CharType(offset = 4, byteOrder = ByteOrder.BIG)
     Character char2 = '文';
 
     public byte[] toBytes() {

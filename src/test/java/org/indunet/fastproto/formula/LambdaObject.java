@@ -18,7 +18,7 @@ package org.indunet.fastproto.formula;
 
 import lombok.Data;
 import lombok.val;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.util.BinaryUtils;
 
@@ -44,7 +44,7 @@ public class LambdaObject {
     public byte[] toBytes() throws IOException {
         val stream = new ByteArrayOutputStream();
 
-        stream.write(BinaryUtils.int16Of(81, EndianPolicy.LITTLE));
+        stream.write(BinaryUtils.int16Of(81, ByteOrder.LITTLE));
         stream.write(new byte[] {(byte) (this.current / 10)});
 
         return stream.toByteArray();

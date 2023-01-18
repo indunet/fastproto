@@ -11,11 +11,11 @@ import java.util.Arrays;
  * @since 3.8.3
  */
 public final class ByteBuffer {
-    private byte[] bytes;
-    private int length;
-    private int readIndex;
-    private int writeIndex;
-    private boolean fixed;
+    byte[] bytes;
+    int length;
+    int readIndex;
+    int writeIndex;
+    boolean fixed;
 
     public ByteBuffer() {
         this.fixed = false;
@@ -27,12 +27,32 @@ public final class ByteBuffer {
     }
 
     public ByteBuffer(int length) {
-        this.fixed = true;
-        this.bytes = new byte[length];
+        this(new byte[length]);
+    }
 
-        this.length = length;
+    public ByteBuffer(byte[] bytes) {
+        this.fixed = true;
+        this.bytes = bytes;
+
+        this.length = bytes.length;
         this.writeIndex = 0;
         this.readIndex = 0;
+    }
+
+    public int getWriteIndex() {
+        return this.writeIndex;
+    }
+
+    public int getReadIndex() {
+        return this.readIndex;
+    }
+
+    public void resetReadIndex() {
+        this.readIndex = 0;
+    }
+
+    public void resetWriteIndex() {
+        this.writeIndex = 0;
     }
 
     public void write(byte value) {
@@ -85,6 +105,12 @@ public final class ByteBuffer {
         bytes[this.writeIndex ++] = value;
     }
 
+    public int int8Type(byte[] bytes, int offset) {
+        int o = reverse(offset);
+
+        return this.bytes[o];
+    }
+
     public byte get(int offset) {
         this.readIndex = this.reverse(offset);
 
@@ -94,6 +120,7 @@ public final class ByteBuffer {
 
         return bytes[this.readIndex ++];
     }
+
 
     protected int reverse(int offset) {
         if (offset >= 0) {

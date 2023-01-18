@@ -17,7 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.TimeType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
@@ -33,7 +33,7 @@ import java.util.Arrays;
  * @since 3.3.1
  */
 public class InstantCodec implements Codec<Instant> {
-    public Instant decode(final byte[] bytes, int offset, EndianPolicy policy) {
+    public Instant decode(final byte[] bytes, int offset, ByteOrder policy) {
         try {
             val millis = CodecUtils.int64Type(bytes, offset, policy);
 
@@ -43,7 +43,7 @@ public class InstantCodec implements Codec<Instant> {
         }
     }
 
-    public void encode(byte[] bytes, int offset, EndianPolicy policy, Instant value) {
+    public void encode(byte[] bytes, int offset, ByteOrder policy, Instant value) {
         try {
             val millis = value.toEpochMilli();
 
@@ -56,16 +56,16 @@ public class InstantCodec implements Codec<Instant> {
     @Override
     public Instant decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(TimeType.class);
-        val policy = Arrays.stream(type.endian())
+        val byteOrder = Arrays.stream(type.byteOrder())
                 .findFirst()
-                .orElseGet(context::getDefaultEndianPolicy);
+                .orElseGet(context::getDefaultByteOrder);
 
-        return this.decode(bytes, type.offset(), policy);
+        return this.decode(bytes, type.offset(), byteOrder);
     }
     
     @Override
     public void encode(CodecContext context, byte[] bytes, Instant value) {
-        val policy = context.getDefaultEndianPolicy();
+        val policy = context.getDefaultByteOrder();
         val type = context.getDataTypeAnnotation(TimeType.class);
     
         this.encode(bytes, type.offset(), policy, value);

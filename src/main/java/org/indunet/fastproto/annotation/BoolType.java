@@ -16,6 +16,7 @@
 
 package org.indunet.fastproto.annotation;
 
+import org.indunet.fastproto.BitOrder;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
 
@@ -26,7 +27,13 @@ import java.lang.annotation.Target;
 
 
 /**
- * Boolean type, corresponding to Java Boolean/boolean.
+ * Boolean type, each unit takes 1 bit, can be used to annotate field type of Boolean/boolean.
+ *
+ * @param byteOffset The byte offset of the field in the binary data.
+ * @param bitOffset The bit offset of the field in the binary data.
+ * @param mode It is used to distinguish between the different bits in the byte and to determine their relative
+ *             significance or weight. BitOrder.LSB_0 means BIT_0 is LSB while BitOrder.MSB_0 means BIT_0 is MSB,
+ *             BoolType uses LSB_0 by default.
  *
  * @author Deng Ran
  * @see DataType
@@ -51,4 +58,6 @@ public @interface BoolType {
     int byteOffset();
 
     int bitOffset();
+
+    BitOrder[] bitOrder() default {};
 }

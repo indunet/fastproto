@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.annotation;
 
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
 
@@ -26,7 +26,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Int16 array type
+ * Int16 array type, each int16 takes 2 byte, can be used to annotate field type of  Integer[]/int[]/List<Integer>/Set<Integer>.
+
+ * @param offset The byte offset of the field in the binary data.
+ * @param length The length of the int16 array.
+ * @param endian Byte order of the int16, BIG or LITTLE can be set, Int16ArrayType use LITTLE by default.
  *
  * @author Deng Ran
  * @since 3.6.0
@@ -40,5 +44,5 @@ public @interface Int16ArrayType {
 
     int length();
 
-    EndianPolicy[] endian() default {};
+    ByteOrder[] byteOrder() default {};
 }

@@ -17,7 +17,7 @@
 package org.indunet.fastproto.api.endian;
 
 import lombok.val;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.exception.CodecException;
 import org.junit.jupiter.api.Assertions;
@@ -58,9 +58,9 @@ class EndianTest {
 
     @Test
     void testByName() {
-        Assertions.assertEquals(EndianPolicy.byName("Big"), EndianPolicy.BIG);
-        assertEquals(EndianPolicy.byName("Little"), EndianPolicy.LITTLE);
+        Assertions.assertEquals(ByteOrder.byName("Big"), ByteOrder.BIG);
+        assertEquals(ByteOrder.byName("Little"), ByteOrder.LITTLE);
 
-        assertThrows(CodecException.class, () -> EndianPolicy.byName("Unknown"));
+        assertThrows(CodecException.class, () -> ByteOrder.byName("Unknown"));
     }
 }

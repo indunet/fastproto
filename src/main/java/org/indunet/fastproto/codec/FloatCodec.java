@@ -17,7 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.FloatType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
@@ -32,7 +32,7 @@ import java.util.Arrays;
  * @since 3.2.1
  */
 public class FloatCodec implements Codec<Float> {
-    public float decode(byte[] bytes, int offset, EndianPolicy endian) {
+    public float decode(byte[] bytes, int offset, ByteOrder endian) {
         try {
             return CodecUtils.floatType(bytes, offset, endian);
         } catch (ArrayIndexOutOfBoundsException e) {
@@ -40,7 +40,7 @@ public class FloatCodec implements Codec<Float> {
         }
     }
 
-    public void encode(byte[] bytes, int offset, EndianPolicy policy, float value) {
+    public void encode(byte[] bytes, int offset, ByteOrder policy, float value) {
         try {
             CodecUtils.floatType(bytes, offset, policy, value);
         } catch (IndexOutOfBoundsException e) {
@@ -51,20 +51,20 @@ public class FloatCodec implements Codec<Float> {
     @Override
     public Float decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(FloatType.class);
-        val policy = Arrays.stream(type.endian())
+        val byteOrder = Arrays.stream(type.byteOrder())
                 .findFirst()
-                .orElseGet(context::getDefaultEndianPolicy);
+                .orElseGet(context::getDefaultByteOrder);
 
-        return this.decode(bytes, type.offset(), policy);
+        return this.decode(bytes, type.offset(), byteOrder);
     }
 
     @Override
     public void encode(CodecContext context, byte[] bytes, Float value) {
         val type = context.getDataTypeAnnotation(FloatType.class);
-        val policy = Arrays.stream(type.endian())
+        val byteOrder = Arrays.stream(type.byteOrder())
                 .findFirst()
-                .orElseGet(context::getDefaultEndianPolicy);
+                .orElseGet(context::getDefaultByteOrder);
 
-        this.encode(bytes, type.offset(), policy, value);
+        this.encode(bytes, type.offset(), byteOrder, value);
     }
 }

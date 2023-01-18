@@ -33,7 +33,7 @@ FastProto是一款Java编写的二进制数据处理工具，开发者可以通�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.8.3</version>
+    <version>3.9.1</version>
 </dependency>
 ```
 
@@ -185,31 +185,35 @@ FastProto支持Java基础数据类型，考虑到跨语言跨平台的数据交�
 
 FastProto还提供了一些辅助注解，帮助用户进一步自定义二进制格式、解码和编码流程。
 
-|        注解        |    作用域    |     描述     |
-|:----------------:|:---------:|:----------:|
-|  @DefaultEndian  |   Class   | 数据开端，默认小开端 |
-| @DecodingIgnore  |   Field   | 反序列化时忽略该字段 |
-| @EncodingIgnore  |   Field   | 序列化时忽略该字段  |
-|   @FixedLength   |   Class   |  启动固定报文长度  |
-| @DecodingFormula |   Field   |    解码公式    |
-| @EncodingFormula |   Field   |    编码公式    |
+|        注解         |    作用域    |         描述         |
+|:-----------------:|:---------:|:------------------:|
+| @DefaultByteOrder |   Class   | 默认字节顺序，如无指定，使用小开端  |
+| @DefaultBitOrder  |   Class   | 默认位顺序，如无指定，使用LSB_0 |
+|  @DecodingIgnore  |   Field   |     反序列化时忽略该字段     |
+|  @EncodingIgnore  |   Field   |     序列化时忽略该字段      |
+|   @FixedLength    |   Class   |      启动固定报文长度      |
+| @DecodingFormula  |   Field   |        解码公式        |
+| @EncodingFormula  |   Field   |        编码公式        |
 
 
-#### *2.4.1 大小开端*
+#### *2.4.1 字节顺序和位顺序*
 
-FastProto默认使用小开端，可以通过`@DefaultEndian`注解修改全局开端类型，也可以通过endian属性修改特定字段开端，后者优先级更高。
+FastProto默认使用小开端，可以通过`@DefaultByteOrder`注解修改全局字节顺序，也可以通过`byteOrder`属性修改特定字段的字节顺序，后者优先级更高。
+
+同理，FastProto默认使用LSB_0，可以通过`@DefaultBitOrder`注解修改全局位顺序，也可以通过`bitOrder`属性修改特定字段的位顺序，后者优先级更高。
 
 ```java
-import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.DefaultEndian;
+import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.annotation.DefaultByteOrder;
 
-@DefaultEndian(EndianPolicy.BIG)
+@DefaultByteOrder(ByteOrder.BIG)
+@DefaultBitOrder(BitOrder.LSB_0)
 public class Weather {
-    @UInt16Type(offset = 10, endian = EndianPolicy.LITTLE)
+    @UInt16Type(offset = 10, endian = ByteOrder.LITTLE)
     int humidity;
 
-    @UInt32Type(offset = 14)
-    long pressure;
+    @BoolType(byteOffset = 18, bitOffset = 1, bitOrder = BitOrder.MSB_0)
+    boolean humidityValid;
 }
 ```
 
@@ -364,7 +368,7 @@ byte[] bytes = FastProto.toBytes()
         .length(16)             // 二进制数据块的长度
         .uint8Type(0, 1)        // 在字节偏移量0位置写入无符号8位整型数据1
         .uint16Type(2, 3, 4)    // 在字节偏移量2位置连续写入2个无符号16位整型数据3和4
-        .uint32Type(6, EndianPolicy.BIG, 32)
+        .uint32Type(6, ByteOrder.BIG, 32)
         .get();
 ```
 
@@ -374,10 +378,19 @@ byte[] bytes = FastProto.toBytes()
 *   openjdk 1.8.0_292
 *   二进制数据固定大小60字节，数据对象共包含13个不同类型的字段
 
+1. 注解式API
+
 |Benchmark |    模式  | 样本数量  | 评分 |   误差   |   单位   |
 |:--------:|:--------:|:--------:|:--:|:---------:|:---------:|
 | `FastProto::parse` |  吞吐量   |   10  | 240 | ± 4.6    |  次/毫秒   |
 | `FastProto::toBytes` | 吞吐量  |   10  | 317 | ± 11.9    |  次/毫秒   |
+
+2. 方法链式API
+
+|Benchmark |    模式  | 样本数量  | 评分 |   误差   |   单位   |
+|:--------:|:--------:|:--------:|:--:|:---------:|:---------:|
+| `FastProto::parse` |  吞吐量   |   10  | 1273 | ± 17    |  次/毫秒   |
+| `FastProto::toBytes` | 吞吐量  |   10  | 6911 | ± 162    |  次/毫秒   |
 
 ## *6. 构建要求*
 

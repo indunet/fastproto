@@ -1,5 +1,6 @@
 package org.indunet.fastproto.annotation;
 
+import org.indunet.fastproto.BitOrder;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
 
@@ -9,7 +10,14 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Boolean array type, corresponding to Java Boolean[]/boolean[].
+ * Boolean array type, can be used to annotate field type of Boolean[]/boolean[].
+ *
+ * @param byteOffset The byte offset of the field in the binary data.
+ * @param bitOffset The bit offset of the field in the binary data.
+ * @param length The length of the boolean array.
+ * @param mode It is used to distinguish between the different bits in the byte and to determine their relative
+ *             significance or weight. BitOrder.LSB_0 means BIT_0 is LSB while BitOrder.MSB_0 means BIT_0 is MSB,
+ *             BoolArrayType uses LSB_0 by default.
  *
  * @author Deng Ran
  * @see DataType
@@ -20,14 +28,11 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BoolArrayType {
-    int MSB_0 = 0x01;
-    int LSB_0 = 0x02;
-
     int byteOffset();
 
     int bitOffset();
 
     int length();
 
-    int mode() default MSB_0;
+    BitOrder[] bitOrder() default {};
 }

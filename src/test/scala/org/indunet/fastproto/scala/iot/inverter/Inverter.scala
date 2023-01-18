@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.scala.iot.inverter
 
-import org.indunet.fastproto.EndianPolicy
+import org.indunet.fastproto.ByteOrder
 import org.indunet.fastproto.annotation.scala._
 
 /**
@@ -27,5 +27,5 @@ case class Inverter(
                      @UInt8Type(offset = 0) voltage: Int,
                      @UInt8Type(offset = 2) current: Int,
                      fan: Fan,
-                     @UInt16Type(offset = 8, endian = Array(EndianPolicy.BIG)) power: Int
+                     @UInt16Type(offset = 8, byteOrder = Array(ByteOrder.BIG)) power: Int
                    )

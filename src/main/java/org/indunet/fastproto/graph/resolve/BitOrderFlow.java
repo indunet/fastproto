@@ -18,40 +18,40 @@ package org.indunet.fastproto.graph.resolve;
 
 import lombok.NonNull;
 import lombok.val;
-import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.DefaultEndian;
+import org.indunet.fastproto.BitOrder;
+import org.indunet.fastproto.annotation.DefaultBitOrder;
 import org.indunet.fastproto.graph.Reference;
 
 import java.util.Optional;
 
 /**
- * Resolve endian flow.
+ * Resolve bit order flow.
  *
  * @author Deng Ran
- * @since 2.5.0
+ * @since 3.9.1
  */
-public class EndianFlow extends ResolvePipeline {
-    protected final static EndianPolicy DEFAULT_ENDIAN_POLICY = EndianPolicy.LITTLE;
+public class BitOrderFlow extends ResolvePipeline {
+    protected final static BitOrder DEFAULT_BIT_ORDER = BitOrder.LSB_0;
 
     @Override
     public void process(@NonNull Reference reference) {
         if (reference.getReferenceType() == Reference.ReferenceType.CLASS) {
             val protocolClass = reference.getProtocolClass();
-            val endianPolicy = Optional.ofNullable(protocolClass.getAnnotation(DefaultEndian.class))
-                    .map(DefaultEndian::value)
-                    .orElse(DEFAULT_ENDIAN_POLICY);
+            val bitOrder = Optional.ofNullable(protocolClass.getAnnotation(DefaultBitOrder.class))
+                    .map(DefaultBitOrder::value)
+                    .orElse(DEFAULT_BIT_ORDER);
 
-            reference.setEndianPolicy(endianPolicy);
+            reference.setBitOrder(bitOrder);
         } else if (reference.getReferenceType() == Reference.ReferenceType.FIELD) {
             val field = reference.getField();
-            val endianPolicy = Optional.ofNullable(field.getAnnotation(DefaultEndian.class))
-                    .map(DefaultEndian::value)
+            val bitOrder = Optional.ofNullable(field.getAnnotation(DefaultBitOrder.class))
+                    .map(DefaultBitOrder::value)
                     .orElseGet(() -> Optional.ofNullable(reference.getField().getDeclaringClass())
-                            .map(c -> c.getAnnotation(DefaultEndian.class))
-                            .map(DefaultEndian::value)
-                            .orElse(DEFAULT_ENDIAN_POLICY));     // Inherit endian of declaring class.
+                            .map(c -> c.getAnnotation(DefaultBitOrder.class))
+                            .map(DefaultBitOrder::value)
+                            .orElse(DEFAULT_BIT_ORDER));     // Inherit endian of declaring class.
 
-            reference.setEndianPolicy(endianPolicy);
+            reference.setBitOrder(bitOrder);
         }
 
         this.forward(reference);

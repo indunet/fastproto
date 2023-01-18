@@ -31,24 +31,6 @@ import java.util.Arrays;
  * @since 3.2.0
  */
 public interface ProtocolType {
-    Class<? extends Annotation> BINARY = BinaryType.class;
-    Class<? extends Annotation> BOOL = BoolType.class;
-    Class<? extends Annotation> CHAR = AsciiType.class;
-    Class<? extends Annotation> DOUBLE = DoubleType.class;
-    Class<? extends Annotation> FLOAT = FloatType.class;
-    Class<? extends Annotation> INT32 = Int32Type.class;
-    Class<? extends Annotation> INT64 = Int64Type.class;
-    Class<? extends Annotation> STRING = StringType.class;
-    Class<? extends Annotation> TIME = TimeType.class;
-
-    Class<? extends Annotation> INT8 = Int8Type.class;
-    Class<? extends Annotation> INT16 = Int16Type.class;
-    Class<? extends Annotation> UINT8 = UInt8Type.class;
-    Class<? extends Annotation> UINT16 = UInt16Type.class;
-    Class<? extends Annotation> UINT32 = UInt32Type.class;
-    Class<? extends Annotation> UINT64 = UInt64Type.class;
-    Class<? extends Annotation> ENUM = EnumType.class;
-
     static <T> T proxy(AutoType autoType, Class<T> dataTypeAnnotationClass) {
         return (T) Proxy.newProxyInstance(ProtocolType.class.getClassLoader(), new Class<?>[] {dataTypeAnnotationClass}, (proxy, method, args) -> {
             val mth = Arrays.stream(autoType.getClass().getMethods())
@@ -66,7 +48,7 @@ public interface ProtocolType {
                     throw new ResolveException(
                             String.format("Autotype lack of property %s", mth.getName()));
                 }
-            } else if (Arrays.asList("endian", "charset", "name")
+            } else if (Arrays.asList("byteOrder", "bitOrder", "charset", "name")
                     .contains(method.getName())) {
                 return mth.invoke(autoType, args);
             } else if (mth.getName().equals("annotationType")) {
@@ -145,7 +127,9 @@ public interface ProtocolType {
 
     String field();
 
-    EndianPolicy[] endianPolicy();
+    ByteOrder[] endian();
+
+    int mode();
 
     Class<? extends Annotation> getType();
 

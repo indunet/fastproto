@@ -17,15 +17,8 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.exception.DecodingException;
-import org.indunet.fastproto.exception.EncodingException;
-import org.indunet.fastproto.util.BinaryUtils;
+import org.indunet.fastproto.ByteOrder;
 import org.junit.jupiter.api.Test;
-
-import java.util.Arrays;
-import java.util.Random;
-import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -44,7 +37,7 @@ public class CharArrayCodecTest {
         val expected = new char[] {'中', '文'};
         val bytes = new byte[] {'中' & 0xFF, '中' >>> 8 & 0xFF, (byte) ('文' & 0xFF), '文' >>> 8 & 0xFF};
 
-        assertArrayEquals(expected, codec.decode(bytes, 0, 2, EndianPolicy.LITTLE));
+        assertArrayEquals(expected, codec.decode(bytes, 0, 2, ByteOrder.LITTLE));
     }
 
     @Test
@@ -53,7 +46,7 @@ public class CharArrayCodecTest {
         val expected = new byte[] {'中' & 0xFF, '中' >>> 8 & 0xFF, (byte) ('文' & 0xFF), '文' >>> 8 & 0xFF};
         val actual = new byte[expected.length];
 
-        this.codec.encode(actual, 0, 2, EndianPolicy.LITTLE, chars);
+        this.codec.encode(actual, 0, 2, ByteOrder.LITTLE, chars);
         assertArrayEquals(expected, actual);
     }
 }

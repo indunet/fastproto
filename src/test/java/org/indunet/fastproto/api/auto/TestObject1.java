@@ -18,7 +18,7 @@ package org.indunet.fastproto.api.auto;
 
 import lombok.Data;
 import lombok.val;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.AutoType;
 import org.indunet.fastproto.util.CodecUtils;
 
@@ -51,7 +51,7 @@ public class TestObject1 {
     @AutoType(offset = 10)
     Long long64;
 
-    @AutoType(offset = 18, endian = EndianPolicy.BIG)
+    @AutoType(offset = 18, byteOrder = ByteOrder.BIG)
     Date date;
 
     @AutoType(offset = 26, length = 8)
@@ -79,7 +79,7 @@ public class TestObject1 {
         CodecUtils.shortType(bytes, 4, this.short16);
         CodecUtils.int32Type(bytes, 6, this.int32);
         CodecUtils.int64Type(bytes, 10, this.long64);
-        CodecUtils.int64Type(bytes, 18, EndianPolicy.BIG, this.date.getTime());
+        CodecUtils.int64Type(bytes, 18, ByteOrder.BIG, this.date.getTime());
 
         IntStream.range(0, this.ints.size())
                 .forEach(i -> CodecUtils.int32Type(bytes, 26 + i * 4, this.ints.get(i)));

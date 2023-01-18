@@ -17,8 +17,8 @@
 package org.indunet.fastproto.api.endian;
 
 import lombok.Data;
-import org.indunet.fastproto.EndianPolicy;
-import org.indunet.fastproto.annotation.DefaultEndian;
+import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.annotation.DefaultByteOrder;
 import org.indunet.fastproto.annotation.Int16Type;
 
 /**
@@ -26,9 +26,9 @@ import org.indunet.fastproto.annotation.Int16Type;
  * @since 1.4.0
  */
 @Data
-@DefaultEndian(EndianPolicy.BIG)
+@DefaultByteOrder(ByteOrder.BIG)
 public class EndianObject {
-    @Int16Type(offset = 0, endian = EndianPolicy.LITTLE)
+    @Int16Type(offset = 0, byteOrder = ByteOrder.LITTLE)
     Integer little = 0x0102;
     @Int16Type(offset = 2)
     Integer big = 0x0304;

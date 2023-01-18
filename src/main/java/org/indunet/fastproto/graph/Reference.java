@@ -17,7 +17,8 @@
 package org.indunet.fastproto.graph;
 
 import lombok.*;
-import org.indunet.fastproto.EndianPolicy;
+import org.indunet.fastproto.BitOrder;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.exception.DecodingException;
@@ -44,7 +45,8 @@ import java.util.function.Function;
 @With
 public class Reference {
     ReferenceType referenceType;
-    EndianPolicy endianPolicy;
+    ByteOrder byteOrder;
+    BitOrder bitOrder;
 
     @Builder.Default
     Boolean decodingIgnore = false;
