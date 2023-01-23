@@ -122,7 +122,7 @@ public final class ByteBuffer {
     }
 
 
-    protected int reverse(int offset) {
+    public int reverse(int offset) {
         if (offset >= 0) {
             return offset;
         } else if (this.fixed && offset < 0) {
@@ -132,6 +132,23 @@ public final class ByteBuffer {
                 return o;
             } else {
                 throw new IllegalArgumentException(String.format("Illegal offset %d", o));
+            }
+        } else {
+            throw new CodecException("Reverse addressing is only available with fixed length");
+        }
+    }
+
+    public int reverse(int offset, int length) {
+        if (length > 0) {
+            return length;
+        } else if (this.fixed && length < 0) {
+            int o = this.reverse(offset);
+            int l = this.bytes.length + length - o + 1;
+
+            if (l > 0) {
+                return l;
+            } else {
+                throw new IllegalArgumentException(String.format("Illegal length %d", l));
             }
         } else {
             throw new CodecException("Reverse addressing is only available with fixed length");

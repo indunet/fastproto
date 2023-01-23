@@ -74,21 +74,17 @@ public class UInt64ArrayCodec implements Codec<BigInteger[]> {
     @Override
     public BigInteger[] decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(UInt64ArrayType.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        return this.decode(bytes, type.offset(), type.length(), byteOrder);
+        return this.decode(bytes, type.offset(), type.length(), order);
     }
 
     @Override
     public void encode(CodecContext context, byte[] bytes, BigInteger[] value) {
         val type = context.getDataTypeAnnotation(UInt64ArrayType.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        this.encode(bytes, type.offset(), type.length(), byteOrder, value);
+        this.encode(bytes, type.offset(), type.length(), order, value);
     }
 
     public class CollectionCodec implements Codec<Collection<BigInteger>> {

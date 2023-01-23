@@ -200,7 +200,6 @@ FastProto also provides some auxiliary annotations to help users further customi
 | @DefaultBitOrder  | Class |     Default bit order, use LSB_0 if not specified.      |
 |  @DecodingIgnore  | Field |             Ignore the field when decoding.             |
 |  @EncodingIgnore  | Field |             Ignore the field when encoding.             |
-|   @FixedLength    | Class |            Enable fixed length of datagram.             |
 | @DecodingFormula  | Field |                    Decoding formula.                    |
 | @EncodingFormula  | Field |                    Encoding formula.                    |
 |     @AutoType     | Field |                    Use default type.                    |

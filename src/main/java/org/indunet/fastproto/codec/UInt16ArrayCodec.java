@@ -74,21 +74,17 @@ public class UInt16ArrayCodec implements Codec<int[]> {
     @Override
     public int[] decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(UInt16ArrayType.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        return this.decode(bytes, type.offset(), type.length(), byteOrder);
+        return this.decode(bytes, type.offset(), type.length(), order);
     }
 
     @Override
     public void encode(CodecContext context, byte[] bytes, int[] value) {
         val type = context.getDataTypeAnnotation(UInt16ArrayType.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        this.encode(bytes, type.offset(), type.length(), byteOrder, value);
+        this.encode(bytes, type.offset(), type.length(), order, value);
     }
 
     public class WrapperCodec implements Codec<Integer[]> {

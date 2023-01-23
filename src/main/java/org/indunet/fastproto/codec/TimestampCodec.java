@@ -24,7 +24,6 @@ import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 import java.sql.Timestamp;
-import java.util.Arrays;
 
 /**
  * Timestamp type codec.
@@ -54,20 +53,16 @@ public class TimestampCodec implements Codec<Timestamp> {
     @Override
     public Timestamp decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(TimeType.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        return this.decode(bytes, type.offset(), byteOrder);
+        return this.decode(bytes, type.offset(), order);
     }
 
     @Override
     public void encode(CodecContext context, byte[] bytes, Timestamp value) {
         val type = context.getDataTypeAnnotation(TimeType.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        this.encode(bytes, type.offset(), byteOrder, value);
+        this.encode(bytes, type.offset(), order, value);
     }
 }

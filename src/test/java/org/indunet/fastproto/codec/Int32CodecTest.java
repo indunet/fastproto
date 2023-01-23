@@ -84,7 +84,7 @@ public class Int32CodecTest {
     public void testEncode2() {
         byte[] datagram = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.encode(null, 0, ByteOrder.BIG, 8));
+        assertThrows(NullPointerException.class, () -> this.codec.encode((byte[]) null, 0, ByteOrder.BIG, 8));
 
         assertThrows(EncodingException.class,
                 () -> this.codec.encode(datagram, -1, ByteOrder.LITTLE, 11));

@@ -24,7 +24,6 @@ import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 
 /**
  * UInt64 type codec.
@@ -52,20 +51,16 @@ public class UInt64Codec implements Codec<BigInteger> {
     @Override
     public BigInteger decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(UInt64Type.class);
-        val policy = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        return this.decode(bytes, type.offset(), policy);
+        return this.decode(bytes, type.offset(), order);
     }
 
     @Override
     public void encode(CodecContext context, byte[] bytes, BigInteger value) {
         val type = context.getDataTypeAnnotation(UInt64Type.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        this.encode(bytes, type.offset(), byteOrder, value);
+        this.encode(bytes, type.offset(), order, value);
     }
 }

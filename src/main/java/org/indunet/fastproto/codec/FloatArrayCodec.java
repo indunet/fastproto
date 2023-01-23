@@ -26,7 +26,6 @@ import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.CollectionUtils;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.IntStream;
 
@@ -80,21 +79,17 @@ public class FloatArrayCodec implements Codec<float[]> {
     @Override
     public float[] decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(FloatArrayType.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        return this.decode(bytes, type.offset(), type.length(), byteOrder);
+        return this.decode(bytes, type.offset(), type.length(), order);
     }
 
     @Override
     public void encode(CodecContext context, byte[] bytes, float[] value) {
         val type = context.getDataTypeAnnotation(FloatArrayType.class);
-        val policy = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        this.encode(bytes, type.offset(), type.length(), policy, value);
+        this.encode(bytes, type.offset(), type.length(), order, value);
     }
 
     public class WrapperCodec implements Codec<Float[]> {

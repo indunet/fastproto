@@ -23,8 +23,6 @@ import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
-import java.util.Arrays;
-
 /**
  * Bool type codec.
  *
@@ -51,9 +49,7 @@ public class BoolCodec implements Codec<Boolean> {
     @Override
     public Boolean decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(BoolType.class);
-        val bitOrder = Arrays.stream(type.bitOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultBitOrder);
+        val bitOrder = context.getBitOrder(type::bitOrder);
 
         if (bitOrder == BitOrder.LSB_0) {
             return this.decode(bytes, type.byteOffset(), type.bitOffset());
@@ -67,9 +63,7 @@ public class BoolCodec implements Codec<Boolean> {
     @Override
     public void encode(CodecContext context, byte[] bytes, Boolean value) {
         val type = context.getDataTypeAnnotation(BoolType.class);
-        val bitOrder = Arrays.stream(type.bitOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultBitOrder);
+        val bitOrder = context.getBitOrder(type::bitOrder);
 
         if (bitOrder == BitOrder.LSB_0) {
             this.encode(bytes, type.byteOffset(), type.bitOffset(), value);

@@ -7,7 +7,6 @@ import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CollectionUtils;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.IntStream;
 
@@ -22,9 +21,7 @@ public class BoolArrayCodec implements Codec<boolean[]> {
     public boolean[] decode(CodecContext context, byte[] bytes) {
         try {
             val type = context.getDataTypeAnnotation(BoolArrayType.class);
-            val bitOrder = Arrays.stream(type.bitOrder())
-                    .findFirst()
-                    .orElseGet(context::getDefaultBitOrder);
+            val bitOrder = context.getBitOrder(type::bitOrder);
 
             return this.decode(bytes, type.byteOffset(), type.bitOffset(), type.length(), bitOrder);
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
@@ -36,9 +33,7 @@ public class BoolArrayCodec implements Codec<boolean[]> {
     public void encode(CodecContext context, byte[] bytes, boolean[] values) {
         try {
             val type = context.getDataTypeAnnotation(BoolArrayType.class);
-            val bitOrder = Arrays.stream(type.bitOrder())
-                    .findFirst()
-                    .orElseGet(context::getDefaultBitOrder);
+            val bitOrder = context.getBitOrder(type::bitOrder);
 
             this.encode(bytes, type.byteOffset(), type.bitOffset(), bitOrder, values);
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {

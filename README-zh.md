@@ -33,7 +33,7 @@ FastProto是一款Java编写的二进制数据处理工具，开发者可以通�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.9.1</version>
+    <version>3.9.2</version>
 </dependency>
 ```
 
@@ -191,7 +191,6 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 | @DefaultBitOrder  |   Class   | 默认位顺序，如无指定，使用LSB_0 |
 |  @DecodingIgnore  |   Field   |     反序列化时忽略该字段     |
 |  @EncodingIgnore  |   Field   |     序列化时忽略该字段      |
-|   @FixedLength    |   Class   |      启动固定报文长度      |
 | @DecodingFormula  |   Field   |        解码公式        |
 | @EncodingFormula  |   Field   |        编码公式        |
 

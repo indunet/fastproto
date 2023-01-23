@@ -23,7 +23,6 @@ import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
-import java.util.Arrays;
 import java.util.Calendar;
 
 /**
@@ -59,20 +58,16 @@ public class CalendarCodec implements Codec<Calendar> {
     @Override
     public Calendar decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(TimeType.class);
-        val policy = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        return this.decode(bytes, type.offset(), policy);
+        return this.decode(bytes, type.offset(), order);
     }
 
     @Override
     public void encode(CodecContext context, byte[] bytes, Calendar value) {
         val type = context.getDataTypeAnnotation(TimeType.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        this.encode(bytes, type.offset(), byteOrder, value);
+        this.encode(bytes, type.offset(), order, value);
     }
 }

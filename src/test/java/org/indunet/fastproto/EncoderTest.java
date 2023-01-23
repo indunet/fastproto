@@ -9,8 +9,7 @@ import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit test of Encoder
@@ -115,5 +114,26 @@ public class EncoderTest {
                 .get();
 
         assertEquals(8, bytes.length);
+    }
+
+    @Test
+    public void testSkip() {
+        var bytes = FastProto.toBytes()
+                .writeInt8(1, (byte) 0x10)
+                .skip(6)
+                .get();
+
+        assertEquals(8, bytes.length);
+
+        bytes = FastProto.toBytes()
+                .writeInt8(0, (byte) 0x01)
+                .skip()
+                .get();
+
+        assertEquals(2, bytes.length);
+
+        assertThrows(IllegalArgumentException.class, () -> FastProto.toBytes()
+                .skip(-1)
+                .get());
     }
 }

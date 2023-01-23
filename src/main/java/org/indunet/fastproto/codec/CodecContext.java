@@ -23,6 +23,8 @@ import org.indunet.fastproto.ByteOrder;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.util.Arrays;
+import java.util.function.Supplier;
 
 /**
  * Codec context.
@@ -32,7 +34,7 @@ import java.lang.reflect.Field;
  */
 @Data
 @Builder
-public class CodecContext {
+public final class CodecContext {
     ByteOrder defaultByteOrder;
     BitOrder defaultBitOrder;
     Class<?> fieldType;
@@ -41,5 +43,17 @@ public class CodecContext {
 
     public <T> T getDataTypeAnnotation(Class<T> clazz) {
         return (T) this.dataTypeAnnotation;
+    }
+
+    public ByteOrder getByteOrder(Supplier<ByteOrder[]> supplier) {
+        return Arrays.stream(supplier.get())
+                .findFirst()
+                .orElse(this.defaultByteOrder);
+    }
+
+    public BitOrder getBitOrder(Supplier<BitOrder[]> supplier) {
+        return Arrays.stream(supplier.get())
+                .findFirst()
+                .orElse(this.defaultBitOrder);
     }
 }

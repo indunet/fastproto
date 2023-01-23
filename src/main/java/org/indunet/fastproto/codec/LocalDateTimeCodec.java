@@ -26,7 +26,6 @@ import org.indunet.fastproto.util.CodecUtils;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Arrays;
 
 /**
  * LocalDateTime type codec
@@ -60,18 +59,16 @@ public class LocalDateTimeCodec implements Codec<LocalDateTime> {
     @Override
     public LocalDateTime decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(TimeType.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        return this.decode(bytes, type.offset(), byteOrder);
+        return this.decode(bytes, type.offset(), order);
     }
 
     @Override
     public void encode(CodecContext context, byte[] bytes, LocalDateTime value) {
-        val byteOrder = context.getDefaultByteOrder();
         val type = context.getDataTypeAnnotation(TimeType.class);
+        val order = context.getByteOrder(type::byteOrder);
 
-        this.encode(bytes, type.offset(), byteOrder, value);
+        this.encode(bytes, type.offset(), order, value);
     }
 }

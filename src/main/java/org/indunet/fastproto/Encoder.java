@@ -426,6 +426,24 @@ public final class Encoder {
         return this;
     }
 
+    public Encoder skip() {
+        this.appendInt8(0);
+
+        return this;
+    }
+
+    public Encoder skip(int num) {
+        if (num == 0) {
+            return this;
+        } else if (num > 0) {
+            this.appendInt8(new int[num]);
+
+            return this;
+        } else {
+            throw new IllegalArgumentException("num must be a positive number.");
+        }
+    }
+
     public byte[] get() {
         return this.byteBuffer.getBytes();
     }

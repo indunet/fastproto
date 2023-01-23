@@ -796,6 +796,25 @@ public final class Decoder {
         return this;
     }
 
+    public Decoder skip() {
+        this.readInt8();
+
+        return this;
+    }
+
+    public Decoder skip(int num) {
+        if (num == 0) {
+            return this;
+        } else if (num >= 0) {
+            val index = this.byteBuffer.getReadIndex();
+            this.byteBuffer.get(index + num - 1);
+
+            return this;
+        } else {
+            throw new IllegalArgumentException("num must be a positive number.");
+        }
+    }
+
     public Map<String, Object> getAsMap() {
         return this.map;
     }

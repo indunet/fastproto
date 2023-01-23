@@ -1,9 +1,6 @@
 package org.indunet.fastproto;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import lombok.val;
+import lombok.*;
 import org.indunet.fastproto.annotation.DoubleType;
 import org.indunet.fastproto.annotation.FloatType;
 import org.indunet.fastproto.util.BinaryUtils;
@@ -12,6 +9,7 @@ import org.junit.jupiter.api.Test;
 import java.math.BigInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit test of Decoder.
@@ -183,6 +181,29 @@ public class DecoderTest {
 
         assertEquals(0x01, first);
         assertEquals(0x11, third);
+    }
+
+    @Test
+    public void testSkip() {
+        val bytes = new byte[] {0x01, 0x02, 0x03, 0x04};
+        var actual = FastProto.parse(new byte[] {0x01, 0x02, 0x03, 0x04})
+                .skip(2)
+                .readInt8()
+                .getAsInt();
+
+        assertEquals(0x03, actual);
+
+        actual = FastProto.parse(bytes)
+                .skip()
+                .readInt8()
+                .getAsInt();
+
+        assertEquals(0x02, actual);
+
+        assertThrows(IllegalArgumentException.class, () -> FastProto.parse(bytes)
+                .skip(-1)
+                .readInt8()
+                .getAsInt());
     }
 
     @Test
