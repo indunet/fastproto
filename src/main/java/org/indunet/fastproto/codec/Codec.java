@@ -16,6 +16,7 @@
 
 package org.indunet.fastproto.codec;
 
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
 
@@ -61,4 +62,6 @@ public interface Codec<T> {
     T decode(CodecContext context, byte[] bytes);
 
     void encode(CodecContext context, byte[] bytes, T value);
+
+    default void encode(CodecContext context, ByteBuffer buffer, T value) {}
 }

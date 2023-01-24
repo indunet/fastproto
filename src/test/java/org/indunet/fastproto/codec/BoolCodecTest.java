@@ -48,8 +48,6 @@ public class BoolCodecTest {
     public void testDecode2() {
         byte[] datagram = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 2, 10));
-
         assertThrows(DecodingException.class, () -> this.codec.decode(datagram, -101, 0));
         assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 0, -1));
         assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 10, 0));

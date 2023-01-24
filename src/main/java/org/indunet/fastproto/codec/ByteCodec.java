@@ -18,6 +18,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.NonNull;
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.annotation.Int8Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
@@ -58,5 +59,16 @@ public class ByteCodec implements Codec<Byte> {
         val type = context.getDataTypeAnnotation(Int8Type.class);
     
         this.encode(bytes, type.offset(), value);
+    }
+
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, Byte value) {
+        val type = context.getDataTypeAnnotation(Int8Type.class);
+
+        try {
+            CodecUtils.byteType(buffer, type.offset(), value);
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding int8(byte) type.", e);
+        }
     }
 }

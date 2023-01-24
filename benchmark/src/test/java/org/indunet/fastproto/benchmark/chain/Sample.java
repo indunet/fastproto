@@ -18,6 +18,7 @@ package org.indunet.fastproto.benchmark.chain;
 
 import lombok.Data;
 import lombok.val;
+import org.indunet.fastproto.BitOrder;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.util.CodecUtils;
@@ -75,19 +76,19 @@ public class Sample {
     public byte[] toBytes() {
         val bytes = new byte[60];
 
-        CodecUtils.type(bytes, 0, 1, this.getBool1());
-        CodecUtils.type(bytes, 1, this.getByte8());
-        CodecUtils.type(bytes, 2, ByteOrder.LITTLE, this.getShort16());
-        CodecUtils.type(bytes, 4, ByteOrder.LITTLE, this.getInt32());
-        CodecUtils.type(bytes, 8, ByteOrder.LITTLE, this.getLong64());
-        CodecUtils.type(bytes, 16, ByteOrder.LITTLE, this.getFloat32());
-        CodecUtils.type(bytes, 20, ByteOrder.LITTLE, this.getDouble64());
+        CodecUtils.boolType(bytes, 0, 1, BitOrder.LSB_0, this.getBool1());
+        CodecUtils.byteType(bytes, 1, this.getByte8());
+        CodecUtils.shortType(bytes, 2, ByteOrder.LITTLE, this.getShort16());
+        CodecUtils.int32Type(bytes, 4, ByteOrder.LITTLE, this.getInt32());
+        CodecUtils.int64Type(bytes, 8, ByteOrder.LITTLE, this.getLong64());
+        CodecUtils.floatType(bytes, 16, ByteOrder.LITTLE, this.getFloat32());
+        CodecUtils.doubleType(bytes, 20, ByteOrder.LITTLE, this.getDouble64());
         CodecUtils.int8Type(bytes, 28, this.getInt8());
         CodecUtils.int16Type(bytes, 30, ByteOrder.LITTLE, this.getInt16());
         CodecUtils.uint8Type(bytes, 32, this.getUint8());
         CodecUtils.uint16Type(bytes, 34, ByteOrder.LITTLE, this.getUint16());
         CodecUtils.uint32Type(bytes, 36, ByteOrder.LITTLE, this.getUint32());
-        CodecUtils.type(bytes, 40, this.getBytes());
+        CodecUtils.binaryType(bytes, 40, -1, this.getBytes());
 
         return bytes;
     }

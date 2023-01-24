@@ -427,16 +427,15 @@ public final class Encoder {
     }
 
     public Encoder skip() {
-        this.appendInt8(0);
+        this.byteBuffer.nextWriteIndex();
 
         return this;
     }
 
     public Encoder skip(int num) {
-        if (num == 0) {
-            return this;
-        } else if (num > 0) {
-            this.appendInt8(new int[num]);
+        if (num >= 0) {
+            IntStream.range(0, num)
+                    .forEach(__ -> this.byteBuffer.nextWriteIndex());
 
             return this;
         } else {

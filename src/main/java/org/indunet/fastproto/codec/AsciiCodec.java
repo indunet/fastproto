@@ -17,6 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.annotation.AsciiType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
@@ -46,9 +47,7 @@ public class AsciiCodec implements Codec<Character> {
 
     public void encode(byte[] datagram, int offset, char value) {
         try {
-            int num = value;
-
-            if (num > Byte.MAX_VALUE) {
+            if ((int) value > Byte.MAX_VALUE) {
                 throw new EncodingException(String.format("%c is not valid ascii.", value));
             } else {
                 CodecUtils.uint8Type(datagram, offset, value);
@@ -70,5 +69,22 @@ public class AsciiCodec implements Codec<Character> {
         val type = context.getDataTypeAnnotation(AsciiType.class);
     
         this.encode(bytes, type.offset(), value);
+    }
+
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, Character value) {
+        val type = context.getDataTypeAnnotation(AsciiType.class);
+
+        try {
+            int num = value;
+
+            if (num > Byte.MAX_VALUE) {
+                throw new EncodingException(String.format("%c is not valid ascii.", value));
+            } else {
+                CodecUtils.uint8Type(buffer, type.offset(), value);
+            }
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding ascii type.", e);
+        }
     }
 }

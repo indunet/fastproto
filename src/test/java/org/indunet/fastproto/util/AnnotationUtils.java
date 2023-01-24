@@ -19,6 +19,8 @@ package org.indunet.fastproto.util;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.val;
+import org.indunet.fastproto.BitOrder;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.exception.CodecException;
 
@@ -49,15 +51,38 @@ public class AnnotationUtils {
         return annotationClass.cast(proxy);
     }
 
-    public static <T extends Annotation> T mock(Class<T> annotationClass, int value) {
+    public static <T extends Annotation> T mock(Class<T> annotationClass, int offset, ByteOrder order) {
         Map<String, Object> map = new HashMap<>();
-        map.put("value", value);
+
+        map.put("offset", offset);
+        map.put("byteOrder", order);
+
+        return mock(annotationClass, map);
+    }
+
+    public static <T extends Annotation> T mock(Class<T> annotationClass, int byteOffset, int bitOffset, BitOrder order) {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("byteOffset", byteOffset);
+        map.put("bitOffset", bitOffset);
+        map.put("bitOrder", order);
+
+        return mock(annotationClass, map);
+    }
+
+    public static <T extends Annotation> T mock(Class<T> annotationClass, int offset, int length, ByteOrder order) {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("offset", offset);
+        map.put("length", length);
+        map.put("byteOrder", order);
 
         return mock(annotationClass, map);
     }
 
     public static <T extends Annotation> T mock(Class<T> annotationClass, int value, String fieldName, ProtocolType protocolType) {
         Map<String, Object> map = new HashMap<>();
+
         map.put("value", value);
         map.put("fieldName", fieldName);
         map.put("protocolType", protocolType);
@@ -77,14 +102,6 @@ public class AnnotationUtils {
         Map<String, Object> map = new HashMap<>();
         map.put("value", value);
         map.put("length", length);
-
-        return mock(annotationClass, map);
-    }
-
-    public static <T extends Annotation> T mockBooleanType(Class<T> annotationClass, int byteOffset, int bitOffset) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("value", byteOffset);
-        map.put("bitOffset", bitOffset);
 
         return mock(annotationClass, map);
     }

@@ -17,6 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.TimeType;
 import org.indunet.fastproto.exception.DecodingException;
@@ -70,5 +71,20 @@ public class LocalDateTimeCodec implements Codec<LocalDateTime> {
         val order = context.getByteOrder(type::byteOrder);
 
         this.encode(bytes, type.offset(), order, value);
+    }
+
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, LocalDateTime value) {
+        val type = context.getDataTypeAnnotation(TimeType.class);
+        val order = context.getByteOrder(type::byteOrder);
+
+        try {
+            val zoneOffset = ZoneId.systemDefault().getRules().getOffset(Instant.now());
+            val millis = value.toInstant(zoneOffset).toEpochMilli();
+
+            CodecUtils.int64Type(buffer, type.offset(), order, millis);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new EncodingException("Fail encoding time(LocalDateTime) type.", e);
+        }
     }
 }

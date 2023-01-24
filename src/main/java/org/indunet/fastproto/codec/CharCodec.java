@@ -17,6 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.CharType;
 import org.indunet.fastproto.exception.DecodingException;
@@ -60,5 +61,17 @@ public class CharCodec implements Codec<Character> {
         val order = context.getByteOrder(type::byteOrder);
 
         this.encode(bytes, type.offset(), order, value);
+    }
+
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, Character value) {
+        val type = context.getDataTypeAnnotation(CharType.class);
+        val order = context.getByteOrder(type::byteOrder);
+
+        try {
+            CodecUtils.uint16Type(buffer, type.offset(), order, value);
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding char type.", e);
+        }
     }
 }

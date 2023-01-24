@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.api.endian;
+package org.indunet.fastproto.api.byteorder;
 
 import lombok.Data;
 import org.indunet.fastproto.ByteOrder;
@@ -22,14 +22,20 @@ import org.indunet.fastproto.annotation.DefaultByteOrder;
 import org.indunet.fastproto.annotation.Int16Type;
 
 /**
+ * Test object of byte order.
+ *
  * @author Deng Ran
  * @since 1.4.0
  */
 @Data
 @DefaultByteOrder(ByteOrder.BIG)
-public class EndianObject {
+public class TestObject {
     @Int16Type(offset = 0, byteOrder = ByteOrder.LITTLE)
     Integer little = 0x0102;
     @Int16Type(offset = 2)
     Integer big = 0x0304;
+
+    public byte[] toBytes() {
+        return new byte[] {0x02, 0x01, 0x03, 0x4};
+    }
 }

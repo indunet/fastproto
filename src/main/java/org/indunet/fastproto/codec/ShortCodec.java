@@ -17,6 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.Int16Type;
 import org.indunet.fastproto.exception.DecodingException;
@@ -60,5 +61,17 @@ public class ShortCodec implements Codec<Short> {
         val order = context.getByteOrder(type::byteOrder);
 
         this.encode(bytes, type.offset(), order, value);
+    }
+
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, Short value) {
+        val type = context.getDataTypeAnnotation(Int16Type.class);
+        val order = context.getByteOrder(type::byteOrder);
+
+        try {
+            CodecUtils.shortType(buffer, type.offset(), order, value);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new EncodingException("Fail encoding int16(short) type.", e);
+        }
     }
 }

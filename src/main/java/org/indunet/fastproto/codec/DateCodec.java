@@ -17,6 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.TimeType;
 import org.indunet.fastproto.exception.DecodingException;
@@ -66,5 +67,19 @@ public class DateCodec implements Codec<Date> {
         val order = context.getByteOrder(type::byteOrder);
 
         this.encode(bytes, type.offset(), order, value);
+    }
+
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, Date value) {
+        val type = context.getDataTypeAnnotation(TimeType.class);
+        val order = context.getByteOrder(type::byteOrder);
+
+        try {
+            val millis = value.getTime();
+
+            CodecUtils.int64Type(buffer, type.offset(), order, millis);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new EncodingException("Fail encoding time(date) type.", e);
+        }
     }
 }

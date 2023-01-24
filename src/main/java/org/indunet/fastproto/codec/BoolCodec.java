@@ -18,6 +18,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import org.indunet.fastproto.BitOrder;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.annotation.BoolType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
@@ -32,7 +33,7 @@ import org.indunet.fastproto.util.CodecUtils;
 public class BoolCodec implements Codec<Boolean> {
     public boolean decode(byte[] bytes, int byteOffset, int bitOffset) {
         try {
-            return CodecUtils.boolType(bytes, byteOffset, bitOffset);
+            return CodecUtils.boolType(bytes, byteOffset, bitOffset, BitOrder.LSB_0);
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding boolean type.", e);
         }
@@ -40,7 +41,7 @@ public class BoolCodec implements Codec<Boolean> {
 
     public void encode(byte[] datagram, int byteOffset, int bitOffset, boolean value) {
         try {
-            CodecUtils.boolType(datagram, byteOffset, bitOffset, value);
+            CodecUtils.boolType(datagram, byteOffset, bitOffset, BitOrder.LSB_0, value);
         } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding the boolean type.", e);
         }
@@ -71,6 +72,18 @@ public class BoolCodec implements Codec<Boolean> {
             this.encode(bytes, type.byteOffset(), 7 - type.bitOffset(), value);
         } else {
             throw new EncodingException("Illegal mode, only LSB_0 or MSB_0 can be used.");
+        }
+    }
+
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, Boolean value) {
+        val type = context.getDataTypeAnnotation(BoolType.class);
+        val bitOrder = context.getBitOrder(type::bitOrder);
+
+        try {
+            CodecUtils.boolType(buffer, type.byteOffset(), type.bitOffset(), bitOrder, value);
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding the boolean type.", e);
         }
     }
 }

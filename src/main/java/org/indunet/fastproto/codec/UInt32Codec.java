@@ -17,6 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.UInt32Type;
 import org.indunet.fastproto.exception.DecodingException;
@@ -60,5 +61,17 @@ public class UInt32Codec implements Codec<Long> {
         val order = context.getByteOrder(type::byteOrder);
 
         this.encode(bytes, type.offset(), order, value);
+    }
+
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, Long value) {
+        val type = context.getDataTypeAnnotation(UInt32Type.class);
+        val order = context.getByteOrder(type::byteOrder);
+
+        try {
+            CodecUtils.uint32Type(buffer, type.offset(), order, value);
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding uint32 type.", e);
+        }
     }
 }

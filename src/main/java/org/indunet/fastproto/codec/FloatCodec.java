@@ -17,6 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.FloatType;
 import org.indunet.fastproto.exception.DecodingException;
@@ -60,5 +61,17 @@ public class FloatCodec implements Codec<Float> {
         val order = context.getByteOrder(type::byteOrder);
 
         this.encode(bytes, type.offset(), order, value);
+    }
+
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, Float value) {
+        val type = context.getDataTypeAnnotation(FloatType.class);
+        val order = context.getByteOrder(type::byteOrder);
+
+        try {
+            CodecUtils.floatType(buffer, type.offset(), order, value);
+        } catch (IndexOutOfBoundsException e) {
+            throw new EncodingException("Fail encoding float type.", e);
+        }
     }
 }

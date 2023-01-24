@@ -17,6 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.UInt64Type;
 import org.indunet.fastproto.exception.DecodingException;
@@ -62,5 +63,17 @@ public class UInt64Codec implements Codec<BigInteger> {
         val order = context.getByteOrder(type::byteOrder);
 
         this.encode(bytes, type.offset(), order, value);
+    }
+
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, BigInteger value) {
+        val type = context.getDataTypeAnnotation(UInt64Type.class);
+        val order = context.getByteOrder(type::byteOrder);
+
+        try {
+            CodecUtils.uint64Type(buffer, type.offset(), order, value);
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding uint64 type.", e);
+        }
     }
 }

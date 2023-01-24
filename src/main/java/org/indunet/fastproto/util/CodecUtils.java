@@ -71,47 +71,41 @@ public class CodecUtils {
 
         if (o + l > datagram.length) {
             throw new IllegalArgumentException("Out of the datagram range.");
-        } else if (l >= values.length) {
-            System.arraycopy(values, 0, datagram, o, values.length);
         } else {
-            System.arraycopy(values, 0, datagram, o, l);
+            System.arraycopy(values, 0, datagram, o, Math.min(l, values.length));
         }
     }
 
-    public static void type(@NonNull byte[] datagram, int offset, int length, @NonNull byte[] values) {
-        binaryType(datagram, offset, length, values);
-    }
-
-    public static void type(@NonNull byte[] datagram, int offset, @NonNull byte[] values) {
-        binaryType(datagram, offset, values.length, values);
-    }
-
-    public static boolean boolType(@NonNull final byte[] datagram, int byteOffset, int bitOffset) {
+    public static boolean boolType(byte[] datagram, int byteOffset, int bitOffset, BitOrder order) {
         if (bitOffset < BoolType.BIT_0 || bitOffset > BoolType.BIT_7) {
             throw new IllegalArgumentException("Out of byte range.");
         }
 
         int o = reverse(datagram, byteOffset);
+
+        if (order == BitOrder.MSB_0) {
+            bitOffset = 7 - bitOffset;
+        }
 
         return (datagram[o] & (0x01 << bitOffset)) != 0;
     }
 
-    public static void boolType(@NonNull final byte[] datagram, int byteOffset, int bitOffset, boolean value) {
+    public static void boolType(byte[] datagram, int byteOffset, int bitOffset, BitOrder order, boolean value) {
         if (bitOffset < BoolType.BIT_0 || bitOffset > BoolType.BIT_7) {
             throw new IllegalArgumentException("Out of byte range.");
         }
 
         int o = reverse(datagram, byteOffset);
+
+        if (order == BitOrder.MSB_0) {
+            bitOffset = 7 - bitOffset;
+        }
 
         if (value) {
             datagram[o] |= (0x01 << bitOffset);
         } else {
             datagram[o] &= ~(0x01 << bitOffset);
         }
-    }
-
-    public static void boolType(ByteBuffer byteBuffer, int byteOffset, int bitOffset, boolean value) {
-        boolType(byteBuffer, byteOffset, bitOffset, BitOrder.LSB_0, value);
     }
 
     public static void boolType(ByteBuffer byteBuffer, int byteOffset, int bitOffset, BitOrder bitOrder, boolean value) {
@@ -132,10 +126,6 @@ public class CodecUtils {
         }
     }
 
-    public static void type(@NonNull final byte[] datagram, int byteOffset, int bitOffset, boolean value) {
-        boolType(datagram, byteOffset, bitOffset, value);
-    }
-
     public static byte byteType(ByteBuffer byteBuffer, int offset) {
         return byteBuffer.get(offset);
     }
@@ -154,10 +144,6 @@ public class CodecUtils {
 
     public static void byteType(ByteBuffer byteBuffer, int offset, byte value) {
         byteBuffer.set(offset, value);
-    }
-
-    public static void type(@NonNull final byte[] datagram, int offset, byte value) {
-        byteType(datagram, offset, value);
     }
 
     public static int uint8Type(ByteBuffer byteBuffer, int offset) {
@@ -236,10 +222,6 @@ public class CodecUtils {
         }
     }
 
-    public static int uint16Type(@NonNull final byte[] datagram, int offset) {
-        return uint16Type(datagram, offset, ByteOrder.LITTLE);
-    }
-
     public static void uint16Type(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull int value) {
         if (value < UInt16Type.MIN_VALUE || value > UInt16Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of uint16 range.");
@@ -270,10 +252,6 @@ public class CodecUtils {
         }
     }
 
-    public static void uint16Type(@NonNull byte[] datagram, int offset, @NonNull int value) {
-        uint16Type(datagram, offset, ByteOrder.LITTLE, value);
-    }
-
     public static int int16Type(@NonNull final byte[] datagram, int offset, ByteOrder byteOrder) {
         int o = reverse(datagram, offset);
         short value = 0;
@@ -301,10 +279,6 @@ public class CodecUtils {
         }
 
         return value;
-    }
-
-    public static int int16Type(@NonNull final byte[] datagram, int offset) {
-        return int16Type(datagram, offset, ByteOrder.LITTLE);
     }
 
     public static void int16Type(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull int value) {
@@ -337,10 +311,6 @@ public class CodecUtils {
         }
     }
 
-    public static void int16Type(@NonNull byte[] datagram, int offset, @NonNull int value) {
-        int16Type(datagram, offset, ByteOrder.LITTLE, value);
-    }
-
     public static short shortType(@NonNull final byte[] datagram, int offset, ByteOrder byteOrder) {
         int o = reverse(datagram, offset);
         short value = 0;
@@ -370,10 +340,6 @@ public class CodecUtils {
         return value;
     }
 
-    public static short shortType(@NonNull final byte[] datagram, int offset) {
-        return shortType(datagram, offset, ByteOrder.LITTLE);
-    }
-
     public static void shortType(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull short value) {
         int o = reverse(datagram, offset);
 
@@ -386,12 +352,14 @@ public class CodecUtils {
         }
     }
 
-    public static void shortType(@NonNull byte[] datagram, int offset, @NonNull short value) {
-        shortType(datagram, offset, ByteOrder.LITTLE, value);
-    }
-
-    public static void type(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull short value) {
-        shortType(datagram, offset, byteOrder, value);
+    public static void shortType(ByteBuffer buffer, int offset, ByteOrder byteOrder, @NonNull short value) {
+        if (byteOrder == ByteOrder.LITTLE) {
+            buffer.set(offset, (byte) (value));
+            buffer.set(offset + 1, (byte) (value >>> 8));
+        } else if (byteOrder == ByteOrder.BIG) {
+            buffer.set(offset + 1, (byte) (value));
+            buffer.set(offset, (byte) (value >>> 8));
+        }
     }
 
     public static int int32Type(@NonNull final byte[] datagram, int offset, ByteOrder byteOrder) {
@@ -431,10 +399,6 @@ public class CodecUtils {
         return value;
     }
 
-    public static int int32Type(@NonNull final byte[] datagram, int offset) {
-        return int32Type(datagram, offset, ByteOrder.LITTLE);
-    }
-
     public static void int32Type(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull int value) {
         int o = reverse(datagram, offset);
 
@@ -463,14 +427,6 @@ public class CodecUtils {
             byteBuffer.set(offset + 1, (byte) (value >>> 16));
             byteBuffer.set(offset, (byte) (value >>> 24));
         }
-    }
-
-    public static void int32Type(@NonNull byte[] datagram, int offset, @NonNull int value) {
-        int32Type(datagram, offset, ByteOrder.LITTLE, value);
-    }
-
-    public static void type(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull int value) {
-        int32Type(datagram, offset, byteOrder, value);
     }
 
     public static long uint32Type(@NonNull final byte[] datagram, int offset, ByteOrder byteOrder) {
@@ -510,10 +466,6 @@ public class CodecUtils {
         return value;
     }
 
-    public static long uint32Type(@NonNull final byte[] datagram, int offset) {
-        return uint32Type(datagram, offset, ByteOrder.LITTLE);
-    }
-
     public static void uint32Type(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull long value) {
         if (value < UInt32Type.MIN_VALUE || value > UInt32Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of uint32 range.");
@@ -550,10 +502,6 @@ public class CodecUtils {
             byteBuffer.set(offset + 2, (byte) (value >>> 16));
             byteBuffer.set(offset + 3, (byte) (value >>> 24));
         }
-    }
-
-    public static void uint32Type(@NonNull byte[] datagram, int offset, @NonNull long value) {
-        uint32Type(datagram, offset, ByteOrder.LITTLE, value);
     }
 
     public static BigInteger uint64Type(@NonNull final byte[] datagram, int offset, ByteOrder byteOrder) {
@@ -617,10 +565,6 @@ public class CodecUtils {
         return new BigInteger(String.valueOf(high))
                 .multiply(new BigInteger(String.valueOf(UInt32Type.MAX_VALUE + 1)))
                 .add(new BigInteger(String.valueOf(low)));
-    }
-
-    public static BigInteger uint64Type(@NonNull final byte[] datagram, int offset) {
-        return uint64Type(datagram, offset, ByteOrder.LITTLE);
     }
 
     public static void uint64Type(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, BigInteger value) {
@@ -694,14 +638,6 @@ public class CodecUtils {
         }
     }
 
-    public static void uint64Type(@NonNull byte[] datagram, int offset, BigInteger value) {
-        uint64Type(datagram, offset, ByteOrder.LITTLE, value);
-    }
-
-    public static void type(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull BigInteger value) {
-        uint64Type(datagram, offset, byteOrder, value);
-    }
-
     public static long int64Type(@NonNull final byte[] datagram, int offset, ByteOrder byteOrder) {
         int o = reverse(datagram, offset);
         long value = 0;
@@ -759,10 +695,6 @@ public class CodecUtils {
         return value;
     }
 
-    public static long int64Type(@NonNull final byte[] datagram, int offset) {
-        return int64Type(datagram, offset, ByteOrder.LITTLE);
-    }
-
     public static void int64Type(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull long value) {
         int o = reverse(datagram, offset);
 
@@ -813,14 +745,6 @@ public class CodecUtils {
         }
     }
 
-    public static void int64Type(@NonNull byte[] datagram, int offset, @NonNull long value) {
-        int64Type(datagram, offset, ByteOrder.LITTLE, value);
-    }
-
-    public static void type(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull long value) {
-        int64Type(datagram, offset, byteOrder, value);
-    }
-
     public static float floatType(@NonNull final byte[] datagram, int offset, ByteOrder byteOrder) {
         int o = reverse(datagram, offset);
         int value = 0;
@@ -858,10 +782,6 @@ public class CodecUtils {
         return Float.intBitsToFloat(value);
     }
 
-    public static float floatType(@NonNull final byte[] datagram, int offset) {
-        return floatType(datagram, offset, ByteOrder.LITTLE);
-    }
-
     public static void floatType(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull float value) {
         int o = reverse(datagram, offset);
         int bits = Float.floatToIntBits(value);
@@ -893,14 +813,6 @@ public class CodecUtils {
             byteBuffer.set(offset + 1, (byte) (bits >>> 16));
             byteBuffer.set(offset, (byte) (bits >>> 24));
         }
-    }
-
-    public static void floatType(@NonNull byte[] datagram, int offset, @NonNull float value) {
-        floatType(datagram, offset, ByteOrder.LITTLE, value);
-    }
-
-    public static void type(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull float value) {
-        floatType(datagram, offset, byteOrder, value);
     }
 
     public static double doubleType(@NonNull final byte[] datagram, int offset, ByteOrder byteOrder) {
@@ -960,10 +872,6 @@ public class CodecUtils {
         return Double.longBitsToDouble(value);
     }
 
-    public static double doubleType(@NonNull final byte[] datagram, int offset) {
-        return doubleType(datagram, offset, ByteOrder.LITTLE);
-    }
-
     public static void doubleType(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull double value) {
         int o = reverse(datagram, offset);
         long bits = Double.doubleToRawLongBits(value);
@@ -1015,13 +923,5 @@ public class CodecUtils {
             byteBuffer.set(offset + 6, (byte) (bits >>> 48));
             byteBuffer.set(offset + 7, (byte) (bits >>> 56));
         }
-    }
-
-    public static void doubleType(@NonNull byte[] datagram, int offset, @NonNull double value) {
-        doubleType(datagram, offset, ByteOrder.LITTLE, value);
-    }
-
-    public static void type(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull double value) {
-        doubleType(datagram, offset, byteOrder, value);
     }
 }

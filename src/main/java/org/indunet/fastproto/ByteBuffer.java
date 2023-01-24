@@ -51,22 +51,26 @@ public final class ByteBuffer {
         this.readIndex = 0;
     }
 
+    public void nextReadIndex() {
+        this.readIndex ++;
+    }
+
     public void resetWriteIndex() {
         this.writeIndex = 0;
     }
 
-    public void write(byte value) {
-        if (this.writeIndex >= this.length) {
-            this.length = writeIndex + 1;
-        }
+    public void nextWriteIndex() {
+        this.expand();
+        this.writeIndex ++;
+    }
 
-        if (length >= bytes.length && !this.fixed) {
-            this.bytes = Arrays.copyOf(this.bytes, this.bytes.length * 2);
-        }
+    public void write(byte value) {
+        this.expand();
 
         bytes[writeIndex ++] = value;
     }
 
+    // return value at current index and read index doesn't move.
     public byte read() {
         return this.get(this.readIndex);
     }
@@ -93,7 +97,12 @@ public final class ByteBuffer {
 
     public void set(int offset, byte value) {
         this.writeIndex = this.reverse(offset);
+        this.expand();
 
+        bytes[this.writeIndex ++] = value;
+    }
+
+    private void expand() {
         if (this.writeIndex >= length) {
             length = this.writeIndex + 1;
         }
@@ -101,14 +110,6 @@ public final class ByteBuffer {
         if (length == bytes.length && !this.fixed) {
             bytes = Arrays.copyOf(bytes, bytes.length * 2);
         }
-
-        bytes[this.writeIndex ++] = value;
-    }
-
-    public int int8Type(byte[] bytes, int offset) {
-        int o = reverse(offset);
-
-        return this.bytes[o];
     }
 
     public byte get(int offset) {
@@ -125,7 +126,7 @@ public final class ByteBuffer {
     public int reverse(int offset) {
         if (offset >= 0) {
             return offset;
-        } else if (this.fixed && offset < 0) {
+        } else if (this.fixed) {    // offset less than 0 and non-fixed.
             int o = this.bytes.length + offset;
 
             if (o >= 0) {
