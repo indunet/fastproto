@@ -17,6 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.annotation.UInt8ArrayType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
@@ -74,6 +75,20 @@ public class UInt8ArrayCodec implements Codec<int[]> {
         this.encode(bytes, type.offset(), type.length(), value);
     }
 
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, int[] values) {
+        val type = context.getDataTypeAnnotation(UInt8ArrayType.class);
+
+        try {
+            val l = buffer.reverse(type.offset(), type.length());
+
+            IntStream.range(0, l)
+                    .forEach(i -> CodecUtils.uint8Type(buffer, type.offset() + i, values[i]));
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding uint8 array type.", e);
+        }
+    }
+
     public class WrapperCodec implements Codec<Integer[]> {
         @Override
         public Integer[] decode(CodecContext context, byte[] bytes) {
@@ -89,6 +104,15 @@ public class UInt8ArrayCodec implements Codec<int[]> {
                     .toArray();
 
             UInt8ArrayCodec.this.encode(context, bytes, ints);
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBuffer buffer, Integer[] values) {
+            val ints = Stream.of(values)
+                    .mapToInt(i -> i.intValue())
+                    .toArray();
+
+            UInt8ArrayCodec.this.encode(context, buffer, ints);
         }
     }
 
@@ -112,6 +136,13 @@ public class UInt8ArrayCodec implements Codec<int[]> {
         @Override
         public void encode(CodecContext context, byte[] bytes, Collection<Integer> collection) {
             UInt8ArrayCodec.this.encode(context, bytes, collection.stream()
+                    .mapToInt(Integer::intValue)
+                    .toArray());
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBuffer buffer, Collection<Integer> collection) {
+            UInt8ArrayCodec.this.encode(context, buffer, collection.stream()
                     .mapToInt(Integer::intValue)
                     .toArray());
         }

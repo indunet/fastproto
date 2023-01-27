@@ -17,16 +17,15 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.annotation.Int8ArrayType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.CollectionUtils;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 /**
  * Ascii array type codec.
@@ -46,7 +45,7 @@ public class AsciiArrayCodec implements Codec<char[]> {
 
             return chars;
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new DecodingException("Fail decoding int8 array type.", e);
+            throw new DecodingException("Fail decoding ascii array type.", e);
         }
     }
 
@@ -58,7 +57,7 @@ public class AsciiArrayCodec implements Codec<char[]> {
             IntStream.range(0, l)
                     .forEach(i -> CodecUtils.int8Type(bytes, o + i, values[i]));
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new EncodingException("Fail encoding int8 array type.", e);
+            throw new EncodingException("Fail encoding ascii array type.", e);
         }
     }
 
@@ -74,6 +73,20 @@ public class AsciiArrayCodec implements Codec<char[]> {
         val type = context.getDataTypeAnnotation(Int8ArrayType.class);
 
         this.encode(bytes, type.offset(), type.length(), value);
+    }
+
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, char[] values) {
+        val type = context.getDataTypeAnnotation(Int8ArrayType.class);
+
+        try {
+            val l = buffer.reverse(type.offset(), type.length());
+
+            IntStream.range(0, l)
+                    .forEach(i -> CodecUtils.int8Type(buffer, type.offset() + i, values[i]));
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding ascii array type.", e);
+        }
     }
 
     public class WrapperCodec implements Codec<Character[]> {
@@ -93,6 +106,15 @@ public class AsciiArrayCodec implements Codec<char[]> {
             IntStream.range(0, values.length)
                     .forEach(i -> chars[i] = values[i]);
             AsciiArrayCodec.this.encode(context, bytes, chars);
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBuffer buffer, Character[] values) {
+            val chars = new char[values.length];
+
+            IntStream.range(0, values.length)
+                    .forEach(i -> chars[i] = values[i]);
+            AsciiArrayCodec.this.encode(context, buffer, chars);
         }
     }
 
@@ -123,6 +145,17 @@ public class AsciiArrayCodec implements Codec<char[]> {
             IntStream.range(0, chars.length)
                     .forEach(i -> chars[i] = values[i]);
             AsciiArrayCodec.this.encode(context, bytes, chars);
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBuffer buffer, Collection<Character> collection) {
+            val chars = new char[collection.size()];
+            val values = collection.stream()
+                    .toArray(Character[]::new);
+
+            IntStream.range(0, chars.length)
+                    .forEach(i -> chars[i] = values[i]);
+            AsciiArrayCodec.this.encode(context, buffer, chars);
         }
     }
 }

@@ -18,6 +18,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.UInt16ArrayType;
 import org.indunet.fastproto.annotation.UInt16Type;
@@ -87,6 +88,25 @@ public class UInt16ArrayCodec implements Codec<int[]> {
         this.encode(bytes, type.offset(), type.length(), order, value);
     }
 
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, int[] values) {
+        val type = context.getDataTypeAnnotation(UInt16ArrayType.class);
+        val order = context.getByteOrder(type::byteOrder);
+
+        try {
+            var l = type.length();
+
+            if (l < 0) {
+                l = buffer.reverse(type.offset(), type.length() * UInt16Type.SIZE)  / UInt16Type.SIZE + 1;
+            }
+
+            IntStream.range(0, l)
+                    .forEach(i -> CodecUtils.uint16Type(buffer, type.offset()+ i * UInt16Type.SIZE, order, values[i]));
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding uint16 array type.", e);
+        }
+    }
+
     public class WrapperCodec implements Codec<Integer[]> {
         @Override
         public Integer[] decode(CodecContext context, byte[] bytes) {
@@ -102,6 +122,15 @@ public class UInt16ArrayCodec implements Codec<int[]> {
                     .toArray();
 
             UInt16ArrayCodec.this.encode(context, bytes, ints);
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBuffer buffer, Integer[] values) {
+            val ints = Stream.of(values)
+                    .mapToInt(i -> i.intValue())
+                    .toArray();
+
+            UInt16ArrayCodec.this.encode(context, buffer, ints);
         }
     }
 
@@ -125,6 +154,13 @@ public class UInt16ArrayCodec implements Codec<int[]> {
         @Override
         public void encode(CodecContext context, byte[] bytes, Collection<Integer> collection) {
             UInt16ArrayCodec.this.encode(context, bytes, collection.stream()
+                    .mapToInt(Integer::intValue)
+                    .toArray());
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBuffer buffer, Collection<Integer> collection) {
+            UInt16ArrayCodec.this.encode(context, buffer, collection.stream()
                     .mapToInt(Integer::intValue)
                     .toArray());
         }

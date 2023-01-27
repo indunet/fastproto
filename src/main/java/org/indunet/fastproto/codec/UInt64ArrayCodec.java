@@ -18,6 +18,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.UInt64ArrayType;
 import org.indunet.fastproto.annotation.UInt64Type;
@@ -87,6 +88,25 @@ public class UInt64ArrayCodec implements Codec<BigInteger[]> {
         this.encode(bytes, type.offset(), type.length(), order, value);
     }
 
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, BigInteger[] values) {
+        val type = context.getDataTypeAnnotation(UInt64ArrayType.class);
+        val order = context.getByteOrder(type::byteOrder);
+
+        try {
+            var l = type.length();
+
+            if (l < 0) {
+                l = buffer.reverse(type.offset(), type.length() * UInt64Type.SIZE)  / UInt64Type.SIZE + 1;
+            }
+
+            IntStream.range(0, l)
+                    .forEach(i -> CodecUtils.uint64Type(buffer, type.offset() + i * UInt64Type.SIZE, order, values[i]));
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException | NullPointerException e) {
+            throw new EncodingException("Fail encoding uint64 array type.", e);
+        }
+    }
+
     public class CollectionCodec implements Codec<Collection<BigInteger>> {
         @Override
         public Collection<BigInteger> decode(CodecContext context, byte[] bytes) {
@@ -107,6 +127,12 @@ public class UInt64ArrayCodec implements Codec<BigInteger[]> {
         @Override
         public void encode(CodecContext context, byte[] bytes, Collection<BigInteger> collection) {
             UInt64ArrayCodec.this.encode(context, bytes, collection.stream()
+                    .toArray(BigInteger[]::new));
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBuffer buffer, Collection<BigInteger> collection) {
+            UInt64ArrayCodec.this.encode(context, buffer, collection.stream()
                     .toArray(BigInteger[]::new));
         }
     }

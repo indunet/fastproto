@@ -18,6 +18,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.UInt32ArrayType;
 import org.indunet.fastproto.annotation.UInt32Type;
@@ -88,6 +89,26 @@ public class UInt32ArrayCodec implements Codec<long[]> {
         this.encode(bytes, type.offset(), type.length(), order, value);
     }
 
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, long[] values) {
+        val type = context.getDataTypeAnnotation(UInt32ArrayType.class);
+        val order = context.getByteOrder(type::byteOrder);
+
+        try {
+            var l = type.length();
+
+            if (l < 0) {
+                l = buffer.reverse(type.offset(), type.length() * UInt32Type.SIZE)  / UInt32Type.SIZE + 1;
+            }
+
+            IntStream.range(0, l)
+                    .forEach(i ->
+                            CodecUtils.uint32Type(buffer, type.offset() + i * UInt32Type.SIZE, order, values[i]));
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding uint32 array type.", e);
+        }
+    }
+
     public class WrapperCodec implements Codec<Long[]> {
         @Override
         public Long[] decode(CodecContext context, byte[] bytes) {
@@ -103,6 +124,15 @@ public class UInt32ArrayCodec implements Codec<long[]> {
                     .toArray();
 
             UInt32ArrayCodec.this.encode(context, bytes, longs);
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBuffer buffer, Long[] values) {
+            val longs = Stream.of(values)
+                    .mapToLong(i -> i.longValue())
+                    .toArray();
+
+            UInt32ArrayCodec.this.encode(context, buffer, longs);
         }
     }
 
@@ -126,6 +156,13 @@ public class UInt32ArrayCodec implements Codec<long[]> {
         @Override
         public void encode(CodecContext context, byte[] bytes, Collection<Long> collection) {
             UInt32ArrayCodec.this.encode(context, bytes, collection.stream()
+                    .mapToLong(Long::longValue)
+                    .toArray());
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBuffer buffer, Collection<Long> collection) {
+            UInt32ArrayCodec.this.encode(context, buffer, collection.stream()
                     .mapToLong(Long::longValue)
                     .toArray());
         }

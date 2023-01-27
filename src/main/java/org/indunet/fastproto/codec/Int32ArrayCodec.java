@@ -18,6 +18,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.Int32ArrayType;
 import org.indunet.fastproto.annotation.Int32Type;
@@ -87,6 +88,26 @@ public class Int32ArrayCodec implements Codec<int[]> {
         this.encode(bytes, type.offset(), type.length(), order, value);
     }
 
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, int[] values) {
+        val type = context.getDataTypeAnnotation(Int32ArrayType.class);
+        val order = context.getByteOrder(type::byteOrder);
+
+        try {
+            var l = type.length();
+
+            if (l < 0) {
+                l = buffer.reverse(type.offset(), type.length() * Int32Type.SIZE)  / Int32Type.SIZE + 1;
+            }
+
+            IntStream.range(0, l)
+                    .forEach(i ->
+                            CodecUtils.int32Type(buffer, type.offset() + i * Int32Type.SIZE, order, values[i]));
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding int32 array type.", e);
+        }
+    }
+
     public class WrapperCodec implements Codec<Integer[]> {
         @Override
         public Integer[] decode(CodecContext context, byte[] bytes) {
@@ -102,6 +123,15 @@ public class Int32ArrayCodec implements Codec<int[]> {
                     .toArray();
 
             Int32ArrayCodec.this.encode(context, bytes, ints);
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBuffer buffer, Integer[] values) {
+            val ints = Stream.of(values)
+                    .mapToInt(i -> i.intValue())
+                    .toArray();
+
+            Int32ArrayCodec.this.encode(context, buffer, ints);
         }
     }
 
@@ -125,6 +155,13 @@ public class Int32ArrayCodec implements Codec<int[]> {
         @Override
         public void encode(CodecContext context, byte[] bytes, Collection<Integer> collection) {
             Int32ArrayCodec.this.encode(context, bytes, collection.stream()
+                    .mapToInt(Integer::intValue)
+                    .toArray());
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBuffer buffer, Collection<Integer> collection) {
+            Int32ArrayCodec.this.encode(context, buffer, collection.stream()
                     .mapToInt(Integer::intValue)
                     .toArray());
         }

@@ -2,6 +2,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import org.indunet.fastproto.BitOrder;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.annotation.BoolArrayType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
@@ -36,6 +37,44 @@ public class BoolArrayCodec implements Codec<boolean[]> {
             val bitOrder = context.getBitOrder(type::bitOrder);
 
             this.encode(bytes, type.byteOffset(), type.bitOffset(), bitOrder, values);
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding boolean array type.", e);
+        }
+    }
+
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, boolean[] values) {
+        try {
+            val type = context.getDataTypeAnnotation(BoolArrayType.class);
+            val bitOrder = context.getBitOrder(type::bitOrder);
+
+            int byteIndex = type.byteOffset() + type.bitOffset() / 8;
+            int bitIndex = type.bitOffset() % 8;
+
+            for (boolean value : values) {
+                if (bitOrder == BitOrder.MSB_0) {
+                    if (value) {
+                        buffer.orEq(byteIndex, (byte) (0x80 >>> bitIndex));
+                    } else {
+                        buffer.andEq(byteIndex, (byte) ~(0x80 >>> bitIndex));
+                    }
+                } else if (bitOrder == BitOrder.LSB_0) {
+                    if (value) {
+                        buffer.orEq(byteIndex, (byte) (0x01 << bitIndex));
+                    } else {
+                        buffer.andEq(byteIndex, (byte) ~(0x01 << bitIndex));
+                    }
+                } else {
+                    throw new IllegalArgumentException("mode must be MSB_0 or LSB_0");
+                }
+
+                bitIndex++;
+
+                if (bitIndex == 8) {
+                    bitIndex = 0;
+                    byteIndex++;
+                }
+            }
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding boolean array type.", e);
         }
@@ -119,6 +158,16 @@ public class BoolArrayCodec implements Codec<boolean[]> {
 
             BoolArrayCodec.this.encode(context, bytes, bools);
         }
+
+        @Override
+        public void encode(CodecContext context, ByteBuffer buffer, Boolean[] values) {
+            boolean[] bools = new boolean[values.length];
+
+            IntStream.range(0, values.length)
+                    .forEach(i -> bools[i] = values[i]);
+
+            BoolArrayCodec.this.encode(context, buffer, bools);
+        }
     }
 
     public class CollectionCodec implements Codec<Collection<Boolean>> {
@@ -149,6 +198,18 @@ public class BoolArrayCodec implements Codec<boolean[]> {
                     .forEach(i -> bools[i] = values[i]);
 
             BoolArrayCodec.this.encode(context, bytes, bools);
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBuffer buffer, Collection<Boolean> collection) {
+            val bools = new boolean[collection.size()];
+            val values = collection.stream()
+                    .toArray(Boolean[]::new);
+
+            IntStream.range(0, values.length)
+                    .forEach(i -> bools[i] = values[i]);
+
+            BoolArrayCodec.this.encode(context, buffer, bools);
         }
     }
 }

@@ -18,6 +18,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.Int16ArrayType;
 import org.indunet.fastproto.annotation.Int16Type;
@@ -88,6 +89,26 @@ public class ShortArrayCodec implements Codec<short[]> {
         this.encode(bytes, type.offset(), type.length(), order, value);
     }
 
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, short[] values) {
+        val type = context.getDataTypeAnnotation(Int16ArrayType.class);
+        val order = context.getByteOrder(type::byteOrder);
+
+        try {
+            var l = type.length();
+
+            if (l < 0) {
+                l = buffer.reverse(type.offset(), type.length() * Int16Type.SIZE)  / Int16Type.SIZE + 1;
+            }
+
+            IntStream.range(0, l)
+                    .forEach(i ->
+                            CodecUtils.shortType(buffer, type.offset() + i * Int16Type.SIZE, order, values[i]));
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding short array type.", e);
+        }
+    }
+
     public class WrapperCodec implements Codec<Short[]> {
         @Override
         public Short[] decode(CodecContext context, byte[] bytes) {
@@ -108,6 +129,16 @@ public class ShortArrayCodec implements Codec<short[]> {
                     .forEach(i -> shorts[i] = values[i]);
 
             ShortArrayCodec.this.encode(context, bytes, shorts);
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBuffer buffer, Short[] values) {
+            val shorts = new short[values.length];
+
+            IntStream.range(0, shorts.length)
+                    .forEach(i -> shorts[i] = values[i]);
+
+            ShortArrayCodec.this.encode(context, buffer, shorts);
         }
     }
 
@@ -139,6 +170,18 @@ public class ShortArrayCodec implements Codec<short[]> {
                     .forEach(i -> ss[i] = values[i]);
 
             ShortArrayCodec.this.encode(context, bytes, ss);
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBuffer buffer, Collection<Short> collection) {
+            val ss = new short[collection.size()];
+            val values = collection.stream()
+                    .toArray(Short[]::new);
+
+            IntStream.range(0, ss.length)
+                    .forEach(i -> ss[i] = values[i]);
+
+            ShortArrayCodec.this.encode(context, buffer, ss);
         }
     }
 }
