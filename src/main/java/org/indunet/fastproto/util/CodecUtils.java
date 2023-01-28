@@ -25,6 +25,7 @@ import org.indunet.fastproto.annotation.*;
 
 import java.math.BigInteger;
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 /**
  * Codec utils.
@@ -65,7 +66,7 @@ public class CodecUtils {
         return Arrays.copyOfRange(datagram, o, o + l);
     }
 
-    public static void binaryType(@NonNull byte[] datagram, int offset, int length, @NonNull byte[] values) {
+    public static void binaryType(byte[] datagram, int offset, int length, byte[] values) {
         int o = reverse(datagram, offset);
         int l = reverse(datagram, offset, length);
 
@@ -74,6 +75,13 @@ public class CodecUtils {
         } else {
             System.arraycopy(values, 0, datagram, o, Math.min(l, values.length));
         }
+    }
+
+    public static void binaryType(ByteBuffer buffer, int offset, int length, byte[] values) {
+        int l = buffer.reverse(offset, length);
+
+        IntStream.range(0, Math.min(l, values.length))
+                .forEach(i -> buffer.set(offset + i, values[i]));
     }
 
     public static boolean boolType(byte[] datagram, int byteOffset, int bitOffset, BitOrder order) {

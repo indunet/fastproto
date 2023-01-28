@@ -122,7 +122,7 @@ public class FastProto {
      *
      * @return Encoder object which supplies chain api.
      */
-    public static Encoder toBytes() {
+    public static Encoder create() {
         return new Encoder();
     }
 
@@ -132,7 +132,7 @@ public class FastProto {
      * @param  length the length of the byte array
      * @return Encoder object which supplies chain api.
      */
-    public static Encoder toBytes(int length) {
+    public static Encoder create(int length) {
         return new Encoder(length);
     }
 }

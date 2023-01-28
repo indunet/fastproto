@@ -17,6 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.annotation.BinaryType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
@@ -63,6 +64,17 @@ public class BinaryCodec implements Codec<byte[]> {
         this.encode(bytes, type.offset(), type.length(), value);
     }
 
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, byte[] values) {
+        val type = context.getDataTypeAnnotation(BinaryType.class);
+
+        try {
+            CodecUtils.binaryType(buffer, type.offset(), type.length(), values);
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding binary type.", e);
+        }
+    }
+
     public class WrapperCodec implements Codec<Byte[]> {
         @Override
         public Byte[] decode(CodecContext context, byte[] bytes) {
@@ -83,6 +95,16 @@ public class BinaryCodec implements Codec<byte[]> {
                     .forEach(i -> bs[i] = values[i]);
 
             BinaryCodec.this.encode(context, bytes, bs);
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBuffer buffer, Byte[] values) {
+            val bs = new byte[values.length];
+
+            IntStream.range(0, bs.length)
+                    .forEach(i -> bs[i] = values[i]);
+
+            BinaryCodec.this.encode(context, buffer, bs);
         }
     }
 
@@ -114,6 +136,18 @@ public class BinaryCodec implements Codec<byte[]> {
                     .forEach(i -> bs[i] = values[i]);
 
             BinaryCodec.this.encode(context, bytes, bs);
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBuffer buffer, Collection<Byte> collection) {
+            val bs = new byte[collection.size()];
+            val values = collection.stream()
+                    .toArray(Byte[]::new);
+
+            IntStream.range(0, bs.length)
+                    .forEach(i -> bs[i] = values[i]);
+
+            BinaryCodec.this.encode(context, buffer, bs);
         }
     }
 }

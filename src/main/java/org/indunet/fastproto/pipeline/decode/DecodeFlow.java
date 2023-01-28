@@ -35,7 +35,6 @@ import java.text.MessageFormat;
 public class DecodeFlow extends Pipeline<PipelineContext> {
     @Override
     public void process(PipelineContext context) {
-        // val assist = context.getTypeAssist();
         val reference = context.getGraph().root();
         val datagram = context.getBytes();
 

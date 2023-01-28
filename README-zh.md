@@ -363,7 +363,7 @@ JavaObject obj = FastProto.parse(bytes)
 ### *4.2 创建二进制数据块*
 
 ```java
-byte[] bytes = FastProto.toBytes()
+byte[] bytes = FastProto.create()
         .length(16)             // 二进制数据块的长度
         .uint8Type(0, 1)        // 在字节偏移量0位置写入无符号8位整型数据1
         .uint16Type(2, 3, 4)    // 在字节偏移量2位置连续写入2个无符号16位整型数据3和4
@@ -389,7 +389,7 @@ byte[] bytes = FastProto.toBytes()
 |Benchmark |    模式  | 样本数量  | 评分 |   误差   |   单位   |
 |:--------:|:--------:|:--------:|:--:|:---------:|:---------:|
 | `FastProto::parse` |  吞吐量   |   10  | 1273 | ± 17    |  次/毫秒   |
-| `FastProto::toBytes` | 吞吐量  |   10  | 6911 | ± 162    |  次/毫秒   |
+| `FastProto::create` | 吞吐量  |   10  | 6911 | ± 162    |  次/毫秒   |
 
 ## *6. 构建要求*
 

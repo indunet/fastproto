@@ -26,8 +26,6 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 
 import java.util.concurrent.TimeUnit;
 
-import static java.lang.Math.abs;
-
 /**
  * FastProto benchmark of chain api.
  *
@@ -70,7 +68,7 @@ public class FastProtoBenchmark {
     @Benchmark
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void toBytes() {
-        FastProto.toBytes(this.bytes.length)
+        FastProto.create(this.bytes.length)
                 .appendInt8(this.sample.byte8)
                 .appendInt16(this.sample.int16)
                 .appendInt32(this.sample.int32)
