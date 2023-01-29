@@ -17,8 +17,7 @@ public abstract class ResolvePipeline extends Pipeline<Reference> {
     public static ResolvePipeline getClassPipeline() {
         val head = new ByteOrderFlow();
 
-        head.setNext(new FixedLengthFlow())
-            .setNext(new ConstructorFlow())
+        head.setNext(new ConstructorFlow())
             .setNext(new CodecIgnoreFlow());
 
         return head;

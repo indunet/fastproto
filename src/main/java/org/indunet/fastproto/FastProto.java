@@ -78,7 +78,7 @@ public class FastProto {
         Pipeline.getEncodeFlow()
                 .process(context);
 
-        return context.getBytes();
+        return context.getByteBuffer().getBytes();
     }
 
     /**
