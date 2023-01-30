@@ -94,7 +94,7 @@ public class ArrayObject {
         this.uint32s = IntStream.range(0, 16)
                 .mapToLong(__ -> (long) abs(random.nextInt()))
                 .toArray();
-        this.uint64s = IntStream.range(0 ,16)
+        this.uint64s = IntStream.range(0, 16)
                 .mapToObj(__ -> BigInteger.valueOf(abs(random.nextLong())))
                 .toArray(BigInteger[]::new);
         IntStream.range(0, 16)
@@ -102,7 +102,7 @@ public class ArrayObject {
         this.doubles = IntStream.range(0, 16)
                 .mapToDouble(__ -> random.nextDouble())
                 .toArray();
-        this.bools = new boolean[] {false, true, false, true, false};
+        this.bools = new boolean[]{false, true, false, true, false};
     }
 
     public byte[] toBytes() throws IOException {
@@ -120,7 +120,7 @@ public class ArrayObject {
         stream.write(BinaryUtils.uint64Of(this.getUint64s(), ByteOrder.LITTLE));
         stream.write(BinaryUtils.valueOf(this.getFloats(), ByteOrder.LITTLE));
         stream.write(BinaryUtils.valueOf(this.getDoubles(), ByteOrder.LITTLE));
-        stream.write(new byte[] {(byte) 0b0000_1010});
+        stream.write(new byte[]{(byte) 0b0000_1010});
         stream.flush();
 
         return stream.toByteArray();

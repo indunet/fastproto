@@ -74,7 +74,9 @@ public class CodecMapper {
         codecMap.put(BoolType.class, new HashMap<>());
         codecMap.put(BoolArrayType.class, new HashMap<>());
         codecMap.put(AsciiType.class, new HashMap<>());
+        codecMap.put(AsciiArrayType.class, new HashMap<>());
         codecMap.put(CharType.class, new HashMap<>());
+        codecMap.put(CharArrayType.class, new HashMap<>());
         codecMap.put(TimeType.class, new HashMap<>());
         codecMap.put(EnumType.class, new HashMap<>());
         codecMap.put(StringType.class, new HashMap<>());
@@ -176,10 +178,18 @@ public class CodecMapper {
         codecMap.get(BoolArrayType.class).put(t -> collectionType.apply(t, Boolean.class), boolArrayCodec.new CollectionCodec());
 
         val asciiCodec = new AsciiCodec();
+        val asciiArrayCodec = new AsciiArrayCodec();
         codecMap.get(AsciiType.class).put(c -> c.equals(char.class) || c.equals(Character.class), asciiCodec);
+        codecMap.get(AsciiArrayType.class).put(c -> c.equals(char[].class) || c.equals(Character.class), asciiArrayCodec);
+        codecMap.get(AsciiArrayType.class).put(c -> c.equals(Character[].class) || c.equals(Character.class), asciiArrayCodec.new WrapperCodec());
+        codecMap.get(AsciiArrayType.class).put(t -> collectionType.apply(t, Character.class), asciiArrayCodec.new CollectionCodec());
 
         val charCodec = new CharCodec();
+        val charArrayCodec = new CharArrayCodec();
         codecMap.get(CharType.class).put(c -> c.equals(char.class) || c.equals(Character.class), charCodec);
+        codecMap.get(CharArrayType.class).put(c -> c.equals(char[].class) || c.equals(Character.class), charArrayCodec);
+        codecMap.get(CharArrayType.class).put(c -> c.equals(Character[].class) || c.equals(Character.class), charArrayCodec.new WrapperCodec());
+        codecMap.get(CharArrayType.class).put(t -> collectionType.apply(t, Character.class), charArrayCodec.new CollectionCodec());
 
         val dateCodec = new DateCodec();
         val timestampCodec = new TimestampCodec();

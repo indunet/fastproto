@@ -20,6 +20,7 @@ import lombok.val;
 import lombok.var;
 import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.annotation.CharArrayType;
 import org.indunet.fastproto.annotation.CharType;
 import org.indunet.fastproto.annotation.UInt16ArrayType;
 import org.indunet.fastproto.annotation.UInt16Type;
@@ -64,11 +65,11 @@ public class CharArrayCodec implements Codec<char[]> {
             var l = length;
 
             if (l < 0) {
-                l = CodecUtils.reverse(bytes, offset, length * UInt16Type.SIZE)  / UInt16Type.SIZE + 1;
+                l = CodecUtils.reverse(bytes, offset, length * CharType.SIZE)  / CharType.SIZE + 1;
             }
 
             IntStream.range(0, l)
-                    .forEach(i -> CodecUtils.uint16Type(bytes, o + i * UInt16Type.SIZE, policy, values[i]));
+                    .forEach(i -> CodecUtils.uint16Type(bytes, o + i * CharType.SIZE, policy, values[i]));
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding char array type.", e);
         }
@@ -76,7 +77,7 @@ public class CharArrayCodec implements Codec<char[]> {
 
     @Override
     public char[] decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(UInt16ArrayType.class);
+        val type = context.getDataTypeAnnotation(CharArrayType.class);
         val order = context.getByteOrder(type::byteOrder);
 
         return this.decode(bytes, type.offset(), type.length(), order);
@@ -84,19 +85,19 @@ public class CharArrayCodec implements Codec<char[]> {
 
     @Override
     public void encode(CodecContext context, ByteBuffer buffer, char[] values) {
-        val type = context.getDataTypeAnnotation(UInt16ArrayType.class);
+        val type = context.getDataTypeAnnotation(CharArrayType.class);
         val order = context.getByteOrder(type::byteOrder);
 
         try {
             var l = type.length();
 
             if (l < 0) {
-                l = buffer.reverse(type.offset(), type.length() * UInt16Type.SIZE)  / UInt16Type.SIZE + 1;
+                l = buffer.reverse(type.offset(), type.length() * CharType.SIZE)  / CharType.SIZE + 1;
             }
 
             IntStream.range(0, l)
                     .forEach(i ->
-                            CodecUtils.uint16Type(buffer, type.offset() + i * UInt16Type.SIZE, order, values[i]));
+                            CodecUtils.uint16Type(buffer, type.offset() + i * CharType.SIZE, order, values[i]));
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding char array type.", e);
         }

@@ -43,10 +43,6 @@ public class TypeUtils {
     protected final static String BYTE_OFFSET_NAME = "value";
     protected final static String BIT_OFFSET_NAME = "bitOffset";
     protected final static String LENGTH_NAME = "length";
-    protected final static String PROTOCOL_TYPES_NAME = "PROTOCOL_TYPES";
-    protected final static String ENCODE_FORMULA_NAME = "encodingFormula";
-    protected final static String DECODE_FORMULA_NAME = "decodingFormula";
-    protected final static String JAVA_TYPES_NAME = "JAVA_TYPES";
 
     public static Type wrapperClass(@NonNull String name) {
         switch (name) {
@@ -119,16 +115,6 @@ public class TypeUtils {
         }
     }
 
-    public static Type[] javaTypes(@NonNull Class<? extends Annotation> type) {
-        try {
-            return (Type[]) type
-                    .getDeclaredField("ALLOWED_JAVA_TYPES")
-                    .get(null);
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            return null;
-        }
-    }
-
     public static int size(@NonNull Class<? extends Annotation> type) {
         try {
             return type
@@ -137,16 +123,5 @@ public class TypeUtils {
         } catch (IllegalAccessException | NoSuchFieldException e) {
             return 0;
         }
-    }
-
-    public static Object listToArray(List<?> list, Object array) {
-        if (!array.getClass().isArray()) {
-            throw new IllegalArgumentException("The object must be array type.");
-        }
-
-        IntStream.range(0, list.size())
-                .forEach(i -> Array.set(array, i, list.get(i)));
-
-        return array;
     }
 }

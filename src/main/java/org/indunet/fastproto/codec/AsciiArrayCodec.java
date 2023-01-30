@@ -18,6 +18,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import org.indunet.fastproto.ByteBuffer;
+import org.indunet.fastproto.annotation.AsciiArrayType;
 import org.indunet.fastproto.annotation.Int8ArrayType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
@@ -63,14 +64,14 @@ public class AsciiArrayCodec implements Codec<char[]> {
 
     @Override
     public char[] decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(Int8ArrayType.class);
+        val type = context.getDataTypeAnnotation(AsciiArrayType.class);
 
         return this.decode(bytes, type.offset(), type.length());
     }
 
     @Override
     public void encode(CodecContext context, ByteBuffer buffer, char[] values) {
-        val type = context.getDataTypeAnnotation(Int8ArrayType.class);
+        val type = context.getDataTypeAnnotation(AsciiArrayType.class);
 
         try {
             val l = buffer.reverse(type.offset(), type.length());

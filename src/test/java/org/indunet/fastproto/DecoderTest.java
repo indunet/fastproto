@@ -6,6 +6,7 @@ import org.indunet.fastproto.annotation.FloatType;
 import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
 
+import java.io.ByteArrayOutputStream;
 import java.math.BigInteger;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -224,12 +225,21 @@ public class DecoderTest {
 
     @Test
     public void testMapTo() {
-        val bytes = new byte[] {78, 0, 8, 0};
-        val expected = new Wheel(78, 8);
-        val actual = FastProto.parse(bytes)
-                .readInt8(0, "diameter")
-                .readInt16(2, "thickness")
-                .mapTo(Wheel.class);
+        val expected = new TestObject();
+        val actual = FastProto.parse(expected.toBytes())
+                .readByte(0, "byte8")
+                .readShort(1, "short16")
+                .readInt8(3, "int8")
+                .readInt16(4, "int16")
+                .readInt32(6, "int32")
+                .readInt64(10, "int64")
+                .readFloat(18, "float32")
+                .readDouble(22, "double64")
+                .readUInt8(30, "uint8")
+                .readUInt16(31, "uint16")
+                .readUInt32(33, "uint32")
+                .readUInt64(37, "uint64")
+                .mapTo(TestObject.class);
 
         assertEquals(expected.toString(), actual.toString());
     }
@@ -237,9 +247,42 @@ public class DecoderTest {
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    public static class Wheel {
-        Integer diameter;
-        Integer thickness;
+    public static class TestObject {
+        Byte byte8 = 1;
+        Short short16 = 2;
+        Integer int8 = 3;
+        Integer int16 = 4;
+        Integer int32 = 5;
+        Long int64 = 6L;
+        Float float32 = 3.14f;
+        Double double64 = 2.71;
+        Integer uint8 = 9;
+        Integer uint16 = 10;
+        Long uint32 = 11L;
+        BigInteger uint64 = new BigInteger("12");
+
+        @SneakyThrows
+        public byte[] toBytes() {
+            val stream = new ByteArrayOutputStream();
+
+            stream.write(new byte[] {byte8});
+            stream.write((byte) (short16 & 0xFF));
+            stream.write((byte) ((short16 >> 8) & 0xFF));
+            stream.write(new byte[] {int8.byteValue()});
+            stream.write(BinaryUtils.int16Of(int16, ByteOrder.LITTLE));
+            stream.write(BinaryUtils.valueOf(int32));
+            stream.write(BinaryUtils.valueOf(int64));
+            stream.write(BinaryUtils.valueOf(float32));
+            stream.write(BinaryUtils.valueOf(double64));
+            stream.write(new byte[] {uint8.byteValue()});
+            stream.write(BinaryUtils.uint16Of(new int[] {uint16}, ByteOrder.LITTLE));
+            stream.write(BinaryUtils.uint32Of(new long[] {uint32}, ByteOrder.LITTLE));
+            stream.write(BinaryUtils.valueOf(uint64.longValue()));
+
+            stream.flush();
+
+            return stream.toByteArray();
+        }
     }
 
     @Test

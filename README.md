@@ -222,7 +222,7 @@ import org.indunet.fastproto.annotation.DefaultByteOrder;
 @DefaultByteOrder(ByteOrder.BIG)
 @DefaultBitOrder(BitOrder.LSB_0)
 public class Weather {
-    @UInt16Type(offset = 10, endian = ByteOrder.LITTLE)
+    @UInt16Type(offset = 10, byteOrder = ByteOrder.LITTLE)
     int humidity;
 
     @BoolType(byteOffset = 18, bitOffset = 1, bitOrder = BitOrder.MSB_0)
@@ -301,7 +301,7 @@ FastProto can automatically infer type if field is annotated by `@AutoType`.
 import org.indunet.fastproto.annotation.AutoType;
 
 public class Weather {
-    @AutoType(offset = 10, byteOrder = byteOrder.LITTLE)
+    @AutoType(offset = 10, byteOrder = ByteOrder.LITTLE)
     int humidity;   // default Int32Type
 
     @AutoType(offset = 14)

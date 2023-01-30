@@ -66,6 +66,10 @@ public class CollectionObject {
     List<Double> doubles;
     @BoolArrayType(byteOffset = 720, bitOffset = 3, length = 5, bitOrder = BitOrder.MSB_0)
     List<Boolean> bools;
+    @AsciiArrayType(offset = 722, length = 4)
+    List<Character> asciis = new ArrayList<>();
+    @CharArrayType(offset = 726, length = 2)
+    List<Character> chars = new ArrayList<>();
 
     public CollectionObject() {
         val random = new Random();
@@ -113,6 +117,14 @@ public class CollectionObject {
         this.bools.add(false);
         this.bools.add(true);
         this.bools.add(false);
+
+        this.asciis.add('a');
+        this.asciis.add('b');
+        this.asciis.add('c');
+        this.asciis.add('d');
+
+        this.chars.add('中');
+        this.chars.add('文');
     }
 
     public byte[] toBytes() throws IOException {
@@ -151,6 +163,8 @@ public class CollectionObject {
                 .mapToDouble(Double::doubleValue)
                 .toArray(), ByteOrder.LITTLE));
         stream.write(new byte[] {(byte) 0b0000_1010});
+        stream.write(new byte[] {0, 'a', 'b', 'c', 'd'});
+        stream.write(BinaryUtils.uint16Of(new int[] {'中', '文'}, ByteOrder.LITTLE));
 
         stream.flush();
 

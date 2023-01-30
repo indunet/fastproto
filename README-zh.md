@@ -33,7 +33,7 @@ FastProto是一款Java编写的二进制数据处理工具，开发者可以通�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.9.2</version>
+    <version>3.9.3</version>
 </dependency>
 ```
 
@@ -208,7 +208,7 @@ import org.indunet.fastproto.annotation.DefaultByteOrder;
 @DefaultByteOrder(ByteOrder.BIG)
 @DefaultBitOrder(BitOrder.LSB_0)
 public class Weather {
-    @UInt16Type(offset = 10, endian = ByteOrder.LITTLE)
+    @UInt16Type(offset = 10, byteOrder = ByteOrder.LITTLE)
     int humidity;
 
     @BoolType(byteOffset = 18, bitOffset = 1, bitOrder = BitOrder.MSB_0)
@@ -286,7 +286,7 @@ public class Weather {
 import org.indunet.fastproto.annotation.AutoType;
 
 public class Weather {
-    @AutoType(offset = 10, endian = EndianPolicy.LITTLE)
+    @AutoType(offset = 10, byteOrder = ByteOrder.LITTLE)
     int humidity;   // default Int32Type
 
     @AutoType(offset = 14)
