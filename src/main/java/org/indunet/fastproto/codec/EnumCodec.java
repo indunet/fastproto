@@ -99,13 +99,6 @@ public class EnumCodec<T extends Enum> implements Codec<T> {
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, T value) {
-        val dataType = context.getDataTypeAnnotation(EnumType.class);
-
-        this.encode(bytes, dataType.offset(), dataType.name(), value);
-    }
-
-    @Override
     public void encode(CodecContext context, ByteBuffer buffer, T value) {
         val type = context.getDataTypeAnnotation(EnumType.class);
         val name = type.name();

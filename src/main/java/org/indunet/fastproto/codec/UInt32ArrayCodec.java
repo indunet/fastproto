@@ -82,14 +82,6 @@ public class UInt32ArrayCodec implements Codec<long[]> {
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, long[] value) {
-        val type = context.getDataTypeAnnotation(UInt32ArrayType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        this.encode(bytes, type.offset(), type.length(), order, value);
-    }
-
-    @Override
     public void encode(CodecContext context, ByteBuffer buffer, long[] values) {
         val type = context.getDataTypeAnnotation(UInt32ArrayType.class);
         val order = context.getByteOrder(type::byteOrder);
@@ -118,15 +110,6 @@ public class UInt32ArrayCodec implements Codec<long[]> {
         }
 
         @Override
-        public void encode(CodecContext context, byte[] bytes, Long[] values) {
-            val longs = Stream.of(values)
-                    .mapToLong(i -> i.longValue())
-                    .toArray();
-
-            UInt32ArrayCodec.this.encode(context, bytes, longs);
-        }
-
-        @Override
         public void encode(CodecContext context, ByteBuffer buffer, Long[] values) {
             val longs = Stream.of(values)
                     .mapToLong(i -> i.longValue())
@@ -151,13 +134,6 @@ public class UInt32ArrayCodec implements Codec<long[]> {
                 throw new DecodingException(
                         String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
             }
-        }
-
-        @Override
-        public void encode(CodecContext context, byte[] bytes, Collection<Long> collection) {
-            UInt32ArrayCodec.this.encode(context, bytes, collection.stream()
-                    .mapToLong(Long::longValue)
-                    .toArray());
         }
 
         @Override

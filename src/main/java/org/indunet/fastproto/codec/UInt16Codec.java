@@ -31,36 +31,16 @@ import org.indunet.fastproto.util.CodecUtils;
  * @since 3.2.1
  */
 public class UInt16Codec implements Codec<Integer> {
-    public int decode(byte[] bytes, int offset, ByteOrder byteOrder) {
-        try {
-            return CodecUtils.uint16Type(bytes, offset, byteOrder);
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new DecodingException("Fail decoding uint16 type.", e);
-        }
-    }
-
-    public void encode(byte[] bytes, int offset, ByteOrder byteOrder, int value) {
-        try {
-            CodecUtils.uint16Type(bytes, offset, byteOrder, value);
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new EncodingException("Fail encoding uint16 type.", e);
-        }
-    }
-
     @Override
     public Integer decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(UInt16Type.class);
         val order = context.getByteOrder(type::byteOrder);
 
-        return this.decode(bytes, type.offset(), order);
-    }
-
-    @Override
-    public void encode(CodecContext context, byte[] bytes, Integer value) {
-        val type = context.getDataTypeAnnotation(UInt16Type.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        this.encode(bytes, type.offset(), order, value);
+        try {
+            return CodecUtils.uint16Type(bytes, type.offset(), order);
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new DecodingException("Fail decoding uint16 type.", e);
+        }
     }
 
     @Override

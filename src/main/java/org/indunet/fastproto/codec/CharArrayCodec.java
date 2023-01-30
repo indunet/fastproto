@@ -83,14 +83,6 @@ public class CharArrayCodec implements Codec<char[]> {
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, char[] value) {
-        val type = context.getDataTypeAnnotation(UInt16ArrayType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        this.encode(bytes, type.offset(), type.length(), order, value);
-    }
-
-    @Override
     public void encode(CodecContext context, ByteBuffer buffer, char[] values) {
         val type = context.getDataTypeAnnotation(UInt16ArrayType.class);
         val order = context.getByteOrder(type::byteOrder);
@@ -121,15 +113,6 @@ public class CharArrayCodec implements Codec<char[]> {
         }
 
         @Override
-        public void encode(CodecContext context, byte[] bytes, Character[] values) {
-            val chars = new char[values.length];
-
-            IntStream.range(0, values.length)
-                    .forEach(i -> chars[i] = values[i]);
-            CharArrayCodec.this.encode(context, bytes, chars);
-        }
-
-        @Override
         public void encode(CodecContext context, ByteBuffer buffer, Character[] values) {
             val chars = new char[values.length];
 
@@ -155,17 +138,6 @@ public class CharArrayCodec implements Codec<char[]> {
                 throw new DecodingException(
                         String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
             }
-        }
-
-        @Override
-        public void encode(CodecContext context, byte[] bytes, Collection<Character> collection) {
-            val chars = new char[collection.size()];
-            val values = collection.stream()
-                    .toArray(Character[]::new);
-
-            IntStream.range(0, chars.length)
-                    .forEach(i -> chars[i] = values[i]);
-            CharArrayCodec.this.encode(context, bytes, chars);
         }
 
         @Override

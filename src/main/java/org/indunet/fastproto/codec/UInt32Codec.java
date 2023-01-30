@@ -31,36 +31,16 @@ import org.indunet.fastproto.util.CodecUtils;
  * @since 3.2.1
  */
 public class UInt32Codec implements Codec<Long> {
-    public long decode(byte[] bytes, int offset, ByteOrder policy) {
-        try {
-            return CodecUtils.uint32Type(bytes, offset, policy);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new DecodingException("Fail decoding uint32 type.", e);
-        }
-    }
-
-    public void encode(byte[] bytes, int offset, ByteOrder policy, long value) {
-        try {
-            CodecUtils.uint32Type(bytes, offset, policy, value);
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new EncodingException("Fail encoding uint32 type.", e);
-        }
-    }
-
     @Override
     public Long decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(UInt32Type.class);
         val order = context.getByteOrder(type::byteOrder);
 
-        return this.decode(bytes, type.offset(), order);
-    }
-
-    @Override
-    public void encode(CodecContext context, byte[] bytes, Long value) {
-        val type = context.getDataTypeAnnotation(UInt32Type.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        this.encode(bytes, type.offset(), order, value);
+        try {
+            return CodecUtils.uint32Type(bytes, type.offset(), order);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new DecodingException("Fail decoding uint32 type.", e);
+        }
     }
 
     @Override

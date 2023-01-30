@@ -86,14 +86,6 @@ public class FloatArrayCodec implements Codec<float[]> {
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, float[] value) {
-        val type = context.getDataTypeAnnotation(FloatArrayType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        this.encode(bytes, type.offset(), type.length(), order, value);
-    }
-
-    @Override
     public void encode(CodecContext context, ByteBuffer buffer, float[] values) {
         val type = context.getDataTypeAnnotation(FloatArrayType.class);
         val order = context.getByteOrder(type::byteOrder);
@@ -130,16 +122,6 @@ public class FloatArrayCodec implements Codec<float[]> {
         }
 
         @Override
-        public void encode(CodecContext context, byte[] bytes, Float[] values) {
-            val floats = new float[values.length];
-
-            IntStream.range(0, floats.length)
-                    .forEach(i -> floats[i] = values[i]);
-
-            FloatArrayCodec.this.encode(context, bytes, floats);
-        }
-
-        @Override
         public void encode(CodecContext context, ByteBuffer buffer, Float[] values) {
             val floats = new float[values.length];
 
@@ -166,18 +148,6 @@ public class FloatArrayCodec implements Codec<float[]> {
                 throw new DecodingException(
                         String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
             }
-        }
-
-        @Override
-        public void encode(CodecContext context, byte[] bytes, Collection<Float> collection) {
-            val bs = new float[collection.size()];
-            val values = collection.stream()
-                    .toArray(Float[]::new);
-
-            IntStream.range(0, bs.length)
-                    .forEach(i -> bs[i] = values[i]);
-
-            FloatArrayCodec.this.encode(context, bytes, bs);
         }
 
         @Override

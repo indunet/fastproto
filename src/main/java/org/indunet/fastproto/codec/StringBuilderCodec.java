@@ -59,14 +59,6 @@ public class StringBuilderCodec implements Codec<StringBuilder> {
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, StringBuilder value) {
-        val type = context.getDataTypeAnnotation(StringType.class);
-        val charset = Charset.forName(type.charset());
-
-        this.encode(bytes, type.offset(), type.length(), charset, value);
-    }
-
-    @Override
     public void encode(CodecContext context, ByteBuffer buffer, StringBuilder value) {
         val type = context.getDataTypeAnnotation(StringType.class);
         val charset = Charset.forName(type.charset());

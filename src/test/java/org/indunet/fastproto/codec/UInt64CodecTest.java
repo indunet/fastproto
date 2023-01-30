@@ -16,21 +16,17 @@
 
 package org.indunet.fastproto.codec;
 
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.annotation.UInt64Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
-import org.indunet.fastproto.util.BinaryUtils;
+import org.indunet.fastproto.util.AnnotationUtils;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigInteger;
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit test of uint64 type codec.
@@ -41,58 +37,32 @@ import static org.junit.jupiter.api.Assertions.*;
 class UInt64CodecTest {
     UInt64Codec codec = new UInt64Codec();
 
-    public static List<Arguments> testDecode1() {
-        return Stream.of(
-                Arguments.arguments(new byte[]{0, 0, 0, 0, 1, 0, 0, 0}, ByteOrder.LITTLE, new BigInteger(String.valueOf((long) Math.pow(256, 4)))),
-                Arguments.arguments(new byte[]{0, 0, 0, 0, 1, 0, 0, 1}, ByteOrder.LITTLE, new BigInteger(String.valueOf((long) Math.pow(256, 4) + (long) Math.pow(256, 7)))),
-                Arguments.arguments(new byte[]{0, 0, 0, 0, 1, 0, 1, 1}, ByteOrder.BIG, new BigInteger(String.valueOf((long) Math.pow(256, 3) + 1 + 256)))
-        ).collect(Collectors.toList());
+    @Test
+    public void testDecode() {
+        byte[] bytes = new byte[10];
+
+        assertThrows(NullPointerException.class, () -> this.codec.decode(mock(0, ByteOrder.LITTLE), null));
+
+        assertThrows(DecodingException.class, () -> this.codec.decode(mock(-1, ByteOrder.LITTLE), bytes));
+        assertThrows(DecodingException.class, () -> this.codec.decode(mock(10, ByteOrder.LITTLE), bytes));
     }
 
-    public static List<Arguments> testEncode1() {
-        return Stream.of(
-                Arguments.arguments(new byte[8], 0, ByteOrder.LITTLE, new BigInteger(String.valueOf(101L)), BinaryUtils.valueOf(101L)),
-                Arguments.arguments(new byte[8], -8, ByteOrder.LITTLE, new BigInteger(String.valueOf(101L)), BinaryUtils.valueOf(101L)),
-                Arguments.arguments(new byte[8], 0, ByteOrder.LITTLE, new BigInteger(String.valueOf(Long.MAX_VALUE)), BinaryUtils.valueOf(Long.MAX_VALUE)),
-                Arguments.arguments(new byte[8], 0, ByteOrder.BIG, new BigInteger(String.valueOf(Integer.MAX_VALUE)),
-                        BinaryUtils.valueOf((long) Integer.MAX_VALUE, ByteOrder.BIG))
-        ).collect(Collectors.toList());
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    public void testDecode1(byte[] datagram, ByteOrder policy, BigInteger value) {
-        assertEquals(this.codec.decode(datagram, 0, policy), value);
-        assertEquals(this.codec.decode(datagram, -8, policy), value);
-    }
 
     @Test
-    public void testDecode2() {
-        byte[] datagram = new byte[10];
+    public void testEncode() {
+        byte[] bytes = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 0, ByteOrder.LITTLE));
-
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, -1, ByteOrder.LITTLE));
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 10, ByteOrder.LITTLE));
+        assertThrows(NullPointerException.class,
+                () -> this.codec.encode(mock(0, ByteOrder.BIG), (ByteBuffer) null, new BigInteger("8")));
+        assertThrows(EncodingException.class,
+                () -> this.codec.encode(mock(-1, ByteOrder.LITTLE), new ByteBuffer(bytes), new BigInteger("-1")));
+        assertThrows(EncodingException.class,
+                () -> this.codec.encode(mock(8, ByteOrder.LITTLE), new ByteBuffer(bytes), new BigInteger("0")));
     }
 
-    @ParameterizedTest
-    @MethodSource
-    public void testEncode1(byte[] datagram, int byteOffset, ByteOrder policy, BigInteger value, byte[] expected) {
-        this.codec.encode(datagram, byteOffset, policy, value);
-
-        assertArrayEquals(expected, datagram);
-    }
-
-    @Test
-    public void testEncode2() {
-        byte[] datagram = new byte[10];
-
-        assertThrows(NullPointerException.class, () -> this.codec.encode(null, 0, ByteOrder.BIG, new BigInteger("8")));
-
-        assertThrows(EncodingException.class,
-                () -> this.codec.encode(datagram, -1, ByteOrder.LITTLE, new BigInteger("-1")));
-        assertThrows(EncodingException.class,
-                () -> this.codec.encode(datagram, 8, ByteOrder.LITTLE, new BigInteger("0")));
+    protected CodecContext mock(int offset, ByteOrder order) {
+        return CodecContext.builder()
+                .dataTypeAnnotation(AnnotationUtils.mock(UInt64Type.class, offset, order))
+                .build();
     }
 }

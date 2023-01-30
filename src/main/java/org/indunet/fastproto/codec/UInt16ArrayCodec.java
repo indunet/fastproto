@@ -81,14 +81,6 @@ public class UInt16ArrayCodec implements Codec<int[]> {
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, int[] value) {
-        val type = context.getDataTypeAnnotation(UInt16ArrayType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        this.encode(bytes, type.offset(), type.length(), order, value);
-    }
-
-    @Override
     public void encode(CodecContext context, ByteBuffer buffer, int[] values) {
         val type = context.getDataTypeAnnotation(UInt16ArrayType.class);
         val order = context.getByteOrder(type::byteOrder);
@@ -116,15 +108,6 @@ public class UInt16ArrayCodec implements Codec<int[]> {
         }
 
         @Override
-        public void encode(CodecContext context, byte[] bytes, Integer[] values) {
-            val ints = Stream.of(values)
-                    .mapToInt(i -> i.intValue())
-                    .toArray();
-
-            UInt16ArrayCodec.this.encode(context, bytes, ints);
-        }
-
-        @Override
         public void encode(CodecContext context, ByteBuffer buffer, Integer[] values) {
             val ints = Stream.of(values)
                     .mapToInt(i -> i.intValue())
@@ -149,13 +132,6 @@ public class UInt16ArrayCodec implements Codec<int[]> {
                 throw new DecodingException(
                         String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
             }
-        }
-
-        @Override
-        public void encode(CodecContext context, byte[] bytes, Collection<Integer> collection) {
-            UInt16ArrayCodec.this.encode(context, bytes, collection.stream()
-                    .mapToInt(Integer::intValue)
-                    .toArray());
         }
 
         @Override

@@ -66,14 +66,6 @@ public class LocalDateTimeCodec implements Codec<LocalDateTime> {
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, LocalDateTime value) {
-        val type = context.getDataTypeAnnotation(TimeType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        this.encode(bytes, type.offset(), order, value);
-    }
-
-    @Override
     public void encode(CodecContext context, ByteBuffer buffer, LocalDateTime value) {
         val type = context.getDataTypeAnnotation(TimeType.class);
         val order = context.getByteOrder(type::byteOrder);

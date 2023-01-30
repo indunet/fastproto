@@ -25,8 +25,6 @@ import org.indunet.fastproto.annotation.{CharArrayType => JavaCharArrayType}
 import org.indunet.fastproto.annotation.{DefaultByteOrder => JavaDefaultByteOrder}
 import org.indunet.fastproto.annotation.{DefaultBitOrder => JavaDefaultBitOrder}
 
-import org.indunet.fastproto.annotation.{FixedLength => JavaFixedLength}
-
 import _root_.scala.annotation.meta.field
 
 /**
@@ -71,6 +69,4 @@ package object scala {
   type DefaultBitOrder = JavaDefaultBitOrder @field
   type DecodingIgnore = JavaDecodingIgnore @field
   type EncodingIgnore = JavaEncodingIgnore @field
-
-  type FixedLength = JavaFixedLength
 }

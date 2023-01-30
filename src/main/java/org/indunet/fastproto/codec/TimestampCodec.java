@@ -60,14 +60,6 @@ public class TimestampCodec implements Codec<Timestamp> {
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, Timestamp value) {
-        val type = context.getDataTypeAnnotation(TimeType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        this.encode(bytes, type.offset(), order, value);
-    }
-
-    @Override
     public void encode(CodecContext context, ByteBuffer buffer, Timestamp value) {
         val type = context.getDataTypeAnnotation(TimeType.class);
         val order = context.getByteOrder(type::byteOrder);

@@ -69,13 +69,6 @@ public class AsciiArrayCodec implements Codec<char[]> {
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, char[] value) {
-        val type = context.getDataTypeAnnotation(Int8ArrayType.class);
-
-        this.encode(bytes, type.offset(), type.length(), value);
-    }
-
-    @Override
     public void encode(CodecContext context, ByteBuffer buffer, char[] values) {
         val type = context.getDataTypeAnnotation(Int8ArrayType.class);
 
@@ -97,15 +90,6 @@ public class AsciiArrayCodec implements Codec<char[]> {
             return IntStream.range(0, chars.length)
                     .mapToObj(i -> Character.valueOf(chars[i]))
                     .toArray(Character[]::new);
-        }
-
-        @Override
-        public void encode(CodecContext context, byte[] bytes, Character[] values) {
-            val chars = new char[values.length];
-
-            IntStream.range(0, values.length)
-                    .forEach(i -> chars[i] = values[i]);
-            AsciiArrayCodec.this.encode(context, bytes, chars);
         }
 
         @Override
@@ -134,17 +118,6 @@ public class AsciiArrayCodec implements Codec<char[]> {
                 throw new DecodingException(
                         String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
             }
-        }
-
-        @Override
-        public void encode(CodecContext context, byte[] bytes, Collection<Character> collection) {
-            val chars = new char[collection.size()];
-            val values = collection.stream()
-                    .toArray(Character[]::new);
-
-            IntStream.range(0, chars.length)
-                    .forEach(i -> chars[i] = values[i]);
-            AsciiArrayCodec.this.encode(context, bytes, chars);
         }
 
         @Override

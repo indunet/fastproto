@@ -58,13 +58,6 @@ public class BinaryCodec implements Codec<byte[]> {
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, byte[] value) {
-        val type = context.getDataTypeAnnotation(BinaryType.class);
-
-        this.encode(bytes, type.offset(), type.length(), value);
-    }
-
-    @Override
     public void encode(CodecContext context, ByteBuffer buffer, byte[] values) {
         val type = context.getDataTypeAnnotation(BinaryType.class);
 
@@ -85,16 +78,6 @@ public class BinaryCodec implements Codec<byte[]> {
                     .forEach(i -> values[i] = bs[i]);
 
             return values;
-        }
-
-        @Override
-        public void encode(CodecContext context, byte[] bytes, Byte[] values) {
-            val bs = new byte[values.length];
-
-            IntStream.range(0, bs.length)
-                    .forEach(i -> bs[i] = values[i]);
-
-            BinaryCodec.this.encode(context, bytes, bs);
         }
 
         @Override
@@ -124,18 +107,6 @@ public class BinaryCodec implements Codec<byte[]> {
                 throw new DecodingException(
                         String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
             }
-        }
-
-        @Override
-        public void encode(CodecContext context, byte[] bytes, Collection<Byte> collection) {
-            val bs = new byte[collection.size()];
-            val values = collection.stream()
-                    .toArray(Byte[]::new);
-
-            IntStream.range(0, bs.length)
-                    .forEach(i -> bs[i] = values[i]);
-
-            BinaryCodec.this.encode(context, bytes, bs);
         }
 
         @Override

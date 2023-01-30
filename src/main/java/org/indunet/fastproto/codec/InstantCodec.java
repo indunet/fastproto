@@ -60,14 +60,6 @@ public class InstantCodec implements Codec<Instant> {
 
         return this.decode(bytes, type.offset(), order);
     }
-    
-    @Override
-    public void encode(CodecContext context, byte[] bytes, Instant value) {
-        val type = context.getDataTypeAnnotation(TimeType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        this.encode(bytes, type.offset(), order, value);
-    }
 
     @Override
     public void encode(CodecContext context, ByteBuffer buffer, Instant value) {

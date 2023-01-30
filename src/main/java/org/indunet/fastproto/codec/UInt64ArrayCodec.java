@@ -81,14 +81,6 @@ public class UInt64ArrayCodec implements Codec<BigInteger[]> {
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, BigInteger[] value) {
-        val type = context.getDataTypeAnnotation(UInt64ArrayType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        this.encode(bytes, type.offset(), type.length(), order, value);
-    }
-
-    @Override
     public void encode(CodecContext context, ByteBuffer buffer, BigInteger[] values) {
         val type = context.getDataTypeAnnotation(UInt64ArrayType.class);
         val order = context.getByteOrder(type::byteOrder);
@@ -122,12 +114,6 @@ public class UInt64ArrayCodec implements Codec<BigInteger[]> {
                 throw new DecodingException(
                         String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
             }
-        }
-
-        @Override
-        public void encode(CodecContext context, byte[] bytes, Collection<BigInteger> collection) {
-            UInt64ArrayCodec.this.encode(context, bytes, collection.stream()
-                    .toArray(BigInteger[]::new));
         }
 
         @Override

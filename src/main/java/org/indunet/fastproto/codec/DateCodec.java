@@ -60,14 +60,6 @@ public class DateCodec implements Codec<Date> {
 
         return this.decode(bytes, type.offset(), order);
     }
-    
-    @Override
-    public void encode(CodecContext context, byte[] bytes, Date value) {
-        val type = context.getDataTypeAnnotation(TimeType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        this.encode(bytes, type.offset(), order, value);
-    }
 
     @Override
     public void encode(CodecContext context, ByteBuffer buffer, Date value) {

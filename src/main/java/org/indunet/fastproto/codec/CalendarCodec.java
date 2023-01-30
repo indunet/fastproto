@@ -65,14 +65,6 @@ public class CalendarCodec implements Codec<Calendar> {
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, Calendar value) {
-        val type = context.getDataTypeAnnotation(TimeType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        this.encode(bytes, type.offset(), order, value);
-    }
-
-    @Override
     public void encode(CodecContext context, ByteBuffer buffer, Calendar calendar) {
         val type = context.getDataTypeAnnotation(TimeType.class);
         val order = context.getByteOrder(type::byteOrder);

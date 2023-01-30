@@ -85,14 +85,6 @@ public class DoubleArrayCodec implements Codec<double[]> {
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, double[] value) {
-        val type = context.getDataTypeAnnotation(DoubleArrayType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        this.encode(bytes, type.offset(), type.length(), order, value);
-    }
-
-    @Override
     public void encode(CodecContext context, ByteBuffer buffer, double[] values) {
         val type = context.getDataTypeAnnotation(DoubleArrayType.class);
         val order = context.getByteOrder(type::byteOrder);
@@ -125,15 +117,6 @@ public class DoubleArrayCodec implements Codec<double[]> {
         }
 
         @Override
-        public void encode(CodecContext context, byte[] bytes, Double[] values) {
-            val doubles = Stream.of(values)
-                    .mapToDouble(i -> i.doubleValue())
-                    .toArray();
-
-            DoubleArrayCodec.this.encode(context, bytes, doubles);
-        }
-
-        @Override
         public void encode(CodecContext context, ByteBuffer buffer, Double[] values) {
             val doubles = Stream.of(values)
                     .mapToDouble(i -> i.doubleValue())
@@ -158,15 +141,6 @@ public class DoubleArrayCodec implements Codec<double[]> {
                 throw new DecodingException(
                         String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
             }
-        }
-
-        @Override
-        public void encode(CodecContext context, byte[] bytes, Collection<Double> collection) {
-            val doubles = collection.stream()
-                    .mapToDouble(Double::doubleValue)
-                    .toArray();
-
-            DoubleArrayCodec.this.encode(context, bytes, doubles);
         }
 
         @Override

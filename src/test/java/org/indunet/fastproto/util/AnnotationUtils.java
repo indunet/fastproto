@@ -55,7 +55,7 @@ public class AnnotationUtils {
         Map<String, Object> map = new HashMap<>();
 
         map.put("offset", offset);
-        map.put("byteOrder", order);
+        map.put("byteOrder", new ByteOrder[] {order});
 
         return mock(annotationClass, map);
     }
@@ -65,7 +65,7 @@ public class AnnotationUtils {
 
         map.put("byteOffset", byteOffset);
         map.put("bitOffset", bitOffset);
-        map.put("bitOrder", order);
+        map.put("bitOrder", new BitOrder[] {order});
 
         return mock(annotationClass, map);
     }
@@ -75,7 +75,7 @@ public class AnnotationUtils {
 
         map.put("offset", offset);
         map.put("length", length);
-        map.put("byteOrder", order);
+        map.put("byteOrder", new ByteOrder[] {order});
 
         return mock(annotationClass, map);
     }

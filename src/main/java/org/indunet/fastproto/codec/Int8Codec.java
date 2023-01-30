@@ -30,34 +30,15 @@ import org.indunet.fastproto.util.CodecUtils;
  * @since 3.2.1
  */
 public class Int8Codec implements Codec<Integer> {
-    public int decode(byte[] bytes, int offset) {
-        try {
-            return CodecUtils.int8Type(bytes, offset);
-        } catch(ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new DecodingException("Fail decoding int8(int) type.", e);
-        }
-    }
-
-    public void encode(byte[] bytes, int offset, int value) {
-        try {
-            CodecUtils.int8Type(bytes, offset, value);
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new EncodingException("Fail encoding int8(int) type.", e);
-        }
-    }
-
     @Override
     public Integer decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(Int8Type.class);
 
-        return this.decode(bytes, type.offset());
-    }
-
-    @Override
-    public void encode(CodecContext context, byte[] bytes, Integer value) {
-        val type = context.getDataTypeAnnotation(Int8Type.class);
-
-        this.encode(bytes, type.offset(), value);
+        try {
+            return CodecUtils.int8Type(bytes, type.offset());
+        } catch(ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new DecodingException("Fail decoding int8(int) type.", e);
+        }
     }
 
     @Override

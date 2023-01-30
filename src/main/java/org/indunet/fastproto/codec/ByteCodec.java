@@ -31,34 +31,15 @@ import org.indunet.fastproto.util.CodecUtils;
  * @since 3.2.1
  */
 public class ByteCodec implements Codec<Byte> {
-    public byte decode(@NonNull final byte[] datagram, int offset) {
-        try {
-            return CodecUtils.byteType(datagram, offset);
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new DecodingException("Fail decoding int8(byte) type.", e);
-        }
-    }
-
-    public void encode(@NonNull byte[] datagram, int offset, byte value) {
-        try {
-            CodecUtils.byteType(datagram, offset, value);
-        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new EncodingException("Fail encoding int8(byte) type.", e);
-        }
-    }
-    
     @Override
     public Byte decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(Int8Type.class);
-    
-        return this.decode(bytes, type.offset());
-    }
-    
-    @Override
-    public void encode(CodecContext context, byte[] bytes, Byte value) {
-        val type = context.getDataTypeAnnotation(Int8Type.class);
-    
-        this.encode(bytes, type.offset(), value);
+
+        try {
+            return CodecUtils.byteType(bytes, type.offset());
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new DecodingException("Fail decoding int8(byte) type.", e);
+        }
     }
 
     @Override

@@ -82,14 +82,6 @@ public class ShortArrayCodec implements Codec<short[]> {
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, short[] value) {
-        val type = context.getDataTypeAnnotation(Int16ArrayType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        this.encode(bytes, type.offset(), type.length(), order, value);
-    }
-
-    @Override
     public void encode(CodecContext context, ByteBuffer buffer, short[] values) {
         val type = context.getDataTypeAnnotation(Int16ArrayType.class);
         val order = context.getByteOrder(type::byteOrder);
@@ -122,16 +114,6 @@ public class ShortArrayCodec implements Codec<short[]> {
         }
 
         @Override
-        public void encode(CodecContext context, byte[] bytes, Short[] values) {
-            val shorts = new short[values.length];
-
-            IntStream.range(0, shorts.length)
-                    .forEach(i -> shorts[i] = values[i]);
-
-            ShortArrayCodec.this.encode(context, bytes, shorts);
-        }
-
-        @Override
         public void encode(CodecContext context, ByteBuffer buffer, Short[] values) {
             val shorts = new short[values.length];
 
@@ -158,18 +140,6 @@ public class ShortArrayCodec implements Codec<short[]> {
                 throw new DecodingException(
                         String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
             }
-        }
-
-        @Override
-        public void encode(CodecContext context, byte[] bytes, Collection<Short> collection) {
-            val ss = new short[collection.size()];
-            val values = collection.stream()
-                    .toArray(Short[]::new);
-
-            IntStream.range(0, ss.length)
-                    .forEach(i -> ss[i] = values[i]);
-
-            ShortArrayCodec.this.encode(context, bytes, ss);
         }
 
         @Override

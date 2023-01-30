@@ -61,7 +61,5 @@ public interface Codec<T> {
 
     T decode(CodecContext context, byte[] bytes);
 
-    void encode(CodecContext context, byte[] bytes, T value);
-
-    default void encode(CodecContext context, ByteBuffer buffer, T value) {}
+    void encode(CodecContext context, ByteBuffer buffer, T value);
 }

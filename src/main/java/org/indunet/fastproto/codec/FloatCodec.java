@@ -31,36 +31,16 @@ import org.indunet.fastproto.util.CodecUtils;
  * @since 3.2.1
  */
 public class FloatCodec implements Codec<Float> {
-    public float decode(byte[] bytes, int offset, ByteOrder endian) {
-        try {
-            return CodecUtils.floatType(bytes, offset, endian);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new DecodingException("Fail decoding float type.", e);
-        }
-    }
-
-    public void encode(byte[] bytes, int offset, ByteOrder policy, float value) {
-        try {
-            CodecUtils.floatType(bytes, offset, policy, value);
-        } catch (IndexOutOfBoundsException e) {
-            throw new EncodingException("Fail encoding float type.", e);
-        }
-    }
-
     @Override
     public Float decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(FloatType.class);
         val order = context.getByteOrder(type::byteOrder);
 
-        return this.decode(bytes, type.offset(), order);
-    }
-
-    @Override
-    public void encode(CodecContext context, byte[] bytes, Float value) {
-        val type = context.getDataTypeAnnotation(FloatType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        this.encode(bytes, type.offset(), order, value);
+        try {
+            return CodecUtils.floatType(bytes, type.offset(), order);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new DecodingException("Fail decoding float type.", e);
+        }
     }
 
     @Override

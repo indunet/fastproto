@@ -34,7 +34,7 @@ import java.util.stream.IntStream;
  * @since 2.5.0
  */
 public class CodecUtils {
-    public static int reverse(@NonNull byte[] datagram, int offset) {
+    public static int reverse(byte[] datagram, int offset) {
         val o = offset >= 0 ? offset : datagram.length + offset;
 
         if (o >= 0) {
@@ -44,7 +44,7 @@ public class CodecUtils {
         }
     }
 
-    public static int reverse(@NonNull byte[] datagram, int offset, int length) {
+    public static int reverse(byte[] datagram, int offset, int length) {
         int o = reverse(datagram, offset);
         int l = length >= 0 ? length : datagram.length + length - o + 1;
 
@@ -55,7 +55,7 @@ public class CodecUtils {
         }
     }
 
-    public static byte[] binaryType(@NonNull final byte[] datagram, int offset, int length) {
+    public static byte[] binaryType(byte[] datagram, int offset, int length) {
         int o = reverse(datagram, offset);
         int l = reverse(datagram, offset, length);
 
@@ -164,7 +164,7 @@ public class CodecUtils {
         return datagram[o] & 0xFF;
     }
 
-    public static void uint8Type(@NonNull byte[] datagram, int offset, @NonNull int value) {
+    public static void uint8Type(@NonNull byte[] datagram, int offset, int value) {
         if (value < UInt8Type.MIN_VALUE || value > UInt8Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of uint8 range.");
         }
@@ -174,7 +174,7 @@ public class CodecUtils {
         datagram[o] = (byte) value;
     }
 
-    public static void uint8Type(ByteBuffer byteArray, int offset, @NonNull int value) {
+    public static void uint8Type(ByteBuffer byteArray, int offset, int value) {
         if (value < UInt8Type.MIN_VALUE || value > UInt8Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of uint8 range.");
         }
@@ -194,7 +194,7 @@ public class CodecUtils {
         return datagram[o];
     }
 
-    public static void int8Type(@NonNull byte[] datagram, int offset, @NonNull int value) {
+    public static void int8Type(@NonNull byte[] datagram, int offset, int value) {
         if (value < Int8Type.MIN_VALUE || value > Int8Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of int8 range.");
         }
@@ -204,7 +204,7 @@ public class CodecUtils {
         datagram[o] = (byte) value;
     }
 
-    public static void int8Type(ByteBuffer byteBuffer, int offset, @NonNull int value) {
+    public static void int8Type(ByteBuffer byteBuffer, int offset, int value) {
         if (value < Int8Type.MIN_VALUE || value > Int8Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of int8 range.");
         }
@@ -212,7 +212,7 @@ public class CodecUtils {
         byteBuffer.set(offset, (byte) value);
     }
 
-    public static int uint16Type(@NonNull final byte[] datagram, int offset, ByteOrder byteOrder) {
+    public static int uint16Type(byte[] datagram, int offset, ByteOrder byteOrder) {
         int o = reverse(datagram, offset);
 
         if (byteOrder == ByteOrder.BIG) {
@@ -222,15 +222,17 @@ public class CodecUtils {
         }
     }
 
-    public static int uint16Type(ByteBuffer byteBuffer, int offset, ByteOrder byteOrder) {
+    public static int uint16Type(ByteBuffer buffer, int offset, ByteOrder byteOrder) {
+        int o = buffer.reverse(offset);
+
         if (byteOrder == ByteOrder.BIG) {
-            return (byteBuffer.get(offset) & 0xFF) * 256 + (byteBuffer.get(offset + 1) & 0xFF);
+            return (buffer.get(o) & 0xFF) * 256 + (buffer.get(o + 1) & 0xFF);
         } else {
-            return (byteBuffer.get(offset) & 0xFF) + (byteBuffer.get(offset + 1) & 0xFF) * 256;
+            return (buffer.get(o) & 0xFF) + (buffer.get(o + 1) & 0xFF) * 256;
         }
     }
 
-    public static void uint16Type(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull int value) {
+    public static void uint16Type(byte[] datagram, int offset, ByteOrder byteOrder, int value) {
         if (value < UInt16Type.MIN_VALUE || value > UInt16Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of uint16 range.");
         }
@@ -246,17 +248,19 @@ public class CodecUtils {
         }
     }
 
-    public static void uint16Type(ByteBuffer byteBuffer, int offset, ByteOrder byteOrder, @NonNull int value) {
+    public static void uint16Type(ByteBuffer buffer, int offset, ByteOrder byteOrder, int value) {
         if (value < UInt16Type.MIN_VALUE || value > UInt16Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of uint16 range.");
         }
 
+        int o = buffer.reverse(offset);
+
         if (byteOrder == ByteOrder.BIG) {
-            byteBuffer.set(offset + 1, (byte) (value));
-            byteBuffer.set(offset, (byte) (value >>> 8));
+            buffer.set(o + 1, (byte) (value));
+            buffer.set(o, (byte) (value >>> 8));
         } else {
-            byteBuffer.set(offset, (byte) (value));
-            byteBuffer.set(offset + 1, (byte) (value >>> 8));
+            buffer.set(o, (byte) (value));
+            buffer.set(o + 1, (byte) (value >>> 8));
         }
     }
 
@@ -275,21 +279,22 @@ public class CodecUtils {
         return value;
     }
 
-    public static int int16Type(ByteBuffer byteBuffer, int offset, ByteOrder byteOrder) {
+    public static int int16Type(ByteBuffer buffer, int offset, ByteOrder byteOrder) {
+        int o = buffer.reverse(offset);
         short value = 0;
 
         if (byteOrder == ByteOrder.BIG) {
-            value |= (byteBuffer.get(offset) << 8);
-            value |= (byteBuffer.get(offset + 1) & 0x00FF);
+            value |= (buffer.get(o) << 8);
+            value |= (buffer.get(o + 1) & 0x00FF);
         } else {
-            value |= (byteBuffer.get(offset) & 0x00FF);
-            value |= (byteBuffer.get(offset + 1) << 8);
+            value |= (buffer.get(o) & 0x00FF);
+            value |= (buffer.get(o + 1) << 8);
         }
 
         return value;
     }
 
-    public static void int16Type(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull int value) {
+    public static void int16Type(byte[] datagram, int offset, ByteOrder byteOrder, int value) {
         if (value < Int16Type.MIN_VALUE || value > Int16Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of int16 range.");
         }
@@ -305,17 +310,19 @@ public class CodecUtils {
         }
     }
 
-    public static void int16Type(ByteBuffer byteBuffer, int offset, ByteOrder byteOrder, @NonNull int value) {
+    public static void int16Type(ByteBuffer buffer, int offset, ByteOrder byteOrder, int value) {
         if (value < Int16Type.MIN_VALUE || value > Int16Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of int16 range.");
         }
 
+        int o = buffer.reverse(offset);
+
         if (byteOrder == ByteOrder.BIG) {
-            byteBuffer.set(offset + 1, (byte) value);
-            byteBuffer.set(offset, (byte) (value >>> 8));
+            buffer.set(o + 1, (byte) value);
+            buffer.set(o, (byte) (value >>> 8));
         } else {
-            byteBuffer.set(offset, (byte) value);
-            byteBuffer.set(offset + 1, (byte) (value >>> 8));
+            buffer.set(o, (byte) value);
+            buffer.set(o + 1, (byte) (value >>> 8));
         }
     }
 
@@ -334,21 +341,22 @@ public class CodecUtils {
         return value;
     }
 
-    public static short shortType(ByteBuffer byteBuffer, int offset, ByteOrder byteOrder) {
+    public static short shortType(ByteBuffer buffer, int offset, ByteOrder byteOrder) {
+        int o = buffer.reverse(offset);
         short value = 0;
 
         if (byteOrder == ByteOrder.LITTLE) {
-            value |= (byteBuffer.get(offset) & 0x00FF);
-            value |= (byteBuffer.get(offset + 1) << 8);
+            value |= (buffer.get(o) & 0x00FF);
+            value |= (buffer.get(o + 1) << 8);
         } else if (byteOrder == ByteOrder.BIG) {
-            value |= (byteBuffer.get(offset) << 8);
-            value |= (byteBuffer.get(offset + 1) & 0x00FF);
+            value |= (buffer.get(o) << 8);
+            value |= (buffer.get(o + 1) & 0x00FF);
         }
 
         return value;
     }
 
-    public static void shortType(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull short value) {
+    public static void shortType(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, short value) {
         int o = reverse(datagram, offset);
 
         if (byteOrder == ByteOrder.LITTLE) {
@@ -360,13 +368,15 @@ public class CodecUtils {
         }
     }
 
-    public static void shortType(ByteBuffer buffer, int offset, ByteOrder byteOrder, @NonNull short value) {
+    public static void shortType(ByteBuffer buffer, int offset, ByteOrder byteOrder, short value) {
+        int o = buffer.reverse(offset);
+
         if (byteOrder == ByteOrder.LITTLE) {
-            buffer.set(offset, (byte) (value));
-            buffer.set(offset + 1, (byte) (value >>> 8));
+            buffer.set(o, (byte) (value));
+            buffer.set(o + 1, (byte) (value >>> 8));
         } else if (byteOrder == ByteOrder.BIG) {
-            buffer.set(offset + 1, (byte) (value));
-            buffer.set(offset, (byte) (value >>> 8));
+            buffer.set(o + 1, (byte) (value));
+            buffer.set(o, (byte) (value >>> 8));
         }
     }
 
@@ -389,25 +399,26 @@ public class CodecUtils {
         return value;
     }
 
-    public static int int32Type(ByteBuffer byteBuffer, int offset, ByteOrder byteOrder) {
+    public static int int32Type(ByteBuffer buffer, int offset, ByteOrder byteOrder) {
+        int o = buffer.reverse(offset);
         int value = 0;
 
         if (byteOrder == ByteOrder.LITTLE) {
-            value |= (byteBuffer.get(offset) & 0xFF);
-            value |= ((byteBuffer.get(offset + 1) & 0xFF) << 8);
-            value |= ((byteBuffer.get(offset + 2) & 0xFF) << 16);
-            value |= ((byteBuffer.get(offset + 3) & 0xFF) << 24);
+            value |= (buffer.get(o) & 0xFF);
+            value |= ((buffer.get(o + 1) & 0xFF) << 8);
+            value |= ((buffer.get(o + 2) & 0xFF) << 16);
+            value |= ((buffer.get(o + 3) & 0xFF) << 24);
         } else if (byteOrder == ByteOrder.BIG) {
-            value |= ((byteBuffer.get(offset) & 0xFF) << 24);
-            value |= ((byteBuffer.get(offset + 1) & 0xFF) << 16);
-            value |= ((byteBuffer.get(offset + 2) & 0xFF) << 8);
-            value |= (byteBuffer.get(offset + 3) & 0xFF);
+            value |= ((buffer.get(o) & 0xFF) << 24);
+            value |= ((buffer.get(o + 1) & 0xFF) << 16);
+            value |= ((buffer.get(o + 2) & 0xFF) << 8);
+            value |= (buffer.get(o + 3) & 0xFF);
         }
 
         return value;
     }
 
-    public static void int32Type(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull int value) {
+    public static void int32Type(byte[] datagram, int offset, ByteOrder byteOrder, int value) {
         int o = reverse(datagram, offset);
 
         if (byteOrder == ByteOrder.LITTLE) {
@@ -423,17 +434,19 @@ public class CodecUtils {
         }
     }
 
-    public static void int32Type(ByteBuffer byteBuffer, int offset, ByteOrder byteOrder, @NonNull int value) {
+    public static void int32Type(ByteBuffer buffer, int offset, ByteOrder byteOrder, int value) {
+        int o = buffer.reverse(offset);
+
         if (byteOrder == ByteOrder.LITTLE) {
-            byteBuffer.set(offset, (byte) value);
-            byteBuffer.set(offset + 1, (byte) (value >>> 8));
-            byteBuffer.set(offset + 2, (byte) (value >>> 16));
-            byteBuffer.set(offset + 3, (byte) (value >>> 24));
+            buffer.set(o, (byte) value);
+            buffer.set(o + 1, (byte) (value >>> 8));
+            buffer.set(o + 2, (byte) (value >>> 16));
+            buffer.set(o + 3, (byte) (value >>> 24));
         } else if (byteOrder == ByteOrder.BIG) {
-            byteBuffer.set(offset + 3, (byte) value);
-            byteBuffer.set(offset + 2, (byte) (value >>> 8));
-            byteBuffer.set(offset + 1, (byte) (value >>> 16));
-            byteBuffer.set(offset, (byte) (value >>> 24));
+            buffer.set(o + 3, (byte) value);
+            buffer.set(o + 2, (byte) (value >>> 8));
+            buffer.set(o + 1, (byte) (value >>> 16));
+            buffer.set(o, (byte) (value >>> 24));
         }
     }
 
@@ -456,25 +469,26 @@ public class CodecUtils {
         return value;
     }
 
-    public static long uint32Type(ByteBuffer byteBuffer, int offset, ByteOrder byteOrder) {
+    public static long uint32Type(ByteBuffer buffer, int offset, ByteOrder byteOrder) {
+        int o = buffer.reverse(offset);
         long value = 0;
 
         if (byteOrder == ByteOrder.LITTLE) {
-            value |= (byteBuffer.get(offset) & 0xFF);
-            value |= ((byteBuffer.get(offset + 1) & 0xFFL) << 8);
-            value |= ((byteBuffer.get(offset + 2) & 0xFFL) << 16);
-            value |= ((byteBuffer.get(offset + 3) & 0xFFL) << 24);
+            value |= (buffer.get(o) & 0xFF);
+            value |= ((buffer.get(o + 1) & 0xFFL) << 8);
+            value |= ((buffer.get(o + 2) & 0xFFL) << 16);
+            value |= ((buffer.get(o + 3) & 0xFFL) << 24);
         } else if (byteOrder == ByteOrder.BIG) {
-            value |= ((byteBuffer.get(offset) & 0xFFL) << 24);
-            value |= ((byteBuffer.get(offset + 1) & 0xFFL) << 16);
-            value |= ((byteBuffer.get(offset + 2) & 0xFFL) << 8);
-            value |= (byteBuffer.get(offset + 3) & 0xFF);
+            value |= ((buffer.get(o) & 0xFFL) << 24);
+            value |= ((buffer.get(o + 1) & 0xFFL) << 16);
+            value |= ((buffer.get(o + 2) & 0xFFL) << 8);
+            value |= (buffer.get(o + 3) & 0xFF);
         }
 
         return value;
     }
 
-    public static void uint32Type(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull long value) {
+    public static void uint32Type(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, long value) {
         if (value < UInt32Type.MIN_VALUE || value > UInt32Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of uint32 range.");
         }
@@ -494,21 +508,23 @@ public class CodecUtils {
         }
     }
 
-    public static void uint32Type(ByteBuffer byteBuffer, int offset, ByteOrder byteOrder, @NonNull long value) {
+    public static void uint32Type(ByteBuffer buffer, int offset, ByteOrder byteOrder, long value) {
         if (value < UInt32Type.MIN_VALUE || value > UInt32Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of uint32 range.");
         }
 
+        int o = buffer.reverse(offset);
+
         if (byteOrder == ByteOrder.BIG) {
-            byteBuffer.set(offset + 3, (byte) (value));
-            byteBuffer.set(offset + 2, (byte) (value >>> 8));
-            byteBuffer.set(offset + 1, (byte) (value >>> 16));
-            byteBuffer.set(offset, (byte) (value >>> 24));
+            buffer.set(o + 3, (byte) (value));
+            buffer.set(o + 2, (byte) (value >>> 8));
+            buffer.set(o + 1, (byte) (value >>> 16));
+            buffer.set(o, (byte) (value >>> 24));
         } else {
-            byteBuffer.set(offset, (byte) (value));
-            byteBuffer.set(offset + 1, (byte) (value >>> 8));
-            byteBuffer.set(offset + 2, (byte) (value >>> 16));
-            byteBuffer.set(offset + 3, (byte) (value >>> 24));
+            buffer.set(o, (byte) (value));
+            buffer.set(o + 1, (byte) (value >>> 8));
+            buffer.set(o + 2, (byte) (value >>> 16));
+            buffer.set(o + 3, (byte) (value >>> 24));
         }
     }
 
@@ -544,30 +560,31 @@ public class CodecUtils {
                 .add(new BigInteger(String.valueOf(low)));
     }
 
-    public static BigInteger uint64Type(ByteBuffer byteBuffer, int offset, ByteOrder byteOrder) {
+    public static BigInteger uint64Type(ByteBuffer buffer, int offset, ByteOrder byteOrder) {
+        int o = buffer.reverse(offset);
         long low = 0;
         long high = 0;
 
         if (byteOrder == ByteOrder.LITTLE) {
-            low |= (byteBuffer.get(offset) & 0xFF);
-            low |= ((byteBuffer.get(offset + 1) & 0xFFL) << 8);
-            low |= ((byteBuffer.get(offset + 2) & 0xFFL) << 16);
-            low |= ((byteBuffer.get(offset + 3) & 0xFFL) << 24);
+            low |= (buffer.get(o) & 0xFF);
+            low |= ((buffer.get(o + 1) & 0xFFL) << 8);
+            low |= ((buffer.get(o + 2) & 0xFFL) << 16);
+            low |= ((buffer.get(o + 3) & 0xFFL) << 24);
 
-            high |= (byteBuffer.get(offset + 4) & 0xFFL);
-            high |= ((byteBuffer.get(offset + 5) & 0xFFL) << 8);
-            high |= ((byteBuffer.get(offset + 6) & 0xFFL) << 16);
-            high |= ((byteBuffer.get(offset + 7) & 0xFFL) << 24);
+            high |= (buffer.get(o + 4) & 0xFFL);
+            high |= ((buffer.get(o + 5) & 0xFFL) << 8);
+            high |= ((buffer.get(o + 6) & 0xFFL) << 16);
+            high |= ((buffer.get(o + 7) & 0xFFL) << 24);
         } else if (byteOrder == ByteOrder.BIG) {
-            high |= ((byteBuffer.get(offset) & 0xFFL) << 24);
-            high |= ((byteBuffer.get(offset + 1) & 0xFFL) << 16);
-            high |= ((byteBuffer.get(offset + 2) & 0xFFL) << 8);
-            high |= (byteBuffer.get(offset + 3) & 0xFFL);
+            high |= ((buffer.get(o) & 0xFFL) << 24);
+            high |= ((buffer.get(o + 1) & 0xFFL) << 16);
+            high |= ((buffer.get(o + 2) & 0xFFL) << 8);
+            high |= (buffer.get(o + 3) & 0xFFL);
 
-            low |= ((byteBuffer.get(offset + 4) & 0xFFL) << 24);
-            low |= ((byteBuffer.get(offset + 5) & 0xFFL) << 16);
-            low |= ((byteBuffer.get(offset + 6) & 0xFFL) << 8);
-            low |= (byteBuffer.get(offset + 7) & 0xFF);
+            low |= ((buffer.get(o + 4) & 0xFFL) << 24);
+            low |= ((buffer.get(o + 5) & 0xFFL) << 16);
+            low |= ((buffer.get(o + 6) & 0xFFL) << 8);
+            low |= (buffer.get(o + 7) & 0xFF);
         }
 
         return new BigInteger(String.valueOf(high))
@@ -611,11 +628,12 @@ public class CodecUtils {
         }
     }
 
-    public static void uint64Type(ByteBuffer byteBuffer, int offset, ByteOrder byteOrder, BigInteger value) {
+    public static void uint64Type(ByteBuffer buffer, int offset, ByteOrder byteOrder, BigInteger value) {
         if (value.compareTo(UInt64Type.MAX_VALUE) > 0 || value.compareTo(UInt64Type.MIN_VALUE) < 0) {
             throw new IllegalArgumentException("Out of uinteger64 range.");
         }
 
+        int o = buffer.reverse(offset);
         long low = value
                 .and(new BigInteger(String.valueOf(0xFFFF_FFFFL)))
                 .longValueExact();
@@ -624,25 +642,25 @@ public class CodecUtils {
                 .longValueExact();
 
         if (byteOrder == ByteOrder.BIG) {
-            byteBuffer.set(offset + 7, (byte) low);
-            byteBuffer.set(offset + 6, (byte) (low >>> 8));
-            byteBuffer.set(offset + 5, (byte) (low >>> 16));
-            byteBuffer.set(offset + 4, (byte) (low >>> 24));
+            buffer.set(o + 7, (byte) low);
+            buffer.set(o + 6, (byte) (low >>> 8));
+            buffer.set(o + 5, (byte) (low >>> 16));
+            buffer.set(o + 4, (byte) (low >>> 24));
 
-            byteBuffer.set(offset + 3, (byte) high);
-            byteBuffer.set(offset + 2, (byte) (high >>> 8));
-            byteBuffer.set(offset + 1, (byte) (high >>> 16));
-            byteBuffer.set(offset, (byte) (high >>> 24));
+            buffer.set(o + 3, (byte) high);
+            buffer.set(o + 2, (byte) (high >>> 8));
+            buffer.set(o + 1, (byte) (high >>> 16));
+            buffer.set(o, (byte) (high >>> 24));
         } else {
-            byteBuffer.set(offset, (byte) low);
-            byteBuffer.set(offset + 1, (byte) (low >>> 8));
-            byteBuffer.set(offset + 2, (byte) (low >>> 16));
-            byteBuffer.set(offset + 3, (byte) (low >>> 24));
+            buffer.set(o, (byte) low);
+            buffer.set(o + 1, (byte) (low >>> 8));
+            buffer.set(o + 2, (byte) (low >>> 16));
+            buffer.set(o + 3, (byte) (low >>> 24));
 
-            byteBuffer.set(offset + 4, (byte) high);
-            byteBuffer.set(offset + 5, (byte) (high >>> 8));
-            byteBuffer.set(offset + 6, (byte) (high >>> 16));
-            byteBuffer.set(offset + 7, (byte) (high >>> 24));
+            buffer.set(o + 4, (byte) high);
+            buffer.set(o + 5, (byte) (high >>> 8));
+            buffer.set(o + 6, (byte) (high >>> 16));
+            buffer.set(o + 7, (byte) (high >>> 24));
         }
     }
 
@@ -675,35 +693,36 @@ public class CodecUtils {
         return value;
     }
 
-    public static long int64Type(ByteBuffer byteBuffer, int offset, ByteOrder byteOrder) {
+    public static long int64Type(ByteBuffer buffer, int offset, ByteOrder byteOrder) {
+        int o = buffer.reverse(offset);
         long value = 0;
 
         if (byteOrder == ByteOrder.LITTLE) {
-            value |= (byteBuffer.get(offset) & 0xFF);
-            value |= ((byteBuffer.get(offset + 1) & 0xFFL) << 8);
-            value |= ((byteBuffer.get(offset + 2) & 0xFFL) << 16);
-            value |= ((byteBuffer.get(offset + 3) & 0xFFL) << 24);
+            value |= (buffer.get(o) & 0xFF);
+            value |= ((buffer.get(o + 1) & 0xFFL) << 8);
+            value |= ((buffer.get(o + 2) & 0xFFL) << 16);
+            value |= ((buffer.get(o + 3) & 0xFFL) << 24);
 
-            value |= ((byteBuffer.get(offset + 4) & 0xFFL) << 32);
-            value |= ((byteBuffer.get(offset + 5) & 0xFFL) << 40);
-            value |= ((byteBuffer.get(offset + 6) & 0xFFL) << 48);
-            value |= ((byteBuffer.get(offset + 7) & 0xFFL) << 56);
+            value |= ((buffer.get(o + 4) & 0xFFL) << 32);
+            value |= ((buffer.get(o + 5) & 0xFFL) << 40);
+            value |= ((buffer.get(o + 6) & 0xFFL) << 48);
+            value |= ((buffer.get(o + 7) & 0xFFL) << 56);
         } else if (byteOrder == ByteOrder.BIG) {
-            value |= ((byteBuffer.get(offset) & 0xFFL) << 56);
-            value |= ((byteBuffer.get(offset + 1) & 0xFFL) << 48);
-            value |= ((byteBuffer.get(offset + 2) & 0xFFL) << 40);
-            value |= ((byteBuffer.get(offset + 3) & 0xFFL) << 32);
+            value |= ((buffer.get(o) & 0xFFL) << 56);
+            value |= ((buffer.get(o + 1) & 0xFFL) << 48);
+            value |= ((buffer.get(o + 2) & 0xFFL) << 40);
+            value |= ((buffer.get(o + 3) & 0xFFL) << 32);
 
-            value |= ((byteBuffer.get(offset + 4) & 0xFFL) << 24);
-            value |= ((byteBuffer.get(offset + 5) & 0xFFL) << 16);
-            value |= ((byteBuffer.get(offset + 6) & 0xFFL) << 8);
-            value |= (byteBuffer.get(offset + 7) & 0xFF);
+            value |= ((buffer.get(o + 4) & 0xFFL) << 24);
+            value |= ((buffer.get(o + 5) & 0xFFL) << 16);
+            value |= ((buffer.get(o + 6) & 0xFFL) << 8);
+            value |= (buffer.get(o + 7) & 0xFF);
         }
 
         return value;
     }
 
-    public static void int64Type(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull long value) {
+    public static void int64Type(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, long value) {
         int o = reverse(datagram, offset);
 
         if (byteOrder == ByteOrder.BIG) {
@@ -729,27 +748,29 @@ public class CodecUtils {
         }
     }
 
-    public static void int64Type(ByteBuffer byteBuffer, int offset, ByteOrder byteOrder, @NonNull long value) {
+    public static void int64Type(ByteBuffer buffer, int offset, ByteOrder byteOrder, long value) {
+        int o = buffer.reverse(offset);
+
         if (byteOrder == ByteOrder.BIG) {
-            byteBuffer.set(offset + 7, (byte) value);
-            byteBuffer.set(offset + 6, (byte) (value >>> 8));
-            byteBuffer.set(offset + 5, (byte) (value >>> 16));
-            byteBuffer.set(offset + 4, (byte) (value >>> 24));
+            buffer.set(o + 7, (byte) value);
+            buffer.set(o + 6, (byte) (value >>> 8));
+            buffer.set(o + 5, (byte) (value >>> 16));
+            buffer.set(o + 4, (byte) (value >>> 24));
 
-            byteBuffer.set(offset + 3, (byte) (value >>> 32));
-            byteBuffer.set(offset + 2, (byte) (value >>> 40));
-            byteBuffer.set(offset + 1, (byte) (value >>> 48));
-            byteBuffer.set(offset, (byte) (value >>> 56));
+            buffer.set(o + 3, (byte) (value >>> 32));
+            buffer.set(o + 2, (byte) (value >>> 40));
+            buffer.set(o + 1, (byte) (value >>> 48));
+            buffer.set(o, (byte) (value >>> 56));
         } else {
-            byteBuffer.set(offset, (byte) (value));
-            byteBuffer.set(offset + 1, (byte) (value >>> 8));
-            byteBuffer.set(offset + 2, (byte) (value >>> 16));
-            byteBuffer.set(offset + 3, (byte) (value >>> 24));
+            buffer.set(o, (byte) (value));
+            buffer.set(o + 1, (byte) (value >>> 8));
+            buffer.set(o + 2, (byte) (value >>> 16));
+            buffer.set(o + 3, (byte) (value >>> 24));
 
-            byteBuffer.set(offset + 4, (byte) (value >>> 32));
-            byteBuffer.set(offset + 5, (byte) (value >>> 40));
-            byteBuffer.set(offset + 6, (byte) (value >>> 48));
-            byteBuffer.set(offset + 7, (byte) (value >>> 56));
+            buffer.set(o + 4, (byte) (value >>> 32));
+            buffer.set(o + 5, (byte) (value >>> 40));
+            buffer.set(o + 6, (byte) (value >>> 48));
+            buffer.set(o + 7, (byte) (value >>> 56));
         }
     }
 
@@ -772,25 +793,26 @@ public class CodecUtils {
         return Float.intBitsToFloat(value);
     }
 
-    public static float floatType(ByteBuffer byteBuffer, int offset, ByteOrder byteOrder) {
+    public static float floatType(ByteBuffer buffer, int offset, ByteOrder byteOrder) {
+        int o = buffer.reverse(offset);
         int value = 0;
 
         if (byteOrder == ByteOrder.LITTLE) {
-            value |= (byteBuffer.get(offset) & 0xFF);
-            value |= ((byteBuffer.get(offset + 1) & 0xFF) << 8);
-            value |= ((byteBuffer.get(offset + 2) & 0xFF) << 16);
-            value |= ((byteBuffer.get(offset + 3) & 0xFF) << 24);
+            value |= (buffer.get(o) & 0xFF);
+            value |= ((buffer.get(o + 1) & 0xFF) << 8);
+            value |= ((buffer.get(o + 2) & 0xFF) << 16);
+            value |= ((buffer.get(o + 3) & 0xFF) << 24);
         } else if (byteOrder == ByteOrder.BIG) {
-            value |= ((byteBuffer.get(offset) & 0xFF) << 24);
-            value |= ((byteBuffer.get(offset + 1) & 0xFF) << 16);
-            value |= ((byteBuffer.get(offset + 2) & 0xFF) << 8);
-            value |= (byteBuffer.get(offset + 3) & 0xFF);
+            value |= ((buffer.get(o) & 0xFF) << 24);
+            value |= ((buffer.get(o + 1) & 0xFF) << 16);
+            value |= ((buffer.get(o + 2) & 0xFF) << 8);
+            value |= (buffer.get(o + 3) & 0xFF);
         }
 
         return Float.intBitsToFloat(value);
     }
 
-    public static void floatType(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull float value) {
+    public static void floatType(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, float value) {
         int o = reverse(datagram, offset);
         int bits = Float.floatToIntBits(value);
 
@@ -807,19 +829,20 @@ public class CodecUtils {
         }
     }
 
-    public static void floatType(ByteBuffer byteBuffer, int offset, ByteOrder byteOrder, @NonNull float value) {
+    public static void floatType(ByteBuffer buffer, int offset, ByteOrder byteOrder, float value) {
+        int o = buffer.reverse(offset);
         int bits = Float.floatToIntBits(value);
 
         if (byteOrder == ByteOrder.LITTLE) {
-            byteBuffer.set(offset, (byte) bits);
-            byteBuffer.set(offset + 1, (byte) (bits >>> 8));
-            byteBuffer.set(offset + 2, (byte) (bits >>> 16));
-            byteBuffer.set(offset + 3, (byte) (bits >>> 24));
+            buffer.set(o, (byte) bits);
+            buffer.set(o + 1, (byte) (bits >>> 8));
+            buffer.set(o + 2, (byte) (bits >>> 16));
+            buffer.set(o + 3, (byte) (bits >>> 24));
         } else if (byteOrder == ByteOrder.BIG) {
-            byteBuffer.set(offset + 3, (byte) bits);
-            byteBuffer.set(offset + 2, (byte) (bits >>> 8));
-            byteBuffer.set(offset + 1, (byte) (bits >>> 16));
-            byteBuffer.set(offset, (byte) (bits >>> 24));
+            buffer.set(o + 3, (byte) bits);
+            buffer.set(o + 2, (byte) (bits >>> 8));
+            buffer.set(o + 1, (byte) (bits >>> 16));
+            buffer.set(o, (byte) (bits >>> 24));
         }
     }
 
@@ -852,35 +875,36 @@ public class CodecUtils {
         return Double.longBitsToDouble(value);
     }
 
-    public static double doubleType(ByteBuffer byteBuffer, int offset, ByteOrder byteOrder) {
+    public static double doubleType(ByteBuffer buffer, int offset, ByteOrder byteOrder) {
+        int o = buffer.reverse(offset);
         long value = 0;
 
         if (byteOrder == ByteOrder.LITTLE) {
-            value |= (byteBuffer.get(offset) & 0xFFL);
-            value |= ((byteBuffer.get(offset + 1) & 0xFFL) << 8);
-            value |= ((byteBuffer.get(offset + 2) & 0xFFL) << 16);
-            value |= ((byteBuffer.get(offset + 3) & 0xFFL) << 24);
+            value |= (buffer.get(o) & 0xFFL);
+            value |= ((buffer.get(o + 1) & 0xFFL) << 8);
+            value |= ((buffer.get(o + 2) & 0xFFL) << 16);
+            value |= ((buffer.get(o + 3) & 0xFFL) << 24);
 
-            value |= ((byteBuffer.get(offset + 4) & 0xFFL) << 32);
-            value |= ((byteBuffer.get(offset + 5) & 0xFFL) << 40);
-            value |= ((byteBuffer.get(offset + 6) & 0xFFL) << 48);
-            value |= ((byteBuffer.get(offset + 7) & 0xFFL) << 56);
+            value |= ((buffer.get(o + 4) & 0xFFL) << 32);
+            value |= ((buffer.get(o + 5) & 0xFFL) << 40);
+            value |= ((buffer.get(o + 6) & 0xFFL) << 48);
+            value |= ((buffer.get(o + 7) & 0xFFL) << 56);
         } else if (byteOrder == ByteOrder.BIG) {
-            value |= ((byteBuffer.get(offset) & 0xFFL) << 56);
-            value |= ((byteBuffer.get(offset + 1) & 0xFFL) << 48);
-            value |= ((byteBuffer.get(offset + 2) & 0xFFL) << 40);
-            value |= ((byteBuffer.get(offset + 3) & 0xFFL) << 32);
+            value |= ((buffer.get(o) & 0xFFL) << 56);
+            value |= ((buffer.get(o + 1) & 0xFFL) << 48);
+            value |= ((buffer.get(o + 2) & 0xFFL) << 40);
+            value |= ((buffer.get(o + 3) & 0xFFL) << 32);
 
-            value |= ((byteBuffer.get(offset + 5) & 0xFFL) << 16);
-            value |= ((byteBuffer.get(offset + 4) & 0xFFL) << 24);
-            value |= ((byteBuffer.get(offset + 6) & 0xFFL) << 8);
-            value |= (byteBuffer.get(offset + 7) & 0xFFL);
+            value |= ((buffer.get(o + 5) & 0xFFL) << 16);
+            value |= ((buffer.get(o + 4) & 0xFFL) << 24);
+            value |= ((buffer.get(o + 6) & 0xFFL) << 8);
+            value |= (buffer.get(o + 7) & 0xFFL);
         }
 
         return Double.longBitsToDouble(value);
     }
 
-    public static void doubleType(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, @NonNull double value) {
+    public static void doubleType(@NonNull byte[] datagram, int offset, ByteOrder byteOrder, double value) {
         int o = reverse(datagram, offset);
         long bits = Double.doubleToRawLongBits(value);
 
@@ -907,29 +931,30 @@ public class CodecUtils {
         }
     }
 
-    public static void doubleType(ByteBuffer byteBuffer, int offset, ByteOrder byteOrder, @NonNull double value) {
+    public static void doubleType(ByteBuffer buffer, int offset, ByteOrder byteOrder, double value) {
+        int o = buffer.reverse(offset);
         long bits = Double.doubleToRawLongBits(value);
 
         if (byteOrder == ByteOrder.BIG) {
-            byteBuffer.set(offset + 7, (byte) bits);
-            byteBuffer.set(offset + 6, (byte) (bits >>> 8));
-            byteBuffer.set(offset + 5, (byte) (bits >>> 16));
-            byteBuffer.set(offset + 4, (byte) (bits >>> 24));
+            buffer.set(o + 7, (byte) bits);
+            buffer.set(o + 6, (byte) (bits >>> 8));
+            buffer.set(o + 5, (byte) (bits >>> 16));
+            buffer.set(o + 4, (byte) (bits >>> 24));
 
-            byteBuffer.set(offset + 3, (byte) (bits >>> 32));
-            byteBuffer.set(offset + 2, (byte) (bits >>> 40));
-            byteBuffer.set(offset + 1, (byte) (bits >>> 48));
-            byteBuffer.set(offset, (byte) (bits >>> 56));
+            buffer.set(o + 3, (byte) (bits >>> 32));
+            buffer.set(o + 2, (byte) (bits >>> 40));
+            buffer.set(o + 1, (byte) (bits >>> 48));
+            buffer.set(o, (byte) (bits >>> 56));
         } else {
-            byteBuffer.set(offset, (byte) bits);
-            byteBuffer.set(offset + 1, (byte) (bits >>> 8));
-            byteBuffer.set(offset + 2, (byte) (bits >>> 16));
-            byteBuffer.set(offset + 3, (byte) (bits >>> 24));
+            buffer.set(o, (byte) bits);
+            buffer.set(o + 1, (byte) (bits >>> 8));
+            buffer.set(o + 2, (byte) (bits >>> 16));
+            buffer.set(o + 3, (byte) (bits >>> 24));
 
-            byteBuffer.set(offset + 4, (byte) (bits >>> 32));
-            byteBuffer.set(offset + 5, (byte) (bits >>> 40));
-            byteBuffer.set(offset + 6, (byte) (bits >>> 48));
-            byteBuffer.set(offset + 7, (byte) (bits >>> 56));
+            buffer.set(o + 4, (byte) (bits >>> 32));
+            buffer.set(o + 5, (byte) (bits >>> 40));
+            buffer.set(o + 6, (byte) (bits >>> 48));
+            buffer.set(o + 7, (byte) (bits >>> 56));
         }
     }
 }

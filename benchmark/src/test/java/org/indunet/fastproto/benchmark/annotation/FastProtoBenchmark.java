@@ -14,11 +14,10 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.benchmark;
+package org.indunet.fastproto.benchmark.annotation;
 
 import lombok.val;
 import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.benchmark.annotation.Sample;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;

@@ -63,13 +63,6 @@ public class AsciiCodec implements Codec<Character> {
     
         return this.decode(bytes, type.offset());
     }
-    
-    @Override
-    public void encode(CodecContext context, byte[] bytes, Character value) {
-        val type = context.getDataTypeAnnotation(AsciiType.class);
-    
-        this.encode(bytes, type.offset(), value);
-    }
 
     @Override
     public void encode(CodecContext context, ByteBuffer buffer, Character value) {

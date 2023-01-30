@@ -31,36 +31,16 @@ import org.indunet.fastproto.util.CodecUtils;
  * @since 3.2.1
  */
 public class ShortCodec implements Codec<Short> {
-    public short decode(byte[] bytes, int offset, ByteOrder byteOrder) {
-        try {
-            return CodecUtils.shortType(bytes, offset, byteOrder);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new DecodingException("Fail decoding int16(short) type.", e);
-        }
-    }
-
-    public void encode(byte[] bytes, int offset, ByteOrder byteOrder, short value) {
-        try {
-            CodecUtils.shortType(bytes, offset, byteOrder, value);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new EncodingException("Fail encoding int16(short) type.", e);
-        }
-    }
-
     @Override
     public Short decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(Int16Type.class);
         val order = context.getByteOrder(type::byteOrder);
 
-        return this.decode(bytes, type.offset(), order);
-    }
-
-    @Override
-    public void encode(CodecContext context, byte[] bytes, Short value) {
-        val type = context.getDataTypeAnnotation(Int16Type.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        this.encode(bytes, type.offset(), order, value);
+        try {
+            return CodecUtils.shortType(bytes, type.offset(), order);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new DecodingException("Fail decoding int16(short) type.", e);
+        }
     }
 
     @Override

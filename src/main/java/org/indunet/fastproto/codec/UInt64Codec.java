@@ -33,36 +33,16 @@ import java.math.BigInteger;
  * @since 3.2.1
  */
 public class UInt64Codec implements Codec<BigInteger> {
-    public BigInteger decode(byte[] bytes, int offset, ByteOrder policy) {
-        try {
-            return CodecUtils.uint64Type(bytes, offset, policy);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new DecodingException("Fail decoding uint64 type.", e);
-        }
-    }
-
-    public void encode(byte[] bytes, int offset, ByteOrder policy, BigInteger value) {
-        try {
-            CodecUtils.uint64Type(bytes, offset, policy, value);
-        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new EncodingException("Fail encoding uint64 type.", e);
-        }
-    }
-
     @Override
     public BigInteger decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(UInt64Type.class);
         val order = context.getByteOrder(type::byteOrder);
 
-        return this.decode(bytes, type.offset(), order);
-    }
-
-    @Override
-    public void encode(CodecContext context, byte[] bytes, BigInteger value) {
-        val type = context.getDataTypeAnnotation(UInt64Type.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        this.encode(bytes, type.offset(), order, value);
+        try {
+            return CodecUtils.uint64Type(bytes, type.offset(), order);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new DecodingException("Fail decoding uint64 type.", e);
+        }
     }
 
     @Override

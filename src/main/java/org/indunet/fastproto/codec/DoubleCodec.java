@@ -31,36 +31,16 @@ import org.indunet.fastproto.util.CodecUtils;
  * @since 3.2.1
  */
 public class DoubleCodec implements Codec<Double> {
-    public double decode(byte[] datagram, int offset, ByteOrder policy) {
-        try {
-            return CodecUtils.doubleType(datagram, offset, policy);
-        } catch (ArrayIndexOutOfBoundsException e) {
-            throw new DecodingException("Fail decoding double type.", e);
-        }
-    }
-
-    public void encode(byte[] datagram, int offset, ByteOrder policy, double value) {
-        try {
-            CodecUtils.doubleType(datagram, offset, policy, value);
-        } catch (IndexOutOfBoundsException e) {
-            throw new EncodingException("Fail encoding double type.", e);
-        }
-    }
-    
     @Override
     public Double decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(DoubleType.class);
         val order = context.getByteOrder(type::byteOrder);
 
-        return this.decode(bytes, type.offset(), order);
-    }
-    
-    @Override
-    public void encode(CodecContext context, byte[] bytes, Double value) {
-        val type = context.getDataTypeAnnotation(DoubleType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        this.encode(bytes, type.offset(), order, value);
+        try {
+            return CodecUtils.doubleType(bytes, type.offset(), order);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new DecodingException("Fail decoding double type.", e);
+        }
     }
 
     @Override

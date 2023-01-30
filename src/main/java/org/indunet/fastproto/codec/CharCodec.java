@@ -56,14 +56,6 @@ public class CharCodec implements Codec<Character> {
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, Character value) {
-        val type = context.getDataTypeAnnotation(CharType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        this.encode(bytes, type.offset(), order, value);
-    }
-
-    @Override
     public void encode(CodecContext context, ByteBuffer buffer, Character value) {
         val type = context.getDataTypeAnnotation(CharType.class);
         val order = context.getByteOrder(type::byteOrder);
