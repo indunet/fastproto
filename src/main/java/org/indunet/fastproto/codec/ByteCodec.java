@@ -18,6 +18,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.NonNull;
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.annotation.Int8Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
@@ -30,33 +31,25 @@ import org.indunet.fastproto.util.CodecUtils;
  * @since 3.2.1
  */
 public class ByteCodec implements Codec<Byte> {
-    public byte decode(@NonNull final byte[] datagram, int offset) {
+    @Override
+    public Byte decode(CodecContext context, byte[] bytes) {
+        val type = context.getDataTypeAnnotation(Int8Type.class);
+
         try {
-            return CodecUtils.byteType(datagram, offset);
+            return CodecUtils.byteType(bytes, type.offset());
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding int8(byte) type.", e);
         }
     }
 
-    public void encode(@NonNull byte[] datagram, int offset, byte value) {
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, Byte value) {
+        val type = context.getDataTypeAnnotation(Int8Type.class);
+
         try {
-            CodecUtils.byteType(datagram, offset, value);
+            CodecUtils.byteType(buffer, type.offset(), value);
         } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding int8(byte) type.", e);
         }
-    }
-    
-    @Override
-    public Byte decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(Int8Type.class);
-    
-        return this.decode(bytes, type.offset());
-    }
-    
-    @Override
-    public void encode(CodecContext context, byte[] bytes, Byte value) {
-        val type = context.getDataTypeAnnotation(Int8Type.class);
-    
-        this.encode(bytes, type.offset(), value);
     }
 }

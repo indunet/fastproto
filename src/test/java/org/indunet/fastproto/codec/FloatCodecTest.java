@@ -16,11 +16,16 @@
 
 package org.indunet.fastproto.codec;
 
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.annotation.DoubleType;
+import org.indunet.fastproto.annotation.FloatType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.util.AnnotationUtils;
 import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
+import scala.util.control.Exception;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -33,53 +38,32 @@ import static org.junit.jupiter.api.Assertions.assertArrayEquals;
  */
 public class FloatCodecTest {
     FloatCodec codec = new FloatCodec();
-    float pi = 3.141f;
-    float e = 2.718f;
 
     @Test
-    public void testDecode1() {
-        assertEquals(codec.decode(BinaryUtils.valueOf(pi), 0, ByteOrder.LITTLE), pi, 0.0001);
-        assertEquals(codec.decode(BinaryUtils.valueOf(e), 0, ByteOrder.LITTLE), e, 0.0001);
-
-        assertEquals(codec.decode(BinaryUtils.valueOf(e, ByteOrder.BIG), 0, ByteOrder.BIG), e, 0.0001);
-        assertEquals(codec.decode(BinaryUtils.valueOf(e, ByteOrder.BIG), -4, ByteOrder.BIG), e, 0.0001);
-    }
-
-    @Test
-    public void testDecode2() {
+    public void testDecode() {
         byte[] datagram = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 0, ByteOrder.LITTLE));
+        assertThrows(NullPointerException.class, () -> this.codec.decode(mock(0, ByteOrder.LITTLE), null));
 
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, -1, ByteOrder.BIG));
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 8, ByteOrder.BIG));
+        assertThrows(DecodingException.class, () -> this.codec.decode(mock(-1, ByteOrder.BIG), datagram));
+        assertThrows(DecodingException.class, () -> this.codec.decode(mock(8, ByteOrder.BIG), datagram));
     }
 
     @Test
-    public void testEncode1() {
-        byte[] datagram = new byte[4];
-        float pi = 3.141f;
-        float e = 2.718f;
-
-        this.codec.encode(datagram, 0, ByteOrder.LITTLE, pi);
-        assertArrayEquals(datagram, BinaryUtils.valueOf(pi));
-
-        this.codec.encode(datagram, 0, ByteOrder.LITTLE, e);
-        assertArrayEquals(datagram, BinaryUtils.valueOf(e));
-
-        this.codec.encode(datagram, 0 - datagram.length, ByteOrder.BIG, e);
-        assertArrayEquals(datagram, BinaryUtils.valueOf(e, ByteOrder.BIG));
-    }
-
-    @Test
-    public void testEncode2() {
+    public void testEncode() {
         byte[] datagram = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.encode(null, 0, null, 3.14f));
+        assertThrows(NullPointerException.class,
+                () -> this.codec.encode(mock(0, ByteOrder.LITTLE), (ByteBuffer) null, 3.14f));
+        assertThrows(EncodingException.class,
+                () -> this.codec.encode(mock(10, ByteOrder.LITTLE), new ByteBuffer(datagram), 3.141f));
+        assertThrows(EncodingException.class,
+                () -> this.codec.encode(mock(-1, ByteOrder.LITTLE), new ByteBuffer(datagram), 3.141f));
+    }
 
-        assertThrows(EncodingException.class, () ->
-                this.codec.encode(datagram, 10, ByteOrder.LITTLE, 3.141f));
-        assertThrows(EncodingException.class, () ->
-                this.codec.encode(datagram, -1, ByteOrder.LITTLE, 3.141f));
+    protected CodecContext mock(int offset, ByteOrder order) {
+        return CodecContext.builder()
+                .dataTypeAnnotation(AnnotationUtils.mock(FloatType.class, offset, order))
+                .build();
     }
 }

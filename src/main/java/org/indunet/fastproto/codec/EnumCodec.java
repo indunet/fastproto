@@ -19,6 +19,7 @@ package org.indunet.fastproto.codec;
 import lombok.NonNull;
 import lombok.val;
 import lombok.var;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.annotation.EnumType;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
@@ -68,7 +69,7 @@ public class EnumCodec<T extends Enum> implements Codec<T> {
         }
     }
 
-        public <T extends Enum> void encode(byte[] bytes, int offset, String fieldName, T value) {
+    public <T extends Enum> void encode(byte[] bytes, int offset, String fieldName, T value) {
         var code = 0;
 
         if (fieldName == null || fieldName.isEmpty()) {
@@ -98,9 +99,27 @@ public class EnumCodec<T extends Enum> implements Codec<T> {
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, T value) {
-        val dataType = context.getDataTypeAnnotation(EnumType.class);
+    public void encode(CodecContext context, ByteBuffer buffer, T value) {
+        val type = context.getDataTypeAnnotation(EnumType.class);
+        val name = type.name();
 
-        this.encode(bytes, dataType.offset(), dataType.name(), value);
+        var code = 0;
+
+        if (name == null || name.isEmpty()) {
+            code = value.ordinal();
+        } else {
+            try {
+                val field = value.getClass()
+                        .getDeclaredField(name);
+                field.setAccessible(true);
+
+                code = field.getInt(value);
+            } catch (IllegalAccessException | NoSuchFieldException e) {
+                throw new EncodingException(MessageFormat.format(
+                        CodecError.ILLEGAL_ENUM_CODE_FIELD.getMessage(), name), e);
+            }
+        }
+
+        CodecUtils.uint8Type(buffer, type.offset(), code);
     }
 }

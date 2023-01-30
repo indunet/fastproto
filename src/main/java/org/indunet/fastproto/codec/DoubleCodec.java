@@ -17,13 +17,12 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.DoubleType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
-
-import java.util.Arrays;
 
 /**
  * Double type codec.
@@ -32,39 +31,27 @@ import java.util.Arrays;
  * @since 3.2.1
  */
 public class DoubleCodec implements Codec<Double> {
-    public double decode(byte[] datagram, int offset, ByteOrder policy) {
+    @Override
+    public Double decode(CodecContext context, byte[] bytes) {
+        val type = context.getDataTypeAnnotation(DoubleType.class);
+        val order = context.getByteOrder(type::byteOrder);
+
         try {
-            return CodecUtils.doubleType(datagram, offset, policy);
+            return CodecUtils.doubleType(bytes, type.offset(), order);
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding double type.", e);
         }
     }
 
-    public void encode(byte[] datagram, int offset, ByteOrder policy, double value) {
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, Double value) {
+        val type = context.getDataTypeAnnotation(DoubleType.class);
+        val order = context.getByteOrder(type::byteOrder);
+
         try {
-            CodecUtils.doubleType(datagram, offset, policy, value);
+            CodecUtils.doubleType(buffer, type.offset(), order, value);
         } catch (IndexOutOfBoundsException e) {
             throw new EncodingException("Fail encoding double type.", e);
         }
-    }
-    
-    @Override
-    public Double decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(DoubleType.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
-
-        return this.decode(bytes, type.offset(), byteOrder);
-    }
-    
-    @Override
-    public void encode(CodecContext context, byte[] bytes, Double value) {
-        val type = context.getDataTypeAnnotation(DoubleType.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
-
-        this.encode(bytes, type.offset(), byteOrder, value);
     }
 }

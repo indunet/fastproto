@@ -17,6 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.TimeType;
 import org.indunet.fastproto.exception.DecodingException;
@@ -24,7 +25,6 @@ import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 import java.sql.Timestamp;
-import java.util.Arrays;
 
 /**
  * Timestamp type codec.
@@ -54,20 +54,22 @@ public class TimestampCodec implements Codec<Timestamp> {
     @Override
     public Timestamp decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(TimeType.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        return this.decode(bytes, type.offset(), byteOrder);
+        return this.decode(bytes, type.offset(), order);
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, Timestamp value) {
+    public void encode(CodecContext context, ByteBuffer buffer, Timestamp value) {
         val type = context.getDataTypeAnnotation(TimeType.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        this.encode(bytes, type.offset(), byteOrder, value);
+        try {
+            val mills = value.getTime();
+
+            CodecUtils.int64Type(buffer, type.offset(), order, mills);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new EncodingException("Fail encoding times(timestamp) type.", e);
+        }
     }
 }

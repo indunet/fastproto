@@ -71,13 +71,14 @@ public class FastProto {
         val context = PipelineContext.builder()
                 .object(object)
                 .clazz(object.getClass())
+                .byteBuffer(new ByteBuffer())
                 .graph(graph)
                 .build();
 
         Pipeline.getEncodeFlow()
                 .process(context);
 
-        return context.getBytes();
+        return context.getByteBuffer().getBytes();
     }
 
     /**
@@ -108,6 +109,7 @@ public class FastProto {
                 .object(object)
                 .clazz(object.getClass())
                 .bytes(buffer)
+                .byteBuffer(new ByteBuffer(buffer))
                 .graph(graph)
                 .build();
 
@@ -120,7 +122,7 @@ public class FastProto {
      *
      * @return Encoder object which supplies chain api.
      */
-    public static Encoder toBytes() {
+    public static Encoder create() {
         return new Encoder();
     }
 
@@ -130,7 +132,7 @@ public class FastProto {
      * @param  length the length of the byte array
      * @return Encoder object which supplies chain api.
      */
-    public static Encoder toBytes(int length) {
+    public static Encoder create(int length) {
         return new Encoder(length);
     }
 }

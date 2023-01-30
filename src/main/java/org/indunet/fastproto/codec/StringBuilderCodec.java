@@ -17,6 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.annotation.StringType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
@@ -58,10 +59,14 @@ public class StringBuilderCodec implements Codec<StringBuilder> {
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, StringBuilder value) {
+    public void encode(CodecContext context, ByteBuffer buffer, StringBuilder value) {
         val type = context.getDataTypeAnnotation(StringType.class);
         val charset = Charset.forName(type.charset());
 
-        this.encode(bytes, type.offset(), type.length(), charset, value);
+        try {
+            CodecUtils.binaryType(buffer, type.offset(), type.length(), value.toString().getBytes(charset));
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding StingBuilder type.", e);
+        }
     }
 }

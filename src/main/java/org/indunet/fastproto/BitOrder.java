@@ -18,11 +18,11 @@ public enum BitOrder {
     LSB_0(0x01, "LSB_0"),
     MSB_0(0x02, "MSB_0");
 
-    int code;
-    String name;
+    final int code;
+    final String name;
 
-    public static ByteOrder byName(String name) {
-        return Arrays.stream(ByteOrder.values())
+    public static BitOrder byName(String name) {
+        return Arrays.stream(BitOrder.values())
                 .filter(p -> p.getName().equals(name))
                 .findFirst()
                 .orElseThrow(() -> new CodecException("Invalid bit order, only LSB_0 or MSB_0 can be set."));

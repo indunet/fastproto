@@ -17,13 +17,12 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.Int32Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
-
-import java.util.Arrays;
 
 /**
  * Int32 type codec.
@@ -32,37 +31,27 @@ import java.util.Arrays;
  * @since 3.2.1
  */
 public class Int32Codec implements Codec<Integer> {
-    public int decode(byte[] bytes, int byteOffset, ByteOrder policy) {
+    @Override
+    public Integer decode(CodecContext context, byte[] bytes) {
+        val type = context.getDataTypeAnnotation(Int32Type.class);
+        val order = context.getByteOrder(type::byteOrder);
+
         try {
-            return CodecUtils.int32Type(bytes, byteOffset, policy);
+            return CodecUtils.int32Type(bytes, type.offset(), order);
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding int32 type.", e);
         }
     }
 
-    public void encode(byte[] bytes, int offset, ByteOrder policy, int value) {
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, Integer value) {
+        val type = context.getDataTypeAnnotation(Int32Type.class);
+        val order = context.getByteOrder(type::byteOrder);
+
         try {
-            CodecUtils.int32Type(bytes, offset, policy, value);
+            CodecUtils.int32Type(buffer, type.offset(), order, value);
         } catch (IndexOutOfBoundsException e) {
             throw new EncodingException("Fail encoding int32 type.", e);
         }
-    }
-
-    @Override
-    public Integer decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(Int32Type.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
-
-        return this.decode(bytes, type.offset(), byteOrder);
-    }
-
-    @Override
-    public void encode(CodecContext context, byte[] bytes, Integer value) {
-        val type = context.getDataTypeAnnotation(Int32Type.class);
-        val byteOrder = context.getDefaultByteOrder();
-
-        this.encode(bytes, type.offset(), byteOrder, value);
     }
 }

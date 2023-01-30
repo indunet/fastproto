@@ -18,9 +18,9 @@ package org.indunet.fastproto.graph;
 
 import lombok.*;
 import org.indunet.fastproto.BitOrder;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.ProtocolType;
-import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 
@@ -55,7 +55,6 @@ public class Reference {
 
     Class<?> protocolClass;
     ConstructorType constructorType;
-    FixedLength enableFixedLength;
 
     Field field;
     Annotation dataTypeAnnotation;
@@ -69,7 +68,7 @@ public class Reference {
     Function encodingFormula;
     Function encodingLambda;
     Function<byte[], ?> decoder;
-    BiConsumer<byte[], ? super Object> encoder;
+    BiConsumer<ByteBuffer, ? super Object> encoder;
 
     Integer byteOffset;
     Integer bitOffset;
@@ -81,8 +80,8 @@ public class Reference {
         this.setValue(value);
     }
 
-    public void encode(byte[] bytes) {
-        this.encoder.accept(bytes, this.getValue().get());
+    public void encoder(ByteBuffer buffer) {
+        this.encoder.accept(buffer, this.getValue().get());
     }
 
     @Builder.Default

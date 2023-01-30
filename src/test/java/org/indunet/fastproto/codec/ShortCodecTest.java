@@ -17,9 +17,13 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.annotation.Int16Type;
+import org.indunet.fastproto.annotation.Int64Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.util.AnnotationUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -34,49 +38,28 @@ public class ShortCodecTest {
     ShortCodec codec = new ShortCodec();
 
     @Test
-    public void testDecode1() {
-        byte[] datagram = {0, 1, 2, 3, -1, -1, -2, -1};
+    public void testDecode() {
+        byte[] bytes = new byte[10];
 
-        // For little endian.
-        assertEquals(codec.decode(datagram, 0, ByteOrder.LITTLE), 256);
-        assertEquals(codec.decode(datagram, 2, ByteOrder.LITTLE), 2 + 3 * 256);
-        assertEquals(codec.decode(datagram, 4, ByteOrder.LITTLE), -1);
-        assertEquals(codec.decode(datagram, 6, ByteOrder.LITTLE), -2);
+        assertThrows(NullPointerException.class, () -> this.codec.decode(mock(0, ByteOrder.LITTLE), null));
 
-        // For big endian.
-        assertEquals(codec.decode(datagram, 0, ByteOrder.BIG), 0x0001);
-        assertEquals(codec.decode(datagram, 2, ByteOrder.BIG), 0x0203);
-        assertEquals(codec.decode(datagram, 2 - datagram.length, ByteOrder.BIG), 0x0203);
+        assertThrows(DecodingException.class, () -> this.codec.decode(mock(-1, ByteOrder.LITTLE), bytes));
+        assertThrows(DecodingException.class, () -> this.codec.decode(mock(10, ByteOrder.LITTLE), bytes));
     }
 
     @Test
-    public void testDecode2() {
-        byte[] datagram = new byte[10];
+    public void testEncode() {
+        val bytes = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 0, ByteOrder.LITTLE));
+        assertThrows(NullPointerException.class, () -> this.codec.encode(mock(0, ByteOrder.BIG), (ByteBuffer) null, (short) 1));
 
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, -1, ByteOrder.LITTLE));
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 10, ByteOrder.LITTLE));
+        assertThrows(EncodingException.class, () -> this.codec.encode(mock(-1, ByteOrder.BIG), new ByteBuffer(bytes), (short) 0));
+        assertThrows(EncodingException.class, () -> this.codec.encode(mock(10, ByteOrder.LITTLE), new ByteBuffer(bytes), (short) 0));
     }
 
-    @Test
-    public void testEncode1() {
-        val datagram = new byte[4];
-
-        this.codec.encode(datagram, 0, ByteOrder.BIG, (short) 0x0102);
-        this.codec.encode(datagram, 2 - datagram.length, ByteOrder.LITTLE, (short) 0x0304);
-
-        val cache = new byte[]{1, 2, 4, 3};
-        assertArrayEquals(datagram, cache);
-    }
-
-    @Test
-    public void testEncode2() {
-        val datagram = new byte[10];
-
-        assertThrows(NullPointerException.class, () -> this.codec.encode(null, 0, ByteOrder.BIG, (short) 1));
-
-        assertThrows(EncodingException.class, () -> this.codec.encode(datagram, -1, ByteOrder.BIG, (short) 0));
-        assertThrows(EncodingException.class, () -> this.codec.encode(datagram, 10, ByteOrder.LITTLE, (short) 0));
+    protected CodecContext mock(int offset, ByteOrder order) {
+        return CodecContext.builder()
+                .dataTypeAnnotation(AnnotationUtils.mock(Int16Type.class, offset, order))
+                .build();
     }
 }

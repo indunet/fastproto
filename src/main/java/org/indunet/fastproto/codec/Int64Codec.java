@@ -17,13 +17,12 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.Int64Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
-
-import java.util.Arrays;
 
 /**
  * Int64 type codec.
@@ -32,39 +31,27 @@ import java.util.Arrays;
  * @since 3.2.1
  */
 public class Int64Codec implements Codec<Long> {
-    public long decode(byte[] bytes, int byteOffset, ByteOrder endian) {
+    @Override
+    public Long decode(CodecContext context, byte[] bytes) {
+        val type = context.getDataTypeAnnotation(Int64Type.class);
+        val order = context.getByteOrder(type::byteOrder);
+
         try {
-            return CodecUtils.int64Type(bytes, byteOffset, endian);
+            return CodecUtils.int64Type(bytes, type.offset(), order);
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding int64 type.", e);
         }
     }
 
-    public void encode(byte[] bytes, int offset, ByteOrder policy, long value) {
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, Long value) {
+        val type = context.getDataTypeAnnotation(Int64Type.class);
+        val order = context.getByteOrder(type::byteOrder);
+
         try {
-            CodecUtils.int64Type(bytes, offset, policy, value);
+            CodecUtils.int64Type(buffer, type.offset(), order, value);
         } catch (IndexOutOfBoundsException e) {
             throw new EncodingException("Fail encoding int64 type.", e);
         }
-    }
-
-    @Override
-    public Long decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(Int64Type.class);
-        val policy = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
-
-        return this.decode(bytes, type.offset(), policy);
-    }
-
-    @Override
-    public void encode(CodecContext context, byte[] bytes, Long value) {
-        val type = context.getDataTypeAnnotation(Int64Type.class);
-        val policy = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
-
-        this.encode(bytes, type.offset(), policy, value);
     }
 }

@@ -17,13 +17,12 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.Int16Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
-
-import java.util.Arrays;
 
 /**
  * Short type codec.
@@ -32,39 +31,27 @@ import java.util.Arrays;
  * @since 3.2.1
  */
 public class ShortCodec implements Codec<Short> {
-    public short decode(byte[] bytes, int offset, ByteOrder byteOrder) {
+    @Override
+    public Short decode(CodecContext context, byte[] bytes) {
+        val type = context.getDataTypeAnnotation(Int16Type.class);
+        val order = context.getByteOrder(type::byteOrder);
+
         try {
-            return CodecUtils.shortType(bytes, offset, byteOrder);
+            return CodecUtils.shortType(bytes, type.offset(), order);
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding int16(short) type.", e);
         }
     }
 
-    public void encode(byte[] bytes, int offset, ByteOrder byteOrder, short value) {
+    @Override
+    public void encode(CodecContext context, ByteBuffer buffer, Short value) {
+        val type = context.getDataTypeAnnotation(Int16Type.class);
+        val order = context.getByteOrder(type::byteOrder);
+
         try {
-            CodecUtils.shortType(bytes, offset, byteOrder, value);
+            CodecUtils.shortType(buffer, type.offset(), order, value);
         } catch (ArrayIndexOutOfBoundsException e) {
             throw new EncodingException("Fail encoding int16(short) type.", e);
         }
-    }
-
-    @Override
-    public Short decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(Int16Type.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
-
-        return this.decode(bytes, type.offset(), byteOrder);
-    }
-
-    @Override
-    public void encode(CodecContext context, byte[] bytes, Short value) {
-        val type = context.getDataTypeAnnotation(Int16Type.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
-
-        this.encode(bytes, type.offset(), byteOrder, value);
     }
 }

@@ -17,13 +17,12 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.CharType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
-
-import java.util.Arrays;
 
 /**
  * Char type codec.
@@ -51,20 +50,20 @@ public class CharCodec implements Codec<Character> {
     @Override
     public Character decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(CharType.class);
-        val policy = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        return this.decode(bytes, type.offset(), policy);
+        return this.decode(bytes, type.offset(), order);
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, Character value) {
+    public void encode(CodecContext context, ByteBuffer buffer, Character value) {
         val type = context.getDataTypeAnnotation(CharType.class);
-        val policy = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        this.encode(bytes, type.offset(), policy, value);
+        try {
+            CodecUtils.uint16Type(buffer, type.offset(), order, value);
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding char type.", e);
+        }
     }
 }

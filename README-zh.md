@@ -33,7 +33,7 @@ FastProto是一款Java编写的二进制数据处理工具，开发者可以通�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.9.1</version>
+    <version>3.9.2</version>
 </dependency>
 ```
 
@@ -191,7 +191,6 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 | @DefaultBitOrder  |   Class   | 默认位顺序，如无指定，使用LSB_0 |
 |  @DecodingIgnore  |   Field   |     反序列化时忽略该字段     |
 |  @EncodingIgnore  |   Field   |     序列化时忽略该字段      |
-|   @FixedLength    |   Class   |      启动固定报文长度      |
 | @DecodingFormula  |   Field   |        解码公式        |
 | @EncodingFormula  |   Field   |        编码公式        |
 
@@ -364,7 +363,7 @@ JavaObject obj = FastProto.parse(bytes)
 ### *4.2 创建二进制数据块*
 
 ```java
-byte[] bytes = FastProto.toBytes()
+byte[] bytes = FastProto.create()
         .length(16)             // 二进制数据块的长度
         .uint8Type(0, 1)        // 在字节偏移量0位置写入无符号8位整型数据1
         .uint16Type(2, 3, 4)    // 在字节偏移量2位置连续写入2个无符号16位整型数据3和4
@@ -390,7 +389,7 @@ byte[] bytes = FastProto.toBytes()
 |Benchmark |    模式  | 样本数量  | 评分 |   误差   |   单位   |
 |:--------:|:--------:|:--------:|:--:|:---------:|:---------:|
 | `FastProto::parse` |  吞吐量   |   10  | 1273 | ± 17    |  次/毫秒   |
-| `FastProto::toBytes` | 吞吐量  |   10  | 6911 | ± 162    |  次/毫秒   |
+| `FastProto::create` | 吞吐量  |   10  | 6911 | ± 162    |  次/毫秒   |
 
 ## *6. 构建要求*
 
@@ -399,7 +398,7 @@ byte[] bytes = FastProto.toBytes()
 
 ## *7. 贡献*
 
-FastProto取得了etBrain开源计划的支持，可提供核心开发人员免费的全家桶许可证。
+FastProto取得了JetBrain开源计划的支持，可提供核心开发人员免费的全家桶许可证。
 如果你对该项目感兴趣，并希望加入承担部分工作（开发/测试/文档），请通过邮件<deng_ran@foxmail.com>联系我。
 
 ## *8. 许可证*

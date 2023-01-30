@@ -18,6 +18,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.Int64ArrayType;
 import org.indunet.fastproto.annotation.Int64Type;
@@ -75,21 +76,29 @@ public class Int64ArrayCodec implements Codec<long[]> {
     @Override
     public long[] decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(Int64ArrayType.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        return this.decode(bytes, type.offset(), type.length(), byteOrder);
+        return this.decode(bytes, type.offset(), type.length(), order);
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, long[] value) {
+    public void encode(CodecContext context, ByteBuffer buffer, long[] values) {
         val type = context.getDataTypeAnnotation(Int64ArrayType.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        this.encode(bytes, type.offset(), type.length(), byteOrder, value);
+        try {
+            var l = type.length();
+
+            if (l < 0) {
+                l = buffer.reverse(type.offset(), type.length() * Int64Type.SIZE)  / Int64Type.SIZE + 1;
+            }
+
+            IntStream.range(0, l)
+                    .forEach(i ->
+                            CodecUtils.int64Type(buffer, type.offset() + i * Int64Type.SIZE, order, values[i]));
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding int32 array type.", e);
+        }
     }
 
     public class WrapperCodec implements Codec<Long[]> {
@@ -101,12 +110,12 @@ public class Int64ArrayCodec implements Codec<long[]> {
         }
 
         @Override
-        public void encode(CodecContext context, byte[] bytes, Long[] values) {
+        public void encode(CodecContext context, ByteBuffer buffer, Long[] values) {
             val longs = Stream.of(values)
                     .mapToLong(i -> i.longValue())
                     .toArray();
 
-            Int64ArrayCodec.this.encode(context, bytes, longs);
+            Int64ArrayCodec.this.encode(context, buffer, longs);
         }
     }
 
@@ -128,8 +137,8 @@ public class Int64ArrayCodec implements Codec<long[]> {
         }
 
         @Override
-        public void encode(CodecContext context, byte[] bytes, Collection<Long> collection) {
-            Int64ArrayCodec.this.encode(context, bytes, collection.stream()
+        public void encode(CodecContext context, ByteBuffer buffer, Collection<Long> collection) {
+            Int64ArrayCodec.this.encode(context, buffer, collection.stream()
                     .mapToLong(Long::longValue)
                     .toArray());
         }

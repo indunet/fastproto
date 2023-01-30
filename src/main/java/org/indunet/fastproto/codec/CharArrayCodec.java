@@ -18,6 +18,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.CharType;
 import org.indunet.fastproto.annotation.UInt16ArrayType;
@@ -27,7 +28,6 @@ import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.CollectionUtils;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.IntStream;
 
@@ -77,21 +77,29 @@ public class CharArrayCodec implements Codec<char[]> {
     @Override
     public char[] decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(UInt16ArrayType.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        return this.decode(bytes, type.offset(), type.length(), byteOrder);
+        return this.decode(bytes, type.offset(), type.length(), order);
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, char[] value) {
+    public void encode(CodecContext context, ByteBuffer buffer, char[] values) {
         val type = context.getDataTypeAnnotation(UInt16ArrayType.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        this.encode(bytes, type.offset(), type.length(), byteOrder, value);
+        try {
+            var l = type.length();
+
+            if (l < 0) {
+                l = buffer.reverse(type.offset(), type.length() * UInt16Type.SIZE)  / UInt16Type.SIZE + 1;
+            }
+
+            IntStream.range(0, l)
+                    .forEach(i ->
+                            CodecUtils.uint16Type(buffer, type.offset() + i * UInt16Type.SIZE, order, values[i]));
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding char array type.", e);
+        }
     }
 
     public class WrapperCodec implements Codec<Character[]> {
@@ -105,12 +113,12 @@ public class CharArrayCodec implements Codec<char[]> {
         }
 
         @Override
-        public void encode(CodecContext context, byte[] bytes, Character[] values) {
+        public void encode(CodecContext context, ByteBuffer buffer, Character[] values) {
             val chars = new char[values.length];
 
             IntStream.range(0, values.length)
                     .forEach(i -> chars[i] = values[i]);
-            CharArrayCodec.this.encode(context, bytes, chars);
+            CharArrayCodec.this.encode(context, buffer, chars);
         }
     }
 
@@ -133,14 +141,14 @@ public class CharArrayCodec implements Codec<char[]> {
         }
 
         @Override
-        public void encode(CodecContext context, byte[] bytes, Collection<Character> collection) {
+        public void encode(CodecContext context, ByteBuffer buffer, Collection<Character> collection) {
             val chars = new char[collection.size()];
             val values = collection.stream()
                     .toArray(Character[]::new);
 
             IntStream.range(0, chars.length)
                     .forEach(i -> chars[i] = values[i]);
-            CharArrayCodec.this.encode(context, bytes, chars);
+            CharArrayCodec.this.encode(context, buffer, chars);
         }
     }
 }

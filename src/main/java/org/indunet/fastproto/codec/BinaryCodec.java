@@ -17,6 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.annotation.BinaryType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
@@ -57,10 +58,14 @@ public class BinaryCodec implements Codec<byte[]> {
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, byte[] value) {
+    public void encode(CodecContext context, ByteBuffer buffer, byte[] values) {
         val type = context.getDataTypeAnnotation(BinaryType.class);
 
-        this.encode(bytes, type.offset(), type.length(), value);
+        try {
+            CodecUtils.binaryType(buffer, type.offset(), type.length(), values);
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding binary type.", e);
+        }
     }
 
     public class WrapperCodec implements Codec<Byte[]> {
@@ -76,13 +81,13 @@ public class BinaryCodec implements Codec<byte[]> {
         }
 
         @Override
-        public void encode(CodecContext context, byte[] bytes, Byte[] values) {
+        public void encode(CodecContext context, ByteBuffer buffer, Byte[] values) {
             val bs = new byte[values.length];
 
             IntStream.range(0, bs.length)
                     .forEach(i -> bs[i] = values[i]);
 
-            BinaryCodec.this.encode(context, bytes, bs);
+            BinaryCodec.this.encode(context, buffer, bs);
         }
     }
 
@@ -105,7 +110,7 @@ public class BinaryCodec implements Codec<byte[]> {
         }
 
         @Override
-        public void encode(CodecContext context, byte[] bytes, Collection<Byte> collection) {
+        public void encode(CodecContext context, ByteBuffer buffer, Collection<Byte> collection) {
             val bs = new byte[collection.size()];
             val values = collection.stream()
                     .toArray(Byte[]::new);
@@ -113,7 +118,7 @@ public class BinaryCodec implements Codec<byte[]> {
             IntStream.range(0, bs.length)
                     .forEach(i -> bs[i] = values[i]);
 
-            BinaryCodec.this.encode(context, bytes, bs);
+            BinaryCodec.this.encode(context, buffer, bs);
         }
     }
 }

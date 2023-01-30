@@ -18,6 +18,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.DoubleArrayType;
 import org.indunet.fastproto.annotation.DoubleType;
@@ -78,21 +79,33 @@ public class DoubleArrayCodec implements Codec<double[]> {
     @Override
     public double[] decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(DoubleArrayType.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        return this.decode(bytes, type.offset(), type.length(), byteOrder);
+        return this.decode(bytes, type.offset(), type.length(), order);
     }
 
     @Override
-    public void encode(CodecContext context, byte[] bytes, double[] value) {
+    public void encode(CodecContext context, ByteBuffer buffer, double[] values) {
         val type = context.getDataTypeAnnotation(DoubleArrayType.class);
-        val byteOrder = Arrays.stream(type.byteOrder())
-                .findFirst()
-                .orElseGet(context::getDefaultByteOrder);
+        val order = context.getByteOrder(type::byteOrder);
 
-        this.encode(bytes, type.offset(), type.length(), byteOrder, value);
+        try {
+            var l = type.length();
+
+            if (l < 0) {
+                l = buffer.reverse(type.offset(), type.length() * DoubleType.SIZE) / DoubleType.SIZE + 1;
+            }
+
+            if (l >= values.length) {
+                IntStream.range(0, values.length)
+                        .forEach(i -> CodecUtils.doubleType(buffer, type.offset() + i * DoubleType.SIZE, order, values[i]));
+            } else {
+                IntStream.range(0, l)
+                        .forEach(i -> CodecUtils.doubleType(buffer, type.offset() + i * DoubleType.SIZE, order, values[i]));
+            }
+        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding double array type.", e);
+        }
     }
 
     public class WrapperCodec implements Codec<Double[]> {
@@ -104,12 +117,12 @@ public class DoubleArrayCodec implements Codec<double[]> {
         }
 
         @Override
-        public void encode(CodecContext context, byte[] bytes, Double[] values) {
+        public void encode(CodecContext context, ByteBuffer buffer, Double[] values) {
             val doubles = Stream.of(values)
                     .mapToDouble(i -> i.doubleValue())
                     .toArray();
 
-            DoubleArrayCodec.this.encode(context, bytes, doubles);
+            DoubleArrayCodec.this.encode(context, buffer, doubles);
         }
     }
 
@@ -131,12 +144,12 @@ public class DoubleArrayCodec implements Codec<double[]> {
         }
 
         @Override
-        public void encode(CodecContext context, byte[] bytes, Collection<Double> collection) {
+        public void encode(CodecContext context, ByteBuffer buffer, Collection<Double> collection) {
             val doubles = collection.stream()
                     .mapToDouble(Double::doubleValue)
                     .toArray();
 
-            DoubleArrayCodec.this.encode(context, bytes, doubles);
+            DoubleArrayCodec.this.encode(context, buffer, doubles);
         }
     }
 }

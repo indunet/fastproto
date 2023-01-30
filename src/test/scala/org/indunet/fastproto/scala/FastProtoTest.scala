@@ -23,6 +23,8 @@ import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Test
 
 /**
+ * Unit test of FastProto API in Scala.
+ *
  * @author Deng Ran
  * @since 2.4.0
  */

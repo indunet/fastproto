@@ -14,29 +14,31 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.pipeline;
+package org.indunet.fastproto.api.bitorder;
 
-import lombok.Builder;
 import lombok.Data;
-import org.indunet.fastproto.ByteBuffer;
-import org.indunet.fastproto.graph.Graph;
+import org.indunet.fastproto.BitOrder;
+import org.indunet.fastproto.annotation.BoolType;
+import org.indunet.fastproto.annotation.DefaultBitOrder;
+
+import static org.indunet.fastproto.annotation.BoolType.BIT_2;
+import static org.indunet.fastproto.annotation.BoolType.BIT_6;
 
 /**
- * Codec Context.
+ * Test object of bit order.
  *
  * @author Deng Ran
- * @since 1.7.0
+ * @since 3.9.2
  */
 @Data
-@Builder
-public class PipelineContext {
-    byte[] bytes;
-    ByteBuffer byteBuffer;
-    Graph graph;
-    Object object;
-    Class<?> clazz;
+@DefaultBitOrder(BitOrder.MSB_0)
+public class TestObject {
+    @BoolType(byteOffset = 0, bitOffset = BIT_2, bitOrder = BitOrder.LSB_0)
+    Boolean lsb = true;
+    @BoolType(byteOffset = 1, bitOffset = BIT_6)
+    Boolean msb = true;
 
-    public <T> T getObject(Class<T> clazz) {
-        return (T) object;
+    public byte[] toBytes() {
+        return new byte[] {0x04, 0x02};
     }
 }

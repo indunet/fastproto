@@ -19,7 +19,6 @@ package org.indunet.fastproto.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.indunet.fastproto.annotation.FixedLength;
 import org.indunet.fastproto.annotation.Int16Type;
 import org.indunet.fastproto.annotation.UInt16Type;
 
@@ -30,7 +29,6 @@ import org.indunet.fastproto.annotation.UInt16Type;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@FixedLength(10)
 public class Sensor {
     @Int16Type(offset = 0)
     int temperature;

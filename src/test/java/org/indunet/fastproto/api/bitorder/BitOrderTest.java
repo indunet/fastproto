@@ -14,53 +14,44 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.api.endian;
+package org.indunet.fastproto.api.bitorder;
 
 import lombok.val;
-import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.BitOrder;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.exception.CodecException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 /**
+ * Unit test of bit order.
+ *
  * @author Deng Ran
- * @since 1.4.0
+ * @since 3.9.2
  */
-class EndianTest {
+class BitOrderTest {
     @Test
     public void testParse() {
-        val expected = new EndianObject();
-        val bytes = new byte[4];
+        val expected = new TestObject();
+        val bytes = expected.toBytes();
 
-        bytes[0] = 0x02;
-        bytes[1] = 0x01;
-        bytes[2] = 0x03;
-        bytes[3] = 0x04;
-
-        assertEquals(FastProto.parse(bytes, EndianObject.class), expected);
+        assertEquals(FastProto.parse(bytes, TestObject.class), expected);
     }
 
     @Test
     public void testToBytes() {
-        val object = new EndianObject();
-        val expected = new byte[4];
+        val object = new TestObject();
+        val expected = object.toBytes();
 
-        expected[0] = 0x02;
-        expected[1] = 0x01;
-        expected[2] = 0x03;
-        expected[3] = 0x04;
-
-        assertArrayEquals(FastProto.toBytes(object, 4), expected);
+        assertArrayEquals(expected, FastProto.toBytes(object, 2));
     }
 
     @Test
     void testByName() {
-        Assertions.assertEquals(ByteOrder.byName("Big"), ByteOrder.BIG);
-        assertEquals(ByteOrder.byName("Little"), ByteOrder.LITTLE);
+        assertEquals(BitOrder.byName("MSB_0"), BitOrder.MSB_0);
+        assertEquals(BitOrder.byName("LSB_0"), BitOrder.LSB_0);
 
-        assertThrows(CodecException.class, () -> ByteOrder.byName("Unknown"));
+        assertThrows(CodecException.class, () -> BitOrder.byName("Unknown"));
     }
 }

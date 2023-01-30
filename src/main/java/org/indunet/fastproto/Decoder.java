@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * Binary decoder.
@@ -68,15 +69,15 @@ public final class Decoder {
     }
 
     public Decoder boolType(int byteOffset, int bitOffset) {
-        return this.put(CodecUtils.boolType(this.bytes, byteOffset, bitOffset));
+        return this.put(CodecUtils.boolType(this.bytes, byteOffset, bitOffset, BitOrder.LSB_0));
     }
 
     public Decoder boolType(int byteOffset, int bitOffset, Function<Boolean, ?> formula) {
-        return this.put(formula.apply(CodecUtils.boolType(this.bytes, byteOffset, bitOffset)));
+        return this.put(formula.apply(CodecUtils.boolType(this.bytes, byteOffset, bitOffset, BitOrder.LSB_0)));
     }
 
     public Decoder boolType(int byteOffset, int bitOffset, String name) {
-        return this.put(name, CodecUtils.boolType(this.bytes, byteOffset, bitOffset));
+        return this.put(name, CodecUtils.boolType(this.bytes, byteOffset, bitOffset, BitOrder.LSB_0));
     }
 
     public Decoder readUInt8(int offset) {
@@ -794,6 +795,23 @@ public final class Decoder {
         }
 
         return this;
+    }
+
+    public Decoder skip() {
+        this.byteBuffer.nextReadIndex();
+
+        return this;
+    }
+
+    public Decoder skip(int num) {
+        if (num >= 0) {
+            IntStream.range(0, num)
+                    .forEach(__ -> this.byteBuffer.nextReadIndex());
+
+            return this;
+        } else {
+            throw new IllegalArgumentException("num must be a positive number.");
+        }
     }
 
     public Map<String, Object> getAsMap() {

@@ -16,16 +16,13 @@
 
 package org.indunet.fastproto.pipeline;
 
-import lombok.val;
 import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.graph.resolve.validate.ValidatorContext;
-import org.indunet.fastproto.pipeline.decode.*;
-import org.indunet.fastproto.pipeline.encode.*;
+import org.indunet.fastproto.pipeline.decode.DecodeFlow;
+import org.indunet.fastproto.pipeline.encode.EncodeFlow;
 
 import java.util.Arrays;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
 /**
  * Abstract flow.
@@ -35,11 +32,8 @@ import java.util.concurrent.ConcurrentMap;
  */
 public abstract class Pipeline<T> {
     protected static Class<? extends Pipeline>[] decodeFlowClasses = new Class[] {
-            VerifyFixedLengthFlow.class,
             DecodeFlow.class};
     protected static Class<? extends Pipeline>[] encodeFlowClasses = new Class[] {
-            InferLengthFlow.class,
-            FixedLengthFlow.class,
             EncodeFlow.class,
     };
 
@@ -92,18 +86,11 @@ public abstract class Pipeline<T> {
     protected static Pipeline encodePipeline;
 
     static {
-        val verifyFixedLengthFlow = new VerifyFixedLengthFlow();
+        // remove unnecessary flow.
+        decodePipeline = new DecodeFlow();
 
-        verifyFixedLengthFlow.setNext(new DecodeFlow());
-
-        decodePipeline = verifyFixedLengthFlow;
-
-        val fixedLengthFlow = new FixedLengthFlow();
-
-        fixedLengthFlow.setNext(new InferLengthFlow())
-                .setNext(new EncodeFlow());
-
-        encodePipeline = fixedLengthFlow;
+        // remove unnecessary flow.
+        encodePipeline = new EncodeFlow();
     }
 
     protected static Pipeline<ValidatorContext> validateFlow;

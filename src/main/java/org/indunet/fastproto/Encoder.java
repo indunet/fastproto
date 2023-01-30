@@ -426,6 +426,23 @@ public final class Encoder {
         return this;
     }
 
+    public Encoder skip() {
+        this.byteBuffer.nextWriteIndex();
+
+        return this;
+    }
+
+    public Encoder skip(int num) {
+        if (num >= 0) {
+            IntStream.range(0, num)
+                    .forEach(__ -> this.byteBuffer.nextWriteIndex());
+
+            return this;
+        } else {
+            throw new IllegalArgumentException("num must be a positive number.");
+        }
+    }
+
     public byte[] get() {
         return this.byteBuffer.getBytes();
     }

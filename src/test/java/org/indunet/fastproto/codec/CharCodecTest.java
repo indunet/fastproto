@@ -74,8 +74,6 @@ public class CharCodecTest {
 
     @Test
     public void testEncode2() {
-        byte[] datagram = new byte[10];
-
         assertThrows(NullPointerException.class, () -> this.codec.encode(null, 0, ByteOrder.BIG, 'A'));
     }
 }

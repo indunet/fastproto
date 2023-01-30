@@ -17,6 +17,7 @@
 package org.indunet.fastproto.mapper;
 
 import lombok.val;
+import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.codec.*;
 import org.indunet.fastproto.exception.CodecError;
@@ -269,7 +270,7 @@ public class CodecMapper {
                 .decode(context, bytes);
     }
 
-    public static BiConsumer<byte[], ? super Object> getEncoder(CodecContext context, Class<? extends Function> clazz) {
+    public static BiConsumer<ByteBuffer, ? super Object> getEncoder(CodecContext context, Class<? extends Function> clazz) {
         if (clazz != null) {
             val type = Arrays.stream(clazz.getGenericInterfaces())
                     .filter(i -> i instanceof ParameterizedType)
@@ -278,16 +279,16 @@ public class CodecMapper {
                     .findAny()
                     .get();
 
-            return (bytes, value) -> getCodec(context.getDataTypeAnnotation().annotationType(), (Class) type)
-                    .encode(context, bytes, getFormula(clazz).apply(value));
+            return (buffer, value) -> getCodec(context.getDataTypeAnnotation().annotationType(), (Class) type)
+                    .encode(context, buffer, getFormula(clazz).apply(value));
         } else {
-            return (bytes, value) -> getCodec(context.getDataTypeAnnotation().annotationType(), context.getField().getGenericType())
-                    .encode(context, bytes, value);
+            return (buffer, value) -> getCodec(context.getDataTypeAnnotation().annotationType(), context.getField().getGenericType())
+                    .encode(context, buffer, value);
         }
     }
 
-    public static BiConsumer<byte[], ? super Object> getDefaultEncoder(CodecContext context, Class type) {
-        return (bytes, value) -> getCodec(context.getDataTypeAnnotation().annotationType(), type)
-                .encode(context, bytes, value);
+    public static BiConsumer<ByteBuffer, ? super Object> getDefaultEncoder(CodecContext context, Class type) {
+        return (buffer, value) -> getCodec(context.getDataTypeAnnotation().annotationType(), type)
+                .encode(context, buffer, value);
     }
 }
