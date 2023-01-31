@@ -26,10 +26,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Float type, corresponding to Java Float/float.
+ * Float type which takes 4 bytes, it can be used to annotate field type of Float/float.
  *
  * @author Deng Ran
- * @see DataType
  * @since 1.0.0
  */
 @DataType
@@ -41,7 +40,13 @@ public @interface FloatType {
     float MAX_VALUE = Float.MAX_VALUE;
     float MIN_VALUE = Float.MIN_VALUE;
 
+    /*
+     * The byte offset of the field in the binary data.
+     */
     int offset();
 
+    /*
+     * The byte order of the field in the binary data, its priority is higher than @DefaultByteOrder.
+     */
     ByteOrder[] byteOrder() default {};
 }

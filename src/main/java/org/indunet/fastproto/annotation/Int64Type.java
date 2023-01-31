@@ -26,10 +26,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Long type, corresponding to Java Long/long.
+ * Int64 type which takes 8 bytes, it can be used to annotate field type of Long/long.
  *
  * @author Deng Ran
- * @see DataType
  * @since 1.0.0
  */
 @DataType
@@ -41,7 +40,13 @@ public @interface Int64Type {
     long MAX_VALUE = Long.MAX_VALUE;
     long MIN_VALUE = Long.MIN_VALUE;
 
+    /*
+     * The byte offset of the field in the binary data.
+     */
     int offset();
 
+    /*
+     * The byte order of the field in the binary data, its priority is higher than @DefaultByteOrder.
+     */
     ByteOrder[] byteOrder() default {};
 }

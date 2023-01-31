@@ -10,14 +10,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Boolean array type, can be used to annotate field type of Boolean[]/boolean[].
- *
- * @param byteOffset The byte offset of the field in the binary data.
- * @param bitOffset The bit offset of the field in the binary data.
- * @param length The length of the boolean array.
- * @param mode It is used to distinguish between the different bits in the byte and to determine their relative
- *             significance or weight. BitOrder.LSB_0 means BIT_0 is LSB while BitOrder.MSB_0 means BIT_0 is MSB,
- *             BoolArrayType uses LSB_0 by default.
+ * Boolean array type, can be used to annotate field type of Boolean[]/boolean[]/List<Boolean>/Set<Boolean>.
  *
  * @author Deng Ran
  * @see DataType
@@ -28,11 +21,23 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BoolArrayType {
+    /*
+     * The byte offset of the field in the binary data.
+     */
     int byteOffset();
 
+    /*
+     * The bit offset of the field in the binary data.
+     */
     int bitOffset();
 
+    /*
+     * The length of the array.
+     */
     int length();
 
+    /*
+     * The bit order of the field in the binary data, its priority is higher than @DefaultBitOrder.
+     */
     BitOrder[] bitOrder() default {};
 }

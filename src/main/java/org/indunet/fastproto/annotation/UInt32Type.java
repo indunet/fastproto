@@ -26,10 +26,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Long type, corresponding to Java Long/long.
+ * UInt32 type which takes 4 bytes, it can be used to annotate field type of Long/long.
  *
  * @author Deng Ran
- * @see DataType
  * @since 1.2.0
  */
 @DataType
@@ -41,7 +40,13 @@ public @interface UInt32Type {
     long MAX_VALUE = (long) Integer.MAX_VALUE - Integer.MIN_VALUE;
     int MIN_VALUE = 0;
 
+    /*
+     * The byte offset of the field in the binary data.
+     */
     int offset();
 
+    /*
+     * The byte order of the field in the binary data, its priority is higher than @DefaultByteOrder.
+     */
     ByteOrder[] byteOrder() default {};
 }

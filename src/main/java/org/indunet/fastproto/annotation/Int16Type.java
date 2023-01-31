@@ -26,10 +26,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Int16 type, corresponding to Java Integer/int.
+ * Int16 type which takes 2 bytes, it can be used to annotate field type of Integer/int.
  *
  * @author Deng Ran
- * @see DataType
  * @since 1.2.0
  */
 @DataType
@@ -41,7 +40,13 @@ public @interface Int16Type {
     int MAX_VALUE = Short.MAX_VALUE;
     int MIN_VALUE = Short.MIN_VALUE;
 
+    /*
+     * The byte offset of the field in the binary data.
+     */
     int offset();
 
+    /*
+     * The byte order of the field in the binary data, its priority is higher than @DefaultByteOrder.
+     */
     ByteOrder[] byteOrder() default {};
 }

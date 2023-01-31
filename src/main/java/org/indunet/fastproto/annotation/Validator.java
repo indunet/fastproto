@@ -24,6 +24,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * This annotation is used to mark validator classes for data type annotations.
+ *
  * @author Deng Ran
  * @since 3.2.0
  */

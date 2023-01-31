@@ -27,7 +27,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Int32 array type
+ * Int32 array type, each element takes 4 bytes, it can be used to annotate field type of Integer[]/int[]/List<Integer>/Set<Integer>.
  *
  * @author Deng Ran
  * @since 3.6.0
@@ -37,9 +37,18 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Int32ArrayType {
+    /*
+     * The byte offset of the field in the binary data.
+     */
     int offset();
 
+    /*
+     * The length of the array or string, only valid on array or string type.
+     */
     int length();
 
+    /*
+     * The byte order of the field in the binary data, its priority is higher than @DefaultByteOrder.
+     */
     ByteOrder[] byteOrder() default {};
 }

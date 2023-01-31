@@ -26,11 +26,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Int16 array type, each int16 takes 2 byte, can be used to annotate field type of  Integer[]/int[]/List<Integer>/Set<Integer>.
-
- * @param offset The byte offset of the field in the binary data.
- * @param length The length of the int16 array.
- * @param endian Byte order of the int16, BIG or LITTLE can be set, Int16ArrayType use LITTLE by default.
+ * Int16 array type, each element takes 2 byte, can be used to annotate field type of  Integer[]/int[]/List<Integer>/Set<Integer>/
+ * Short[]/short[]/List<Short>/Set<Short>.
  *
  * @author Deng Ran
  * @since 3.6.0
@@ -40,9 +37,18 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Int16ArrayType {
+    /*
+     * The byte offset of the field in the binary data.
+     */
     int offset();
 
+    /*
+     * The length of the array or string, only valid on array or string type.
+     */
     int length();
 
+    /*
+     * The byte order of the field in the binary data, its priority is higher than @DefaultByteOrder.
+     */
     ByteOrder[] byteOrder() default {};
 }

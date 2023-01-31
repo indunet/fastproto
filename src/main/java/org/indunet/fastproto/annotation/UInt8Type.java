@@ -25,10 +25,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Integer type, corresponding to Java Integer/int.
+ * UInt8 type which takes 1 byte, it can be used to annotate field type of Integer/int.
  *
  * @author Deng Ran
- * @see DataType
  * @since 1.2.0
  */
 @DataType
@@ -40,5 +39,8 @@ public @interface UInt8Type {
     int MAX_VALUE = Byte.MAX_VALUE - Byte.MIN_VALUE;
     int MIN_VALUE = 0;
 
+    /*
+     * The byte offset of the field in the binary data.
+     */
     int offset();
 }

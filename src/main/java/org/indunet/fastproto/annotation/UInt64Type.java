@@ -27,10 +27,9 @@ import java.lang.annotation.Target;
 import java.math.BigInteger;
 
 /**
- * uint64 type, corresponding to Java BigInteger.
+ * UInt64 type which takes 8 bytes, it can be used to annotate field type of BitInteger.
  *
  * @author Deng Ran
- * @see DataType
  * @since 1.5.0
  */
 @DataType
@@ -43,7 +42,13 @@ public @interface UInt64Type {
             .subtract(new BigInteger(String.valueOf(Long.MIN_VALUE)));
     BigInteger MIN_VALUE = new BigInteger("0");
 
+    /*
+     * The byte offset of the field in the binary data.
+     */
     int offset();
 
+    /*
+     * The byte order of the field in the binary data, its priority is higher than @DefaultByteOrder.
+     */
     ByteOrder[] byteOrder() default {};
 }

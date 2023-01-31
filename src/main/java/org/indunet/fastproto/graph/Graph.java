@@ -42,10 +42,6 @@ public class Graph {
 
     }
 
-    public int countClass() {
-        return adj.size();
-    }
-
     public int countReference() {
         return this.adj.values().stream()
                 .mapToInt(List::size)
@@ -62,9 +58,7 @@ public class Graph {
     }
 
     public boolean contains(@NonNull Reference reference) {
-//        return this.adj.keySet().stream()
-//                .anyMatch(s -> s.equals(reference));
-        return this.adj.keySet().contains(reference);
+        return this.adj.containsKey(reference);
     }
 
     public void addClass(@NonNull Reference reference) {
@@ -121,13 +115,11 @@ public class Graph {
     }
 
     public void print() {
-        this.adj.entrySet()
-                .forEach(entry -> {
-                    System.out.println(entry.getKey());
+        this.adj.forEach((key, value) -> {
+            System.out.println(key);
 
-                    entry.getValue()
-                            .forEach(s -> System.out.println("\t" + s));
-                });
+            value.forEach(s -> System.out.println("\t" + s));
+        });
     }
 
     public synchronized List<Reference> getValidReferences() {
@@ -206,14 +198,13 @@ public class Graph {
                     .filter(r -> r.getReferenceType() == ReferenceType.CLASS)
                     .forEach(this::generate);
 
-            reference.newInstance(list.toArray(new Reference[list.size()]));
+            reference.newInstance(list.toArray(new Reference[0]));
         }
     }
 
     public void copy(Object object) {
         Set<Reference> marks = new HashSet<>();
         Deque<Reference> queue = new ArrayDeque<>();
-        // List<Reference> list = new ArrayList<>();
 
         marks.add(this.root());
         queue.add(this.root());
@@ -230,7 +221,6 @@ public class Graph {
             this.adj(ref).stream()
                     .filter(r -> r.getReferenceType() == ReferenceType.FIELD)
                     .filter(r -> !r.getEncodingIgnore())
-                    // .filter(r -> r.parse(obj) != null)   // Filter null object.
                     .forEach(r -> r.setValue(r.parse(obj)));
 
             for (val r: this.adj(ref)) {
