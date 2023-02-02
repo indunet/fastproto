@@ -19,7 +19,7 @@ package org.indunet.fastproto.util;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.BitOrder;
-import org.indunet.fastproto.ByteBuffer;
+import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.*;
 

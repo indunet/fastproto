@@ -25,16 +25,8 @@ public class ResolveException extends RuntimeException {
 
     }
 
-    public ResolveException(CodecError error) {
-        this(error.getMessage());
-    }
-
     public ResolveException(String message) {
         super(message);
-    }
-
-    public ResolveException(CodecError error, Throwable cause) {
-        this(error.getMessage(), cause);
     }
 
     public ResolveException(String message, Throwable cause) {

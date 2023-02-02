@@ -16,13 +16,12 @@
 
 package org.indunet.fastproto.codec;
 
-import org.indunet.fastproto.ByteBuffer;
-import org.indunet.fastproto.exception.CodecError;
+import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.exception.CodecException;
 
-import java.text.MessageFormat;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
+
 
 /**
  * Codec interface.
@@ -41,8 +40,7 @@ public interface Codec<T> {
                 return clazz.newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
-                throw new CodecException(
-                        MessageFormat.format(CodecError.FAIL_INIT_CODEC.getMessage(), clazz.getName()), e);
+                throw new CodecException(String.format("Fail initializing codec %s", clazz.getName()), e);
             }
         });
     }
@@ -53,8 +51,7 @@ public interface Codec<T> {
                return clazz.newInstance();
            } catch (InstantiationException | IllegalAccessException e) {
                e.printStackTrace();
-               throw new CodecException(
-                       MessageFormat.format(CodecError.FAIL_INIT_FORMULA.getMessage(), clazz.getName()), e);
+               throw new CodecException(String.format("Fail initializing formula %s", clazz.getName()), e);
            }
         });
     }

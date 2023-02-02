@@ -17,10 +17,9 @@
 package org.indunet.fastproto.mapper;
 
 import lombok.val;
-import org.indunet.fastproto.ByteBuffer;
+import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.codec.*;
-import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.ResolveException;
@@ -29,7 +28,6 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.sql.Timestamp;
-import java.text.MessageFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -192,22 +190,16 @@ public class CodecMapper {
         codecMap.get(CharArrayType.class).put(t -> collectionType.apply(t, Character.class), charArrayCodec.new CollectionCodec());
 
         val dateCodec = new DateCodec();
-        val timestampCodec = new TimestampCodec();
-        val calendarCodec = new CalendarCodec();
-        val instantCodec = new InstantCodec();
-        val localDateTimeCodec = new LocalDateTimeCodec();
         codecMap.get(TimeType.class).put(c -> c.equals(Date.class), dateCodec);
-        codecMap.get(TimeType.class).put(c -> c.equals(Timestamp.class), timestampCodec);
-        codecMap.get(TimeType.class).put(c -> c.equals(Calendar.class), calendarCodec);
-        codecMap.get(TimeType.class).put(c -> c.equals(Instant.class), instantCodec);
-        codecMap.get(TimeType.class).put(c -> c.equals(LocalDateTime.class), localDateTimeCodec);
+        codecMap.get(TimeType.class).put(c -> c.equals(Timestamp.class), dateCodec.new TimestampCodec());
+        codecMap.get(TimeType.class).put(c -> c.equals(Calendar.class), dateCodec.new CalendarCodec());
+        codecMap.get(TimeType.class).put(c -> c.equals(Instant.class), dateCodec.new InstantCodec());
+        codecMap.get(TimeType.class).put(c -> c.equals(LocalDateTime.class), dateCodec.new LocalDateTimeCodec());
 
         val stringCodec = new StringCodec();
-        val stringBufferCodec = new StringBufferCodec();
-        val stringBuilderCodec = new StringBuilderCodec();
         codecMap.get(StringType.class).put(c -> c.equals(String.class), stringCodec);
-        codecMap.get(StringType.class).put(c -> c.equals(StringBuffer.class), stringBufferCodec);
-        codecMap.get(StringType.class).put(c -> c.equals(StringBuilder.class), stringBuilderCodec);
+        codecMap.get(StringType.class).put(c -> c.equals(StringBuffer.class), stringCodec.new StringBufferCodec());
+        codecMap.get(StringType.class).put(c -> c.equals(StringBuilder.class), stringCodec.new StringBuilderCodec());
 
         val enumCodec = new EnumCodec<>();
         codecMap.get(EnumType.class).put(t -> Enum.class.isAssignableFrom((Class) t), enumCodec);
@@ -240,8 +232,7 @@ public class CodecMapper {
                 return c.newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
-                throw new DecodingException(
-                        MessageFormat.format(CodecError.FAIL_INITIALIZING_DECODE_FORMULA.getMessage(), clazz.getName()), e);
+                throw new DecodingException(String.format("Fail initializing decoding formula %s", clazz.getName()), e);
             }
         });
     }

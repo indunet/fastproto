@@ -18,7 +18,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
-import org.indunet.fastproto.ByteBuffer;
+import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.DoubleArrayType;
 import org.indunet.fastproto.annotation.DoubleType;
@@ -27,7 +27,8 @@ import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.CollectionUtils;
 
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.stream.DoubleStream;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;

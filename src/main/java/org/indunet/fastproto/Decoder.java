@@ -3,6 +3,7 @@ package org.indunet.fastproto;
 import lombok.val;
 import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.exception.DecodingException;
+import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.util.CodecUtils;
 
 import java.lang.reflect.Constructor;
@@ -34,7 +35,6 @@ public final class Decoder {
 
     Decoder(byte[] bytes) {
         this(new ByteBuffer(bytes));
-
         this.bytes = bytes;
     }
 
@@ -56,46 +56,138 @@ public final class Decoder {
         return this;
     }
 
+    /**
+     * Modify default byte order, FastProto uses little endian by default if not specified.
+     *
+     * @param byteOrder Byte order
+     * @return this
+     */
     public Decoder defaultByteOrder(ByteOrder byteOrder) {
         this.byteOrder = byteOrder;
 
         return this;
     }
 
+    /**
+     * Modify default bit order, FastProto uses lsb_0 by default if not specified.
+     *
+     * @param bitOrder Bit order
+     * @return this
+     */
     public Decoder defaultBitOrder(BitOrder bitOrder) {
         this.bitOrder = bitOrder;
 
         return this;
     }
 
+    /**
+     * Decode bool value from binary data.
+     *
+     * @param byteOffset The byte offset of the bool value in the binary data.
+     * @param bitOffset  The bit offset of the bool value in the binary data.
+     * @return this
+     */
     public Decoder boolType(int byteOffset, int bitOffset) {
         return this.put(CodecUtils.boolType(this.bytes, byteOffset, bitOffset, BitOrder.LSB_0));
     }
 
+    /**
+     * Decode bool value from binary data.
+     *
+     * @param byteOffset The byte offset of the bool value in the binary data.
+     * @param bitOffset  The bit offset of the bool value in the binary data.
+     * @param order      Bit order.
+     * @return this
+     */
+    public Decoder boolType(int byteOffset, int bitOffset, BitOrder order) {
+        return this.put(CodecUtils.boolType(this.bytes, byteOffset, bitOffset, order));
+    }
+
+    /**
+     * Decode bool value from binary data with decoding formula.
+     *
+     * @param byteOffset The byte offset of the bool value in the binary data.
+     * @param bitOffset  The bit offset of the bool value in the binary data.
+     * @param formula    The decoded bool value will be substituted into the formula, and the final result will be stored.
+     * @return this
+     */
     public Decoder boolType(int byteOffset, int bitOffset, Function<Boolean, ?> formula) {
         return this.put(formula.apply(CodecUtils.boolType(this.bytes, byteOffset, bitOffset, BitOrder.LSB_0)));
     }
 
+    /**
+     * Decode bool value from binary data with decoding formula.
+     *
+     * @param byteOffset The byte offset of the bool value in the binary data.
+     * @param bitOffset  The bit offset of the bool value in the binary data.
+     * @param name       The name of the boolean field.
+     * @return this
+     */
     public Decoder boolType(int byteOffset, int bitOffset, String name) {
         return this.put(name, CodecUtils.boolType(this.bytes, byteOffset, bitOffset, BitOrder.LSB_0));
     }
 
+    /**
+     * Decode bool value from binary data with decoding formula.
+     *
+     * @param byteOffset The byte offset of the bool value in the binary data.
+     * @param bitOffset  The bit offset of the bool value in the binary data.
+     * @param formula    The decoded bool value will be substituted into the formula, and the final result will be stored.
+     * @return this
+     */
+    public Decoder boolType(int byteOffset, int bitOffset, BitOrder order, Function<Boolean, ?> formula, String name) {
+        return this.put(name, CodecUtils.boolType(this.bytes, byteOffset, bitOffset, BitOrder.LSB_0));
+    }
+
+    /**
+     * Decode uint8 value from binary data.
+     *
+     * @param offset The byte offset of the uint8 value in the binary data.
+     * @return this
+     */
     public Decoder readUInt8(int offset) {
         return this.put(CodecUtils.uint8Type(this.bytes, offset));
     }
 
+    /**
+     * Decode uint8 value from binary data.
+     *
+     * @param offset  The byte offset of the uint8 value in the binary data.
+     * @param formula The decoded bool value will be substituted into the formula, and the final result will be stored.
+     * @return this
+     */
     public Decoder readUInt8(int offset, Function<Integer, ?> formula) {
         return this.put(formula.apply(CodecUtils.uint8Type(this.bytes, offset)));
     }
 
+    /**
+     * Decode uint8 value from binary data.
+     *
+     * @param offset The byte offset of the uint8 value in the binary data.
+     * @param name   The name of the boolean field.
+     * @return this
+     */
     public Decoder readUInt8(int offset, String name) {
         return this.put(name, CodecUtils.uint8Type(this.bytes, offset));
     }
 
+    /**
+     * Decode uint8 value from binary data with decoding formula.
+     *
+     * @param offset The byte offset of the uint8 value in the binary data.
+     * @param name   The name of the boolean field.
+     * @param formula The decoded bool value will be substituted into the formula, and the final result will be stored.
+     * @return this
+     */
     public Decoder readUInt8(int offset, String name, Function<Integer, ?> formula) {
         return this.put(name, formula.apply(CodecUtils.uint8Type(this.bytes, offset)));
     }
 
+    /**
+     * Decode uint8 value from binary data.
+     *
+     * @return this
+     */
     public Decoder readUInt8() {
         return this.put(CodecUtils.uint8Type(this.byteBuffer, this.byteBuffer.getReadIndex()));
     }
@@ -176,6 +268,14 @@ public final class Decoder {
         return this.put(name, formula.apply(CodecUtils.uint16Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder)));
     }
 
+    public long getUInt32(int offset) {
+        return CodecUtils.uint32Type(this.bytes, offset, ByteOrder.LITTLE);
+    }
+
+    public long getUInt32(int offset, ByteOrder order) {
+        return CodecUtils.uint32Type(this.bytes, offset, order);
+    }
+
     public Decoder readUInt32(int offset) {
         return this.put(CodecUtils.uint32Type(this.bytes, offset, this.byteOrder));
     }
@@ -238,6 +338,14 @@ public final class Decoder {
 
     public Decoder readUInt32(ByteOrder byteOrder, String name, Function<Long, ?> formula) {
         return this.put(name, formula.apply(CodecUtils.uint32Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder)));
+    }
+
+    public BigInteger getUInt64(int offset) {
+        return CodecUtils.uint64Type(this.bytes, offset, ByteOrder.LITTLE);
+    }
+
+    public BigInteger getUInt64(int offset, ByteOrder order) {
+        return CodecUtils.uint64Type(this.bytes, offset, order);
     }
 
     public Decoder readUInt64(int offset) {
@@ -304,6 +412,10 @@ public final class Decoder {
         return this.put(name, formula.apply(CodecUtils.uint64Type(this.byteBuffer, this.byteBuffer.getReadIndex(), byteOrder)));
     }
 
+    public byte getByte(int offset) {
+        return CodecUtils.byteType(this.bytes, offset);
+    }
+
     public Decoder readByte(int offset) {
         return this.put(CodecUtils.byteType(this.bytes, offset));
     }
@@ -366,6 +478,14 @@ public final class Decoder {
 
     public Decoder readInt8(String name, Function<Integer, ?> formula) {
         return this.put(name, formula.apply((int) this.byteBuffer.get(this.byteBuffer.getReadIndex())));
+    }
+
+    public short getShort(int offset) {
+        return CodecUtils.shortType(this.bytes, offset, this.byteOrder);
+    }
+
+    public short getShort(int offset, ByteOrder byteOrder) {
+        return CodecUtils.shortType(this.bytes, offset, this.byteOrder);
     }
 
     public Decoder readShort(int offset) {

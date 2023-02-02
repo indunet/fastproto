@@ -17,7 +17,9 @@
 package org.indunet.fastproto;
 
 import lombok.val;
-import org.indunet.fastproto.annotation.*;
+import org.indunet.fastproto.annotation.AutoType;
+import org.indunet.fastproto.annotation.BoolArrayType;
+import org.indunet.fastproto.annotation.BoolType;
 import org.indunet.fastproto.exception.ResolveException;
 
 import java.lang.annotation.Annotation;
@@ -125,11 +127,11 @@ public interface ProtocolType {
 
     int length();
 
-    String field();
+    String name();
 
-    ByteOrder[] endian();
+    ByteOrder[] byteOrder();
 
-    int mode();
+    BitOrder[] bitOrder();
 
     Class<? extends Annotation> getType();
 

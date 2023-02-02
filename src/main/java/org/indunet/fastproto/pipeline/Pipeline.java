@@ -16,7 +16,6 @@
 
 package org.indunet.fastproto.pipeline;
 
-import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.graph.resolve.validate.ValidatorContext;
 import org.indunet.fastproto.pipeline.decode.DecodeFlow;
@@ -63,7 +62,7 @@ public abstract class Pipeline<T> {
         try {
             temp.setNext(clazz.newInstance());
         } catch (InstantiationException | IllegalAccessException e) {
-            throw new DecodingException(CodecError.FAIL_CREATING_DECODE_FLOW, e);
+            throw new DecodingException("Fail creating decoding flow.", e);
         }
 
         return this;
@@ -109,7 +108,7 @@ public abstract class Pipeline<T> {
                     try {
                         return (Pipeline) c.newInstance();
                     } catch (InstantiationException | IllegalAccessException e) {
-                        throw new DecodingException(CodecError.FAIL_CREATING_DECODE_FLOW, e);
+                        throw new DecodingException("Fail creating decoding flow.", e);
                     }
                 })
                 .filter(f -> (f.getCode() & codecFeature) == 0)

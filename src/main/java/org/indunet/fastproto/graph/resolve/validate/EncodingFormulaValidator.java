@@ -17,7 +17,6 @@
 package org.indunet.fastproto.graph.resolve.validate;
 
 import lombok.val;
-import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.TypeUtils;
 
@@ -54,8 +53,8 @@ public class EncodingFormulaValidator extends TypeValidator {
                             return t == field.getType();
                         }
                     }).findAny()
-                    .orElseThrow(() -> new EncodingException(MessageFormat.format(
-                            CodecError.ANNOTATION_FIELD_NOT_MATCH.getMessage(), typeAnnotation.annotationType().getName(), field.getName())));
+                    .orElseThrow(() -> new EncodingException(
+                            String.format("Data type annotation and field does not match", typeAnnotation.annotationType().getName(), field.getName())));
         }
 
         this.forward(context);

@@ -17,8 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.BitOrder;
-import org.indunet.fastproto.ByteBuffer;
+import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.annotation.BoolType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;

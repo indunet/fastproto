@@ -28,16 +28,8 @@ public class DecodingException extends CodecException {
 
     }
 
-    public DecodingException(CodecError error) {
-        this(error.getMessage());
-    }
-
     public DecodingException(String message) {
         super(message);
-    }
-
-    public DecodingException(CodecError error, Throwable cause) {
-        this(error.getMessage(), cause);
     }
 
     public DecodingException(String message, Throwable cause) {

@@ -19,18 +19,14 @@ package org.indunet.fastproto.util;
 import lombok.NonNull;
 import lombok.SneakyThrows;
 import lombok.val;
-import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Array;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Type;
-import java.text.MessageFormat;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.IntStream;
 
 /**
  * Type utils.
@@ -63,8 +59,7 @@ public class TypeUtils {
             case "double":
                 return Double.class;
             default:
-                throw new CodecException(
-                        MessageFormat.format(CodecError.UNSUPPORTED_TYPE.getMessage(), name));
+                throw new CodecException(String.format("Unsupported type %s", name));
         }
     }
 

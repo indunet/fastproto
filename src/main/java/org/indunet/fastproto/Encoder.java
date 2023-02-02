@@ -1,6 +1,7 @@
 package org.indunet.fastproto;
 
 import org.indunet.fastproto.annotation.*;
+import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.util.CodecUtils;
 
 import java.math.BigInteger;

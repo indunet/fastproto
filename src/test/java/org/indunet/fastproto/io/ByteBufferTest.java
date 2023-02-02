@@ -1,6 +1,7 @@
-package org.indunet.fastproto;
+package org.indunet.fastproto.io;
 
 import org.indunet.fastproto.exception.CodecException;
+import org.indunet.fastproto.io.ByteBuffer;
 import org.junit.Test;
 
 import static org.junit.Assert.*;

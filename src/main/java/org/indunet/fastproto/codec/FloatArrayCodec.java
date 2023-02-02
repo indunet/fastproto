@@ -18,7 +18,7 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
-import org.indunet.fastproto.ByteBuffer;
+import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.FloatArrayType;
 import org.indunet.fastproto.annotation.FloatType;

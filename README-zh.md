@@ -24,7 +24,7 @@ FastProto是一款Java编写的二进制数据处理工具，开发者可以通�
 
 ### *正在开发*
 
-* 不依赖注解的开发
+* 细化API文档
 * 代码结构 & 性能优化
 
 ### *Maven*
@@ -45,19 +45,17 @@ FastProto是一款Java编写的二进制数据处理工具，开发者可以通�
 
 数据报文包含8种不同类型的信号，具体协议如下：
 
-| 字节偏移 | 位偏移 |  数据类型(C/C++)   | 信号名称       | 单位 |  换算公式  |
-|:-----------:|:----------:|:--------------:|:-----------------:|:----:|:---------:|
-| 0           |            | unsigned char  | 设备编号         |      |           |
-| 1           |            |                | 预留          |      |           |
-| 2-9         |            |      long      | 时间戳              |  ms  |           |
-| 10-11       |            | unsigned short | 湿度          |  %RH |           |
-| 12-13       |            |     short      | 温度       |  ℃  |            |
-| 14-17       |            |  unsigned int  | 气压          |  Pa  | p * 0.1   |
-| 18          | 0          |      bool      | 温度有效标识 |      |           |
-| 18          | 1          |      bool      | 湿度有效标识    |      |           |
-| 18          | 2          |      bool      | 气压有效标识    |      |           |
-| 18          | 3-7        |                | 预留          |      |           |
-| 19          |            |                | 预留          |      |           |
+| 字节偏移 | 位偏移 |  数据类型(C/C++)   |  信号名称  | 单位 |  换算公式  |
+|:-----------:|:----------:|:--------------:|:------:|:----:|:---------:|
+| 0           |            | unsigned char  |  设备编号  |      |           |
+| 1           |            |                |   预留   |      |           |
+| 2-9         |            |      long      |  时间戳   |  ms  |           |
+| 10-11       |            | unsigned short |   湿度   |  %RH |           |
+| 12-13       |            |     short      |   温度   |  ℃  |            |
+| 14-17       |            |  unsigned int  |   气压   |  Pa  | p * 0.1   |
+| 18          | 0          |      bool      | 设备有效标识 |      |           |
+| 18          | 3-7        |                |   预留   |      |           |
+| 19          |            |                |   预留   |      |           |
 
 ### *1.1 解析和封包二进制数据*
 
@@ -84,21 +82,14 @@ public class Weather {
     long pressure;
 
     @BoolType(byteOffset = 18, bitOffset = 0)
-    boolean temperatureValid;
-
-    @BoolType(byteOffset = 18, bitOffset = 1)
-    boolean humidityValid;
-
-    @BoolType(byteOffset = 18, bitOffset = 2)
-    boolean pressureValid;
+    boolean deviceValid;
 }
 ```
 
 调用`FastProto::parse()`方法将二进制数据解析成Java数据对象`Weather`
 
 ```java
-// datagram sent by monitoring device.
-byte[] datagram = ...   
+byte[] datagram = ...   // 检测设备发送的二进制报文
         
 Weather weather = FastProto.parse(datagram, Weather.class);
 ```
@@ -169,6 +160,8 @@ FastProto支持Java基础数据类型，考虑到跨语言跨平台的数据交�
 |:----------------:|:---------------------------------------------------------------------------------:|:----------------:|
 |   @BinaryType    |                       Byte[]/byte[]/Collection&lt;Byte&gt;                        |      char[]      |
 |  @BoolArrayType  |                    Boolean[]/boolean[]/Collection&lt;Boolean&gt;                     |      bool[]      |
+| @AsciiArrayType  |                  Character[]/char[]/Collection&lt;Character&gt;                   |      char[]      |
+|  @CharArrayType  |                  Character[]/char[]/Collection&lt;Character&gt;                   |        --        |
 |  @Int8ArrayType  |  Byte[]/byte[]/Integer[]/int[]/Collection&lt;Byte&gt;/Collection&lt;Integer&gt;   |      char[]      |
 | @Int16ArrayType  | Short[]/short[]/Integer[]/int[]/Collection&lt;Short&gt;/Collection&lt;Integer&gt; |     short[]      |
 | @Int32ArrayType  |                     Integer[]/int[]/Collection&lt;Integer&gt;                     |      int[]       |
@@ -211,8 +204,8 @@ public class Weather {
     @UInt16Type(offset = 10, byteOrder = ByteOrder.LITTLE)
     int humidity;
 
-    @BoolType(byteOffset = 18, bitOffset = 1, bitOrder = BitOrder.MSB_0)
-    boolean humidityValid;
+    @BoolType(byteOffset = 18, bitOffset = 0, bitOrder = BitOrder.MSB_0)
+    boolean deviceValid;
 }
 ```
 

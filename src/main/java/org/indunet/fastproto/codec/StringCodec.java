@@ -17,7 +17,7 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.ByteBuffer;
+import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.annotation.StringType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
@@ -44,7 +44,7 @@ public class StringCodec implements Codec<String> {
 
     public void encode(byte[] datagram, int offset, int length, Charset set, String value) {
         try {
-            CodecUtils.binaryType(datagram, offset, length, value.getBytes());
+            CodecUtils.binaryType(datagram, offset, length, value.getBytes(set));
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding string type.", e);
         }
@@ -53,8 +53,9 @@ public class StringCodec implements Codec<String> {
     @Override
     public String decode(CodecContext context, byte[] bytes) {
         val type = context.getDataTypeAnnotation(StringType.class);
+        val set = Charset.forName(type.charset());
 
-        return this.decode(bytes, type.offset(), type.length(), Charset.forName(type.charset()));
+        return this.decode(bytes, type.offset(), type.length(), set);
     }
 
     @Override
@@ -66,6 +67,34 @@ public class StringCodec implements Codec<String> {
             CodecUtils.binaryType(buffer, type.offset(), type.length(), value.getBytes(charset));
         } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding string type.", e);
+        }
+    }
+
+    public class StringBufferCodec implements Codec<StringBuffer> {
+        @Override
+        public StringBuffer decode(CodecContext context, byte[] bytes) {
+            val str = StringCodec.this.decode(context, bytes);
+
+            return new StringBuffer(str);
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBuffer buffer, StringBuffer value) {
+            StringCodec.this.encode(context, buffer, value.toString());
+        }
+    }
+
+    public class StringBuilderCodec implements Codec<StringBuilder> {
+        @Override
+        public StringBuilder decode(CodecContext context, byte[] bytes) {
+            val str = StringCodec.this.decode(context, bytes);
+
+            return new StringBuilder(str);
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBuffer buffer, StringBuilder value) {
+            StringCodec.this.encode(context, buffer, value.toString());
         }
     }
 }

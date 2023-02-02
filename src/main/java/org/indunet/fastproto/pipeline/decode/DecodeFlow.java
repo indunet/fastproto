@@ -17,12 +17,11 @@
 package org.indunet.fastproto.pipeline.decode;
 
 import lombok.val;
-import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.graph.Graph;
+import org.indunet.fastproto.pipeline.FlowCode;
 import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.PipelineContext;
-import org.indunet.fastproto.pipeline.FlowCode;
 
 import java.text.MessageFormat;
 
@@ -52,8 +51,7 @@ public class DecodeFlow extends Pipeline<PipelineContext> {
                     try {
                         r.decode(bytes);
                     } catch (DecodingException e) {
-                        throw new DecodingException(MessageFormat.format(
-                                CodecError.FAIL_DECODING_FIELD.getMessage(), r.getField().toString()), e);
+                        throw new DecodingException(String.format("Fail decoding field %s", r.getField().toString()), e);
                     }
                 });
 

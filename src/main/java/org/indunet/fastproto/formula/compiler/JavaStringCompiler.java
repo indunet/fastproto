@@ -16,8 +16,6 @@
 
 package org.indunet.fastproto.formula.compiler;
 
-import lombok.val;
-import lombok.var;
 import org.indunet.fastproto.exception.ResolveException;
 
 import javax.tools.JavaCompiler;

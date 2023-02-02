@@ -19,9 +19,9 @@ package org.indunet.fastproto.graph;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.annotation.DataType;
-import org.indunet.fastproto.mapper.CodecMapper;
 import org.indunet.fastproto.graph.Reference.ReferenceType;
 import org.indunet.fastproto.graph.resolve.ResolvePipeline;
+import org.indunet.fastproto.mapper.CodecMapper;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;

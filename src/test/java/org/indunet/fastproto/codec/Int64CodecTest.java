@@ -16,22 +16,13 @@
 
 package org.indunet.fastproto.codec;
 
-import org.indunet.fastproto.ByteBuffer;
+import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
-import org.indunet.fastproto.annotation.Int32Type;
 import org.indunet.fastproto.annotation.Int64Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.AnnotationUtils;
-import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 

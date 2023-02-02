@@ -52,19 +52,17 @@ the weather station in binary format，the binary data has fixed length of 20 by
 
 The binary data contains 8 different types of signals, the specific protocol is as follows:
 
-| Byte Offset | Bit Offset | Data Type(C/C++)  | Signal Name       | Unit |  Formula  |
-|:-----------:|:----------:|:-----------------:|:-----------------:|:----:|:---------:|
-| 0           |            |   unsigned char   | device id         |      |           |
-| 1           |            |                   | reserved          |      |           |
-| 2-9         |            |       long        | time              |  ms  |           |
-| 10-11       |            |  unsigned short   | humidity          |  %RH |           |
-| 12-13       |            |       short       | temperature       |  ℃  |            |
-| 14-17       |            |   unsigned int    | pressure          |  Pa  | p * 0.1   |
-| 18          | 0          |       bool        | temperature valid |      |           |
-| 18          | 1          |       bool        | humidity valid    |      |           |
-| 18          | 2          |       bool        | pressure valid    |      |           |
-| 18          | 3-7        |                   | reserved          |      |           |
-| 19          |            |                   | reserved          |      |           |
+| Byte Offset | Bit Offset | Data Type(C/C++)  | Signal Name  | Unit |  Formula  |
+|:-----------:|:----------:|:-----------------:|:------------:|:----:|:---------:|
+| 0           |            |   unsigned char   |  device id   |      |           |
+| 1           |            |                   |   reserved   |      |           |
+| 2-9         |            |       long        |     time     |  ms  |           |
+| 10-11       |            |  unsigned short   |   humidity   |  %RH |           |
+| 12-13       |            |       short       | temperature  |  ℃  |            |
+| 14-17       |            |   unsigned int    |   pressure   |  Pa  | p * 0.1   |
+| 18          | 0          |       bool        | device valid |      |           |
+| 18          | 3-7        |                   |   reserved   |      |           |
+| 19          |            |                   |   reserved   |      |           |
 
 ### *1.1 Parse and Package Binary Data*
 
@@ -92,13 +90,7 @@ public class Weather {
     long pressure;
 
     @BoolType(byteOffset = 18, bitOffset = 0)
-    boolean temperatureValid;
-
-    @BoolType(byteOffset = 18, bitOffset = 1)
-    boolean humidityValid;
-
-    @BoolType(byteOffset = 18, bitOffset = 2)
-    boolean pressureValid;
+    boolean deviceValid;
 }
 ```
 
@@ -177,7 +169,9 @@ FastProto supports Java primitive data types, taking into account cross-language
 |    Annotation    |                                       Java                                        |      C/C++       |
 |:----------------:|:---------------------------------------------------------------------------------:|:----------------:|
 |   @BinaryType    |                       Byte[]/byte[]/Collection&lt;Byte&gt;                        |      char[]      |
-|  @BoolArrayType  |                    Boolean[]/boolean[]/Collection&lt;Boolean&gt;                     |      bool[]      |
+|  @BoolArrayType  |                   Boolean[]/boolean[]/Collection&lt;Boolean&gt;                   |      bool[]      |
+| @AsciiArrayType  |                  Character[]/char[]/Collection&lt;Character&gt;                   |      char[]      |
+|  @CharArrayType  |                  Character[]/char[]/Collection&lt;Character&gt;                   |        --        |
 |  @Int8ArrayType  |  Byte[]/byte[]/Integer[]/int[]/Collection&lt;Byte&gt;/Collection&lt;Integer&gt;   |      char[]      |
 | @Int16ArrayType  | Short[]/short[]/Integer[]/int[]/Collection&lt;Short&gt;/Collection&lt;Integer&gt; |     short[]      |
 | @Int32ArrayType  |                     Integer[]/int[]/Collection&lt;Integer&gt;                     |      int[]       |
@@ -225,8 +219,8 @@ public class Weather {
     @UInt16Type(offset = 10, byteOrder = ByteOrder.LITTLE)
     int humidity;
 
-    @BoolType(byteOffset = 18, bitOffset = 1, bitOrder = BitOrder.MSB_0)
-    boolean humidityValid;
+    @BoolType(byteOffset = 18, bitOffset = 0, bitOrder = BitOrder.MSB_0)
+    boolean deviceValid;
 }
 ```
 

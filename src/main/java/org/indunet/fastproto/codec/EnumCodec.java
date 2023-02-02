@@ -19,15 +19,13 @@ package org.indunet.fastproto.codec;
 import lombok.NonNull;
 import lombok.val;
 import lombok.var;
-import org.indunet.fastproto.ByteBuffer;
+import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.annotation.EnumType;
-import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.CodecUtils;
 
 import java.lang.reflect.Field;
-import java.text.MessageFormat;
 import java.util.Arrays;
 import java.util.function.Function;
 
@@ -46,8 +44,7 @@ public class EnumCodec<T extends Enum> implements Codec<T> {
             return Arrays.stream(enums)
                     .filter(e -> e.ordinal() == code)
                     .findAny()
-                    .orElseThrow(() -> new DecodingException(MessageFormat.format(
-                            CodecError.ENUM_NOT_FOUND.getMessage(), code)));
+                    .orElseThrow(() -> new DecodingException(String.format("Enum with code %s cannot be found.", code)));
         } else {
             Function<Enum, Integer> getValue = (Enum enumObject) -> {
                 Field field = null;
@@ -56,16 +53,14 @@ public class EnumCodec<T extends Enum> implements Codec<T> {
                     field.setAccessible(true);
                     return field.getInt(enumObject);
                 } catch (NoSuchFieldException | IllegalAccessException e) {
-                    throw new DecodingException(MessageFormat.format(
-                            CodecError.ILLEGAL_ENUM_CODE_FIELD.getMessage(), fieldName), e);
+                    throw new DecodingException(String.format("Illegal enum field %s", fieldName), e);
                 }
             };
 
             return Arrays.stream(enums)
                     .filter(e -> getValue.apply(e) == code)
                     .findAny().
-                    orElseThrow(() -> new DecodingException(MessageFormat.format(
-                            CodecError.ENUM_NOT_FOUND.getMessage(), code)));
+                    orElseThrow(() -> new DecodingException(String.format("Enum with code %s cannot be found.", code)));
         }
     }
 
@@ -82,8 +77,7 @@ public class EnumCodec<T extends Enum> implements Codec<T> {
 
                 code = field.getInt(value);
             } catch (IllegalAccessException | NoSuchFieldException e) {
-                throw new EncodingException(MessageFormat.format(
-                        CodecError.ILLEGAL_ENUM_CODE_FIELD.getMessage(), fieldName), e);
+                throw new EncodingException(String.format("Illegal enum field %s", fieldName), e);
             }
         }
 
@@ -115,8 +109,7 @@ public class EnumCodec<T extends Enum> implements Codec<T> {
 
                 code = field.getInt(value);
             } catch (IllegalAccessException | NoSuchFieldException e) {
-                throw new EncodingException(MessageFormat.format(
-                        CodecError.ILLEGAL_ENUM_CODE_FIELD.getMessage(), name), e);
+                throw new EncodingException(String.format("Illegal enum field %s", name), e);
             }
         }
 

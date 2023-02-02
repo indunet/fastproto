@@ -47,12 +47,4 @@ class ByteOrderTest {
 
         assertArrayEquals(expected, FastProto.toBytes(object, 4));
     }
-
-    @Test
-    void testByName() {
-        Assertions.assertEquals(ByteOrder.byName("Big"), ByteOrder.BIG);
-        assertEquals(ByteOrder.byName("Little"), ByteOrder.LITTLE);
-
-        assertThrows(CodecException.class, () -> ByteOrder.byName("Unknown"));
-    }
 }

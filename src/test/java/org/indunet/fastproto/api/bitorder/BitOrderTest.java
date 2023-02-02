@@ -46,12 +46,4 @@ class BitOrderTest {
 
         assertArrayEquals(expected, FastProto.toBytes(object, 2));
     }
-
-    @Test
-    void testByName() {
-        assertEquals(BitOrder.byName("MSB_0"), BitOrder.MSB_0);
-        assertEquals(BitOrder.byName("LSB_0"), BitOrder.LSB_0);
-
-        assertThrows(CodecException.class, () -> BitOrder.byName("Unknown"));
-    }
 }

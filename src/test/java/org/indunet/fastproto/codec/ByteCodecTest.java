@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.codec;
 
-import org.indunet.fastproto.ByteBuffer;
+import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.Int8Type;
 import org.indunet.fastproto.exception.DecodingException;

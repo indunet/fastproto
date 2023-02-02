@@ -1,4 +1,4 @@
-package org.indunet.fastproto;
+package org.indunet.fastproto.io;
 
 import org.indunet.fastproto.exception.CodecException;
 

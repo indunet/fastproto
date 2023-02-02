@@ -38,7 +38,9 @@ public class JavaTypeMapper {
         map.put(BoolType.class, Boolean.class);
         map.put(BoolArrayType.class, boolean[].class);
         map.put(AsciiType.class, Character.class);
+        map.put(AsciiArrayType.class, char[].class);
         map.put(CharType.class, Character.class);
+        map.put(CharArrayType.class, char[].class);
         map.put(Int8Type.class, Integer.class);
         map.put(Int8ArrayType.class, int[].class);
         map.put(BinaryType.class, byte[].class);
