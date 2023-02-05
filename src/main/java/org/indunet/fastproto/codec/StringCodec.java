@@ -21,6 +21,8 @@ import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.annotation.StringType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.CodecUtils;
 
 import java.nio.charset.Charset;
@@ -37,7 +39,7 @@ public class StringCodec implements Codec<String> {
             val binary = CodecUtils.binaryType(bytes, offset, length);
 
             return new String(binary, charset);
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding string type.", e);
         }
     }
@@ -45,7 +47,7 @@ public class StringCodec implements Codec<String> {
     public void encode(byte[] datagram, int offset, int length, Charset set, String value) {
         try {
             CodecUtils.binaryType(datagram, offset, length, value.getBytes(set));
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding string type.", e);
         }
     }
@@ -59,13 +61,39 @@ public class StringCodec implements Codec<String> {
     }
 
     @Override
+    public String decode(CodecContext context, ByteBufferInputStream inputStream) {
+
+        try {
+            val type = context.getDataTypeAnnotation(StringType.class);
+            val set = Charset.forName(type.charset());
+            val bytes = inputStream.readBytes(type.offset(), type.length());
+
+            return new String(bytes, set);
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new DecodingException("Fail decoding string type.", e);
+        }
+    }
+
+    @Override
     public void encode(CodecContext context, ByteBuffer buffer, String value) {
         val type = context.getDataTypeAnnotation(StringType.class);
         val charset = Charset.forName(type.charset());
 
         try {
             CodecUtils.binaryType(buffer, type.offset(), type.length(), value.getBytes(charset));
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding string type.", e);
+        }
+    }
+
+    @Override
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, String value) {
+        try {
+            val type = context.getDataTypeAnnotation(StringType.class);
+            val set = Charset.forName(type.charset());
+
+            outputStream.writeBytes(type.offset(), type.length(), value.getBytes(set));
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding string type.", e);
         }
     }
@@ -79,8 +107,20 @@ public class StringCodec implements Codec<String> {
         }
 
         @Override
+        public StringBuffer decode(CodecContext context, ByteBufferInputStream inputStream) {
+            val str = StringCodec.this.decode(context, inputStream);
+
+            return new StringBuffer(str);
+        }
+
+        @Override
         public void encode(CodecContext context, ByteBuffer buffer, StringBuffer value) {
             StringCodec.this.encode(context, buffer, value.toString());
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBufferOutputStream outputStream, StringBuffer value) {
+            StringCodec.this.encode(context, outputStream, value.toString());
         }
     }
 
@@ -93,8 +133,20 @@ public class StringCodec implements Codec<String> {
         }
 
         @Override
+        public StringBuilder decode(CodecContext context, ByteBufferInputStream inputStream) {
+            val str = StringCodec.this.decode(context, inputStream);
+
+            return new StringBuilder(str);
+        }
+
+        @Override
         public void encode(CodecContext context, ByteBuffer buffer, StringBuilder value) {
             StringCodec.this.encode(context, buffer, value.toString());
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBufferOutputStream outputStream, StringBuilder value) {
+            StringCodec.this.encode(context, outputStream, value.toString());
         }
     }
 }

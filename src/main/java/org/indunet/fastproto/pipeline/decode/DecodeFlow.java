@@ -19,11 +19,10 @@ package org.indunet.fastproto.pipeline.decode;
 import lombok.val;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.graph.Graph;
+import org.indunet.fastproto.io.ByteBufferInputStream;
 import org.indunet.fastproto.pipeline.FlowCode;
 import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.PipelineContext;
-
-import java.text.MessageFormat;
 
 /**
  * Decode flow.
@@ -35,21 +34,21 @@ public class DecodeFlow extends Pipeline<PipelineContext> {
     @Override
     public void process(PipelineContext context) {
         val reference = context.getGraph().root();
-        val datagram = context.getBytes();
+        val inputStream = context.getInputStream();
 
-        context.setObject(linearDecode(datagram, context.getGraph()));
+        context.setObject(linearDecode(inputStream, context.getGraph()));
 
         this.forward(context);
     }
 
-    public Object linearDecode(byte[] bytes, Graph graph) {
+    public Object linearDecode(ByteBufferInputStream inputStream, Graph graph) {
         val refs = graph.getValidReferences();
 
         refs.stream()
                 .filter(r -> !r.getDecodingIgnore())
                 .forEach(r -> {
                     try {
-                        r.decode(bytes);
+                        r.decode(inputStream);
                     } catch (DecodingException e) {
                         throw new DecodingException(String.format("Fail decoding field %s", r.getField().toString()), e);
                     }

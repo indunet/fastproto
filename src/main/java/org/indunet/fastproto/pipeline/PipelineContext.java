@@ -18,8 +18,11 @@ package org.indunet.fastproto.pipeline;
 
 import lombok.Builder;
 import lombok.Data;
+import lombok.val;
 import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.graph.Graph;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 
 /**
  * Codec Context.
@@ -30,13 +33,9 @@ import org.indunet.fastproto.graph.Graph;
 @Data
 @Builder
 public class PipelineContext {
-    byte[] bytes;
-    ByteBuffer byteBuffer;
     Graph graph;
     Object object;
     Class<?> clazz;
-
-    public <T> T getObject(Class<T> clazz) {
-        return (T) object;
-    }
+    ByteBufferInputStream inputStream;
+    ByteBufferOutputStream outputStream;
 }

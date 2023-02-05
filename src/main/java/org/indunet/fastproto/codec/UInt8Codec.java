@@ -21,6 +21,8 @@ import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.annotation.UInt8Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.CodecUtils;
 
 /**
@@ -36,7 +38,18 @@ public class UInt8Codec implements Codec<Integer> {
 
         try {
             return CodecUtils.uint8Type(bytes, type.offset());
-        } catch(ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+        } catch(IndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new DecodingException("Fail decoding uint8 type.", e);
+        }
+    }
+
+    @Override
+    public Integer decode(CodecContext context, ByteBufferInputStream inputStream) {
+        try {
+            val type = context.getDataTypeAnnotation(UInt8Type.class);
+
+            return inputStream.readUInt8(type.offset());
+        } catch(IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding uint8 type.", e);
         }
     }
@@ -47,7 +60,18 @@ public class UInt8Codec implements Codec<Integer> {
 
         try {
             CodecUtils.uint8Type(buffer, type.offset(), value);
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding uint8 type.", e);
+        }
+    }
+
+    @Override
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, Integer value) {
+        try {
+            val type = context.getDataTypeAnnotation(UInt8Type.class);
+
+            outputStream.writeUInt8(type.offset(), value);
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding uint8 type.", e);
         }
     }

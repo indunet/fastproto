@@ -34,7 +34,7 @@ public class EncodeFlow extends Pipeline<PipelineContext> {
     public void process(PipelineContext context) {
         val graph = context.getGraph();
         val object = context.getObject();
-        val buffer = context.getByteBuffer();
+        val outputStream = context.getOutputStream();
         val refs = graph.getValidReferences();
 
         graph.copy(object);
@@ -43,7 +43,7 @@ public class EncodeFlow extends Pipeline<PipelineContext> {
                 .filter(r -> r.getValue().get() != null)
                 .forEach(r -> {
                     try {
-                        r.encoder(buffer);
+                        r.encoder(outputStream);
                     } catch (EncodingException e) {
                         throw new EncodingException(
                                 String.format("Fail encoding field %s", r.getField().toString()), e);

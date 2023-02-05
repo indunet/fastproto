@@ -21,6 +21,8 @@ import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.Int8Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.AnnotationUtils;
 import org.junit.jupiter.api.Test;
 
@@ -38,22 +40,22 @@ public class ByteCodecTest {
 
     @Test
     public void testDecode() {
-        byte[] datagram = new byte[10];
+        byte[] bytes = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.decode(mock(2), null));
+        assertThrows(NullPointerException.class, () -> this.codec.decode(mock(2), (ByteBufferInputStream) null));
 
-        assertThrows(DecodingException.class, () -> this.codec.decode(mock(-101), datagram));
-        assertThrows(DecodingException.class, () -> this.codec.decode(mock(10), datagram));
+        assertThrows(DecodingException.class, () -> this.codec.decode(mock(-101), new ByteBufferInputStream(bytes)));
+        assertThrows(DecodingException.class, () -> this.codec.decode(mock(10), new ByteBufferInputStream(bytes)));
     }
 
     @Test
     public void testEncode() {
-        byte[] datagram = new byte[10];
+        byte[] bytes = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.encode(mock(0), (ByteBuffer) null, (byte) 1));
+        assertThrows(NullPointerException.class, () -> this.codec.encode(mock(0), (ByteBufferOutputStream) null, (byte) 1));
 
-        assertThrows(EncodingException.class, () -> this.codec.encode(mock(-101), new ByteBuffer(datagram), (byte) 1));
-        assertThrows(EncodingException.class, () -> this.codec.encode(mock(10), new ByteBuffer(datagram), (byte) 1));
+        assertThrows(EncodingException.class, () -> this.codec.encode(mock(-101), new ByteBufferOutputStream(bytes), (byte) 1));
+        assertThrows(EncodingException.class, () -> this.codec.encode(mock(10), new ByteBufferOutputStream(bytes), (byte) 1));
     }
 
     protected CodecContext mock(int offset) {

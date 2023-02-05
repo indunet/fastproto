@@ -24,6 +24,8 @@ import org.indunet.fastproto.annotation.UInt32ArrayType;
 import org.indunet.fastproto.annotation.UInt32Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.CollectionUtils;
 
@@ -52,7 +54,7 @@ public class UInt32ArrayCodec implements Codec<long[]> {
             return IntStream.range(0, l)
                     .mapToLong(i -> CodecUtils.uint32Type(bytes, o + i * UInt32Type.SIZE, byteOrder))
                     .toArray();
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding uint32 array type.", e);
         }
     }
@@ -68,7 +70,7 @@ public class UInt32ArrayCodec implements Codec<long[]> {
 
             IntStream.range(0, l)
                     .forEach(i -> CodecUtils.uint32Type(bytes, o + i * UInt32Type.SIZE, policy, values[i]));
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding uint32 array type.", e);
         }
     }
@@ -79,6 +81,26 @@ public class UInt32ArrayCodec implements Codec<long[]> {
         val order = context.getByteOrder(type::byteOrder);
 
         return this.decode(bytes, type.offset(), type.length(), order);
+    }
+
+    @Override
+    public long[] decode(CodecContext context, ByteBufferInputStream inputStream) {
+        try {
+            val type = context.getDataTypeAnnotation(UInt32ArrayType.class);
+            val order = context.getByteOrder(type::byteOrder);
+            val o = inputStream.toByteBuffer().reverse(type.offset());
+            var l = type.length();
+
+            if (l < 0) {
+                l = inputStream.toByteBuffer().reverse(type.offset(), type.length() * UInt32Type.SIZE)  / UInt32Type.SIZE + 1;
+            }
+
+            return IntStream.range(0, l)
+                    .mapToLong(i -> inputStream.readUInt32(o + i * UInt32Type.SIZE, order))
+                    .toArray();
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new DecodingException("Fail decoding uint32 array type.", e);
+        }
     }
 
     @Override
@@ -96,7 +118,27 @@ public class UInt32ArrayCodec implements Codec<long[]> {
             IntStream.range(0, l)
                     .forEach(i ->
                             CodecUtils.uint32Type(buffer, type.offset() + i * UInt32Type.SIZE, order, values[i]));
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding uint32 array type.", e);
+        }
+    }
+
+    @Override
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, long[] values) {
+        try {
+            val type = context.getDataTypeAnnotation(UInt32ArrayType.class);
+            val order = context.getByteOrder(type::byteOrder);
+            val o = outputStream.toByteBuffer().reverse(type.offset());
+            var l = type.length();
+
+            if (l < 0) {
+                l = outputStream.toByteBuffer().reverse(type.offset(), type.length() * UInt32Type.SIZE)  / UInt32Type.SIZE + 1;
+            }
+
+            IntStream.range(0, l)
+                    .forEach(i ->
+                            outputStream.writeUInt32(o + i * UInt32Type.SIZE, order, values[i]));
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding uint32 array type.", e);
         }
     }
@@ -116,6 +158,22 @@ public class UInt32ArrayCodec implements Codec<long[]> {
                     .toArray();
 
             UInt32ArrayCodec.this.encode(context, buffer, longs);
+        }
+
+        @Override
+        public Long[] decode(CodecContext context, ByteBufferInputStream inputStream) {
+            return LongStream.of(UInt32ArrayCodec.this.decode(context, inputStream))
+                    .mapToObj(Long::valueOf)
+                    .toArray(Long[]::new);
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBufferOutputStream outputStream, Long[] values) {
+            val longs = Stream.of(values)
+                    .mapToLong(i -> i.longValue())
+                    .toArray();
+
+            UInt32ArrayCodec.this.encode(context, outputStream, longs);
         }
     }
 
@@ -139,6 +197,29 @@ public class UInt32ArrayCodec implements Codec<long[]> {
         @Override
         public void encode(CodecContext context, ByteBuffer buffer, Collection<Long> collection) {
             UInt32ArrayCodec.this.encode(context, buffer, collection.stream()
+                    .mapToLong(Long::longValue)
+                    .toArray());
+        }
+
+        @Override
+        public Collection<Long> decode(CodecContext context, ByteBufferInputStream inputStream) {
+            try {
+                val type = (Class<? extends Collection>) context.getFieldType();
+                Collection<Long> collection = CollectionUtils.newInstance(type);
+
+                Arrays.stream(UInt32ArrayCodec.this.decode(context, inputStream))
+                        .forEach(collection::add);
+
+                return collection;
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new DecodingException(
+                        String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
+            }
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBufferOutputStream outputStream, Collection<Long> collection) {
+            UInt32ArrayCodec.this.encode(context, outputStream, collection.stream()
                     .mapToLong(Long::longValue)
                     .toArray());
         }

@@ -24,6 +24,8 @@ import org.indunet.fastproto.annotation.UInt16ArrayType;
 import org.indunet.fastproto.annotation.UInt16Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.CollectionUtils;
 
@@ -51,7 +53,7 @@ public class UInt16ArrayCodec implements Codec<int[]> {
             return IntStream.range(0, l)
                     .map(i -> CodecUtils.uint16Type(bytes, o + i * UInt16Type.SIZE, byteOrder))
                     .toArray();
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding uint16 array type.", e);
         }
     }
@@ -67,7 +69,7 @@ public class UInt16ArrayCodec implements Codec<int[]> {
 
             IntStream.range(0, l)
                     .forEach(i -> CodecUtils.uint16Type(bytes, o + i * UInt16Type.SIZE, byteOrder, values[i]));
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding uint16 array type.", e);
         }
     }
@@ -78,6 +80,26 @@ public class UInt16ArrayCodec implements Codec<int[]> {
         val order = context.getByteOrder(type::byteOrder);
 
         return this.decode(bytes, type.offset(), type.length(), order);
+    }
+
+    @Override
+    public int[] decode(CodecContext context, ByteBufferInputStream inputStream) {
+        try {
+            val type = context.getDataTypeAnnotation(UInt16ArrayType.class);
+            val order = context.getByteOrder(type::byteOrder);
+            val o = inputStream.toByteBuffer().reverse(type.offset());
+            var l = type.length();
+
+            if (l < 0) {
+                l = inputStream.toByteBuffer().reverse(type.offset(), type.length() * UInt16Type.SIZE)  / UInt16Type.SIZE + 1;
+            }
+
+            return IntStream.range(0, l)
+                    .map(i -> inputStream.readUInt16(o + i * UInt16Type.SIZE, order))
+                    .toArray();
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new DecodingException("Fail decoding uint16 array type.", e);
+        }
     }
 
     @Override
@@ -94,7 +116,26 @@ public class UInt16ArrayCodec implements Codec<int[]> {
 
             IntStream.range(0, l)
                     .forEach(i -> CodecUtils.uint16Type(buffer, type.offset()+ i * UInt16Type.SIZE, order, values[i]));
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding uint16 array type.", e);
+        }
+    }
+
+    @Override
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, int[] values) {
+        try {
+            val type = context.getDataTypeAnnotation(UInt16ArrayType.class);
+            val order = context.getByteOrder(type::byteOrder);
+            val o = outputStream.toByteBuffer().reverse(type.offset());
+            var l = type.length();
+
+            if (l < 0) {
+                l = outputStream.toByteBuffer().reverse(type.offset(), type.length() * UInt16Type.SIZE)  / UInt16Type.SIZE + 1;
+            }
+
+            IntStream.range(0, l)
+                    .forEach(i -> outputStream.writeUInt16(o + i * UInt16Type.SIZE, order, values[i]));
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding uint16 array type.", e);
         }
     }
@@ -114,6 +155,22 @@ public class UInt16ArrayCodec implements Codec<int[]> {
                     .toArray();
 
             UInt16ArrayCodec.this.encode(context, buffer, ints);
+        }
+
+        @Override
+        public Integer[] decode(CodecContext context, ByteBufferInputStream inputStream) {
+            return IntStream.of(UInt16ArrayCodec.this.decode(context, inputStream))
+                    .mapToObj(Integer::valueOf)
+                    .toArray(Integer[]::new);
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBufferOutputStream outputStream, Integer[] values) {
+            val ints = Stream.of(values)
+                    .mapToInt(i -> i.intValue())
+                    .toArray();
+
+            UInt16ArrayCodec.this.encode(context, outputStream, ints);
         }
     }
 
@@ -137,6 +194,29 @@ public class UInt16ArrayCodec implements Codec<int[]> {
         @Override
         public void encode(CodecContext context, ByteBuffer buffer, Collection<Integer> collection) {
             UInt16ArrayCodec.this.encode(context, buffer, collection.stream()
+                    .mapToInt(Integer::intValue)
+                    .toArray());
+        }
+
+        @Override
+        public Collection<Integer> decode(CodecContext context, ByteBufferInputStream inputStream) {
+            try {
+                val type = (Class<? extends Collection>) context.getFieldType();
+                Collection<Integer> collection = CollectionUtils.newInstance(type);
+
+                Arrays.stream(UInt16ArrayCodec.this.decode(context, inputStream))
+                        .forEach(collection::add);
+
+                return collection;
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new DecodingException(
+                        String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
+            }
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBufferOutputStream outputStream, Collection<Integer> collection) {
+            UInt16ArrayCodec.this.encode(context, outputStream, collection.stream()
                     .mapToInt(Integer::intValue)
                     .toArray());
         }

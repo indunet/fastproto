@@ -17,11 +17,12 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.annotation.BinaryType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
-import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.io.ByteBuffer;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.CollectionUtils;
 
 import java.util.Collection;
@@ -34,36 +35,24 @@ import java.util.stream.IntStream;
  * @since 3.2.1
  */
 public class BinaryCodec implements Codec<byte[]> {
-    public byte[] decode(byte[] bytes, int offset, int length) {
+    @Override
+    public byte[] decode(CodecContext context, ByteBufferInputStream inputStream) {
         try {
-            return CodecUtils.binaryType(bytes, offset, length);
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            val type = context.getDataTypeAnnotation(BinaryType.class);
+
+            return inputStream.readBytes(type.offset(), type.length());
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding binary type.", e);
         }
     }
 
-    public void encode(byte[] bytes, int offset, int length, byte[] values) {
-        try {
-            CodecUtils.binaryType(bytes, offset, length, values);
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new EncodingException("Fail encoding binary type.", e);
-        }
-    }
-
     @Override
-    public byte[] decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(BinaryType.class);
-
-        return this.decode(bytes, type.offset(), type.length());
-    }
-
-    @Override
-    public void encode(CodecContext context, ByteBuffer buffer, byte[] values) {
-        val type = context.getDataTypeAnnotation(BinaryType.class);
-
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, byte[] values) {
         try {
-            CodecUtils.binaryType(buffer, type.offset(), type.length(), values);
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            val type = context.getDataTypeAnnotation(BinaryType.class);
+
+            outputStream.writeBytes(type.offset(), type.length(), values);
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding binary type.", e);
         }
     }
@@ -81,13 +70,34 @@ public class BinaryCodec implements Codec<byte[]> {
         }
 
         @Override
-        public void encode(CodecContext context, ByteBuffer buffer, Byte[] values) {
-            val bs = new byte[values.length];
+        public Byte[] decode(CodecContext context, ByteBufferInputStream inputStream) {
+            val bs = BinaryCodec.this.decode(context, inputStream);
+            val values = new Byte[bs.length];
 
             IntStream.range(0, bs.length)
-                    .forEach(i -> bs[i] = values[i]);
+                    .forEach(i -> values[i] = bs[i]);
+
+            return values;
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBuffer buffer, Byte[] binary) {
+            val bs = new byte[binary.length];
+
+            IntStream.range(0, bs.length)
+                    .forEach(i -> bs[i] = binary[i]);
 
             BinaryCodec.this.encode(context, buffer, bs);
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBufferOutputStream outputStream, Byte[] binary) {
+            val bs = new byte[binary.length];
+
+            IntStream.range(0, bs.length)
+                    .forEach(i -> bs[i] = binary[i]);
+
+            BinaryCodec.this.encode(context, outputStream, bs);
         }
     }
 
@@ -110,6 +120,23 @@ public class BinaryCodec implements Codec<byte[]> {
         }
 
         @Override
+        public Collection<Byte> decode(CodecContext context, ByteBufferInputStream inputStream) {
+            try {
+                val type = (Class<? extends Collection>) context.getFieldType();
+                Collection<Byte> collection = CollectionUtils.newInstance(type);
+
+                for (byte b : BinaryCodec.this.decode(context, inputStream)) {
+                    collection.add(b);
+                }
+
+                return collection;
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new DecodingException(
+                        String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
+            }
+        }
+
+        @Override
         public void encode(CodecContext context, ByteBuffer buffer, Collection<Byte> collection) {
             val bs = new byte[collection.size()];
             val values = collection.stream()
@@ -119,6 +146,18 @@ public class BinaryCodec implements Codec<byte[]> {
                     .forEach(i -> bs[i] = values[i]);
 
             BinaryCodec.this.encode(context, buffer, bs);
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBufferOutputStream outputStream, Collection<Byte> collection) {
+            val bs = new byte[collection.size()];
+            val values = collection.stream()
+                    .toArray(Byte[]::new);
+
+            IntStream.range(0, bs.length)
+                    .forEach(i -> bs[i] = values[i]);
+
+            BinaryCodec.this.encode(context, outputStream, bs);
         }
     }
 }

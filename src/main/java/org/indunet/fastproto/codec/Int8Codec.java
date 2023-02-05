@@ -21,6 +21,8 @@ import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.annotation.Int8Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.CodecUtils;
 
 /**
@@ -31,23 +33,23 @@ import org.indunet.fastproto.util.CodecUtils;
  */
 public class Int8Codec implements Codec<Integer> {
     @Override
-    public Integer decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(Int8Type.class);
-
+    public Integer decode(CodecContext context, ByteBufferInputStream inputStream) {
         try {
-            return CodecUtils.int8Type(bytes, type.offset());
-        } catch(ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            val type = context.getDataTypeAnnotation(Int8Type.class);
+
+            return inputStream.readInt8(type.offset());
+        } catch(IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding int8(int) type.", e);
         }
     }
 
     @Override
-    public void encode(CodecContext context, ByteBuffer buffer, Integer value) {
-        val type = context.getDataTypeAnnotation(Int8Type.class);
-
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, Integer value) {
         try {
-            CodecUtils.int8Type(buffer, type.offset(), value);
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            val type = context.getDataTypeAnnotation(Int8Type.class);
+
+            outputStream.writeInt8(type.offset(), value);
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding int8(int) type.", e);
         }
     }

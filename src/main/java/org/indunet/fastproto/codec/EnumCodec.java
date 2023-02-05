@@ -16,6 +16,7 @@
 
 package org.indunet.fastproto.codec;
 
+import com.sun.corba.se.impl.encoding.ByteBufferWithInfo;
 import lombok.NonNull;
 import lombok.val;
 import lombok.var;
@@ -23,6 +24,8 @@ import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.annotation.EnumType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.CodecUtils;
 
 import java.lang.reflect.Field;
@@ -36,11 +39,15 @@ import java.util.function.Function;
  * @since 3.2.1
  */
 public class EnumCodec<T extends Enum> implements Codec<T> {
-    public T decode(@NonNull final byte[] bytes, int offset, String fieldName, Class<T> enumClass) {
+    @Override
+    public T decode(CodecContext context, ByteBufferInputStream inputStream) {
+        val type = context.getDataTypeAnnotation(EnumType.class);
+        val enumClass = (Class<T>) context.getFieldType();
         val enums = enumClass.getEnumConstants();
-        val code = CodecUtils.uint8Type(bytes, offset);
+        val code = inputStream.readUInt8(type.offset());
+        val name = type.name();
 
-        if (fieldName == null || fieldName.isEmpty()) {
+        if (name == null || name.isEmpty()) {
             return Arrays.stream(enums)
                     .filter(e -> e.ordinal() == code)
                     .findAny()
@@ -48,12 +55,13 @@ public class EnumCodec<T extends Enum> implements Codec<T> {
         } else {
             Function<Enum, Integer> getValue = (Enum enumObject) -> {
                 Field field = null;
+
                 try {
-                    field = enumClass.getDeclaredField(fieldName);
+                    field = enumClass.getDeclaredField(name);
                     field.setAccessible(true);
                     return field.getInt(enumObject);
                 } catch (NoSuchFieldException | IllegalAccessException e) {
-                    throw new DecodingException(String.format("Illegal enum field %s", fieldName), e);
+                    throw new DecodingException(String.format("Illegal enum field %s", name), e);
                 }
             };
 
@@ -64,39 +72,10 @@ public class EnumCodec<T extends Enum> implements Codec<T> {
         }
     }
 
-    public <T extends Enum> void encode(byte[] bytes, int offset, String fieldName, T value) {
-        var code = 0;
-
-        if (fieldName == null || fieldName.isEmpty()) {
-            code = value.ordinal();
-        } else {
-            try {
-                val field = value.getClass()
-                        .getDeclaredField(fieldName);
-                field.setAccessible(true);
-
-                code = field.getInt(value);
-            } catch (IllegalAccessException | NoSuchFieldException e) {
-                throw new EncodingException(String.format("Illegal enum field %s", fieldName), e);
-            }
-        }
-
-        CodecUtils.uint8Type(bytes, offset, code);
-    }
-
     @Override
-    public T decode(CodecContext context, byte[] bytes) {
-        val dataType = context.getDataTypeAnnotation(EnumType.class);
-        val fieldType = context.getFieldType();
-
-        return this.decode(bytes, dataType.offset(), dataType.name(), (Class<T>) fieldType);
-    }
-
-    @Override
-    public void encode(CodecContext context, ByteBuffer buffer, T value) {
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, T value) {
         val type = context.getDataTypeAnnotation(EnumType.class);
         val name = type.name();
-
         var code = 0;
 
         if (name == null || name.isEmpty()) {
@@ -105,14 +84,14 @@ public class EnumCodec<T extends Enum> implements Codec<T> {
             try {
                 val field = value.getClass()
                         .getDeclaredField(name);
-                field.setAccessible(true);
 
+                field.setAccessible(true);
                 code = field.getInt(value);
             } catch (IllegalAccessException | NoSuchFieldException e) {
                 throw new EncodingException(String.format("Illegal enum field %s", name), e);
             }
         }
 
-        CodecUtils.uint8Type(buffer, type.offset(), code);
+        outputStream.writeUInt8(type.offset(), code);
     }
 }

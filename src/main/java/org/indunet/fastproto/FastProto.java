@@ -20,6 +20,8 @@ import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.graph.Resolver;
 import org.indunet.fastproto.io.ByteBuffer;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.PipelineContext;
 
@@ -37,10 +39,10 @@ public class FastProto {
      * @param clazz Java object annotated with FastProto annotations.
      * @return Java object instance.
      */
-    public static <T> T parse(@NonNull byte[] bytes, @NonNull Class<T> clazz) {
+    public static <T> T parse(byte[] bytes, Class<T> clazz) {
         val graph = Resolver.resolve(clazz);
         val context = PipelineContext.builder()
-                .bytes(bytes)
+                .inputStream(new ByteBufferInputStream(new ByteBuffer(bytes)))
                 .clazz(clazz)
                 .graph(graph)
                 .build();
@@ -48,7 +50,7 @@ public class FastProto {
         Pipeline.getDecodeFlow()
                 .process(context);
 
-        return context.getObject(clazz);
+        return (T) context.getObject();
     }
 
     /**
@@ -71,16 +73,18 @@ public class FastProto {
     public static byte[] toBytes(Object object) {
         val graph = Resolver.resolve(object.getClass());
         val context = PipelineContext.builder()
+                .outputStream(new ByteBufferOutputStream())
                 .object(object)
                 .clazz(object.getClass())
-                .byteBuffer(new ByteBuffer())
                 .graph(graph)
                 .build();
 
         Pipeline.getEncodeFlow()
                 .process(context);
 
-        return context.getByteBuffer().getBytes();
+        return context.getOutputStream()
+                .toByteBuffer()
+                .toBytes();
     }
 
     /**
@@ -110,8 +114,7 @@ public class FastProto {
         val context = PipelineContext.builder()
                 .object(object)
                 .clazz(object.getClass())
-                .bytes(buffer)
-                .byteBuffer(new ByteBuffer(buffer))
+                .outputStream(new ByteBufferOutputStream(new ByteBuffer(buffer)))
                 .graph(graph)
                 .build();
 

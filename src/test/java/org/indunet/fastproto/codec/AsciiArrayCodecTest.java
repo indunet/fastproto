@@ -17,17 +17,17 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.exception.DecodingException;
-import org.indunet.fastproto.exception.EncodingException;
-import org.indunet.fastproto.util.BinaryUtils;
+import org.indunet.fastproto.BitOrder;
+import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.annotation.AsciiArrayType;
+import org.indunet.fastproto.annotation.BoolType;
+import org.indunet.fastproto.annotation.FloatType;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
+import org.indunet.fastproto.util.AnnotationUtils;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Random;
-import java.util.stream.IntStream;
-
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit test of ASCII array type codec.
@@ -40,19 +40,25 @@ public class AsciiArrayCodecTest {
 
     @Test
     public void testDecode() {
-        val expected = new char[] {'a', 'b', 'c', 'd', 'e', 'f', 'g'};
-        val bytes = new byte[] {'a', 'b', 'c', 'd', 'e', 'f', 'g'};
+        val expected = new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g'};
+        val bytes = new byte[]{'a', 'b', 'c', 'd', 'e', 'f', 'g'};
 
-        assertArrayEquals(expected, codec.decode(bytes, 0, 7));
+        assertArrayEquals(expected, codec.decode(mock(0, 7), new ByteBufferInputStream(bytes)));
     }
 
     @Test
     public void testEncode() {
-        val chars = new char[] {'a', 'b', 'c', 'd', 'e', 'f', 'g'};
-        val expected = new byte[] {'a', 'b', 'c', 'd', 'e', 'f', 'g'};
+        val chars = new char[]{'a', 'b', 'c', 'd', 'e', 'f', 'g'};
+        val expected = new byte[]{'a', 'b', 'c', 'd', 'e', 'f', 'g'};
         val actual = new byte[expected.length];
 
-        this.codec.encode(actual, 0, 7, chars);
+        this.codec.encode(mock(0, 7), new ByteBufferOutputStream(actual), chars);
         assertArrayEquals(expected, actual);
+    }
+
+    protected CodecContext mock(int offset, int length) {
+        return CodecContext.builder()
+                .dataTypeAnnotation(AnnotationUtils.mock(AsciiArrayType.class, offset, length))
+                .build();
     }
 }

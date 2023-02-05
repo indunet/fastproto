@@ -18,6 +18,8 @@ package org.indunet.fastproto.codec;
 
 import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.exception.CodecException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Function;
@@ -56,7 +58,15 @@ public interface Codec<T> {
         });
     }
 
-    T decode(CodecContext context, byte[] bytes);
+    default T decode(CodecContext context, byte[] bytes) {
+        return null;
+    }
 
-    void encode(CodecContext context, ByteBuffer buffer, T value);
+    T decode(CodecContext context, ByteBufferInputStream inputStream);
+
+    default void encode(CodecContext context, ByteBuffer buffer, T value) {
+
+    }
+
+    void encode(CodecContext context, ByteBufferOutputStream outputStream, T value);
 }

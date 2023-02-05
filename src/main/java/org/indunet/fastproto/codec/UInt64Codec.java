@@ -21,6 +21,8 @@ import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.annotation.UInt64Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.CodecUtils;
 
 import java.math.BigInteger;
@@ -39,7 +41,19 @@ public class UInt64Codec implements Codec<BigInteger> {
 
         try {
             return CodecUtils.uint64Type(bytes, type.offset(), order);
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
+            throw new DecodingException("Fail decoding uint64 type.", e);
+        }
+    }
+
+    @Override
+    public BigInteger decode(CodecContext context, ByteBufferInputStream inputStream) {
+        try {
+            val type = context.getDataTypeAnnotation(UInt64Type.class);
+            val order = context.getByteOrder(type::byteOrder);
+
+            return inputStream.readUInt64(type.offset(), order);
+        } catch (IndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding uint64 type.", e);
         }
     }
@@ -51,6 +65,18 @@ public class UInt64Codec implements Codec<BigInteger> {
 
         try {
             CodecUtils.uint64Type(buffer, type.offset(), order, value);
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding uint64 type.", e);
+        }
+    }
+
+    @Override
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, BigInteger value) {
+        try {
+            val type = context.getDataTypeAnnotation(UInt64Type.class);
+            val order = context.getByteOrder(type::byteOrder);
+
+            outputStream.writeUInt64(type.offset(), order, value);
         } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding uint64 type.", e);
         }

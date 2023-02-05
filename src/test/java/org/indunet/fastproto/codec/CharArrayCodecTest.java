@@ -18,6 +18,11 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.annotation.CharArrayType;
+import org.indunet.fastproto.annotation.Int8Type;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
+import org.indunet.fastproto.util.AnnotationUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
@@ -37,7 +42,7 @@ public class CharArrayCodecTest {
         val expected = new char[] {'中', '文'};
         val bytes = new byte[] {'中' & 0xFF, '中' >>> 8 & 0xFF, (byte) ('文' & 0xFF), '文' >>> 8 & 0xFF};
 
-        assertArrayEquals(expected, codec.decode(bytes, 0, 2, ByteOrder.LITTLE));
+        assertArrayEquals(expected, codec.decode(mock(0, 2, ByteOrder.LITTLE), new ByteBufferInputStream(bytes)));
     }
 
     @Test
@@ -46,7 +51,13 @@ public class CharArrayCodecTest {
         val expected = new byte[] {'中' & 0xFF, '中' >>> 8 & 0xFF, (byte) ('文' & 0xFF), '文' >>> 8 & 0xFF};
         val actual = new byte[expected.length];
 
-        this.codec.encode(actual, 0, 2, ByteOrder.LITTLE, chars);
+        this.codec.encode(mock(0, 2, ByteOrder.LITTLE), new ByteBufferOutputStream(actual), chars);
         assertArrayEquals(expected, actual);
+    }
+
+    protected CodecContext mock(int offset, int length, ByteOrder order) {
+        return CodecContext.builder()
+                .dataTypeAnnotation(AnnotationUtils.mock(CharArrayType.class, offset, length, order))
+                .build();
     }
 }

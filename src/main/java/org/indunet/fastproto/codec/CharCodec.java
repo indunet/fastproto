@@ -22,6 +22,8 @@ import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.CharType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.CodecUtils;
 
 /**
@@ -31,38 +33,26 @@ import org.indunet.fastproto.util.CodecUtils;
  * @since 3.8.4
  */
 public class CharCodec implements Codec<Character> {
-    public Character decode(final byte[] datagram, int offset, ByteOrder byteOrder) {
+    @Override
+    public Character decode(CodecContext context, ByteBufferInputStream inputStream) {
         try {
-            return (char) CodecUtils.uint16Type(datagram, offset, byteOrder);
-        } catch (ArrayIndexOutOfBoundsException e) {
+            val type = context.getDataTypeAnnotation(CharType.class);
+            val order = context.getByteOrder(type::byteOrder);
+
+            return (char) inputStream.readUInt16(type.offset(), order);
+        } catch (IndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding char type.", e);
         }
     }
 
-    public void encode(byte[] datagram, int offset, ByteOrder byteOrder, char value) {
-        try {
-            CodecUtils.uint16Type(datagram, offset, byteOrder, value);
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new EncodingException("Fail encoding char type.", e);
-        }
-    }
-
     @Override
-    public Character decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(CharType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        return this.decode(bytes, type.offset(), order);
-    }
-
-    @Override
-    public void encode(CodecContext context, ByteBuffer buffer, Character value) {
-        val type = context.getDataTypeAnnotation(CharType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, Character value) {
         try {
-            CodecUtils.uint16Type(buffer, type.offset(), order, value);
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            val type = context.getDataTypeAnnotation(CharType.class);
+            val order = context.getByteOrder(type::byteOrder);
+
+            outputStream.writeUInt16(type.offset(), order, value);
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding char type.", e);
         }
     }

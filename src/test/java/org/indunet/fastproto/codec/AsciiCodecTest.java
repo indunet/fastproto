@@ -16,7 +16,12 @@
 
 package org.indunet.fastproto.codec;
 
+import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.annotation.AsciiType;
 import org.indunet.fastproto.exception.DecodingException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
+import org.indunet.fastproto.util.AnnotationUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,41 +37,48 @@ public class AsciiCodecTest {
 
     @Test
     public void testDecode1() {
-        byte[] datagram = new byte[10];
-        datagram[0] = 'a';
-        datagram[2] = 'A';
+        byte[] bytes = new byte[10];
 
-        assertEquals('a', (char) codec.decode(datagram, 0));
-        assertEquals('A', (char) codec.decode(datagram, 2));
-        assertEquals('A', (char) codec.decode(datagram, 2 - datagram.length));
+        bytes[0] = 'a';
+        bytes[2] = 'A';
+
+        assertEquals('a', (char) codec.decode(mock(0), new ByteBufferInputStream(bytes)));
+        assertEquals('A', (char) codec.decode(mock(2), new ByteBufferInputStream(bytes)));
+        assertEquals('A', (char) codec.decode(mock(2 - bytes.length), new ByteBufferInputStream(bytes)));
     }
 
     @Test
     public void testDecode2() {
-        byte[] datagram = new byte[10];
+        byte[] bytes = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 10));
+        assertThrows(NullPointerException.class, () -> this.codec.decode(mock(10), (ByteBufferInputStream) null));
 
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 10));
+        assertThrows(DecodingException.class, () -> this.codec.decode(mock(10), new ByteBufferInputStream(bytes)));
     }
 
     @Test
     public void testEncode1() {
-        byte[] datagram = new byte[10];
+        byte[] bytes = new byte[10];
 
-        this.codec.encode(datagram, 0, 'A');
-        this.codec.encode(datagram, 2 - datagram.length, 'a');
+        this.codec.encode(mock(0), new ByteBufferOutputStream(bytes), 'A');
+        this.codec.encode(mock(2 - bytes.length), new ByteBufferOutputStream(bytes), 'a');
 
         byte[] cache = new byte[10];
+
         cache[0] = 65;
         cache[2] = 97;
-        assertArrayEquals(cache, datagram);
+
+        assertArrayEquals(cache, bytes);
     }
 
     @Test
     public void testEncode2() {
-        byte[] datagram = new byte[10];
+        assertThrows(NullPointerException.class, () -> this.codec.encode(mock(0), (ByteBufferOutputStream) null, 'A'));
+    }
 
-        assertThrows(NullPointerException.class, () -> this.codec.encode(null, 0, 'A'));
+    protected CodecContext mock(int offset) {
+        return CodecContext.builder()
+                .dataTypeAnnotation(AnnotationUtils.mock(AsciiType.class, offset, ByteOrder.LITTLE))
+                .build();
     }
 }

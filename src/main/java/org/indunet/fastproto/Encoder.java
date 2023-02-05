@@ -445,6 +445,6 @@ public final class Encoder {
     }
 
     public byte[] get() {
-        return this.byteBuffer.getBytes();
+        return this.byteBuffer.toBytes();
     }
 }

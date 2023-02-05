@@ -17,11 +17,11 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.annotation.AsciiType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
-import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 
 /**
  * ASCII type codec.
@@ -30,53 +30,34 @@ import org.indunet.fastproto.util.CodecUtils;
  * @since 3.2.1
  */
 public class AsciiCodec implements Codec<Character> {
-    public Character decode(final byte[] datagram, int offset) {
+    @Override
+    public Character decode(CodecContext context, ByteBufferInputStream inputStream) {
         try {
-            val num = CodecUtils.uint8Type(datagram, offset);
+            val type = context.getDataTypeAnnotation(AsciiType.class);
+            val value = inputStream.readUInt8(type.offset());
 
-            if (num > Byte.MAX_VALUE) {
+            if (value > Byte.MAX_VALUE) {
                 throw new DecodingException(
-                        String.format("%d is not valid ascii.", num));
+                        String.format("%d is not valid ascii.", value));
             } else {
-                return (char) num;
+                return (char) value;
             }
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (IndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding ascii type.", e);
         }
     }
 
-    public void encode(byte[] datagram, int offset, char value) {
+    @Override
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, Character value) {
         try {
-            if ((int) value > Byte.MAX_VALUE) {
+            val type = context.getDataTypeAnnotation(AsciiType.class);
+
+            if (value > Byte.MAX_VALUE) {
                 throw new EncodingException(String.format("%c is not valid ascii.", value));
             } else {
-                CodecUtils.uint8Type(datagram, offset, value);
+                outputStream.writeUInt8(type.offset(), value);
             }
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new EncodingException("Fail encoding ascii type.", e);
-        }
-    }
-    
-    @Override
-    public Character decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(AsciiType.class);
-    
-        return this.decode(bytes, type.offset());
-    }
-
-    @Override
-    public void encode(CodecContext context, ByteBuffer buffer, Character value) {
-        val type = context.getDataTypeAnnotation(AsciiType.class);
-
-        try {
-            int num = value;
-
-            if (num > Byte.MAX_VALUE) {
-                throw new EncodingException(String.format("%c is not valid ascii.", value));
-            } else {
-                CodecUtils.uint8Type(buffer, type.offset(), value);
-            }
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding ascii type.", e);
         }
     }

@@ -160,7 +160,11 @@ public final class ByteBuffer {
         return length;
     }
 
-    public byte[] getBytes() {
+    public boolean isFixed() {
+        return this.fixed;
+    }
+
+    public byte[] toBytes() {
         return Arrays.copyOf(bytes, length);
     }
 }

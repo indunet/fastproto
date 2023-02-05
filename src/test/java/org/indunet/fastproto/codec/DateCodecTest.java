@@ -17,8 +17,12 @@
 package org.indunet.fastproto.codec;
 
 import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.annotation.TimeType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
+import org.indunet.fastproto.util.AnnotationUtils;
 import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -41,12 +45,6 @@ import static org.junit.jupiter.api.Assertions.*;
 public class DateCodecTest {
     DateCodec codec = new DateCodec();
 
-    @ParameterizedTest
-    @MethodSource
-    public void testDecode1(byte[] datagram, int byteOffset, ByteOrder policy, Date expected) {
-        assertEquals(expected, codec.decode(datagram, byteOffset, policy));
-    }
-
     public static List<Arguments> testDecode1() {
         long current = System.currentTimeMillis();
 
@@ -54,23 +52,6 @@ public class DateCodecTest {
                 Arguments.arguments(BinaryUtils.valueOf(current), 0, ByteOrder.LITTLE, new Date(current)),
                 Arguments.arguments(BinaryUtils.valueOf(current, ByteOrder.BIG), 0, ByteOrder.BIG, new Date(current))
         ).collect(Collectors.toList());
-    }
-
-    @Test
-    public void testDecode2() {
-        byte[] datagram = new byte[10];
-
-        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 0, ByteOrder.LITTLE));
-
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 10, ByteOrder.LITTLE));
-    }
-
-    @ParameterizedTest
-    @MethodSource
-    public void testEncode1(byte[] datagram, int byteOffset, ByteOrder policy, Date value, byte[] expected) {
-        this.codec.encode(datagram, byteOffset, policy, value);
-
-        assertArrayEquals(datagram, expected);
     }
 
     public static List<Arguments> testEncode1() {
@@ -82,18 +63,46 @@ public class DateCodecTest {
         ).collect(Collectors.toList());
     }
 
+    @ParameterizedTest
+    @MethodSource
+    public void testDecode1(byte[] bytes, int offset, ByteOrder order, Date expected) {
+        assertEquals(expected, codec.decode(mock(offset, order), new ByteBufferInputStream(bytes)));
+    }
+
+    @Test
+    public void testDecode2() {
+        byte[] bytes = new byte[10];
+
+        assertThrows(NullPointerException.class, () -> this.codec.decode(mock(0, ByteOrder.LITTLE), (ByteBufferInputStream) null));
+        assertThrows(DecodingException.class, () -> this.codec.decode(mock(10, ByteOrder.LITTLE), new ByteBufferInputStream(bytes)));
+    }
+
+    @ParameterizedTest
+    @MethodSource
+    public void testEncode1(byte[] bytes, int offset, ByteOrder order, Date value, byte[] expected) {
+        this.codec.encode(mock(offset, order), new ByteBufferOutputStream(bytes), value);
+
+        assertArrayEquals(expected, bytes);
+    }
+
     @Test
     public void testEncode2() {
-        byte[] datagram = new byte[10];
+        byte[] bytes = new byte[10];
 
         assertThrows(NullPointerException.class,
-                () -> this.codec.encode(null, 0, ByteOrder.LITTLE, new Date(System.currentTimeMillis())));
+                () -> this.codec.encode(mock(0, ByteOrder.LITTLE), (ByteBufferOutputStream) null, new Date(System.currentTimeMillis())));
         assertThrows(NullPointerException.class,
-                () -> this.codec.encode(null, 0, ByteOrder.LITTLE, null));
+                () -> this.codec.encode(mock(0, ByteOrder.LITTLE), (ByteBufferOutputStream) null, null));
 
         assertThrows(EncodingException.class,
-                () -> this.codec.encode(datagram, -1, ByteOrder.LITTLE, new Date(System.currentTimeMillis())));
+                () -> this.codec.encode(mock(-1, ByteOrder.LITTLE), new ByteBufferOutputStream(bytes), new Date(System.currentTimeMillis())));
         assertThrows(EncodingException.class,
-                () -> this.codec.encode(datagram, 10, ByteOrder.LITTLE, new Date(System.currentTimeMillis())));
+                () -> this.codec.encode(mock(10, ByteOrder.LITTLE), new ByteBufferOutputStream(bytes), new Date(System.currentTimeMillis())));
+    }
+
+    protected CodecContext mock(int offset, ByteOrder order) {
+        return CodecContext.builder()
+                .dataTypeAnnotation(AnnotationUtils.mock(TimeType.class, offset, order))
+                .build();
     }
 }

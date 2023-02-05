@@ -39,7 +39,7 @@ public class UInt8CodecTest {
     public void testDecode() {
         byte[] bytes = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.decode(mock(0), null));
+        assertThrows(NullPointerException.class, () -> this.codec.decode(mock(0), (byte[]) null));
 
         assertThrows(DecodingException.class, () -> this.codec.decode(mock(-101), bytes));
         assertThrows(DecodingException.class, () -> this.codec.decode(mock(10), bytes));

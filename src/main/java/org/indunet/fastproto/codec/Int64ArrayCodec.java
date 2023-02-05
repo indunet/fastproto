@@ -24,6 +24,8 @@ import org.indunet.fastproto.annotation.Int64ArrayType;
 import org.indunet.fastproto.annotation.Int64Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.CollectionUtils;
 
@@ -52,7 +54,7 @@ public class Int64ArrayCodec implements Codec<long[]> {
             return IntStream.range(0, l)
                     .mapToLong(i -> CodecUtils.int64Type(bytes, o + i * Int64Type.SIZE, policy))
                     .toArray();
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding int32 array type.", e);
         }
     }
@@ -68,7 +70,7 @@ public class Int64ArrayCodec implements Codec<long[]> {
 
             IntStream.range(0, l)
                     .forEach(i -> CodecUtils.int64Type(bytes, o + i * Int64Type.SIZE, policy, values[i]));
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding int32 array type.", e);
         }
     }
@@ -79,6 +81,26 @@ public class Int64ArrayCodec implements Codec<long[]> {
         val order = context.getByteOrder(type::byteOrder);
 
         return this.decode(bytes, type.offset(), type.length(), order);
+    }
+
+    @Override
+    public long[] decode(CodecContext context, ByteBufferInputStream inputStream) {
+        try {
+            val type = context.getDataTypeAnnotation(Int64ArrayType.class);
+            val order = context.getByteOrder(type::byteOrder);
+            val o = inputStream.toByteBuffer().reverse(type.offset());
+            var l = type.length();
+
+            if (l < 0) {
+                l = inputStream.toByteBuffer().reverse(type.offset(), type.length() * Int64Type.SIZE)  / Int64Type.SIZE + 1;
+            }
+
+            return IntStream.range(0, l)
+                    .mapToLong(i -> inputStream.readInt64(o + i * Int64Type.SIZE, order))
+                    .toArray();
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new DecodingException("Fail decoding int32 array type.", e);
+        }
     }
 
     @Override
@@ -96,7 +118,26 @@ public class Int64ArrayCodec implements Codec<long[]> {
             IntStream.range(0, l)
                     .forEach(i ->
                             CodecUtils.int64Type(buffer, type.offset() + i * Int64Type.SIZE, order, values[i]));
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new EncodingException("Fail encoding int32 array type.", e);
+        }
+    }
+
+    @Override
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, long[] values) {
+        try {
+            val type = context.getDataTypeAnnotation(Int64ArrayType.class);
+            val order = context.getByteOrder(type::byteOrder);
+            val o = outputStream.toByteBuffer().reverse(type.offset());
+            var l = type.length();
+
+            if (l < 0) {
+                l = outputStream.toByteBuffer().reverse(type.offset(), type.length() * Int64Type.SIZE)  / Int64Type.SIZE + 1;
+            }
+
+            IntStream.range(0, Math.min(l, values.length))
+                    .forEach(i -> outputStream.writeInt64(o + i * Int64Type.SIZE, order, values[i]));
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding int32 array type.", e);
         }
     }
@@ -110,12 +151,28 @@ public class Int64ArrayCodec implements Codec<long[]> {
         }
 
         @Override
+        public Long[] decode(CodecContext context, ByteBufferInputStream inputStream) {
+            return LongStream.of(Int64ArrayCodec.this.decode(context, inputStream))
+                    .mapToObj(Long::valueOf)
+                    .toArray(Long[]::new);
+        }
+
+        @Override
         public void encode(CodecContext context, ByteBuffer buffer, Long[] values) {
             val longs = Stream.of(values)
                     .mapToLong(i -> i.longValue())
                     .toArray();
 
             Int64ArrayCodec.this.encode(context, buffer, longs);
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBufferOutputStream outputStream, Long[] values) {
+            val longs = Stream.of(values)
+                    .mapToLong(i -> i.longValue())
+                    .toArray();
+
+            Int64ArrayCodec.this.encode(context, outputStream, longs);
         }
     }
 
@@ -137,8 +194,31 @@ public class Int64ArrayCodec implements Codec<long[]> {
         }
 
         @Override
+        public Collection<Long> decode(CodecContext context, ByteBufferInputStream inputStream) {
+            try {
+                val type = (Class<? extends Collection>) context.getFieldType();
+                Collection<Long> collection = CollectionUtils.newInstance(type);
+
+                Arrays.stream(Int64ArrayCodec.this.decode(context, inputStream))
+                        .forEach(collection::add);
+
+                return collection;
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new DecodingException(
+                        String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
+            }
+        }
+
+        @Override
         public void encode(CodecContext context, ByteBuffer buffer, Collection<Long> collection) {
             Int64ArrayCodec.this.encode(context, buffer, collection.stream()
+                    .mapToLong(Long::longValue)
+                    .toArray());
+        }
+
+        @Override
+        public void encode(CodecContext context, ByteBufferOutputStream outputStream, Collection<Long> collection) {
+            Int64ArrayCodec.this.encode(context, outputStream, collection.stream()
                     .mapToLong(Long::longValue)
                     .toArray());
         }

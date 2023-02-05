@@ -179,7 +179,7 @@ public class CodecUtils {
             throw new IllegalArgumentException("Out of uint8 range.");
         }
 
-        int o = reverse(byteArray.getBytes(), offset);
+        int o = reverse(byteArray.toBytes(), offset);
 
         byteArray.set(o, (byte) value);
     }
