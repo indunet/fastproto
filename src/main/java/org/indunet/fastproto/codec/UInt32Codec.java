@@ -17,12 +17,11 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.ByteBuffer;
-import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.UInt32Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
-import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 
 /**
  * UInt32 type codec.
@@ -32,25 +31,25 @@ import org.indunet.fastproto.util.CodecUtils;
  */
 public class UInt32Codec implements Codec<Long> {
     @Override
-    public Long decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(UInt32Type.class);
-        val order = context.getByteOrder(type::byteOrder);
-
+    public Long decode(CodecContext context, ByteBufferInputStream inputStream) {
         try {
-            return CodecUtils.uint32Type(bytes, type.offset(), order);
-        } catch (ArrayIndexOutOfBoundsException e) {
+            val type = context.getDataTypeAnnotation(UInt32Type.class);
+            val order = context.getByteOrder(type::byteOrder);
+
+            return inputStream.readUInt32(type.offset(), order);
+        } catch (IndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding uint32 type.", e);
         }
     }
 
     @Override
-    public void encode(CodecContext context, ByteBuffer buffer, Long value) {
-        val type = context.getDataTypeAnnotation(UInt32Type.class);
-        val order = context.getByteOrder(type::byteOrder);
-
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, Long value) {
         try {
-            CodecUtils.uint32Type(buffer, type.offset(), order, value);
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            val type = context.getDataTypeAnnotation(UInt32Type.class);
+            val order = context.getByteOrder(type::byteOrder);
+
+            outputStream.writeUInt32(type.offset(), order, value);
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding uint32 type.", e);
         }
     }

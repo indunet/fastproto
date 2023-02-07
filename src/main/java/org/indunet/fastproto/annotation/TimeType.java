@@ -26,10 +26,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Timestamp type, corresponding to Java java.sql.Timestamp.
+ * Time type which takes 8 bytes, it can be used to annotate field type of Timestamp/Date/Calendar/LocalDateTime/Instant.
  *
  * @author Deng Ran
- * @see DataType
  * @since 1.1.0
  */
 @DataType
@@ -39,7 +38,13 @@ import java.lang.annotation.Target;
 public @interface TimeType {
     int SIZE = Long.SIZE >> 3;
 
+    /*
+     * The byte offset of the field in the binary data.
+     */
     int offset();
 
+    /*
+     * The byte order of the field in the binary data, its priority is higher than @DefaultByteOrder.
+     */
     ByteOrder[] byteOrder() default {};
 }

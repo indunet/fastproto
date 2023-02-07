@@ -28,7 +28,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Auto type.
+ * FastProto is able to infer the annotation type based on the field type when using @AutoType.
  *
  * @author Deng Ran
  * @since 3.7.1
@@ -38,19 +38,43 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface AutoType {
+    /*
+     * The byte offset of the field in the binary data.
+     */
     int[] offset() default {};
 
+    /*
+     * The byte offset of the field in the binary data, only valid on boolean type.
+     */
     int[] byteOffset() default {};
 
+    /*
+     * The bit offset of the field in the binary data, only valid on boolean type.
+     */
     int[] bitOffset() default {};
 
+    /*
+     * The length of the array or string, only valid on array or string type.
+     */
     int[] length() default {};
 
+    /*
+     * The byte order of the field in the binary data, its priority is higher than @DefaultByteOrder.
+     */
     ByteOrder[] byteOrder() default {};
 
+    /*
+     * The bit order of the field in the binary data, its priority is higher than @DefaultBitOrder.
+     */
     BitOrder[] bitOrder() default {};
 
+    /*
+     * The charset of the field in the binary data, only valid on string type.
+     */
     String charset() default "UTF-8";
 
+    /*
+     * The field name of enum type, only valid on enum type.
+     */
     String name() default "";
 }

@@ -16,19 +16,16 @@
 
 package org.indunet.fastproto.codec;
 
-import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
-import org.indunet.fastproto.annotation.DoubleType;
 import org.indunet.fastproto.annotation.FloatType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.AnnotationUtils;
-import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
-import scala.util.control.Exception;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit test of float type codec.
@@ -41,24 +38,26 @@ public class FloatCodecTest {
 
     @Test
     public void testDecode() {
-        byte[] datagram = new byte[10];
+        byte[] bytes = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.decode(mock(0, ByteOrder.LITTLE), null));
-
-        assertThrows(DecodingException.class, () -> this.codec.decode(mock(-1, ByteOrder.BIG), datagram));
-        assertThrows(DecodingException.class, () -> this.codec.decode(mock(8, ByteOrder.BIG), datagram));
+        assertThrows(NullPointerException.class,
+                () -> this.codec.decode(mock(0, ByteOrder.LITTLE), (ByteBufferInputStream) null));
+        assertThrows(DecodingException.class,
+                () -> this.codec.decode(mock(-1, ByteOrder.BIG), new ByteBufferInputStream(bytes)));
+        assertThrows(DecodingException.class,
+                () -> this.codec.decode(mock(8, ByteOrder.BIG), new ByteBufferInputStream(bytes)));
     }
 
     @Test
     public void testEncode() {
-        byte[] datagram = new byte[10];
+        byte[] bytes = new byte[10];
 
         assertThrows(NullPointerException.class,
-                () -> this.codec.encode(mock(0, ByteOrder.LITTLE), (ByteBuffer) null, 3.14f));
+                () -> this.codec.encode(mock(0, ByteOrder.LITTLE), (ByteBufferOutputStream) null, 3.14f));
         assertThrows(EncodingException.class,
-                () -> this.codec.encode(mock(10, ByteOrder.LITTLE), new ByteBuffer(datagram), 3.141f));
+                () -> this.codec.encode(mock(10, ByteOrder.LITTLE), new ByteBufferOutputStream(bytes), 3.141f));
         assertThrows(EncodingException.class,
-                () -> this.codec.encode(mock(-1, ByteOrder.LITTLE), new ByteBuffer(datagram), 3.141f));
+                () -> this.codec.encode(mock(-1, ByteOrder.LITTLE), new ByteBufferOutputStream(bytes), 3.141f));
     }
 
     protected CodecContext mock(int offset, ByteOrder order) {

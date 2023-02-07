@@ -17,7 +17,10 @@
 package org.indunet.fastproto.api.time;
 
 import lombok.Data;
+import lombok.val;
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.TimeType;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 
 import java.sql.Timestamp;
 import java.time.Instant;
@@ -40,4 +43,15 @@ public class TimeObject {
     Instant instant = Instant.ofEpochMilli(System.currentTimeMillis());
     @TimeType(offset = 24)
     Calendar calendar = Calendar.getInstance();
+
+    public byte[] toBytes() {
+        val outputStream = new ByteBufferOutputStream();
+
+        outputStream.writeInt64(ByteOrder.LITTLE, date.getTime());
+        outputStream.writeInt64(ByteOrder.LITTLE, timestamp.getTime());
+        outputStream.writeInt64(ByteOrder.LITTLE, instant.toEpochMilli());
+        outputStream.writeInt64(ByteOrder.LITTLE, calendar.getTimeInMillis());
+
+        return outputStream.toByteBuffer().toBytes();
+    }
 }

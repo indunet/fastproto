@@ -18,13 +18,12 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
-import org.indunet.fastproto.ByteBuffer;
-import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.Int16ArrayType;
 import org.indunet.fastproto.annotation.Int16Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
-import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.CollectionUtils;
 
 import java.util.Arrays;
@@ -39,93 +38,71 @@ import java.util.stream.Stream;
  * @since 3.6.0
  */
 public class Int16ArrayCodec implements Codec<int[]> {
-    public int[] decode(byte[] bytes, int offset, int length, ByteOrder order) {
+    @Override
+    public int[] decode(CodecContext context, ByteBufferInputStream inputStream) {
         try {
-            val o = CodecUtils.reverse(bytes, offset);
-            var l = length;
+            val type = context.getDataTypeAnnotation(Int16ArrayType.class);
+            val order = context.getByteOrder(type::byteOrder);
+            val o = inputStream.toByteBuffer().reverse(type.offset());
+            var l = type.length();
 
             if (l < 0) {
-                l = CodecUtils.reverse(bytes, offset, length * Int16Type.SIZE)  / Int16Type.SIZE + 1;
+                l = inputStream.toByteBuffer().reverse(type.offset(), type.length() * Int16Type.SIZE)  / Int16Type.SIZE + 1;
             }
 
             return IntStream.range(0, l)
-                    .map(i -> CodecUtils.int16Type(bytes, o + i * Int16Type.SIZE, order))
+                    .map(i -> inputStream.readInt16(o + i * Int16Type.SIZE, order))
                     .toArray();
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding int16 array type.", e);
         }
     }
 
-    public void encode(byte[] bytes, int offset, int length, ByteOrder order, int[] values) {
-        try {
-            val o = CodecUtils.reverse(bytes, offset);
-            var l = length;
-
-            if (l < 0) {
-                l = CodecUtils.reverse(bytes, offset, length * Int16Type.SIZE)  / Int16Type.SIZE + 1;
-            }
-
-            IntStream.range(0, l)
-                    .forEach(i -> CodecUtils.int16Type(bytes, o + i * Int16Type.SIZE, order, values[i]));
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new EncodingException("Fail encoding int16 array type.", e);
-        }
-    }
-
     @Override
-    public int[] decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(Int16ArrayType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        return this.decode(bytes, type.offset(), type.length(), order);
-    }
-
-    @Override
-    public void encode(CodecContext context, ByteBuffer buffer, int[] values) {
-        val type = context.getDataTypeAnnotation(Int16ArrayType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, int[] values) {
         try {
+            val type = context.getDataTypeAnnotation(Int16ArrayType.class);
+            val order = context.getByteOrder(type::byteOrder);
+            val o = outputStream.toByteBuffer().reverse(type.offset());
             var l = type.length();
 
             if (l < 0) {
-                l = buffer.reverse(type.offset(), type.length() * Int16Type.SIZE)  / Int16Type.SIZE + 1;
+                l = outputStream.toByteBuffer().reverse(type.offset(), type.length() * Int16Type.SIZE)  / Int16Type.SIZE + 1;
             }
 
-            IntStream.range(0, l)
-                    .forEach(i ->
-                            CodecUtils.int16Type(buffer, type.offset() + i * Int16Type.SIZE, order, values[i]));
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            IntStream.range(0, Math.min(l, values.length))
+                    .forEach(i -> outputStream.writeInt16(o + i * Int16Type.SIZE, order, values[i]));
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding int16 array type.", e);
         }
     }
 
     public class WrapperCodec implements Codec<Integer[]> {
         @Override
-        public Integer[] decode(CodecContext context, byte[] bytes) {
-            return IntStream.of(Int16ArrayCodec.this.decode(context, bytes))
+        public Integer[] decode(CodecContext context, ByteBufferInputStream inputStream) {
+            return IntStream.of(Int16ArrayCodec.this.decode(context, inputStream))
                     .mapToObj(Integer::valueOf)
                     .toArray(Integer[]::new);
         }
 
         @Override
-        public void encode(CodecContext context, ByteBuffer buffer, Integer[] values) {
+        public void encode(CodecContext context, ByteBufferOutputStream outputStream, Integer[] values) {
             val ints = Stream.of(values)
                     .mapToInt(i -> i.intValue())
                     .toArray();
 
-            Int16ArrayCodec.this.encode(context, buffer, ints);
+            Int16ArrayCodec.this.encode(context, outputStream, ints);
         }
     }
 
     public class CollectionCodec implements Codec<Collection<Integer>> {
         @Override
-        public Collection<Integer> decode(CodecContext context, byte[] bytes) {
+        public Collection<Integer> decode(CodecContext context, ByteBufferInputStream inputStream) {
             try {
                 val type = (Class<? extends Collection>) context.getFieldType();
                 Collection<Integer> collection = CollectionUtils.newInstance(type);
 
-                Arrays.stream(Int16ArrayCodec.this.decode(context, bytes))
+                Arrays.stream(Int16ArrayCodec.this.decode(context, inputStream))
                         .forEach(collection::add);
 
                 return collection;
@@ -136,8 +113,8 @@ public class Int16ArrayCodec implements Codec<int[]> {
         }
 
         @Override
-        public void encode(CodecContext context, ByteBuffer buffer, Collection<Integer> collection) {
-            Int16ArrayCodec.this.encode(context, buffer, collection.stream()
+        public void encode(CodecContext context, ByteBufferOutputStream outputStream, Collection<Integer> collection) {
+            Int16ArrayCodec.this.encode(context, outputStream, collection.stream()
                     .mapToInt(Integer::intValue)
                     .toArray());
         }

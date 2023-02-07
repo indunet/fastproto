@@ -52,19 +52,17 @@ the weather station in binary format，the binary data has fixed length of 20 by
 
 The binary data contains 8 different types of signals, the specific protocol is as follows:
 
-| Byte Offset | Bit Offset | Data Type(C/C++)  | Signal Name       | Unit |  Formula  |
-|:-----------:|:----------:|:-----------------:|:-----------------:|:----:|:---------:|
-| 0           |            |   unsigned char   | device id         |      |           |
-| 1           |            |                   | reserved          |      |           |
-| 2-9         |            |       long        | time              |  ms  |           |
-| 10-11       |            |  unsigned short   | humidity          |  %RH |           |
-| 12-13       |            |       short       | temperature       |  ℃  |            |
-| 14-17       |            |   unsigned int    | pressure          |  Pa  | p * 0.1   |
-| 18          | 0          |       bool        | temperature valid |      |           |
-| 18          | 1          |       bool        | humidity valid    |      |           |
-| 18          | 2          |       bool        | pressure valid    |      |           |
-| 18          | 3-7        |                   | reserved          |      |           |
-| 19          |            |                   | reserved          |      |           |
+| Byte Offset | Bit Offset | Data Type(C/C++)  | Signal Name  | Unit |  Formula  |
+|:-----------:|:----------:|:-----------------:|:------------:|:----:|:---------:|
+| 0           |            |   unsigned char   |  device id   |      |           |
+| 1           |            |                   |   reserved   |      |           |
+| 2-9         |            |       long        |     time     |  ms  |           |
+| 10-11       |            |  unsigned short   |   humidity   |  %RH |           |
+| 12-13       |            |       short       | temperature  |  ℃  |            |
+| 14-17       |            |   unsigned int    |   pressure   |  Pa  | p * 0.1   |
+| 18          | 0          |       bool        | device valid |      |           |
+| 18          | 3-7        |                   |   reserved   |      |           |
+| 19          |            |                   |   reserved   |      |           |
 
 ### *1.1 Parse and Package Binary Data*
 
@@ -92,31 +90,25 @@ public class Weather {
     long pressure;
 
     @BoolType(byteOffset = 18, bitOffset = 0)
-    boolean temperatureValid;
-
-    @BoolType(byteOffset = 18, bitOffset = 1)
-    boolean humidityValid;
-
-    @BoolType(byteOffset = 18, bitOffset = 2)
-    boolean pressureValid;
+    boolean deviceValid;
 }
 ```
 
-Invoke the `FastProto::parse()` method to parse the binary data into the Java data object `Weather`
+Invoke the `FastProto::decode()` method to parse the binary data into the Java data object `Weather`
 
 ```java
 // datagram sent by monitoring device.
 byte[] datagram = ...   
 
-Weather weather = FastProto.parse(datagram, Weather.class);
+Weather weather = FastProto.decode(datagram, Weather.class);
 ```
 
-Invoke the `FastProto::toBytes()` method to package the Java data object `Weather` into binary data.
+Invoke the `FastProto::encode()` method to package the Java data object `Weather` into binary data.
 The second parameter of this method is the length of the binary data. 
 If the user does not specify it, FastProto will automatically guess the length.
 
 ```java
-byte[] datagram = FastProto.toBytes(weather, 20);
+byte[] datagram = FastProto.encode(weather, 20);
 ```
 ### *1.2 Transformation Formula*
 
@@ -177,7 +169,9 @@ FastProto supports Java primitive data types, taking into account cross-language
 |    Annotation    |                                       Java                                        |      C/C++       |
 |:----------------:|:---------------------------------------------------------------------------------:|:----------------:|
 |   @BinaryType    |                       Byte[]/byte[]/Collection&lt;Byte&gt;                        |      char[]      |
-|  @BoolArrayType  |                    Boolean[]/boolean[]/Collection&lt;Boolean&gt;                     |      bool[]      |
+|  @BoolArrayType  |                   Boolean[]/boolean[]/Collection&lt;Boolean&gt;                   |      bool[]      |
+| @AsciiArrayType  |                  Character[]/char[]/Collection&lt;Character&gt;                   |      char[]      |
+|  @CharArrayType  |                  Character[]/char[]/Collection&lt;Character&gt;                   |        --        |
 |  @Int8ArrayType  |  Byte[]/byte[]/Integer[]/int[]/Collection&lt;Byte&gt;/Collection&lt;Integer&gt;   |      char[]      |
 | @Int16ArrayType  | Short[]/short[]/Integer[]/int[]/Collection&lt;Short&gt;/Collection&lt;Integer&gt; |     short[]      |
 | @Int32ArrayType  |                     Integer[]/int[]/Collection&lt;Integer&gt;                     |      int[]       |
@@ -222,11 +216,11 @@ import org.indunet.fastproto.annotation.DefaultByteOrder;
 @DefaultByteOrder(ByteOrder.BIG)
 @DefaultBitOrder(BitOrder.LSB_0)
 public class Weather {
-    @UInt16Type(offset = 10, endian = ByteOrder.LITTLE)
+    @UInt16Type(offset = 10, byteOrder = ByteOrder.LITTLE)
     int humidity;
 
-    @BoolType(byteOffset = 18, bitOffset = 1, bitOrder = BitOrder.MSB_0)
-    boolean humidityValid;
+    @BoolType(byteOffset = 18, bitOffset = 0, bitOrder = BitOrder.MSB_0)
+    boolean deviceValid;
 }
 ```
 
@@ -301,7 +295,7 @@ FastProto can automatically infer type if field is annotated by `@AutoType`.
 import org.indunet.fastproto.annotation.AutoType;
 
 public class Weather {
-    @AutoType(offset = 10, byteOrder = byteOrder.LITTLE)
+    @AutoType(offset = 10, byteOrder = ByteOrder.LITTLE)
     int humidity;   // default Int32Type
 
     @AutoType(offset = 14)
@@ -347,13 +341,13 @@ in a simple way. FastProto provides simple API to solve the above problems, as f
 * *Parse without data object*
 
 ```java
-boolean f1 = FastProto.parse(bytes)
+boolean f1 = FastProto.decode(bytes)
         .boolType(0, 0)
         .getAsBoolean();
-int f2 = FastProto.parse(bytes)
+int f2 = FastProto.decode(bytes)
         .int8Type(1)      // Parse signed 8-bit integer data at byte offset 1
         .getAsInt();
-int f3 = FastProto.parse(bytes)
+int f3 = FastProto.decode(bytes)
         .int16Type(2)     // Parse signed 16-bit integer data at byte offset 2
         .getAsInt();
 ```
@@ -369,7 +363,7 @@ public class DataObject {
     Integer f3;
 }
 
-JavaObject obj = FastProto.parse(bytes)
+JavaObject obj = FastProto.decode(bytes)
         .boolType(0, 0, "f1")           
         .int8Type(1, "f2")              // Parse signed 8-bit integer data at byte offset 1, field name f2
         .int16Type(2, "f3")
@@ -396,17 +390,17 @@ byte[] bytes = FastProto.create()
 
 1. api with annotations
 
-|Benchmark |    Mode  | Samples  | Score | Error  |   Units   |
-|:--------:|:--------:|:--------:|:-----:|:------:|:---------:|
-| `FastProto::parse` |  throughput   |   10  |  240  | ± 4.6  |  ops/ms   |
-| `FastProto::toBytes` | throughput  |   10  |  317  | ± 11.9 |  ops/ms   |
+|      Benchmark      |    Mode  | Samples  | Score | Error  |   Units   |
+|:-------------------:|:--------:|:--------:|:-----:|:------:|:---------:|
+| `FastProto::decode` |  throughput   |   10  |  240  | ± 4.6  |  ops/ms   |
+| `FastProto::encode` | throughput  |   10  |  317  | ± 11.9 |  ops/ms   |
 
 
 2. api without annotations
 
 |Benchmark |    Mode  | Samples  | Score | Error  |   Units   |
 |:--------:|:--------:|:--------:|:--:|:---------:|:---------:|
-| `FastProto::parse` |  throughput   |   10  | 1273 | ± 17    |  ops/ms   |
+| `FastProto::decode` |  throughput   |   10  | 1273 | ± 17    |  ops/ms   |
 | `FastProto::create` | throughput  |   10  | 6911 | ± 162    |  ops/ms   |
 
 
@@ -414,7 +408,7 @@ byte[] bytes = FastProto.create()
 
 *   Java 1.8+
 *   Maven 3.5+
-
+!
 
 ## *7. Contribution*
 

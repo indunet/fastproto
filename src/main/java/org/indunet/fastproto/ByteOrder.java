@@ -18,10 +18,7 @@ package org.indunet.fastproto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.indunet.fastproto.exception.CodecError;
-import org.indunet.fastproto.exception.CodecException;
 
-import java.util.Arrays;
 
 /**
  * Byte order policy.
@@ -35,13 +32,6 @@ public enum ByteOrder {
     BIG(0x01, "Big"),
     LITTLE(0x02, "Little");
 
-    int code;
-    String name;
-
-    public static ByteOrder byName(String name) {
-        return Arrays.stream(ByteOrder.values())
-                .filter(p -> p.getName().equals(name))
-                .findFirst()
-                .orElseThrow(() -> new CodecException(CodecError.INVALID_ENDIAN_POLICY));
-    }
+    final int code;
+    final String name;
 }

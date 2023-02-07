@@ -24,7 +24,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Specify bit order according to requirements.
+ * FastProto uses LSB_0 by default, this annotation can modify the default bit order.
  *
  * @author Deng Ran
  * @since 3.9.1

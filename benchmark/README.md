@@ -6,15 +6,15 @@
 
 1. api with annotations
 
-|Benchmark |    Mode  | Samples  | Score | Error  |   Units   |
-|:--------:|:--------:|:--------:|:-----:|:------:|:---------:|
-| `FastProto::parse` |  throughput   |   10  |  240  | ± 4.6  |  ops/ms   |
-| `FastProto::toBytes` | throughput  |   10  |  317  | ± 11.9 |  ops/ms   |
+|      Benchmark      |    Mode  | Samples  | Score | Error  |   Units   |
+|:-------------------:|:--------:|:--------:|:-----:|:------:|:---------:|
+| `FastProto::decode` |  throughput   |   10  |  240  | ± 4.6  |  ops/ms   |
+| `FastProto::encode` | throughput  |   10  |  317  | ± 11.9 |  ops/ms   |
 
 
 2. api without annotations
 
 |Benchmark |    Mode  | Samples  | Score | Error  |   Units   |
 |:--------:|:--------:|:--------:|:--:|:---------:|:---------:|
-| `FastProto::parse` |  throughput   |   10  | 1273 | ± 17    |  ops/ms   |
+| `FastProto::decode` |  throughput   |   10  | 1273 | ± 17    |  ops/ms   |
 | `FastProto::create` | throughput  |   10  | 6911 | ± 162    |  ops/ms   |

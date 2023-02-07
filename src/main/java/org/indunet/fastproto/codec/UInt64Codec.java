@@ -17,12 +17,11 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.ByteBuffer;
-import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.UInt64Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
-import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 
 import java.math.BigInteger;
 
@@ -34,24 +33,24 @@ import java.math.BigInteger;
  */
 public class UInt64Codec implements Codec<BigInteger> {
     @Override
-    public BigInteger decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(UInt64Type.class);
-        val order = context.getByteOrder(type::byteOrder);
-
+    public BigInteger decode(CodecContext context, ByteBufferInputStream inputStream) {
         try {
-            return CodecUtils.uint64Type(bytes, type.offset(), order);
-        } catch (ArrayIndexOutOfBoundsException e) {
+            val type = context.getDataTypeAnnotation(UInt64Type.class);
+            val order = context.getByteOrder(type::byteOrder);
+
+            return inputStream.readUInt64(type.offset(), order);
+        } catch (IndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding uint64 type.", e);
         }
     }
 
     @Override
-    public void encode(CodecContext context, ByteBuffer buffer, BigInteger value) {
-        val type = context.getDataTypeAnnotation(UInt64Type.class);
-        val order = context.getByteOrder(type::byteOrder);
-
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, BigInteger value) {
         try {
-            CodecUtils.uint64Type(buffer, type.offset(), order, value);
+            val type = context.getDataTypeAnnotation(UInt64Type.class);
+            val order = context.getByteOrder(type::byteOrder);
+
+            outputStream.writeUInt64(type.offset(), order, value);
         } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding uint64 type.", e);
         }

@@ -18,11 +18,12 @@ package org.indunet.fastproto.graph;
 
 import lombok.*;
 import org.indunet.fastproto.BitOrder;
-import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
@@ -67,21 +68,22 @@ public class Reference {
     Function decodingLambda;
     Function encodingFormula;
     Function encodingLambda;
-    Function<byte[], ?> decoder;
-    BiConsumer<ByteBuffer, ? super Object> encoder;
+    Function<ByteBufferInputStream, ?> decoder;
+    BiConsumer<ByteBufferOutputStream, ? super Object> encoder;
 
     Integer byteOffset;
     Integer bitOffset;
     Integer size;
     Integer length;
 
-    public void decode(byte[] bytes) {
-        val value = this.decoder.apply(bytes);
+    public void decode(ByteBufferInputStream inputStream) {
+        val value = this.decoder.apply(inputStream);
+
         this.setValue(value);
     }
 
-    public void encoder(ByteBuffer buffer) {
-        this.encoder.accept(buffer, this.getValue().get());
+    public void encoder(ByteBufferOutputStream outputStream) {
+        this.encoder.accept(outputStream, this.getValue().get());
     }
 
     @Builder.Default

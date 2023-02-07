@@ -30,7 +30,7 @@ public class IgnoreTest {
     @Test
     public void testDecodeIgnore() {
         val bytes = new byte[] {1, 2, 3, 4};
-        val vehicle = FastProto.parse(bytes, Vehicle.class);
+        val vehicle = FastProto.decode(bytes, Vehicle.class);
 
         assertNotNull(vehicle.getSpeed());
         assertNull(vehicle.getMileage());
@@ -43,7 +43,7 @@ public class IgnoreTest {
         vehicle.setSpeed(1);
         vehicle.setMileage(2);
 
-        val bytes = FastProto.toBytes(vehicle, 4);
+        val bytes = FastProto.encode(vehicle, 4);
         assertArrayEquals(bytes, new byte[] {0, 0, 2, 0});
     }
 }

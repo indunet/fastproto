@@ -24,7 +24,7 @@ FastProto是一款Java编写的二进制数据处理工具，开发者可以通�
 
 ### *正在开发*
 
-* 不依赖注解的开发
+* 细化API文档
 * 代码结构 & 性能优化
 
 ### *Maven*
@@ -33,7 +33,7 @@ FastProto是一款Java编写的二进制数据处理工具，开发者可以通�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.9.2</version>
+    <version>3.9.3</version>
 </dependency>
 ```
 
@@ -45,19 +45,17 @@ FastProto是一款Java编写的二进制数据处理工具，开发者可以通�
 
 数据报文包含8种不同类型的信号，具体协议如下：
 
-| 字节偏移 | 位偏移 |  数据类型(C/C++)   | 信号名称       | 单位 |  换算公式  |
-|:-----------:|:----------:|:--------------:|:-----------------:|:----:|:---------:|
-| 0           |            | unsigned char  | 设备编号         |      |           |
-| 1           |            |                | 预留          |      |           |
-| 2-9         |            |      long      | 时间戳              |  ms  |           |
-| 10-11       |            | unsigned short | 湿度          |  %RH |           |
-| 12-13       |            |     short      | 温度       |  ℃  |            |
-| 14-17       |            |  unsigned int  | 气压          |  Pa  | p * 0.1   |
-| 18          | 0          |      bool      | 温度有效标识 |      |           |
-| 18          | 1          |      bool      | 湿度有效标识    |      |           |
-| 18          | 2          |      bool      | 气压有效标识    |      |           |
-| 18          | 3-7        |                | 预留          |      |           |
-| 19          |            |                | 预留          |      |           |
+| 字节偏移 | 位偏移 |  数据类型(C/C++)   |  信号名称  | 单位 |  换算公式  |
+|:-----------:|:----------:|:--------------:|:------:|:----:|:---------:|
+| 0           |            | unsigned char  |  设备编号  |      |           |
+| 1           |            |                |   预留   |      |           |
+| 2-9         |            |      long      |  时间戳   |  ms  |           |
+| 10-11       |            | unsigned short |   湿度   |  %RH |           |
+| 12-13       |            |     short      |   温度   |  ℃  |            |
+| 14-17       |            |  unsigned int  |   气压   |  Pa  | p * 0.1   |
+| 18          | 0          |      bool      | 设备有效标识 |      |           |
+| 18          | 3-7        |                |   预留   |      |           |
+| 19          |            |                |   预留   |      |           |
 
 ### *1.1 解析和封包二进制数据*
 
@@ -84,29 +82,22 @@ public class Weather {
     long pressure;
 
     @BoolType(byteOffset = 18, bitOffset = 0)
-    boolean temperatureValid;
-
-    @BoolType(byteOffset = 18, bitOffset = 1)
-    boolean humidityValid;
-
-    @BoolType(byteOffset = 18, bitOffset = 2)
-    boolean pressureValid;
+    boolean deviceValid;
 }
 ```
 
-调用`FastProto::parse()`方法将二进制数据解析成Java数据对象`Weather`
+调用`FastProto::decode()`方法将二进制数据解析成Java数据对象`Weather`
 
 ```java
-// datagram sent by monitoring device.
-byte[] datagram = ...   
+byte[] datagram = ...   // 检测设备发送的二进制报文
         
-Weather weather = FastProto.parse(datagram, Weather.class);
+Weather weather = FastProto.decode(datagram, Weather.class);
 ```
 
-调用`FastProto::toBytes()`方法将Java数据对象`Weather`封包成二进制数据,其中方法的第二个参数是字节数组长度，如果用户不指定，那么FastProto会自动推测。
+调用`FastProto::encode()`方法将Java数据对象`Weather`封包成二进制数据,其中方法的第二个参数是字节数组长度，如果用户不指定，那么FastProto会自动推测。
 
 ```java
-byte[] datagram = FastProto.toBytes(weather, 20);
+byte[] datagram = FastProto.encode(weather, 20);
 ```
 
 
@@ -169,6 +160,8 @@ FastProto支持Java基础数据类型，考虑到跨语言跨平台的数据交�
 |:----------------:|:---------------------------------------------------------------------------------:|:----------------:|
 |   @BinaryType    |                       Byte[]/byte[]/Collection&lt;Byte&gt;                        |      char[]      |
 |  @BoolArrayType  |                    Boolean[]/boolean[]/Collection&lt;Boolean&gt;                     |      bool[]      |
+| @AsciiArrayType  |                  Character[]/char[]/Collection&lt;Character&gt;                   |      char[]      |
+|  @CharArrayType  |                  Character[]/char[]/Collection&lt;Character&gt;                   |        --        |
 |  @Int8ArrayType  |  Byte[]/byte[]/Integer[]/int[]/Collection&lt;Byte&gt;/Collection&lt;Integer&gt;   |      char[]      |
 | @Int16ArrayType  | Short[]/short[]/Integer[]/int[]/Collection&lt;Short&gt;/Collection&lt;Integer&gt; |     short[]      |
 | @Int32ArrayType  |                     Integer[]/int[]/Collection&lt;Integer&gt;                     |      int[]       |
@@ -208,11 +201,11 @@ import org.indunet.fastproto.annotation.DefaultByteOrder;
 @DefaultByteOrder(ByteOrder.BIG)
 @DefaultBitOrder(BitOrder.LSB_0)
 public class Weather {
-    @UInt16Type(offset = 10, endian = ByteOrder.LITTLE)
+    @UInt16Type(offset = 10, byteOrder = ByteOrder.LITTLE)
     int humidity;
 
-    @BoolType(byteOffset = 18, bitOffset = 1, bitOrder = BitOrder.MSB_0)
-    boolean humidityValid;
+    @BoolType(byteOffset = 18, bitOffset = 0, bitOrder = BitOrder.MSB_0)
+    boolean deviceValid;
 }
 ```
 
@@ -286,7 +279,7 @@ public class Weather {
 import org.indunet.fastproto.annotation.AutoType;
 
 public class Weather {
-    @AutoType(offset = 10, endian = EndianPolicy.LITTLE)
+    @AutoType(offset = 10, byteOrder = ByteOrder.LITTLE)
     int humidity;   // default Int32Type
 
     @AutoType(offset = 14)
@@ -331,13 +324,13 @@ FastProto提供了精简的API解决了上述问题，具体如下：
 * *直接解析，不需要数据对象*
 
 ```java
-boolean f1 = FastProto.parse(bytes)
+boolean f1 = FastProto.decode(bytes)
         .boolType(0, 0)
         .getAsBoolean();
-int f2 = FastProto.parse(bytes)
+int f2 = FastProto.decode(bytes)
         .int8Type(1)      // 在字节偏移量1位置解析有符号8位整型数据
         .getAsInt();
-int f3 = FastProto.parse(bytes)
+int f3 = FastProto.decode(bytes)
         .int16Type(2)     // 在字节偏移量2位置解析有符号16位整型数据
         .getAsInt();
 ```
@@ -353,7 +346,7 @@ public class DataObject {
     Integer f3;
 }
 
-JavaObject obj = FastProto.parse(bytes)
+JavaObject obj = FastProto.decode(bytes)
         .boolType(0, 0, "f1")           
         .int8Type(1, "f2")              // 在字节偏移量1位置解析有符号8位整型数据，字段名称f2
         .int16Type(2, "f3")
@@ -381,14 +374,14 @@ byte[] bytes = FastProto.create()
 
 |Benchmark |    模式  | 样本数量  | 评分 |   误差   |   单位   |
 |:--------:|:--------:|:--------:|:--:|:---------:|:---------:|
-| `FastProto::parse` |  吞吐量   |   10  | 240 | ± 4.6    |  次/毫秒   |
-| `FastProto::toBytes` | 吞吐量  |   10  | 317 | ± 11.9    |  次/毫秒   |
+| `FastProto::decode` |  吞吐量   |   10  | 240 | ± 4.6    |  次/毫秒   |
+| `FastProto::encode` | 吞吐量  |   10  | 317 | ± 11.9    |  次/毫秒   |
 
 2. 方法链式API
 
 |Benchmark |    模式  | 样本数量  | 评分 |   误差   |   单位   |
 |:--------:|:--------:|:--------:|:--:|:---------:|:---------:|
-| `FastProto::parse` |  吞吐量   |   10  | 1273 | ± 17    |  次/毫秒   |
+| `FastProto::decode` |  吞吐量   |   10  | 1273 | ± 17    |  次/毫秒   |
 | `FastProto::create` | 吞吐量  |   10  | 6911 | ± 162    |  次/毫秒   |
 
 ## *6. 构建要求*

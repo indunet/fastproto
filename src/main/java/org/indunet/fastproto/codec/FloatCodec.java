@@ -17,12 +17,11 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.ByteBuffer;
-import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.FloatType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
-import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 
 /**
  * Float type codec.
@@ -32,24 +31,24 @@ import org.indunet.fastproto.util.CodecUtils;
  */
 public class FloatCodec implements Codec<Float> {
     @Override
-    public Float decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(FloatType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
+    public Float decode(CodecContext context, ByteBufferInputStream inputStream) {
         try {
-            return CodecUtils.floatType(bytes, type.offset(), order);
-        } catch (ArrayIndexOutOfBoundsException e) {
+            val type = context.getDataTypeAnnotation(FloatType.class);
+            val order = context.getByteOrder(type::byteOrder);
+
+            return inputStream.readFloat(type.offset(), order);
+        } catch (IndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding float type.", e);
         }
     }
 
     @Override
-    public void encode(CodecContext context, ByteBuffer buffer, Float value) {
-        val type = context.getDataTypeAnnotation(FloatType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, Float value) {
         try {
-            CodecUtils.floatType(buffer, type.offset(), order, value);
+            val type = context.getDataTypeAnnotation(FloatType.class);
+            val order = context.getByteOrder(type::byteOrder);
+
+            outputStream.writeFloat(type.offset(), order, value);
         } catch (IndexOutOfBoundsException e) {
             throw new EncodingException("Fail encoding float type.", e);
         }

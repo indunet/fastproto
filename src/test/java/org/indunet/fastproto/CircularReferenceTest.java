@@ -65,7 +65,7 @@ public class CircularReferenceTest {
         datagram[1] = 2;
         datagram[2] = 3;
 
-        val node1 = FastProto.parse(datagram, Node1.class);
+        val node1 = FastProto.decode(datagram, Node1.class);
         assertNotNull(node1.getNode1());
         assertNotNull(node1.getNode2());
         assertEquals(1, node1.getId());

@@ -22,6 +22,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * An annotation used to mark data type annotation.
+ *
  * @author Deng Ran
  * @since 1.0.0
  */

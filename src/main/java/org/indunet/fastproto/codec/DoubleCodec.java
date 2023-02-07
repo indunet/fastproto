@@ -17,12 +17,11 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.ByteBuffer;
-import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.DoubleType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
-import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 
 /**
  * Double type codec.
@@ -32,24 +31,24 @@ import org.indunet.fastproto.util.CodecUtils;
  */
 public class DoubleCodec implements Codec<Double> {
     @Override
-    public Double decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(DoubleType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
+    public Double decode(CodecContext context, ByteBufferInputStream inputStream) {
         try {
-            return CodecUtils.doubleType(bytes, type.offset(), order);
-        } catch (ArrayIndexOutOfBoundsException e) {
+            val type = context.getDataTypeAnnotation(DoubleType.class);
+            val order = context.getByteOrder(type::byteOrder);
+
+            return inputStream.readDouble(type.offset(), order);
+        } catch (IndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding double type.", e);
         }
     }
 
     @Override
-    public void encode(CodecContext context, ByteBuffer buffer, Double value) {
-        val type = context.getDataTypeAnnotation(DoubleType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, Double value) {
         try {
-            CodecUtils.doubleType(buffer, type.offset(), order, value);
+            val type = context.getDataTypeAnnotation(DoubleType.class);
+            val order = context.getByteOrder(type::byteOrder);
+
+            outputStream.writeDouble(type.offset(), order, value);
         } catch (IndexOutOfBoundsException e) {
             throw new EncodingException("Fail encoding double type.", e);
         }

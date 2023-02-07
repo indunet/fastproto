@@ -16,30 +16,32 @@
 
 package org.indunet.fastproto;
 
-import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.graph.Resolver;
+import org.indunet.fastproto.io.ByteBuffer;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.PipelineContext;
 
 /**
- * FastProto API.
+ * Convert binary data to Java object, or convert Java object to binary data.
  *
  * @author Deng Ran
  * @since 1.0.0
  */
 public class FastProto {
     /**
-     * Convert byte array into object.
+     * Convert binary data to Java object with FastProto annotations.
      *
-     * @param bytes      byte array
-     * @param clazz class of deserialized object
-     * @return deserialize object
+     * @param bytes Binary data to be converted.
+     * @param clazz Java object annotated with FastProto annotations.
+     * @return Java object instance.
      */
-    public static <T> T parse(@NonNull byte[] bytes, @NonNull Class<T> clazz) {
+    public static <T> T decode(byte[] bytes, Class<T> clazz) {
         val graph = Resolver.resolve(clazz);
         val context = PipelineContext.builder()
-                .bytes(bytes)
+                .inputStream(new ByteBufferInputStream(bytes))
                 .clazz(clazz)
                 .graph(graph)
                 .build();
@@ -47,69 +49,71 @@ public class FastProto {
         Pipeline.getDecodeFlow()
                 .process(context);
 
-        return context.getObject(clazz);
+        return (T) context.getObject();
     }
 
     /**
-     * Helps developers parse binary data through chain api.
+     * Convert Java object to binary data with FastProto method chain.
      *
-     * @param bytes binary data need parsing
-     * @return Decoder object which supplies chain api
+     * @param bytes Binary data to be converted.
+     * @return Decoder which supplies FastProto method chain.
      */
-    public static Decoder parse(byte[] bytes) {
+    public static Decoder decode(byte[] bytes) {
         return new Decoder(bytes);
     }
 
     /**
-     * Convert object into byte array.
+     * Convert Java object to binary data with FastProto annotations, the length of the binary data is automatically
+     * calculated, but reverse addressing is not supported.
      *
-     * @param object serialized object
-     * @return byte array
+     * @param object Java object to be converted.
+     * @return Binary data.
      */
-    public static byte[] toBytes(Object object) {
+    public static byte[] encode(Object object) {
         val graph = Resolver.resolve(object.getClass());
         val context = PipelineContext.builder()
+                .outputStream(new ByteBufferOutputStream())
                 .object(object)
                 .clazz(object.getClass())
-                .byteBuffer(new ByteBuffer())
                 .graph(graph)
                 .build();
 
         Pipeline.getEncodeFlow()
                 .process(context);
 
-        return context.getByteBuffer().getBytes();
+        return context.getOutputStream()
+                .toByteBuffer()
+                .toBytes();
     }
 
     /**
-     * Convert object into byte array.
+     * Convert Java object to binary data with FastProto annotations, reverse addressing is supported because of fixed length.
      *
-     * @param object serialized object
-     * @param length the length of byte array
-     * @return byte array
+     * @param object Java object to be converted.
+     * @param length The length of the binary data.
+     * @return Binary data.
      */
-    public static byte[] toBytes(Object object, int length) {
+    public static byte[] encode(Object object, int length) {
         val bytes = new byte[length];
 
-        toBytes(object, bytes);
+        encode(object, bytes);
 
         return bytes;
     }
 
     /**
-     * Convert object into byte array.
+     * Convert Java object to binary data with FastProto annotations, reverse addressing is supported because of fixed length.
      *
-     * @param object serialized object
-     * @param buffer write result into buffer
+     * @param object Java object to be converted.
+     * @param buffer Binary data will be written to this buffer.
      * @return void
      */
-    public static void toBytes(Object object, byte[] buffer) {
+    public static void encode(Object object, byte[] buffer) {
         val graph = Resolver.resolve(object.getClass());
         val context = PipelineContext.builder()
                 .object(object)
                 .clazz(object.getClass())
-                .bytes(buffer)
-                .byteBuffer(new ByteBuffer(buffer))
+                .outputStream(new ByteBufferOutputStream(new ByteBuffer(buffer)))
                 .graph(graph)
                 .build();
 
@@ -118,7 +122,7 @@ public class FastProto {
     }
 
     /**
-     * Helps developers create binary data through chain api.
+     * Create binary block with FastProto method chain.
      *
      * @return Encoder object which supplies chain api.
      */
@@ -127,12 +131,12 @@ public class FastProto {
     }
 
     /**
-     * Helps developers create binary data through chain api.
+     * Create fixed-length binary block with FastProto method chain.
      *
-     * @param  length the length of the byte array
-     * @return Encoder object which supplies chain api.
+     * @param  length The length of the byte array
+     * @return Encoder which supplies FastProto method chain.
      */
     public static Encoder create(int length) {
-        return new Encoder(length);
+        return new Encoder(new byte[length]);
     }
 }

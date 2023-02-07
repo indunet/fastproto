@@ -31,19 +31,19 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class AutoTypeTest {
     @Test
-    public void testParse() {
+    public void testDecode() {
         val expected = new TestObject1();
         val bytes = expected.toBytes();
 
-        assertEquals(expected, FastProto.parse(bytes, TestObject1.class));
+        assertEquals(expected, FastProto.decode(bytes, TestObject1.class));
     }
 
     @Test
-    public void testToBytes() {
+    public void testEncode() {
         val object = new TestObject1();
         val expected = object.toBytes();
 
-        assertArrayEquals(expected, FastProto.toBytes(object, expected.length));
+        assertArrayEquals(expected, FastProto.encode(object, expected.length));
     }
 
     @Test
@@ -51,7 +51,7 @@ public class AutoTypeTest {
         val object = new TestObject2();
         val bytes = new byte[10];
 
-        assertThrows(ResolveException.class, () -> FastProto.parse(bytes, TestObject2.class));
-        assertThrows(ResolveException.class, () -> FastProto.toBytes(object, 10));
+        assertThrows(ResolveException.class, () -> FastProto.decode(bytes, TestObject2.class));
+        assertThrows(ResolveException.class, () -> FastProto.encode(object, 10));
     }
 }

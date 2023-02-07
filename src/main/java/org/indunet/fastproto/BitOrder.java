@@ -2,9 +2,6 @@ package org.indunet.fastproto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.indunet.fastproto.exception.CodecException;
-
-import java.util.Arrays;
 
 /**
  * Bit order policy.
@@ -20,11 +17,4 @@ public enum BitOrder {
 
     final int code;
     final String name;
-
-    public static BitOrder byName(String name) {
-        return Arrays.stream(BitOrder.values())
-                .filter(p -> p.getName().equals(name))
-                .findFirst()
-                .orElseThrow(() -> new CodecException("Invalid bit order, only LSB_0 or MSB_0 can be set."));
-    }
 }

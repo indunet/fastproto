@@ -22,6 +22,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
+ * Annotated field will be ignored when encoding.
+ *
  * @author Deng Ran
  * @since 1.0.0
  */

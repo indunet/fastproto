@@ -28,16 +28,8 @@ public class EncodingException extends CodecException {
 
     }
 
-    public EncodingException(CodecError error) {
-        this(error.getMessage());
-    }
-
     public EncodingException(String message) {
         super(message);
-    }
-
-    public EncodingException(CodecError error, Throwable cause) {
-        this(error.getMessage(), cause);
     }
 
     public EncodingException(String message, Throwable cause) {

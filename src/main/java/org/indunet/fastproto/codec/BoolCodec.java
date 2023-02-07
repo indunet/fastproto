@@ -17,12 +17,11 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.BitOrder;
-import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.annotation.BoolType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
-import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 
 /**
  * Bool type codec.
@@ -32,26 +31,26 @@ import org.indunet.fastproto.util.CodecUtils;
  */
 public class BoolCodec implements Codec<Boolean> {
     @Override
-    public Boolean decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(BoolType.class);
-        val order = context.getBitOrder(type::bitOrder);
-
+    public Boolean decode(CodecContext context, ByteBufferInputStream inputStream) {
         try {
-            return CodecUtils.boolType(bytes, type.byteOffset(), type.bitOffset(), order);
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new DecodingException("Fail decoding boolean type.", e);
+            val type = context.getDataTypeAnnotation(BoolType.class);
+            val order = context.getBitOrder(type::bitOrder);
+
+            return inputStream.readBool(type.byteOffset(), type.bitOffset(), order);
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
+            throw new DecodingException("Fail decoding bool type.", e);
         }
     }
 
     @Override
-    public void encode(CodecContext context, ByteBuffer buffer, Boolean value) {
-        val type = context.getDataTypeAnnotation(BoolType.class);
-        val bitOrder = context.getBitOrder(type::bitOrder);
-
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, Boolean value) {
         try {
-            CodecUtils.boolType(buffer, type.byteOffset(), type.bitOffset(), bitOrder, value);
+            val type = context.getDataTypeAnnotation(BoolType.class);
+            val bitOrder = context.getBitOrder(type::bitOrder);
+
+            outputStream.writeBool(type.byteOffset(), type.bitOffset(), bitOrder, value);
         } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new EncodingException("Fail encoding the boolean type.", e);
+            throw new EncodingException("Fail encoding the bool type.", e);
         }
     }
 }

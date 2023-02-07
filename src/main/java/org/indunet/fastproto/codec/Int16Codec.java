@@ -17,12 +17,11 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.ByteBuffer;
-import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.Int16Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
-import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 
 /**
  * Int16 type codec.
@@ -32,25 +31,25 @@ import org.indunet.fastproto.util.CodecUtils;
  */
 public class Int16Codec implements Codec<Integer> {
     @Override
-    public Integer decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(Int16Type.class);
-        val order = context.getByteOrder(type::byteOrder);
-
+    public Integer decode(CodecContext context, ByteBufferInputStream inputStream) {
         try {
-            return CodecUtils.int16Type(bytes, type.offset(), order);
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            val type = context.getDataTypeAnnotation(Int16Type.class);
+            val order = context.getByteOrder(type::byteOrder);
+
+            return inputStream.readInt16(type.offset(), order);
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding int16(int) type.", e);
         }
     }
 
     @Override
-    public void encode(CodecContext context, ByteBuffer buffer, Integer value) {
-        val type = context.getDataTypeAnnotation(Int16Type.class);
-        val order = context.getByteOrder(type::byteOrder);
-
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, Integer value) {
         try {
-            CodecUtils.int16Type(buffer, type.offset(), order, value);
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            val type = context.getDataTypeAnnotation(Int16Type.class);
+            val order = context.getByteOrder(type::byteOrder);
+
+            outputStream.writeInt16(type.offset(), order, value);
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding int16(int) type.", e);
         }
     }

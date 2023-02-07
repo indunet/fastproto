@@ -12,10 +12,6 @@ import java.lang.annotation.Target;
 /**
  * Char type which use unicode charset, each character takes 2 bytes, it can be used to annotate field type of Character/char.
  *
- * @param offset The byte offset of the field in the binary data.
- * @param byteOrder Byte order of the character which is unicode charset, BIG or LITTLE can be set, CharArrayType use
- *               LITTLE by default.
- *
  * @author Deng Ran
  * @see DataType
  * @since 3.8.4
@@ -27,7 +23,13 @@ import java.lang.annotation.Target;
 public @interface CharType {
     int SIZE = Character.SIZE >>> 3;
 
+    /*
+     * The byte offset of the field in the binary data.
+     */
     int offset();
 
+    /*
+     * The byte order of the field in the binary data, its priority is higher than @DefaultByteOrder.
+     */
     ByteOrder[] byteOrder() default {};
 }

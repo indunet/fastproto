@@ -17,19 +17,18 @@
 package org.indunet.fastproto.mapper;
 
 import lombok.val;
-import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.codec.*;
-import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.ResolveException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.math.BigInteger;
 import java.sql.Timestamp;
-import java.text.MessageFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -74,7 +73,9 @@ public class CodecMapper {
         codecMap.put(BoolType.class, new HashMap<>());
         codecMap.put(BoolArrayType.class, new HashMap<>());
         codecMap.put(AsciiType.class, new HashMap<>());
+        codecMap.put(AsciiArrayType.class, new HashMap<>());
         codecMap.put(CharType.class, new HashMap<>());
+        codecMap.put(CharArrayType.class, new HashMap<>());
         codecMap.put(TimeType.class, new HashMap<>());
         codecMap.put(EnumType.class, new HashMap<>());
         codecMap.put(StringType.class, new HashMap<>());
@@ -176,28 +177,30 @@ public class CodecMapper {
         codecMap.get(BoolArrayType.class).put(t -> collectionType.apply(t, Boolean.class), boolArrayCodec.new CollectionCodec());
 
         val asciiCodec = new AsciiCodec();
+        val asciiArrayCodec = new AsciiArrayCodec();
         codecMap.get(AsciiType.class).put(c -> c.equals(char.class) || c.equals(Character.class), asciiCodec);
+        codecMap.get(AsciiArrayType.class).put(c -> c.equals(char[].class) || c.equals(Character.class), asciiArrayCodec);
+        codecMap.get(AsciiArrayType.class).put(c -> c.equals(Character[].class) || c.equals(Character.class), asciiArrayCodec.new WrapperCodec());
+        codecMap.get(AsciiArrayType.class).put(t -> collectionType.apply(t, Character.class), asciiArrayCodec.new CollectionCodec());
 
         val charCodec = new CharCodec();
+        val charArrayCodec = new CharArrayCodec();
         codecMap.get(CharType.class).put(c -> c.equals(char.class) || c.equals(Character.class), charCodec);
+        codecMap.get(CharArrayType.class).put(c -> c.equals(char[].class) || c.equals(Character.class), charArrayCodec);
+        codecMap.get(CharArrayType.class).put(c -> c.equals(Character[].class) || c.equals(Character.class), charArrayCodec.new WrapperCodec());
+        codecMap.get(CharArrayType.class).put(t -> collectionType.apply(t, Character.class), charArrayCodec.new CollectionCodec());
 
         val dateCodec = new DateCodec();
-        val timestampCodec = new TimestampCodec();
-        val calendarCodec = new CalendarCodec();
-        val instantCodec = new InstantCodec();
-        val localDateTimeCodec = new LocalDateTimeCodec();
         codecMap.get(TimeType.class).put(c -> c.equals(Date.class), dateCodec);
-        codecMap.get(TimeType.class).put(c -> c.equals(Timestamp.class), timestampCodec);
-        codecMap.get(TimeType.class).put(c -> c.equals(Calendar.class), calendarCodec);
-        codecMap.get(TimeType.class).put(c -> c.equals(Instant.class), instantCodec);
-        codecMap.get(TimeType.class).put(c -> c.equals(LocalDateTime.class), localDateTimeCodec);
+        codecMap.get(TimeType.class).put(c -> c.equals(Timestamp.class), dateCodec.new TimestampCodec());
+        codecMap.get(TimeType.class).put(c -> c.equals(Calendar.class) || c instanceof Calendar, dateCodec.new CalendarCodec());
+        codecMap.get(TimeType.class).put(c -> c.equals(Instant.class), dateCodec.new InstantCodec());
+        codecMap.get(TimeType.class).put(c -> c.equals(LocalDateTime.class), dateCodec.new LocalDateTimeCodec());
 
         val stringCodec = new StringCodec();
-        val stringBufferCodec = new StringBufferCodec();
-        val stringBuilderCodec = new StringBuilderCodec();
         codecMap.get(StringType.class).put(c -> c.equals(String.class), stringCodec);
-        codecMap.get(StringType.class).put(c -> c.equals(StringBuffer.class), stringBufferCodec);
-        codecMap.get(StringType.class).put(c -> c.equals(StringBuilder.class), stringBuilderCodec);
+        codecMap.get(StringType.class).put(c -> c.equals(StringBuffer.class), stringCodec.new StringBufferCodec());
+        codecMap.get(StringType.class).put(c -> c.equals(StringBuilder.class), stringCodec.new StringBuilderCodec());
 
         val enumCodec = new EnumCodec<>();
         codecMap.get(EnumType.class).put(t -> Enum.class.isAssignableFrom((Class) t), enumCodec);
@@ -230,8 +233,7 @@ public class CodecMapper {
                 return c.newInstance();
             } catch (InstantiationException | IllegalAccessException e) {
                 e.printStackTrace();
-                throw new DecodingException(
-                        MessageFormat.format(CodecError.FAIL_INITIALIZING_DECODE_FORMULA.getMessage(), clazz.getName()), e);
+                throw new DecodingException(String.format("Fail initializing decoding formula %s", clazz.getName()), e);
             }
         });
     }
@@ -246,7 +248,7 @@ public class CodecMapper {
                         String.format("%s is not supported", fieldType.getName())));
     }
 
-    public static Function<byte[], ?> getDecoder(CodecContext context, Class<? extends Function> clazz) {
+    public static Function<ByteBufferInputStream, ?> getDecoder(CodecContext context, Class<? extends Function> clazz) {
         if (clazz != null) {
             val type = Arrays.stream(clazz.getGenericInterfaces())
                     .filter(i -> i instanceof ParameterizedType)
@@ -255,22 +257,22 @@ public class CodecMapper {
                     .findAny()
                     .get();
 
-            Function<byte[], ?> func = (byte[] bytes) -> getCodec(context.getDataTypeAnnotation().annotationType(), (Class) type)
-                    .decode(context, bytes);
+            Function<ByteBufferInputStream, ?> func = (ByteBufferInputStream inputStream) -> getCodec(context.getDataTypeAnnotation().annotationType(), (Class) type)
+                    .decode(context, inputStream);
 
             return func.andThen(getFormula(clazz));
         } else {
-            return (byte[] bytes) -> getCodec(context.getDataTypeAnnotation().annotationType(), context.getField().getGenericType())
-                    .decode(context, bytes);
+            return (ByteBufferInputStream inputStream) -> getCodec(context.getDataTypeAnnotation().annotationType(), context.getField().getGenericType())
+                    .decode(context, inputStream);
         }
     }
 
-    public static Function<byte[], ?> getDefaultDecoder(CodecContext context, Class type) {
-        return (byte[] bytes) -> getCodec(context.getDataTypeAnnotation().annotationType(), type)
-                .decode(context, bytes);
+    public static Function<ByteBufferInputStream, ?> getDefaultDecoder(CodecContext context, Class type) {
+        return (inputStream) -> getCodec(context.getDataTypeAnnotation().annotationType(), type)
+                .decode(context, inputStream);
     }
 
-    public static BiConsumer<ByteBuffer, ? super Object> getEncoder(CodecContext context, Class<? extends Function> clazz) {
+    public static BiConsumer<ByteBufferOutputStream, ? super Object> getEncoder(CodecContext context, Class<? extends Function> clazz) {
         if (clazz != null) {
             val type = Arrays.stream(clazz.getGenericInterfaces())
                     .filter(i -> i instanceof ParameterizedType)
@@ -279,16 +281,16 @@ public class CodecMapper {
                     .findAny()
                     .get();
 
-            return (buffer, value) -> getCodec(context.getDataTypeAnnotation().annotationType(), (Class) type)
-                    .encode(context, buffer, getFormula(clazz).apply(value));
+            return (outputStream, value) -> getCodec(context.getDataTypeAnnotation().annotationType(), (Class) type)
+                    .encode(context, outputStream, getFormula(clazz).apply(value));
         } else {
-            return (buffer, value) -> getCodec(context.getDataTypeAnnotation().annotationType(), context.getField().getGenericType())
-                    .encode(context, buffer, value);
+            return (outputStream, value) -> getCodec(context.getDataTypeAnnotation().annotationType(), context.getField().getGenericType())
+                    .encode(context, outputStream, value);
         }
     }
 
-    public static BiConsumer<ByteBuffer, ? super Object> getDefaultEncoder(CodecContext context, Class type) {
-        return (buffer, value) -> getCodec(context.getDataTypeAnnotation().annotationType(), type)
-                .encode(context, buffer, value);
+    public static BiConsumer<ByteBufferOutputStream, ? super Object> getDefaultEncoder(CodecContext context, Class type) {
+        return (outputStream, value) -> getCodec(context.getDataTypeAnnotation().annotationType(), type)
+                .encode(context, outputStream, value);
     }
 }

@@ -17,12 +17,11 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.ByteBuffer;
-import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.Int64Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
-import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 
 /**
  * Int64 type codec.
@@ -32,24 +31,24 @@ import org.indunet.fastproto.util.CodecUtils;
  */
 public class Int64Codec implements Codec<Long> {
     @Override
-    public Long decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(Int64Type.class);
-        val order = context.getByteOrder(type::byteOrder);
-
+    public Long decode(CodecContext context, ByteBufferInputStream inputStream) {
         try {
-            return CodecUtils.int64Type(bytes, type.offset(), order);
-        } catch (ArrayIndexOutOfBoundsException e) {
+            val type = context.getDataTypeAnnotation(Int64Type.class);
+            val order = context.getByteOrder(type::byteOrder);
+
+            return inputStream.readInt64(type.offset(), order);
+        } catch (IndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding int64 type.", e);
         }
     }
 
     @Override
-    public void encode(CodecContext context, ByteBuffer buffer, Long value) {
-        val type = context.getDataTypeAnnotation(Int64Type.class);
-        val order = context.getByteOrder(type::byteOrder);
-
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, Long value) {
         try {
-            CodecUtils.int64Type(buffer, type.offset(), order, value);
+            val type = context.getDataTypeAnnotation(Int64Type.class);
+            val order = context.getByteOrder(type::byteOrder);
+
+            outputStream.writeInt64(type.offset(), order, value);
         } catch (IndexOutOfBoundsException e) {
             throw new EncodingException("Fail encoding int64 type.", e);
         }

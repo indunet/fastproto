@@ -26,7 +26,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * UInt8 array type
+ * UInt8 array type, each element takes 1 byte, it can be used to annotate field type of Integer[]/int[]/List<Integer>/Set<Integer>.
  *
  * @author Deng Ran
  * @since 3.6.0
@@ -36,7 +36,13 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UInt8ArrayType {
+    /*
+     * The byte offset of the field in the binary data.
+     */
     int offset();
 
+    /*
+     * The length of the array or string, only valid on array or string type.
+     */
     int length();
 }

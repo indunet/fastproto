@@ -27,9 +27,6 @@ import java.lang.annotation.Target;
 /**
  * Binary type, can be used to annotate field type of Byte[]/byte[].
  *
- * @param offset The byte offset of the field in the binary data.
- * @param length The length of the byte array.
- *
  * @author Deng Ran
  * @since 1.0.0
  */
@@ -38,7 +35,13 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface BinaryType {
+    /*
+     * The byte offset of the field in the binary data.
+     */
     int offset();
 
+    /*
+     * The length of the binary.
+     */
     int length();
 }

@@ -18,13 +18,12 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
-import org.indunet.fastproto.ByteBuffer;
-import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.FloatArrayType;
 import org.indunet.fastproto.annotation.FloatType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
-import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.CollectionUtils;
 
 import java.util.Collection;
@@ -37,82 +36,52 @@ import java.util.stream.IntStream;
  * @since 3.6.0
  */
 public class FloatArrayCodec implements Codec<float[]> {
-    public float[] decode(byte[] bytes, int offset, int length, ByteOrder policy) {
+    @Override
+    public float[] decode(CodecContext context, ByteBufferInputStream inputStream) {
         try {
-            val o = CodecUtils.reverse(bytes, offset);
-            var l = length;
+            val type = context.getDataTypeAnnotation(FloatArrayType.class);
+            val order = context.getByteOrder(type::byteOrder);
+            val o = inputStream.toByteBuffer().reverse(type.offset());
+            var l = type.length();
 
             if (l < 0) {
-                l = CodecUtils.reverse(bytes, offset, length * FloatType.SIZE)  / FloatType.SIZE + 1;
+                l = inputStream.toByteBuffer().reverse(type.offset(), type.length() * FloatType.SIZE)  / FloatType.SIZE + 1;
             }
 
             val values = new float[l];
 
             IntStream.range(0, l)
-                .forEach(i -> values[i] = CodecUtils.floatType(bytes, o + i * FloatType.SIZE, policy));
+                    .forEach(i -> values[i] = inputStream.readFloat(o + i * FloatType.SIZE, order));
 
             return values;
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding float array type.", e);
         }
     }
 
-    public void encode(byte[] bytes, int offset, int length, ByteOrder byteOrder, float[] values) {
-        try {
-            var l = length;
-
-            if (l < 0) {
-                l = CodecUtils.reverse(bytes, offset, length * FloatType.SIZE) / FloatType.SIZE + 1;
-            }
-
-            if (l >= values.length) {
-                IntStream.range(0, values.length)
-                        .forEach(i -> CodecUtils.floatType(bytes, offset + i * FloatType.SIZE, byteOrder, values[i]));
-            } else {
-                IntStream.range(0, l)
-                        .forEach(i -> CodecUtils.floatType(bytes, offset + i * FloatType.SIZE, byteOrder, values[i]));
-            }
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new EncodingException("Fail encoding float array type.", e);
-        }
-    }
-
     @Override
-    public float[] decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(FloatArrayType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
-        return this.decode(bytes, type.offset(), type.length(), order);
-    }
-
-    @Override
-    public void encode(CodecContext context, ByteBuffer buffer, float[] values) {
-        val type = context.getDataTypeAnnotation(FloatArrayType.class);
-        val order = context.getByteOrder(type::byteOrder);
-
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, float[] values) {
         try {
+            val type = context.getDataTypeAnnotation(FloatArrayType.class);
+            val order = context.getByteOrder(type::byteOrder);
+            val o = outputStream.toByteBuffer().reverse(type.offset());
             var l = type.length();
 
             if (l < 0) {
-                l = buffer.reverse(type.offset(), type.length() * FloatType.SIZE) / FloatType.SIZE + 1;
+                l = outputStream.toByteBuffer().reverse(type.offset(), type.length() * FloatType.SIZE) / FloatType.SIZE + 1;
             }
 
-            if (l >= values.length) {
-                IntStream.range(0, values.length)
-                        .forEach(i -> CodecUtils.floatType(buffer, type.offset() + i * FloatType.SIZE, order, values[i]));
-            } else {
-                IntStream.range(0, l)
-                        .forEach(i -> CodecUtils.floatType(buffer, type.offset() + i * FloatType.SIZE, order, values[i]));
-            }
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            IntStream.range(0, Math.min(l, values.length))
+                    .forEach(i -> outputStream.writeFloat(o + i * FloatType.SIZE, order, values[i]));
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding float array type.", e);
         }
     }
 
     public class WrapperCodec implements Codec<Float[]> {
         @Override
-        public Float[] decode(CodecContext context, byte[] bytes) {
-            val floats = FloatArrayCodec.this.decode(context, bytes);
+        public Float[] decode(CodecContext context, ByteBufferInputStream inputStream) {
+            val floats = FloatArrayCodec.this.decode(context, inputStream);
             val values = new Float[floats.length];
 
             IntStream.range(0, floats.length)
@@ -122,24 +91,24 @@ public class FloatArrayCodec implements Codec<float[]> {
         }
 
         @Override
-        public void encode(CodecContext context, ByteBuffer buffer, Float[] values) {
+        public void encode(CodecContext context, ByteBufferOutputStream outputStream, Float[] values) {
             val floats = new float[values.length];
 
             IntStream.range(0, floats.length)
                     .forEach(i -> floats[i] = values[i]);
 
-            FloatArrayCodec.this.encode(context, buffer, floats);
+            FloatArrayCodec.this.encode(context, outputStream, floats);
         }
     }
 
     public class CollectionCodec implements Codec<Collection<Float>> {
         @Override
-        public Collection<Float> decode(CodecContext context, byte[] bytes) {
+        public Collection<Float> decode(CodecContext context, ByteBufferInputStream inputStream) {
             try {
                 val type = (Class<? extends Collection>) context.getFieldType();
                 Collection<Float> collection = CollectionUtils.newInstance(type);
 
-                for (float b: FloatArrayCodec.this.decode(context, bytes)) {
+                for (float b: FloatArrayCodec.this.decode(context, inputStream)) {
                     collection.add(b);
                 }
 
@@ -151,7 +120,7 @@ public class FloatArrayCodec implements Codec<float[]> {
         }
 
         @Override
-        public void encode(CodecContext context, ByteBuffer buffer, Collection<Float> collection) {
+        public void encode(CodecContext context, ByteBufferOutputStream outputStream, Collection<Float> collection) {
             val bs = new float[collection.size()];
             val values = collection.stream()
                     .toArray(Float[]::new);
@@ -159,7 +128,7 @@ public class FloatArrayCodec implements Codec<float[]> {
             IntStream.range(0, bs.length)
                     .forEach(i -> bs[i] = values[i]);
 
-            FloatArrayCodec.this.encode(context, buffer, bs);
+            FloatArrayCodec.this.encode(context, outputStream, bs);
         }
     }
 }

@@ -19,7 +19,7 @@ public class NullTest {
         val motor = new Motor();
         motor.setVoltage(24);
 
-        val bytes = FastProto.toBytes(motor, 8);
+        val bytes = FastProto.encode(motor, 8);
         assertNotNull(bytes);
     }
 

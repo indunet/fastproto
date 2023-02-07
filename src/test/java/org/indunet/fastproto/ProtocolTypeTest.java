@@ -16,17 +16,12 @@
 
 package org.indunet.fastproto;
 
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.SneakyThrows;
 import lombok.val;
-import org.indunet.fastproto.annotation.BoolType;
 import org.indunet.fastproto.annotation.UInt8Type;
 import org.junit.jupiter.api.Test;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Proxy;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * @author Deng Ran

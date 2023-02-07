@@ -23,13 +23,21 @@ import java.lang.annotation.Target;
 import java.util.function.Function;
 
 /**
+ * The value of annotated field will be substituted into the encoding formula, and the final result will be written into binary.
+ *
  * @author Deng Ran
  * @since 3.5.0
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface EncodingFormula {
+    /**
+     * The decoding formula class which must implement the java.util.function.Function interface.
+     */
     Class<? extends Function<?, ?>>[] value() default {};
 
+    /**
+     * Java lambda expression in the form of string, FastProto can automatically compile it into class.
+     */
     String lambda() default "";
 }

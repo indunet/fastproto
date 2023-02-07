@@ -17,17 +17,16 @@
 package org.indunet.fastproto.codec;
 
 import org.indunet.fastproto.BitOrder;
-import org.indunet.fastproto.ByteBuffer;
-import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.BoolType;
-import org.indunet.fastproto.annotation.Int8Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.AnnotationUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.indunet.fastproto.annotation.BoolType.BIT_0;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit test of bool type codec.
@@ -40,21 +39,21 @@ public class BoolCodecTest {
 
     @Test
     public void testDecode() {
-        byte[] datagram = new byte[10];
+        byte[] bytes = new byte[10];
 
-        assertThrows(DecodingException.class, () -> this.codec.decode(mock(-101, BIT_0, BitOrder.LSB_0), datagram));
-        assertThrows(DecodingException.class, () -> this.codec.decode(mock(0, -1, BitOrder.LSB_0), datagram));
-        assertThrows(DecodingException.class, () -> this.codec.decode(mock(10, 0, BitOrder.LSB_0), datagram));
+        assertThrows(DecodingException.class, () -> this.codec.decode(mock(-101, BIT_0, BitOrder.LSB_0), new ByteBufferInputStream(bytes)));
+        assertThrows(DecodingException.class, () -> this.codec.decode(mock(0, -1, BitOrder.LSB_0), new ByteBufferInputStream(bytes)));
+        assertThrows(DecodingException.class, () -> this.codec.decode(mock(10, 0, BitOrder.LSB_0), new ByteBufferInputStream(bytes)));
     }
 
     @Test
     public void testEncode() {
-        byte[] datagram = new byte[10];
+        byte[] bytes = new byte[10];
 
         assertThrows(EncodingException.class,
-                () -> this.codec.encode(mock(-101, 1, BitOrder.LSB_0), new ByteBuffer(datagram), true));
+                () -> this.codec.encode(mock(-101, 1, BitOrder.LSB_0), new ByteBufferOutputStream(bytes), true));
         assertThrows(EncodingException.class,
-                () -> this.codec.encode(mock(10, 1, BitOrder.LSB_0), new ByteBuffer(datagram), true));
+                () -> this.codec.encode(mock(10, 1, BitOrder.LSB_0), new ByteBufferOutputStream(bytes), true));
     }
 
     protected CodecContext mock(int byteOffset, int bitOffset, BitOrder order) {

@@ -17,13 +17,10 @@
 package org.indunet.fastproto.pipeline.encode;
 
 import lombok.val;
-import org.indunet.fastproto.exception.CodecError;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.pipeline.FlowCode;
 import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.PipelineContext;
-import org.indunet.fastproto.pipeline.FlowCode;
-
-import java.text.MessageFormat;
 
 
 /**
@@ -37,8 +34,7 @@ public class EncodeFlow extends Pipeline<PipelineContext> {
     public void process(PipelineContext context) {
         val graph = context.getGraph();
         val object = context.getObject();
-        val bytes = context.getBytes();
-        val buffer = context.getByteBuffer();
+        val outputStream = context.getOutputStream();
         val refs = graph.getValidReferences();
 
         graph.copy(object);
@@ -47,12 +43,10 @@ public class EncodeFlow extends Pipeline<PipelineContext> {
                 .filter(r -> r.getValue().get() != null)
                 .forEach(r -> {
                     try {
-                        // r.encode(bytes);
-                        r.encoder(buffer);
+                        r.encoder(outputStream);
                     } catch (EncodingException e) {
-                        throw new EncodingException(MessageFormat.format(
-                                CodecError.FAIL_ENCODING_FIELD.getMessage(), r.getField().toString()),
-                                e);
+                        throw new EncodingException(
+                                String.format("Fail encoding field %s", r.getField().toString()), e);
                     }
                 });
 

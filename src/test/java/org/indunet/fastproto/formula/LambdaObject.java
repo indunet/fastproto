@@ -19,7 +19,10 @@ package org.indunet.fastproto.formula;
 import lombok.Data;
 import lombok.val;
 import org.indunet.fastproto.ByteOrder;
-import org.indunet.fastproto.annotation.*;
+import org.indunet.fastproto.annotation.DecodingFormula;
+import org.indunet.fastproto.annotation.EncodingFormula;
+import org.indunet.fastproto.annotation.UInt16Type;
+import org.indunet.fastproto.annotation.UInt8Type;
 import org.indunet.fastproto.util.BinaryUtils;
 
 import java.io.ByteArrayOutputStream;

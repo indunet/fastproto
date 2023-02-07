@@ -27,10 +27,7 @@ import java.lang.annotation.Target;
 /**
  * ASCII type which takes 1 byte, can be used to annotate field type of Character/char.
  *
- * @param offset The byte offset of the field in the binary data.
- *
  * @author Deng Ran
- * @see DataType
  * @since 1.0.0
  */
 @DataType
@@ -40,5 +37,8 @@ import java.lang.annotation.Target;
 public @interface AsciiType {
     int SIZE = 1;
 
+    /*
+     * The byte offset of the field in the binary data.
+     */
     int offset();
 }

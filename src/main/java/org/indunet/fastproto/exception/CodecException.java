@@ -27,16 +27,8 @@ public class CodecException extends RuntimeException {
         super();
     }
 
-    public CodecException(CodecError error) {
-        this(error.getMessage());
-    }
-
     public CodecException(String message) {
         super(message);
-    }
-
-    public CodecException(CodecError error, Throwable cause) {
-        this(error.getMessage(), cause);
     }
 
     public CodecException(String message, Throwable cause) {

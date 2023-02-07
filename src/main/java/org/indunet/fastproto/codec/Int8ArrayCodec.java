@@ -17,11 +17,11 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.annotation.Int8ArrayType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
-import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.CollectionUtils;
 
 import java.util.Arrays;
@@ -36,78 +36,62 @@ import java.util.stream.Stream;
  * @since 3.6.0
  */
 public class Int8ArrayCodec implements Codec<int[]> {
-    public int[] decode(byte[] bytes, int offset, int length) {
+    @Override
+    public int[] decode(CodecContext context, ByteBufferInputStream inputStream) {
         try {
-            val o = CodecUtils.reverse(bytes, offset);
-            val l = CodecUtils.reverse(bytes, offset, length);
+            val type = context.getDataTypeAnnotation(Int8ArrayType.class);
+            val o = inputStream.toByteBuffer().reverse(type.offset());
+            val l = inputStream.toByteBuffer().reverse(type.offset(), type.length());
 
             return IntStream.range(0, l)
-                    .map(i -> CodecUtils.int8Type(bytes, o + i))
+                    .map(i -> inputStream.readInt8(o + i))
                     .toArray();
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding int8 array type.", e);
         }
     }
 
-    public void encode(byte[] bytes, int offset, int length, int[] values) {
-        try {
-            val o = CodecUtils.reverse(bytes, offset);
-            val l = CodecUtils.reverse(bytes, offset, length);
-
-            IntStream.range(0, l)
-                    .forEach(i -> CodecUtils.int8Type(bytes, o + i, values[i]));
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new EncodingException("Fail encoding int8 array type.", e);
-        }
-    }
-
     @Override
-    public int[] decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(Int8ArrayType.class);
-
-        return this.decode(bytes, type.offset(), type.length());
-    }
-
-    @Override
-    public void encode(CodecContext context, ByteBuffer buffer, int[] values) {
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, int[] values) {
         val type = context.getDataTypeAnnotation(Int8ArrayType.class);
 
         try {
-            val l = buffer.reverse(type.offset(), type.length());
+            val o = outputStream.toByteBuffer().reverse(type.offset());
+            val l = outputStream.toByteBuffer().reverse(type.offset(), type.length());
 
             IntStream.range(0, l)
-                    .forEach(i -> CodecUtils.int8Type(buffer, type.offset() + i, values[i]));
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+                    .forEach(i -> outputStream.writeInt8(o + i, values[i]));
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding int8 array type.", e);
         }
     }
 
     public class WrapperCodec implements Codec<Integer[]> {
         @Override
-        public Integer[] decode(CodecContext context, byte[] bytes) {
-            return IntStream.of(Int8ArrayCodec.this.decode(context, bytes))
+        public Integer[] decode(CodecContext context, ByteBufferInputStream inputStream) {
+            return IntStream.of(Int8ArrayCodec.this.decode(context, inputStream))
                     .mapToObj(Integer::valueOf)
                     .toArray(Integer[]::new);
         }
 
         @Override
-        public void encode(CodecContext context, ByteBuffer buffer, Integer[] values) {
+        public void encode(CodecContext context, ByteBufferOutputStream outputStream, Integer[] values) {
             val ints = Stream.of(values)
                     .mapToInt(i -> i.intValue())
                     .toArray();
 
-            Int8ArrayCodec.this.encode(context, buffer, ints);
+            Int8ArrayCodec.this.encode(context, outputStream, ints);
         }
     }
 
     public class CollectionCodec implements Codec<Collection<Integer>> {
         @Override
-        public Collection<Integer> decode(CodecContext context, byte[] bytes) {
+        public Collection<Integer> decode(CodecContext context, ByteBufferInputStream inputStream) {
             try {
                 val type = (Class<? extends Collection>) context.getFieldType();
                 Collection<Integer> collection = CollectionUtils.newInstance(type);
 
-                Arrays.stream(Int8ArrayCodec.this.decode(context, bytes))
+                Arrays.stream(Int8ArrayCodec.this.decode(context, inputStream))
                         .forEach(collection::add);
 
                 return collection;
@@ -118,8 +102,8 @@ public class Int8ArrayCodec implements Codec<int[]> {
         }
 
         @Override
-        public void encode(CodecContext context, ByteBuffer buffer, Collection<Integer> collection) {
-            Int8ArrayCodec.this.encode(context, buffer, collection.stream()
+        public void encode(CodecContext context, ByteBufferOutputStream outputStream, Collection<Integer> collection) {
+            Int8ArrayCodec.this.encode(context, outputStream, collection.stream()
                     .mapToInt(Integer::intValue)
                     .toArray());
         }

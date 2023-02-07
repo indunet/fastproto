@@ -17,14 +17,13 @@
 package org.indunet.fastproto.graph.resolve;
 
 import lombok.val;
-import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.codec.CodecContext;
-import org.indunet.fastproto.mapper.CodecMapper;
 import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.graph.resolve.validate.TypeValidator;
 import org.indunet.fastproto.graph.resolve.validate.ValidatorContext;
+import org.indunet.fastproto.mapper.CodecMapper;
 import org.indunet.fastproto.mapper.JavaTypeMapper;
 
 import java.text.MessageFormat;
@@ -72,7 +71,7 @@ public class CodecFlow extends ResolvePipeline {
             val encoder = CodecMapper.getDefaultEncoder(context, javaType);
             val func = reference.getEncodingLambda();
 
-            reference.setEncoder((ByteBuffer buffer, Object value) -> encoder.accept(buffer, func.apply(value)));
+            reference.setEncoder((outputStream, value) -> encoder.accept(outputStream, func.apply(value)));
         } else {
             val encoder = CodecMapper.getEncoder(context, null);
 

@@ -17,11 +17,11 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.ByteBuffer;
-import org.indunet.fastproto.annotation.Int8ArrayType;
+import org.indunet.fastproto.annotation.AsciiArrayType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
-import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.CollectionUtils;
 
 import java.util.Collection;
@@ -34,58 +34,41 @@ import java.util.stream.IntStream;
  * @since 3.9.1
  */
 public class AsciiArrayCodec implements Codec<char[]> {
-    public char[] decode(byte[] bytes, int offset, int length) {
+    @Override
+    public char[] decode(CodecContext context, ByteBufferInputStream inputStream) {
         try {
-            val o = CodecUtils.reverse(bytes, offset);
-            val l = CodecUtils.reverse(bytes, offset, length);
+            val type = context.getDataTypeAnnotation(AsciiArrayType.class);
+            val o = inputStream.toByteBuffer().reverse(type.offset());
+            val l = inputStream.toByteBuffer().reverse(type.offset(), type.length());
             val chars = new char[l];
 
             IntStream.range(0, l)
-                .forEach(i -> chars[i] = (char) CodecUtils.int8Type(bytes, o + i));
+                    .forEach(i -> chars[i] = (char) inputStream.readInt8(o + i));
 
             return chars;
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new DecodingException("Fail decoding ascii array type.", e);
         }
     }
 
-    public void encode(byte[] bytes, int offset, int length, char[] values) {
-        try {
-            val o = CodecUtils.reverse(bytes, offset);
-            val l = CodecUtils.reverse(bytes, offset, length);
-
-            IntStream.range(0, l)
-                    .forEach(i -> CodecUtils.int8Type(bytes, o + i, values[i]));
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
-            throw new EncodingException("Fail encoding ascii array type.", e);
-        }
-    }
-
     @Override
-    public char[] decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(Int8ArrayType.class);
-
-        return this.decode(bytes, type.offset(), type.length());
-    }
-
-    @Override
-    public void encode(CodecContext context, ByteBuffer buffer, char[] values) {
-        val type = context.getDataTypeAnnotation(Int8ArrayType.class);
-
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, char[] chars) {
         try {
-            val l = buffer.reverse(type.offset(), type.length());
+            val type = context.getDataTypeAnnotation(AsciiArrayType.class);
+            val o = outputStream.toByteBuffer().reverse(type.offset());
+            val l = outputStream.toByteBuffer().reverse(type.offset(), type.length());
 
-            IntStream.range(0, l)
-                    .forEach(i -> CodecUtils.int8Type(buffer, type.offset() + i, values[i]));
-        } catch (ArrayIndexOutOfBoundsException | IllegalArgumentException e) {
+            IntStream.range(0, Math.min(l, chars.length))
+                    .forEach(i -> outputStream.writeInt8(o + i, chars[i]));
+        } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
             throw new EncodingException("Fail encoding ascii array type.", e);
         }
     }
 
     public class WrapperCodec implements Codec<Character[]> {
         @Override
-        public Character[] decode(CodecContext context, byte[] bytes) {
-            val chars = AsciiArrayCodec.this.decode(context, bytes);
+        public Character[] decode(CodecContext context, ByteBufferInputStream inputStream) {
+            val chars = AsciiArrayCodec.this.decode(context, inputStream);
 
             return IntStream.range(0, chars.length)
                     .mapToObj(i -> Character.valueOf(chars[i]))
@@ -93,23 +76,23 @@ public class AsciiArrayCodec implements Codec<char[]> {
         }
 
         @Override
-        public void encode(CodecContext context, ByteBuffer buffer, Character[] values) {
+        public void encode(CodecContext context, ByteBufferOutputStream outputStream, Character[] values) {
             val chars = new char[values.length];
 
             IntStream.range(0, values.length)
                     .forEach(i -> chars[i] = values[i]);
-            AsciiArrayCodec.this.encode(context, buffer, chars);
+            AsciiArrayCodec.this.encode(context, outputStream, chars);
         }
     }
 
     public class CollectionCodec implements Codec<Collection<Character>> {
         @Override
-        public Collection<Character> decode(CodecContext context, byte[] bytes) {
+        public Collection<Character> decode(CodecContext context, ByteBufferInputStream inputStream) {
             try {
                 val type = (Class<? extends Collection>) context.getFieldType();
                 Collection<Character> collection = CollectionUtils.newInstance(type);
 
-                for (val c: AsciiArrayCodec.this.decode(context, bytes)) {
+                for (val c: AsciiArrayCodec.this.decode(context, inputStream)) {
                     collection.add(c);
                 }
 
@@ -121,14 +104,14 @@ public class AsciiArrayCodec implements Codec<char[]> {
         }
 
         @Override
-        public void encode(CodecContext context, ByteBuffer buffer, Collection<Character> collection) {
+        public void encode(CodecContext context, ByteBufferOutputStream outputStream, Collection<Character> collection) {
             val chars = new char[collection.size()];
             val values = collection.stream()
                     .toArray(Character[]::new);
 
             IntStream.range(0, chars.length)
                     .forEach(i -> chars[i] = values[i]);
-            AsciiArrayCodec.this.encode(context, buffer, chars);
+            AsciiArrayCodec.this.encode(context, outputStream, chars);
         }
     }
 }

@@ -29,12 +29,6 @@ import java.lang.annotation.Target;
 /**
  * Boolean type, each unit takes 1 bit, can be used to annotate field type of Boolean/boolean.
  *
- * @param byteOffset The byte offset of the field in the binary data.
- * @param bitOffset The bit offset of the field in the binary data.
- * @param mode It is used to distinguish between the different bits in the byte and to determine their relative
- *             significance or weight. BitOrder.LSB_0 means BIT_0 is LSB while BitOrder.MSB_0 means BIT_0 is MSB,
- *             BoolType uses LSB_0 by default.
- *
  * @author Deng Ran
  * @see DataType
  * @since 1.0.0
@@ -55,9 +49,18 @@ public @interface BoolType {
     int BIT_6 = 6;
     int BIT_7 = 7;
 
+    /*
+     * The byte offset of the field in the binary data.
+     */
     int byteOffset();
 
+    /*
+     * The bit offset of the field in the binary data.
+     */
     int bitOffset();
 
+    /*
+     * The bit order of the field in the binary data, its priority is higher than @DefaultBitOrder.
+     */
     BitOrder[] bitOrder() default {};
 }

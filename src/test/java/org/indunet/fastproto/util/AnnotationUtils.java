@@ -70,12 +70,42 @@ public class AnnotationUtils {
         return mock(annotationClass, map);
     }
 
+    public static <T extends Annotation> T mock(Class<T> annotationClass, int offset, String name) {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("offset", offset);
+        map.put("name", name);
+
+        return mock(annotationClass, map);
+    }
+
+    public static <T extends Annotation> T mock(Class<T> annotationClass, int byteOffset, int bitOffset, int length, BitOrder order) {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("byteOffset", byteOffset);
+        map.put("bitOffset", bitOffset);
+        map.put("length", length);
+        map.put("bitOrder", new BitOrder[] {order});
+
+        return mock(annotationClass, map);
+    }
+
     public static <T extends Annotation> T mock(Class<T> annotationClass, int offset, int length, ByteOrder order) {
         Map<String, Object> map = new HashMap<>();
 
         map.put("offset", offset);
         map.put("length", length);
         map.put("byteOrder", new ByteOrder[] {order});
+
+        return mock(annotationClass, map);
+    }
+
+    public static <T extends Annotation> T mock(Class<T> annotationClass, int offset, int length, String charset) {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("offset", offset);
+        map.put("length", length);
+        map.put("charset", charset);
 
         return mock(annotationClass, map);
     }
@@ -100,7 +130,7 @@ public class AnnotationUtils {
 
     public static <T extends Annotation> T mock(Class<T> annotationClass, int value, int length) {
         Map<String, Object> map = new HashMap<>();
-        map.put("value", value);
+        map.put("offset", value);
         map.put("length", length);
 
         return mock(annotationClass, map);

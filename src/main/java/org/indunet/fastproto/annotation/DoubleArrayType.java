@@ -28,10 +28,6 @@ import java.lang.annotation.Target;
 /**
  /**
  * Double array type, each double takes 8 bytes, it can be used to annotate field type of Double[]/double[]/List<Double>/Set<Double>.
-
- * @param offset The byte offset of the field in the binary data.
- * @param length The length of the double array.
- * @param endian Byte order of the double, BIG or LITTLE can be set, DoubleArrayType uses LITTLE by default.
  *
  * @author Deng Ran
  * @since 3.6.0

@@ -16,16 +16,16 @@
 
 package org.indunet.fastproto.codec;
 
-import org.indunet.fastproto.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
-import org.indunet.fastproto.annotation.FloatType;
 import org.indunet.fastproto.annotation.Int16Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.AnnotationUtils;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit test of int16 type codec.
@@ -38,26 +38,28 @@ public class Int16CodecTest {
 
     @Test
     public void testDecode() {
-        byte[] datagram = new byte[10];
+        byte[] bytes = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.decode(mock(0, ByteOrder.LITTLE), null));
-
-        assertThrows(DecodingException.class, () -> this.codec.decode(mock(-100, ByteOrder.LITTLE), datagram));
-        assertThrows(DecodingException.class, () -> this.codec.decode(mock(10, ByteOrder.LITTLE), datagram));
+        assertThrows(NullPointerException.class,
+                () -> this.codec.decode(mock(0, ByteOrder.LITTLE), (ByteBufferInputStream) null));
+        assertThrows(DecodingException.class,
+                () -> this.codec.decode(mock(-100, ByteOrder.LITTLE), new ByteBufferInputStream(bytes)));
+        assertThrows(DecodingException.class,
+                () -> this.codec.decode(mock(10, ByteOrder.LITTLE), new ByteBufferInputStream(bytes)));
     }
 
     @Test
     public void testEncode() {
-        byte[] datagram = new byte[10];
+        byte[] bytes = new byte[10];
 
         assertThrows(NullPointerException.class,
-                () -> this.codec.encode(mock(0, ByteOrder.BIG), (ByteBuffer) null, 8));
+                () -> this.codec.encode(mock(0, ByteOrder.BIG), (ByteBufferOutputStream) null, 8));
         assertThrows(EncodingException.class,
-                () -> this.codec.encode(mock(-1, ByteOrder.LITTLE), new ByteBuffer(datagram), 1));
+                () -> this.codec.encode(mock(-1, ByteOrder.LITTLE), new ByteBufferOutputStream(bytes), 1));
         assertThrows(EncodingException.class,
-                () -> this.codec.encode(mock(10, ByteOrder.LITTLE), new ByteBuffer(datagram), 1));
+                () -> this.codec.encode(mock(10, ByteOrder.LITTLE), new ByteBufferOutputStream(bytes), 1));
         assertThrows(EncodingException.class,
-                () -> this.codec.encode(mock(10, ByteOrder.LITTLE), new ByteBuffer(datagram), Integer.MAX_VALUE));
+                () -> this.codec.encode(mock(10, ByteOrder.LITTLE), new ByteBufferOutputStream(bytes), Integer.MAX_VALUE));
     }
 
     protected CodecContext mock(int offset, ByteOrder order) {

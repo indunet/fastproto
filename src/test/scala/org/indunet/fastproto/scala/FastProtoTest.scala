@@ -31,16 +31,16 @@ import org.junit.jupiter.api.Test
 class FastProtoTest {
   @Test
   def testInverter(): Unit = {
-    val datagram = new Array[Byte](10)
+    val bytes = new Array[Byte](10)
 
-    datagram(0) = 1
-    datagram(2) = 2
+    bytes(0) = 1
+    bytes(2) = 2
 
-    CodecUtils.floatType(datagram, 4, ByteOrder.LITTLE, 10.2f)
-    CodecUtils.uint16Type(datagram, 8, ByteOrder.BIG, 192)
+    CodecUtils.floatType(bytes, 4, ByteOrder.LITTLE, 10.2f)
+    CodecUtils.uint16Type(bytes, 8, ByteOrder.BIG, 192)
 
     val expected = Inverter(1, 2, Fan(10.2f, false), 192)
-    val inverter = FastProto.parse(datagram, classOf[Inverter])
+    val inverter = FastProto.decode(bytes, classOf[Inverter])
 
     assertEquals(expected.toString, inverter.toString)
   }

@@ -27,10 +27,6 @@ import java.lang.annotation.Target;
 
 /**
  * Float array type, each float takes 4 bytes, it can be used to annotate field type of Float[]/float[]/List<Float>/Set<Float>.
-
- * @param offset The byte offset of the field in the binary data.
- * @param length The length of the float array.
- * @param endian Byte order of the float, BIG or LITTLE can be set, FloatArrayType uses LITTLE by default.
  *
  * @author Deng Ran
  * @since 3.6.0
@@ -40,9 +36,18 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface FloatArrayType {
+    /*
+     * The byte offset of the field in the binary data.
+     */
     int offset();
 
+    /*
+     * The length of the array or string, only valid on array or string type.
+     */
     int length();
 
+    /*
+     * The byte order of the field in the binary data, its priority is higher than @DefaultByteOrder.
+     */
     ByteOrder[] byteOrder() default {};
 }

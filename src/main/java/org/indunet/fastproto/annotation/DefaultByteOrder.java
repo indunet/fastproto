@@ -24,7 +24,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Specify endian according to hardware platform.
+ * FastProto uses little endian by default, this annotation can modify the default byte order.
  *
  * @author Deng Ran
  * @since 1.0.0

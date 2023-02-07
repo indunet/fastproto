@@ -24,6 +24,7 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.sql.Timestamp;
 import java.time.Instant;
+import java.time.LocalDateTime;
 import java.util.*;
 import java.util.function.BiFunction;
 import java.util.function.Predicate;
@@ -34,7 +35,7 @@ import java.util.function.Predicate;
  * @author Deng Ran
  * @since 3.7.1
  */
-public class DataTypeAnnotationMapper {
+public class AnnotationMapper {
     protected static Map<Predicate<Type>, Class<? extends Annotation>> map = new HashMap<>();
 
     static {
@@ -68,18 +69,22 @@ public class DataTypeAnnotationMapper {
         map.put(t -> collectionType.apply(t, Float.class), FloatArrayType.class);
 
         map.put(c -> c.equals(double.class) || c.equals(Double.class), DoubleType.class);
-        map.put(c -> c.equals(double[].class), DoubleArrayType.class);
-        map.put(c -> c.equals(Double[].class), DoubleArrayType.class);
+        map.put(c -> c.equals(double[].class) || c.equals(Double[].class), DoubleArrayType.class);
         map.put(t -> collectionType.apply(t, Double.class), DoubleArrayType.class);
 
         map.put(c -> c.equals(boolean.class) || c.equals(Boolean.class), BoolType.class);
+        map.put(c -> c.equals(boolean[].class) || c.equals(Boolean[].class), BoolType.class);
+        map.put(t -> collectionType.apply(t, Character.class), BoolArrayType.class);
 
         map.put(c -> c.equals(char.class) || c.equals(Character.class), AsciiType.class);
+        map.put(c -> c.equals(char[].class) || c.equals(Character[].class), AsciiArrayType.class);
+        map.put(t -> collectionType.apply(t, Character.class), AsciiArrayType.class);
 
         map.put(c -> c.equals(Date.class), TimeType.class);
         map.put(c -> c.equals(Timestamp.class), TimeType.class);
         map.put(c -> c.equals(Calendar.class), TimeType.class);
         map.put(c -> c.equals(Instant.class), TimeType.class);
+        map.put(c -> c.equals(LocalDateTime.class), TimeType.class);
 
         map.put(c -> c.equals(String.class), StringType.class);
         map.put(c -> c.equals(StringBuffer.class), StringType.class);

@@ -17,12 +17,11 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.ByteBuffer;
-import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.Int16Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
-import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 
 /**
  * Short type codec.
@@ -32,25 +31,25 @@ import org.indunet.fastproto.util.CodecUtils;
  */
 public class ShortCodec implements Codec<Short> {
     @Override
-    public Short decode(CodecContext context, byte[] bytes) {
-        val type = context.getDataTypeAnnotation(Int16Type.class);
-        val order = context.getByteOrder(type::byteOrder);
-
+    public Short decode(CodecContext context, ByteBufferInputStream inputStream) {
         try {
-            return CodecUtils.shortType(bytes, type.offset(), order);
-        } catch (ArrayIndexOutOfBoundsException e) {
+            val type = context.getDataTypeAnnotation(Int16Type.class);
+            val order = context.getByteOrder(type::byteOrder);
+
+            return inputStream.readShort(type.offset(), order);
+        } catch (IndexOutOfBoundsException e) {
             throw new DecodingException("Fail decoding int16(short) type.", e);
         }
     }
 
     @Override
-    public void encode(CodecContext context, ByteBuffer buffer, Short value) {
-        val type = context.getDataTypeAnnotation(Int16Type.class);
-        val order = context.getByteOrder(type::byteOrder);
-
+    public void encode(CodecContext context, ByteBufferOutputStream outputStream, Short value) {
         try {
-            CodecUtils.shortType(buffer, type.offset(), order, value);
-        } catch (ArrayIndexOutOfBoundsException e) {
+            val type = context.getDataTypeAnnotation(Int16Type.class);
+            val order = context.getByteOrder(type::byteOrder);
+
+            outputStream.writeShort(type.offset(), order, value);
+        } catch (IndexOutOfBoundsException e) {
             throw new EncodingException("Fail encoding int16(short) type.", e);
         }
     }

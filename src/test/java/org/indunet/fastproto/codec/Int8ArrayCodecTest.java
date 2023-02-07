@@ -17,9 +17,14 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
+import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.annotation.Int8ArrayType;
 import org.indunet.fastproto.annotation.Int8Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
+import org.indunet.fastproto.util.AnnotationUtils;
 import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
 
@@ -48,24 +53,28 @@ public class Int8ArrayCodecTest {
 
         val bytes = BinaryUtils.int8Of(expected);
 
-        assertArrayEquals(codec.decode(bytes, 0, 2), Arrays.copyOfRange(expected, 0, 2));
-        assertArrayEquals(codec.decode(bytes, 3, 4), Arrays.copyOfRange(expected, 3, 7));
-        assertArrayEquals(codec.decode(bytes, 5, 5), Arrays.copyOfRange(expected, 5, 10));
-        assertArrayEquals(codec.decode(bytes, 6, -1), Arrays.copyOfRange(expected, 6, 10));
-        assertArrayEquals(codec.decode(bytes, -4, -1), Arrays.copyOfRange(expected, 6, 10));
-        assertArrayEquals(codec.decode(bytes, -4, -2), Arrays.copyOfRange(expected, 6, 9));
+        assertArrayEquals(codec.decode(mock(0, 2), new ByteBufferInputStream(bytes)), Arrays.copyOfRange(expected, 0, 2));
+        assertArrayEquals(codec.decode(mock(3, 4), new ByteBufferInputStream(bytes)), Arrays.copyOfRange(expected, 3, 7));
+        assertArrayEquals(codec.decode(mock(5, 5), new ByteBufferInputStream(bytes)), Arrays.copyOfRange(expected, 5, 10));
+        assertArrayEquals(codec.decode(mock(6, -1), new ByteBufferInputStream(bytes)), Arrays.copyOfRange(expected, 6, 10));
+        assertArrayEquals(codec.decode(mock(-4, -1), new ByteBufferInputStream(bytes)), Arrays.copyOfRange(expected, 6, 10));
+        assertArrayEquals(codec.decode(mock(-4, -2), new ByteBufferInputStream(bytes)), Arrays.copyOfRange(expected, 6, 9));
     }
 
     @Test
     public void testDecode2() {
-        byte[] datagram = new byte[10];
+        byte[] bytes = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 2, 10));
-
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 2, 10));
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, -2, 10));
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 2, -10));
-        assertThrows(DecodingException.class, () -> this.codec.decode(datagram, 10, -1));
+        assertThrows(NullPointerException.class,
+                () -> this.codec.decode(mock(2, 10), (ByteBufferInputStream) null));
+        assertThrows(DecodingException.class,
+                () -> this.codec.decode(mock(2, 10), new ByteBufferInputStream(bytes)));
+        assertThrows(DecodingException.class,
+                () -> this.codec.decode(mock(-2, 10), new ByteBufferInputStream(bytes)));
+        assertThrows(DecodingException.class,
+                () -> this.codec.decode(mock(2, -10), new ByteBufferInputStream(bytes)));
+        assertThrows(DecodingException.class,
+                () -> this.codec.decode(mock(10, -1), new ByteBufferInputStream(bytes)));
     }
 
     @Test
@@ -76,23 +85,29 @@ public class Int8ArrayCodecTest {
                 .toArray();
         val bytes = new byte[16];
 
-        this.codec.encode(bytes, 0, 16, values);
+        this.codec.encode(mock(0, 16), new ByteBufferOutputStream(bytes), values);
         assertArrayEquals(bytes, BinaryUtils.int8Of(values));
 
-        this.codec.encode(bytes, 0, -1, values);
+        this.codec.encode(mock(0, -1), new ByteBufferOutputStream(bytes), values);
         assertArrayEquals(bytes, BinaryUtils.int8Of(values));
     }
 
     @Test
     public void testEncode2() {
-        byte[] datagram = new byte[10];
+        byte[] bytes = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.encode(null, 0, -1, new int[8]));
-        assertThrows(NullPointerException.class, () -> this.codec.encode(datagram, 0, -1, null));
+        assertThrows(NullPointerException.class, () -> this.codec.encode(mock(0, -1), (ByteBufferOutputStream) null, new int[8]));
+        assertThrows(NullPointerException.class, () -> this.codec.encode(mock(0, -1), new ByteBufferOutputStream(bytes), null));
 
-        assertThrows(EncodingException.class, () -> this.codec.encode(datagram, -2, -7, new int[8]));
-        assertThrows(EncodingException.class, () -> this.codec.encode(datagram, -11, -7, new int[8]));
-        assertThrows(EncodingException.class, () -> this.codec.encode(datagram, 10, -1, new int[8]));
-        assertThrows(EncodingException.class, () -> this.codec.encode(datagram, 0, 11, new int[8]));
+        assertThrows(EncodingException.class, () -> this.codec.encode(mock(-2, -7), new ByteBufferOutputStream(bytes), new int[8]));
+        assertThrows(EncodingException.class, () -> this.codec.encode(mock(-11, -7), new ByteBufferOutputStream(bytes), new int[8]));
+        assertThrows(EncodingException.class, () -> this.codec.encode(mock(10, -1), new ByteBufferOutputStream(bytes), new int[8]));
+        assertThrows(EncodingException.class, () -> this.codec.encode(mock(0, 11), new ByteBufferOutputStream(bytes), new int[8]));
+    }
+
+    protected CodecContext mock(int offset, int length) {
+        return CodecContext.builder()
+                .dataTypeAnnotation(AnnotationUtils.mock(Int8ArrayType.class, offset, length, ByteOrder.LITTLE))
+                .build();
     }
 }

@@ -23,7 +23,8 @@ import org.junit.jupiter.api.Test;
 
 import java.nio.charset.StandardCharsets;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * String test.
@@ -33,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 public class StringTest {
     @Test
-    public void testParse() {
+    public void testDecode() {
         val bytes = new byte[48];
         val expected = new StringObject();
 
@@ -50,11 +51,11 @@ public class StringTest {
                 .getBytes(StandardCharsets.UTF_8);
         System.arraycopy(buffer, 0, bytes, 32, buffer.length);
 
-        assertEquals(expected.toString(), FastProto.parse(bytes, StringObject.class).toString());
+        assertEquals(expected.toString(), FastProto.decode(bytes, StringObject.class).toString());
     }
 
     @Test
-    public void testToBytes() {
+    public void testEncode() {
         val expected = new byte[48];
         val obj = new StringObject();
 
@@ -71,6 +72,6 @@ public class StringTest {
                 .getBytes(StandardCharsets.UTF_8);
         System.arraycopy(buffer, 0, expected, 32, buffer.length);
 
-        assertArrayEquals(expected, FastProto.toBytes(obj, 48));
+        assertArrayEquals(expected, FastProto.encode(obj, 48));
     }
 }

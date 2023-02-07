@@ -17,7 +17,11 @@
 package org.indunet.fastproto.codec;
 
 import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.annotation.CharType;
 import org.indunet.fastproto.exception.DecodingException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
+import org.indunet.fastproto.util.AnnotationUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -41,25 +45,25 @@ public class CharCodecTest {
         bytes[3] = (byte) ('文' & 0xFF);
         bytes[2] = (byte) ('文' >>> 8 & 0xFF);
 
-        assertEquals('中', codec.decode(bytes, 0, ByteOrder.LITTLE));
-        assertEquals('文', codec.decode(bytes, 2, ByteOrder.BIG));
+        assertEquals('中', codec.decode(mock(0, ByteOrder.LITTLE), new ByteBufferInputStream(bytes)));
+        assertEquals('文', codec.decode(mock(2, ByteOrder.BIG), new ByteBufferInputStream(bytes)));
     }
 
     @Test
     public void testDecode2() {
         byte[] bytes = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 10, ByteOrder.LITTLE));
+        assertThrows(NullPointerException.class, () -> this.codec.decode(mock(10, ByteOrder.LITTLE), (ByteBufferInputStream) null));
 
-        assertThrows(DecodingException.class, () -> this.codec.decode(bytes, 10, ByteOrder.BIG));
+        assertThrows(DecodingException.class, () -> this.codec.decode(mock(10, ByteOrder.BIG), new ByteBufferInputStream(bytes)));
     }
 
     @Test
     public void testEncode1() {
         byte[] actual = new byte[10];
 
-        this.codec.encode(actual, 0, ByteOrder.LITTLE, '中');
-        this.codec.encode(actual, 2 - actual.length, ByteOrder.BIG, '文');
+        this.codec.encode(mock(0, ByteOrder.LITTLE), new ByteBufferOutputStream(actual), '中');
+        this.codec.encode(mock(2 - actual.length, ByteOrder.BIG), new ByteBufferOutputStream(actual), '文');
 
         byte[] expected = new byte[10];
 
@@ -74,6 +78,12 @@ public class CharCodecTest {
 
     @Test
     public void testEncode2() {
-        assertThrows(NullPointerException.class, () -> this.codec.encode(null, 0, ByteOrder.BIG, 'A'));
+        assertThrows(NullPointerException.class, () -> this.codec.encode(mock(0, ByteOrder.BIG), (ByteBufferOutputStream) null, 'A'));
+    }
+
+    protected CodecContext mock(int offset, ByteOrder order) {
+        return CodecContext.builder()
+                .dataTypeAnnotation(AnnotationUtils.mock(CharType.class, offset, order))
+                .build();
     }
 }

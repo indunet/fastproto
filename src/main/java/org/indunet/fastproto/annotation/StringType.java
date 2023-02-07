@@ -25,10 +25,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * String type, corresponding to Java String.
+ * String type which uses utf-8 charset by default, it can be used to annotate field type of String/StringBuilder/StringBuffer.
  *
  * @author Deng Ran
- * @see DataType
  * @since 1.1.0
  */
 @DataType
@@ -36,9 +35,18 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface StringType {
+    /*
+     * The byte offset of the field in the binary data.
+     */
     int offset();
 
+    /*
+     * The length of the string.
+     */
     int length();
 
+    /*
+     * The charset of the field in the binary data.
+     */
     String charset() default "UTF-8";
 }

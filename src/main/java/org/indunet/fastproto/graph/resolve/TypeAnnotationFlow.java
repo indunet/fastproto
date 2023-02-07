@@ -22,7 +22,7 @@ import org.indunet.fastproto.annotation.AutoType;
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.exception.ResolveException;
 import org.indunet.fastproto.graph.Reference;
-import org.indunet.fastproto.mapper.DataTypeAnnotationMapper;
+import org.indunet.fastproto.mapper.AnnotationMapper;
 
 import java.lang.annotation.Annotation;
 import java.util.Arrays;
@@ -43,7 +43,7 @@ public class TypeAnnotationFlow extends ResolvePipeline {
                 .orElseThrow(ResolveException::new);
 
         if (typeAnnotation instanceof AutoType) {
-            Class<? extends Annotation> type = DataTypeAnnotationMapper.get(field.getGenericType());
+            Class<? extends Annotation> type = AnnotationMapper.get(field.getGenericType());
             Annotation proxy = ProtocolType.proxy((AutoType) typeAnnotation, type);
 
             reference.setDataTypeAnnotation(proxy);

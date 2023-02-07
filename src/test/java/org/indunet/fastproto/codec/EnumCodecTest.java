@@ -22,6 +22,9 @@ import lombok.val;
 import org.indunet.fastproto.annotation.EnumType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
+import org.indunet.fastproto.util.AnnotationUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -37,51 +40,51 @@ public class EnumCodecTest {
 
     @Test
     public void testDecode1() {
-        val datagram = new byte[10];
+        val bytes = new byte[10];
 
-        datagram[0] = 0;
-        datagram[1] = 8;
-        datagram[2] = 9;
+        bytes[0] = 0;
+        bytes[1] = 8;
+        bytes[2] = 9;
 
-        assertEquals(Color.GREEN, codec.decode(datagram, 0, "", Color.class));
-        assertEquals(Color.RED, codec.decode(datagram, 1, "code", Color.class));
-        assertEquals(Color.YELLOW, codec.decode(datagram, 2, "code", Color.class));
+        assertEquals(Color.GREEN, codec.decode(mock(0, "", Color.class), new ByteBufferInputStream(bytes)));
+        assertEquals(Color.RED, codec.decode(mock(1, "code", Color.class), new ByteBufferInputStream(bytes)));
+        assertEquals(Color.YELLOW, codec.decode(mock(2, "code", Color.class), new ByteBufferInputStream(bytes)));
     }
 
     @Test
     public void testDecode2() {
-        val datagram = new byte[10];
+        val bytes = new byte[10];
 
-        datagram[0] = 100;
+        bytes[0] = 100;
 
-        assertThrows(DecodingException.class, () -> codec.decode(datagram, 0, "number", Color.class));
-        assertThrows(DecodingException.class, () -> codec.decode(datagram, 0, "", Color.class));
-        assertThrows(DecodingException.class, () -> codec.decode(datagram, 0, "", Color.class));
+        assertThrows(DecodingException.class, () -> codec.decode(mock(0, "number", Color.class), new ByteBufferInputStream(bytes)));
+        assertThrows(DecodingException.class, () -> codec.decode(mock(0, "", Color.class), new ByteBufferInputStream(bytes)));
+        assertThrows(DecodingException.class, () -> codec.decode(mock(0, "", Color.class), new ByteBufferInputStream(bytes)));
     }
 
     @Test
     public void testEncode1() {
-        val datagram = new byte[10];
+        val bytes = new byte[10];
         val expected = new byte[10];
 
         expected[0] = 0;
         expected[1] = 8;
         expected[2] = 9;
 
-        this.codec.encode(datagram, 0, "", Color.GREEN);
-        this.codec.encode(datagram, 1, "code", Color.RED);
-        this.codec.encode(datagram, 2, "code", Color.YELLOW);
+        this.codec.encode(mock(0, "", Color.class), new ByteBufferOutputStream(bytes), Color.GREEN);
+        this.codec.encode(mock(1, "code", Color.class), new ByteBufferOutputStream(bytes), Color.RED);
+        this.codec.encode(mock(2, "code", Color.class), new ByteBufferOutputStream(bytes), Color.YELLOW);
 
-        assertArrayEquals(expected, datagram);
+        assertArrayEquals(expected, bytes);
     }
 
     @Test
     public void testEncode2() {
-        val datagram = new byte[10];
+        val bytes = new byte[10];
 
-        datagram[0] = 100;
-
-        assertThrows(EncodingException.class, () -> codec.encode(datagram, 0, "number", Color.RED));
+        bytes[0] = 100;
+        assertThrows(EncodingException.class,
+                () -> codec.encode(mock(0, "number", Color.class), new ByteBufferOutputStream(bytes), Color.RED));
     }
 
     @AllArgsConstructor
@@ -100,5 +103,12 @@ public class EnumCodecTest {
 
         @EnumType(offset = 1, name = "code")
         Color color2;
+    }
+
+    protected CodecContext mock(int offset, String name, Class<? extends Enum> enumClass) {
+        return CodecContext.builder()
+                .fieldType(enumClass)
+                .dataTypeAnnotation(AnnotationUtils.mock(EnumType.class, offset, name))
+                .build();
     }
 }
