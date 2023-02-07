@@ -16,18 +16,14 @@
 
 package org.indunet.fastproto.codec;
 
-import com.sun.corba.se.impl.encoding.ByteBufferWithInfo;
 import lombok.val;
 import lombok.var;
-import org.indunet.fastproto.io.ByteBuffer;
-import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.DoubleArrayType;
 import org.indunet.fastproto.annotation.DoubleType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.io.ByteBufferInputStream;
 import org.indunet.fastproto.io.ByteBufferOutputStream;
-import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.CollectionUtils;
 
 import java.util.Arrays;
@@ -84,26 +80,10 @@ public class DoubleArrayCodec implements Codec<double[]> {
 
     public class WrapperCodec implements Codec<Double[]> {
         @Override
-        public Double[] decode(CodecContext context, byte[] bytes) {
-            return DoubleStream.of(DoubleArrayCodec.this.decode(context, bytes))
-                    .mapToObj(Double::valueOf)
-                    .toArray(Double[]::new);
-        }
-
-        @Override
         public Double[] decode(CodecContext context, ByteBufferInputStream inputStream) {
             return DoubleStream.of(DoubleArrayCodec.this.decode(context, inputStream))
                     .mapToObj(Double::valueOf)
                     .toArray(Double[]::new);
-        }
-
-        @Override
-        public void encode(CodecContext context, ByteBuffer buffer, Double[] values) {
-            val doubles = Stream.of(values)
-                    .mapToDouble(i -> i.doubleValue())
-                    .toArray();
-
-            DoubleArrayCodec.this.encode(context, buffer, doubles);
         }
 
         @Override
@@ -118,22 +98,6 @@ public class DoubleArrayCodec implements Codec<double[]> {
 
     public class CollectionCodec implements Codec<Collection<Double>> {
         @Override
-        public Collection<Double> decode(CodecContext context, byte[] bytes) {
-            try {
-                val type = (Class<? extends Collection>) context.getFieldType();
-                Collection<Double> collection = CollectionUtils.newInstance(type);
-
-                Arrays.stream(DoubleArrayCodec.this.decode(context, bytes))
-                        .forEach(collection::add);
-
-                return collection;
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new DecodingException(
-                        String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
-            }
-        }
-
-        @Override
         public Collection<Double> decode(CodecContext context, ByteBufferInputStream inputStream) {
             try {
                 val type = (Class<? extends Collection>) context.getFieldType();
@@ -147,15 +111,6 @@ public class DoubleArrayCodec implements Codec<double[]> {
                 throw new DecodingException(
                         String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
             }
-        }
-
-        @Override
-        public void encode(CodecContext context, ByteBuffer buffer, Collection<Double> collection) {
-            val doubles = collection.stream()
-                    .mapToDouble(Double::doubleValue)
-                    .toArray();
-
-            DoubleArrayCodec.this.encode(context, buffer, doubles);
         }
 
         @Override

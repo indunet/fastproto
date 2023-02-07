@@ -1,8 +1,9 @@
 package org.indunet.fastproto;
 
-import org.indunet.fastproto.annotation.*;
+import lombok.val;
+import org.indunet.fastproto.annotation.UInt16Type;
 import org.indunet.fastproto.io.ByteBuffer;
-import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 
 import java.math.BigInteger;
 import java.util.stream.IntStream;
@@ -14,437 +15,375 @@ import java.util.stream.IntStream;
  * @since 3.8.3
  */
 public final class Encoder {
-    ByteBuffer byteBuffer;
-    ByteOrder byteOrder = ByteOrder.LITTLE;
-    BitOrder bitOrder = BitOrder.LSB_0;
+    ByteBufferOutputStream outputStream;
+    ByteOrder defaultByteOrder = ByteOrder.LITTLE;
+    BitOrder defaultBitOrder = BitOrder.LSB_0;
 
     public Encoder() {
-        this.byteBuffer = new ByteBuffer();
+        this.outputStream = new ByteBufferOutputStream();
     }
 
-    public Encoder(int length) {
-        this.byteBuffer = new ByteBuffer(length);
+    public Encoder(byte[] bytes) {
+        this.outputStream = new ByteBufferOutputStream(bytes);
     }
 
     public Encoder defaultByteOrder(ByteOrder byteOrder) {
-        this.byteOrder = byteOrder;
+        this.defaultByteOrder = byteOrder;
 
         return this;
     }
 
     public Encoder defaultBitOrder(BitOrder bitOrder) {
-        this.bitOrder = bitOrder;
+        this.defaultBitOrder = bitOrder;
 
         return this;
     }
 
-    public Encoder boolType(int byteOffset, int bitOffset, boolean value) {
-        this.boolType(byteOffset, bitOffset, this.bitOrder, value);
-
-        return this;
+    public Encoder appendBool(boolean... values) {
+        return this.appendBool(defaultBitOrder, values);
     }
 
-    public Encoder boolType(int byteOffset, int bitOffset, BitOrder bitOrder, boolean value) {
-        CodecUtils.boolType(this.byteBuffer, byteOffset, bitOffset, bitOrder, value);
-
-        return this;
-    }
-
-    public Encoder writeUInt8(int offset, int... values) {
-        IntStream.range(0, values.length)
-                        .forEach(i -> CodecUtils.uint8Type(this.byteBuffer, offset + i, values[i]));
-
-        return this;
-    }
-
-    public Encoder appendUInt8(int... values) {
-        for (int value: values) {
-            CodecUtils.uint8Type(this.byteBuffer, this.byteBuffer.getWriteIndex(), value);
+    public Encoder appendBool(BitOrder order, boolean... values) {
+        for (val value: values) {
+            this.outputStream.writeBool(order, value);
         }
 
         return this;
     }
 
-    public Encoder writeUInt16(int offset, int... values) {
-        IntStream.range(0, values.length)
-                .forEach(i ->
-                        CodecUtils.uint16Type(this.byteBuffer, offset + i * UInt16Type.SIZE, this.byteOrder, values[i]));
-
-        return this;
+    public Encoder writeBool(int byteOffset, int bitOffset, boolean... values) {
+        return this.writeBool(byteOffset, bitOffset, defaultBitOrder, values);
     }
 
-    public Encoder writeUInt16(int offset, ByteOrder byteOrder, int... values) {
-        IntStream.range(0, values.length)
-                .forEach(i ->
-                        CodecUtils.uint16Type(this.byteBuffer, offset + i * UInt16Type.SIZE, byteOrder, values[i]));
-
-        return this;
-    }
-
-    public Encoder appendUInt16(int... values) {
-        this.appendUInt16(this.byteOrder, values);
-
-        return this;
-    }
-
-    public Encoder appendUInt16(ByteOrder byteOrder, int... values) {
-        for (int value: values) {
-            CodecUtils.uint16Type(this.byteBuffer, this.byteBuffer.getWriteIndex(), byteOrder, value);
+    public Encoder writeBool(int byteOffset, int bitOffset, BitOrder order, boolean... values) {
+        for (val value: values) {
+            this.outputStream.writeBool(byteOffset, bitOffset, order, value);
         }
 
         return this;
     }
 
-    public Encoder writeUInt32(int offset, long... values) {
-        IntStream.range(0, values.length)
-                .forEach(i ->
-                        CodecUtils.uint32Type(this.byteBuffer, offset + i * UInt32Type.SIZE, this.byteOrder, values[i]));
-
-        return this;
-    }
-
-    public Encoder writeUInt32(int offset, ByteOrder byteOrder, long... values) {
-        IntStream.range(0, values.length)
-                .forEach(i ->
-                        CodecUtils.uint32Type(this.byteBuffer, offset + i * UInt32Type.SIZE, byteOrder, values[i]));
-
-        return this;
-    }
-
-    public Encoder appendUInt32(long... values) {
-        this.appendUInt32(this.byteOrder, values);
-
-        return this;
-    }
-
-    public Encoder appendUInt32(ByteOrder byteOrder, long... values) {
-        for (long value: values) {
-            CodecUtils.uint32Type(this.byteBuffer, this.byteBuffer.getWriteIndex(), byteOrder, value);
-        }
-
-        return this;
-    }
-
-    public Encoder writeUInt64(int offset, BigInteger... values) {
-        IntStream.range(0, values.length)
-                .forEach(i ->
-                        CodecUtils.uint64Type(this.byteBuffer, offset + i * UInt64Type.SIZE, this.byteOrder, values[i]));
-
-        return this;
-    }
-
-    public Encoder writeUInt64(int offset, ByteOrder byteOrder, BigInteger... values) {
-        IntStream.range(0, values.length)
-                .forEach(i ->
-                        CodecUtils.uint64Type(this.byteBuffer, offset + i * UInt64Type.SIZE, byteOrder, values[i]));
-
-        return this;
-    }
-
-    public Encoder appendUInt64(BigInteger... values) {
-        this.appendUInt64(this.byteOrder, values);
-
-        return this;
-    }
-
-    public Encoder appendUInt64(ByteOrder byteOrder, BigInteger... values) {
-        for (BigInteger value: values) {
-            CodecUtils.uint64Type(this.byteBuffer, this.byteBuffer.getWriteIndex(), byteOrder, value);
+    public Encoder appendByte(byte... values) {
+        for (val value: values) {
+            this.outputStream.writeByte(value);
         }
 
         return this;
     }
 
     public Encoder writeByte(int offset, byte... values) {
-        IntStream.range(0, values.length)
-                .forEach(i -> CodecUtils.byteType(this.byteBuffer, offset + i, values[i]));
+        int o = this.outputStream.toByteBuffer().reverse(offset);
+
+        IntStream.range(0, values.length).forEach(i -> {
+            this.outputStream.writeByte(o + i, values[i]);
+        });
 
         return this;
     }
 
-    public Encoder appendByte(byte... values) {
-        for (byte value: values) {
-            CodecUtils.byteType(this.byteBuffer, this.byteBuffer.getWriteIndex(), value);
-        }
-
-        return this;
+    public Encoder appendShort(short... values) {
+        return this.appendShort(defaultByteOrder, values);
     }
 
-    public Encoder writeInt8(int offset, byte... values) {
-        IntStream.range(0, values.length)
-                .forEach(i -> CodecUtils.byteType(this.byteBuffer, offset + i, values[i]));
-
-        return this;
-    }
-
-    public Encoder writeInt8(int offset, int... values) {
-        IntStream.range(0, values.length)
-                .forEach(i -> CodecUtils.int8Type(this.byteBuffer, offset + i, values[i]));
-
-        return this;
-    }
-
-    public Encoder appendInt8(byte... values) {
-        for (byte value: values) {
-            CodecUtils.byteType(this.byteBuffer, this.byteBuffer.getWriteIndex(), value);
-        }
-
-        return this;
-    }
-
-    public Encoder appendInt8(int... values) {
-        for (int value: values) {
-            CodecUtils.int8Type(this.byteBuffer, this.byteBuffer.getWriteIndex(), value);
+    public Encoder appendShort(ByteOrder order, short... values) {
+        for (val value: values) {
+            this.outputStream.writeShort(order, value);
         }
 
         return this;
     }
 
     public Encoder writeShort(int offset, short... values) {
-        IntStream.range(0, values.length)
-                .forEach(i ->
-                        CodecUtils.int16Type(this.byteBuffer, offset + i * Int16Type.SIZE, this.byteOrder, values[i]));
+        return this.writeShort(offset, defaultByteOrder, values);
+    }
+
+    public Encoder writeShort(int offset, ByteOrder order, short... values) {
+        int o = this.outputStream.toByteBuffer().reverse(offset);
+
+        IntStream.range(0, values.length).forEach(i -> {
+            this.outputStream.writeShort(o + i, order, values[i]);
+        });
 
         return this;
     }
 
-    public Encoder writeShort(int offset, ByteOrder byteOrder, short... values) {
-        IntStream.range(0, values.length)
-                .forEach(i ->
-                        CodecUtils.int16Type(this.byteBuffer, offset + i * Int16Type.SIZE, byteOrder, values[i]));
-
-        return this;
-    }
-
-    public Encoder appendShort(short... values) {
-        this.appendShort(this.byteOrder, values);
-
-        return this;
-    }
-
-    public Encoder appendShort(ByteOrder byteOrder, short... values) {
-        for (short value: values) {
-            CodecUtils.int16Type(this.byteBuffer, this.byteBuffer.getWriteIndex(), byteOrder, value);
+    public Encoder appendInt8(int... values) {
+        for (val value: values) {
+            this.outputStream.writeInt8(value);
         }
 
         return this;
     }
 
-    public Encoder writeInt16(int offset, short... values) {
-        IntStream.range(0, values.length)
-                .forEach(i ->
-                        CodecUtils.int16Type(this.byteBuffer, offset + i * Int16Type.SIZE, this.byteOrder, values[i]));
+    public Encoder writeInt8(int offset, int... values) {
+        int o = this.outputStream.toByteBuffer().reverse(offset);
 
-        return this;
-    }
-
-    public Encoder writeInt16(int offset, ByteOrder byteOrder, short... values) {
-        IntStream.range(0, values.length)
-                .forEach(i ->
-                        CodecUtils.int16Type(this.byteBuffer, offset + i * Int16Type.SIZE, byteOrder, values[i]));
-
-        return this;
-    }
-
-    public Encoder writeInt16(int offset, int... values) {
-        IntStream.range(0, values.length)
-                .forEach(i ->
-                        CodecUtils.int16Type(this.byteBuffer, offset + i * Int16Type.SIZE, this.byteOrder, values[i]));
-
-        return this;
-    }
-
-    public Encoder writeInt16(int offset, ByteOrder byteOrder, int... values) {
-        IntStream.range(0, values.length)
-                .forEach(i ->
-                        CodecUtils.int16Type(this.byteBuffer, offset + i * Int16Type.SIZE, byteOrder, values[i]));
-
-        return this;
-    }
-
-    public Encoder appendInt16(short... values) {
-        this.appendInt16(this.byteOrder, values);
-
-        return this;
-    }
-
-    public Encoder appendInt16(ByteOrder byteOrder, short... values) {
-        for (short value: values) {
-            CodecUtils.int16Type(this.byteBuffer, this.byteBuffer.getWriteIndex(), byteOrder, value);
-        }
+        IntStream.range(0, values.length).forEach(i -> {
+            this.outputStream.writeInt8(o + i, values[i]);
+        });
 
         return this;
     }
 
     public Encoder appendInt16(int... values) {
-        this.appendInt16(this.byteOrder, values);
+        return this.appendInt16(defaultByteOrder, values);
+    }
+
+    public Encoder appendInt16(ByteOrder order, int... values) {
+        for (val value: values) {
+            this.outputStream.writeInt16(order, value);
+        }
 
         return this;
     }
 
-    public Encoder appendInt16(ByteOrder byteOrder, int... values) {
-        for (int value: values) {
-            CodecUtils.int16Type(this.byteBuffer, this.byteBuffer.getWriteIndex(), byteOrder, value);
+    public Encoder writeInt16(int offset, int... values) {
+        return this.writeInt16(offset, defaultByteOrder, values);
+    }
+
+    public Encoder writeInt16(int offset, ByteOrder order, int... values) {
+        int o = this.outputStream.toByteBuffer().reverse(offset);
+
+        IntStream.range(0, values.length).forEach(i -> {
+            this.outputStream.writeInt16(o + i, order, values[i]);
+        });
+
+        return this;
+    }
+
+    public Encoder appendInt32(int... values) {
+        return this.appendInt32(defaultByteOrder, values);
+    }
+
+    public Encoder appendInt32(ByteOrder order, int... values) {
+        for (val value: values) {
+            this.outputStream.writeInt32(order, value);
         }
 
         return this;
     }
 
     public Encoder writeInt32(int offset, int... values) {
-        IntStream.range(0, values.length)
-                .forEach(i ->
-                        CodecUtils.int32Type(this.byteBuffer, offset + i * Int32Type.SIZE, this.byteOrder, values[i]));
+        return this.writeInt32(offset, defaultByteOrder, values);
+    }
+
+    public Encoder writeInt32(int offset, ByteOrder order, int... values) {
+        int o = this.outputStream.toByteBuffer().reverse(offset);
+
+        IntStream.range(0, values.length).forEach(i -> {
+            this.outputStream.writeInt32(o + i, order, values[i]);
+        });
 
         return this;
     }
 
-    public Encoder writeInt32(int offset, ByteOrder byteOrder, int... values) {
-        IntStream.range(0, values.length)
-                .forEach(i ->
-                        CodecUtils.int32Type(this.byteBuffer, offset + i * Int32Type.SIZE, byteOrder, values[i]));
-
-        return this;
+    public Encoder appendInt64(long... values) {
+        return this.appendInt64(defaultByteOrder, values);
     }
 
-    public Encoder appendInt32(int... values) {
-        this.appendInt32(this.byteOrder, values);
-
-        return this;
-    }
-
-    public Encoder appendInt32(ByteOrder byteOrder, int... values) {
-        for (int value: values) {
-            CodecUtils.int32Type(this.byteBuffer, this.byteBuffer.getWriteIndex(), byteOrder, value);
+    public Encoder appendInt64(ByteOrder order, long... values) {
+        for (val value: values) {
+            this.outputStream.writeInt64(order, value);
         }
 
         return this;
     }
 
     public Encoder writeInt64(int offset, long... values) {
-        IntStream.range(0, values.length)
-                .forEach(i ->
-                        CodecUtils.int64Type(this.byteBuffer, offset + i * Int64Type.SIZE, this.byteOrder, values[i]));
+        return this.writeInt64(offset, defaultByteOrder, values);
+    }
+
+    public Encoder writeInt64(int offset, ByteOrder order, long... values) {
+        int o = this.outputStream.toByteBuffer().reverse(offset);
+
+        IntStream.range(0, values.length).forEach(i -> {
+            this.outputStream.writeInt64(o + i, order, values[i]);
+        });
 
         return this;
     }
 
-    public Encoder writeInt64(int offset, ByteOrder byteOrder, long... values) {
-        IntStream.range(0, values.length)
-                .forEach(i ->
-                        CodecUtils.int64Type(this.byteBuffer, offset + i * Int64Type.SIZE, byteOrder, values[i]));
+    public Encoder appendUInt8(int... values) {
+        for (val value: values) {
+            this.outputStream.writeUInt8(value);
+        }
 
         return this;
     }
 
-    public Encoder appendInt64(long... values) {
-        this.appendInt64(this.byteOrder, values);
+    public Encoder writeUInt8(int offset, int... values) {
+        int o = this.outputStream.toByteBuffer().reverse(offset);
+
+        IntStream.range(0, values.length).forEach(i -> {
+            this.outputStream.writeUInt8(o + i, values[i]);
+        });
 
         return this;
     }
 
-    public Encoder appendInt64(ByteOrder byteOrder, long... values) {
-        for (long value: values) {
-            CodecUtils.int64Type(this.byteBuffer, this.byteBuffer.getWriteIndex(), byteOrder, value);
+    public Encoder appendUInt16(int... values) {
+        return this.appendUInt16(defaultByteOrder, values);
+    }
+
+    public Encoder appendUInt16(ByteOrder order, int... values) {
+        for (val value: values) {
+            this.outputStream.writeUInt16(order, value);
+        }
+
+        return this;
+    }
+
+    public Encoder writeUInt16(int offset, int... values) {
+        return this.writeUInt16(offset, defaultByteOrder, values);
+    }
+
+    public Encoder writeUInt16(int offset, ByteOrder order, int... values) {
+        int o = this.outputStream.toByteBuffer().reverse(offset);
+
+        IntStream.range(0, values.length).forEach(i -> {
+            this.outputStream.writeUInt16(o + i * UInt16Type.SIZE, order, values[i]);
+        });
+
+        return this;
+    }
+
+    public Encoder appendUInt32(long... values) {
+        return this.appendUInt32(defaultByteOrder, values);
+    }
+
+    public Encoder appendUInt32(ByteOrder order, long... values) {
+        for (val value: values) {
+            this.outputStream.writeUInt32(order, value);
+        }
+
+        return this;
+    }
+
+    public Encoder writeUInt32(int offset, long... values) {
+        return this.writeUInt32(offset, defaultByteOrder, values);
+    }
+
+    public Encoder writeUInt32(int offset, ByteOrder order, long... values) {
+        int o = this.outputStream.toByteBuffer().reverse(offset);
+
+        IntStream.range(0, values.length).forEach(i -> {
+            this.outputStream.writeUInt32(o + i, order, values[i]);
+        });
+
+        return this;
+    }
+
+    public Encoder appendUInt64(BigInteger... values) {
+        return this.appendUInt64(defaultByteOrder, values);
+    }
+
+    public Encoder appendUInt64(ByteOrder order, BigInteger... values) {
+        for (val value: values) {
+            this.outputStream.writeUInt64(order, value);
+        }
+
+        return this;
+    }
+
+    public Encoder writeUInt64(int offset, BigInteger... values) {
+        return this.writeUInt64(offset, defaultByteOrder, values);
+    }
+
+    public Encoder writeUInt64(int offset, ByteOrder order, BigInteger... values) {
+        int o = this.outputStream.toByteBuffer().reverse(offset);
+
+        IntStream.range(0, values.length).forEach(i -> {
+            this.outputStream.writeUInt64(o + i, order, values[i]);
+        });
+
+        return this;
+    }
+
+    public Encoder appendFloat(float... values) {
+        return this.appendFloat(defaultByteOrder, values);
+    }
+
+    public Encoder appendFloat(ByteOrder order, float... values) {
+        for (val value: values) {
+            this.outputStream.writeFloat(order, value);
         }
 
         return this;
     }
 
     public Encoder writeFloat(int offset, float... values) {
-        IntStream.range(0, values.length)
-                .forEach(i ->
-                        CodecUtils.floatType(this.byteBuffer, offset + i * FloatType.SIZE, this.byteOrder, values[i]));
+        return this.writeFloat(offset, defaultByteOrder, values);
+    }
+
+    public Encoder writeFloat(int offset, ByteOrder order, float... values) {
+        int o = this.outputStream.toByteBuffer().reverse(offset);
+
+        IntStream.range(0, values.length).forEach(i -> {
+            this.outputStream.writeFloat(o + i, order, values[i]);
+        });
 
         return this;
     }
 
-    public Encoder writeFloat(int offset, ByteOrder byteOrder, float... values) {
-        IntStream.range(0, values.length)
-                .forEach(i ->
-                        CodecUtils.floatType(this.byteBuffer, offset + i * FloatType.SIZE, byteOrder, values[i]));
-
-        return this;
+    public Encoder appendDouble(double... values) {
+        return this.appendDouble(defaultByteOrder, values);
     }
 
-    public Encoder appendFloat(float... values) {
-        this.appendFloat(this.byteOrder, values);
-
-        return this;
-    }
-
-    public Encoder appendFloat(ByteOrder byteOrder, float... values) {
-        for (float value: values) {
-            CodecUtils.floatType(this.byteBuffer, this.byteBuffer.getWriteIndex(), byteOrder, value);
+    public Encoder appendDouble(ByteOrder order, double... values) {
+        for (val value: values) {
+            this.outputStream.writeDouble(order, value);
         }
 
         return this;
     }
 
     public Encoder writeDouble(int offset, double... values) {
-        IntStream.range(0, values.length)
-                .forEach(i ->
-                        CodecUtils.doubleType(this.byteBuffer, offset + i * DoubleType.SIZE, this.byteOrder, values[i]));
+        return this.writeDouble(offset, defaultByteOrder, values);
+    }
+
+    public Encoder writeDouble(int offset, ByteOrder order, double... values) {
+        int o = this.outputStream.toByteBuffer().reverse(offset);
+
+        IntStream.range(0, values.length).forEach(i -> {
+            this.outputStream.writeDouble(o + i, order, values[i]);
+        });
 
         return this;
     }
 
-    public Encoder writeDouble(int offset, ByteOrder byteOrder, double... values) {
-        IntStream.range(0, values.length)
-                .forEach(i ->
-                        CodecUtils.doubleType(this.byteBuffer, offset + i * DoubleType.SIZE, byteOrder, values[i]));
+    public Encoder appendBytes(byte[] bytes) {
+        this.outputStream.writeBytes(bytes);
 
         return this;
     }
 
-    public Encoder appendDouble(double... values) {
-        this.appendDouble(this.byteOrder, values);
-
-        return this;
-    }
-
-    public Encoder appendDouble(ByteOrder byteOrder, double... values) {
-        for (double value: values) {
-            CodecUtils.doubleType(this.byteBuffer, this.byteBuffer.getWriteIndex(), byteOrder, value);
-        }
+    public Encoder writeBytes(int offset, byte[] bytes) {
+        this.outputStream.writeBytes(offset, bytes);
 
         return this;
     }
 
     public Encoder align(int alignment) {
-        if (alignment <= 0 || (alignment & 0x01) != 0) {
-            throw new IllegalArgumentException("alignment must be a positive even number");
-        }
-
-        int index = this.byteBuffer.getWriteIndex();
-        int after = ((index + (alignment - 1)) & ~(alignment - 1));
-
-        if (after > 0) {
-            this.byteBuffer.set(after - 1, (byte) 0);
-        } else {
-            this.byteBuffer.resetWriteIndex();
-        }
+        this.outputStream.align(alignment);
 
         return this;
     }
 
     public Encoder skip() {
-        this.byteBuffer.nextWriteIndex();
+        this.outputStream.skip();
 
         return this;
     }
 
     public Encoder skip(int num) {
-        if (num >= 0) {
-            IntStream.range(0, num)
-                    .forEach(__ -> this.byteBuffer.nextWriteIndex());
+        this.outputStream.skip(num);
 
-            return this;
-        } else {
-            throw new IllegalArgumentException("num must be a positive number.");
-        }
+        return this;
     }
 
     public byte[] get() {
-        return this.byteBuffer.toBytes();
+        return this.outputStream
+                .toByteBuffer()
+                .toBytes();
     }
 }

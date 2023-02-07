@@ -18,11 +18,7 @@ package org.indunet.fastproto.domain.tesla;
 
 import lombok.*;
 import org.indunet.fastproto.ByteOrder;
-import org.indunet.fastproto.annotation.DefaultByteOrder;
-import org.indunet.fastproto.annotation.BoolType;
-import org.indunet.fastproto.annotation.FloatType;
-import org.indunet.fastproto.annotation.Int64Type;
-import org.indunet.fastproto.annotation.TimeType;
+import org.indunet.fastproto.annotation.*;
 
 import java.sql.Timestamp;
 

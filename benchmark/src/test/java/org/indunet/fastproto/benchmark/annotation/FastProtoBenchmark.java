@@ -50,13 +50,13 @@ public class FastProtoBenchmark {
     @Benchmark
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void parse() {
-        FastProto.parse(bytes, Sample.class);
+        FastProto.decode(bytes, Sample.class);
     }
 
     @Benchmark
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void toBytes() {
-        FastProto.toBytes(sample, this.bytes.length);
+        FastProto.encode(sample, this.bytes.length);
     }
 
     @Setup

@@ -50,7 +50,7 @@ public class FastProtoBenchmark {
     @Benchmark
     @OutputTimeUnit(TimeUnit.MILLISECONDS)
     public void parse() {
-        FastProto.parse(bytes)
+        FastProto.decode(bytes)
                     .readByte("byte8")
                     .readShort("short16")
                     .readInt32("int32")

@@ -100,6 +100,16 @@ public class AnnotationUtils {
         return mock(annotationClass, map);
     }
 
+    public static <T extends Annotation> T mock(Class<T> annotationClass, int offset, int length, String charset) {
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("offset", offset);
+        map.put("length", length);
+        map.put("charset", charset);
+
+        return mock(annotationClass, map);
+    }
+
     public static <T extends Annotation> T mock(Class<T> annotationClass, int value, String fieldName, ProtocolType protocolType) {
         Map<String, Object> map = new HashMap<>();
 

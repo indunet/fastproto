@@ -18,15 +18,12 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
-import org.indunet.fastproto.io.ByteBuffer;
-import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.FloatArrayType;
 import org.indunet.fastproto.annotation.FloatType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.io.ByteBufferInputStream;
 import org.indunet.fastproto.io.ByteBufferOutputStream;
-import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.CollectionUtils;
 
 import java.util.Collection;
@@ -83,27 +80,6 @@ public class FloatArrayCodec implements Codec<float[]> {
 
     public class WrapperCodec implements Codec<Float[]> {
         @Override
-        public Float[] decode(CodecContext context, byte[] bytes) {
-            val floats = FloatArrayCodec.this.decode(context, bytes);
-            val values = new Float[floats.length];
-
-            IntStream.range(0, floats.length)
-                    .forEach(i -> values[i] = floats[i]);
-
-            return values;
-        }
-
-        @Override
-        public void encode(CodecContext context, ByteBuffer buffer, Float[] values) {
-            val floats = new float[values.length];
-
-            IntStream.range(0, floats.length)
-                    .forEach(i -> floats[i] = values[i]);
-
-            FloatArrayCodec.this.encode(context, buffer, floats);
-        }
-
-        @Override
         public Float[] decode(CodecContext context, ByteBufferInputStream inputStream) {
             val floats = FloatArrayCodec.this.decode(context, inputStream);
             val values = new Float[floats.length];
@@ -126,35 +102,6 @@ public class FloatArrayCodec implements Codec<float[]> {
     }
 
     public class CollectionCodec implements Codec<Collection<Float>> {
-        @Override
-        public Collection<Float> decode(CodecContext context, byte[] bytes) {
-            try {
-                val type = (Class<? extends Collection>) context.getFieldType();
-                Collection<Float> collection = CollectionUtils.newInstance(type);
-
-                for (float b: FloatArrayCodec.this.decode(context, bytes)) {
-                    collection.add(b);
-                }
-
-                return collection;
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new DecodingException(
-                        String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
-            }
-        }
-
-        @Override
-        public void encode(CodecContext context, ByteBuffer buffer, Collection<Float> collection) {
-            val bs = new float[collection.size()];
-            val values = collection.stream()
-                    .toArray(Float[]::new);
-
-            IntStream.range(0, bs.length)
-                    .forEach(i -> bs[i] = values[i]);
-
-            FloatArrayCodec.this.encode(context, buffer, bs);
-        }
-
         @Override
         public Collection<Float> decode(CodecContext context, ByteBufferInputStream inputStream) {
             try {

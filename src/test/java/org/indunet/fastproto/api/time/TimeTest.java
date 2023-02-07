@@ -33,42 +33,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class TimeTest {
     @Test
-    public void testParse() {
+    public void testDecode() {
         val expected = new TimeObject();
-        val bytes = new byte[32];
+        val bytes = expected.toBytes();
 
-        var buffer = BinaryUtils.valueOf(expected.getDate().getTime());
-        System.arraycopy(buffer, 0, bytes, 0, 8);
-
-        buffer = BinaryUtils.valueOf(expected.getTimestamp().getTime());
-        System.arraycopy(buffer, 0, bytes, 8, 8);
-
-        buffer = BinaryUtils.valueOf(expected.getCalendar().getTimeInMillis());
-        System.arraycopy(buffer, 0, bytes, 16, 8);
-
-        buffer = BinaryUtils.valueOf(expected.getInstant().toEpochMilli());
-        System.arraycopy(buffer, 0, bytes, 24, 8);
-
-        assertEquals(expected.toString(), FastProto.parse(bytes, TimeObject.class).toString());
+        assertEquals(expected, FastProto.decode(bytes, TimeObject.class));
     }
 
     @Test
-    public void testToBytes() {
-        val expected = new byte[32];
+    public void testEncode() {
         val obj = new TimeObject();
+        val expected = obj.toBytes();
 
-        var buffer = BinaryUtils.valueOf(obj.getDate().getTime());
-        System.arraycopy(buffer, 0, expected, 0, 8);
-
-        buffer = BinaryUtils.valueOf(obj.getTimestamp().getTime());
-        System.arraycopy(buffer, 0, expected, 8, 8);
-
-        buffer = BinaryUtils.valueOf(obj.getInstant().toEpochMilli());
-        System.arraycopy(buffer, 0, expected, 16, 8);
-
-        buffer = BinaryUtils.valueOf(obj.getCalendar().getTimeInMillis());
-        System.arraycopy(buffer, 0, expected, 24, 8);
-
-        assertArrayEquals(expected, FastProto.toBytes(obj, 32));
+        assertArrayEquals(expected, FastProto.encode(obj, 32));
     }
 }

@@ -17,13 +17,11 @@
 package org.indunet.fastproto.api.byteorder;
 
 import lombok.val;
-import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.exception.CodecException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Unit test of byte order.
@@ -33,18 +31,18 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class ByteOrderTest {
     @Test
-    public void testParse() {
+    public void testDecode() {
         val expected = new TestObject();
         val bytes = expected.toBytes();
 
-        assertEquals(expected, FastProto.parse(bytes, TestObject.class));
+        assertEquals(expected, FastProto.decode(bytes, TestObject.class));
     }
 
     @Test
-    public void testToBytes() {
+    public void testEncode() {
         val object = new TestObject();
         val expected = object.toBytes();
 
-        assertArrayEquals(expected, FastProto.toBytes(object, 4));
+        assertArrayEquals(expected, FastProto.encode(object, 4));
     }
 }

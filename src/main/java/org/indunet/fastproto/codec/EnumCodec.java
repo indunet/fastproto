@@ -16,17 +16,13 @@
 
 package org.indunet.fastproto.codec;
 
-import com.sun.corba.se.impl.encoding.ByteBufferWithInfo;
-import lombok.NonNull;
 import lombok.val;
 import lombok.var;
-import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.annotation.EnumType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.io.ByteBufferInputStream;
 import org.indunet.fastproto.io.ByteBufferOutputStream;
-import org.indunet.fastproto.util.CodecUtils;
 
 import java.lang.reflect.Field;
 import java.util.Arrays;

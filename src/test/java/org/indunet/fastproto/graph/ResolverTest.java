@@ -23,7 +23,8 @@ import org.indunet.fastproto.annotation.Int8Type;
 import org.indunet.fastproto.annotation.UInt8Type;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 /**
  * Reference Resolver Test.

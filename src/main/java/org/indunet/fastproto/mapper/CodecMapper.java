@@ -193,7 +193,7 @@ public class CodecMapper {
         val dateCodec = new DateCodec();
         codecMap.get(TimeType.class).put(c -> c.equals(Date.class), dateCodec);
         codecMap.get(TimeType.class).put(c -> c.equals(Timestamp.class), dateCodec.new TimestampCodec());
-        codecMap.get(TimeType.class).put(c -> c.equals(Calendar.class), dateCodec.new CalendarCodec());
+        codecMap.get(TimeType.class).put(c -> c.equals(Calendar.class) || c instanceof Calendar, dateCodec.new CalendarCodec());
         codecMap.get(TimeType.class).put(c -> c.equals(Instant.class), dateCodec.new InstantCodec());
         codecMap.get(TimeType.class).put(c -> c.equals(LocalDateTime.class), dateCodec.new LocalDateTimeCodec());
 

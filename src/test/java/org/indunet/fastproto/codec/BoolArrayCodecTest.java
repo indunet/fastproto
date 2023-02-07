@@ -1,9 +1,7 @@
 package org.indunet.fastproto.codec;
 
 import org.indunet.fastproto.BitOrder;
-import org.indunet.fastproto.annotation.BinaryType;
 import org.indunet.fastproto.annotation.BoolArrayType;
-import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.io.ByteBufferInputStream;
 import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.AnnotationUtils;

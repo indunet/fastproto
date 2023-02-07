@@ -53,7 +53,7 @@ public class FormulaTest {
     @Test
     public void testEncodeFormula() {
         val object = new TestObject1(101);
-        assertThrows(EncodingException.class, () -> FastProto.toBytes(object, 10));
+        assertThrows(EncodingException.class, () -> FastProto.encode(object, 10));
     }
 
     @AllArgsConstructor
@@ -74,7 +74,7 @@ public class FormulaTest {
     public void testDecodeFormula() {
         val datagram = new byte[10];
 
-        assertThrows(DecodingException.class, () -> FastProto.parse(datagram, TestObject2.class));
+        assertThrows(DecodingException.class, () -> FastProto.decode(datagram, TestObject2.class));
     }
 
     @Test
@@ -82,7 +82,7 @@ public class FormulaTest {
         val expected = new LambdaObject();
         val bytes = expected.toBytes();
 
-        assertEquals(expected, FastProto.parse(bytes, LambdaObject.class));
+        assertEquals(expected, FastProto.decode(bytes, LambdaObject.class));
     }
 
     @Test
@@ -90,6 +90,6 @@ public class FormulaTest {
         val object = new LambdaObject();
         val expected = object.toBytes();
 
-        assertArrayEquals(expected, FastProto.toBytes(object, expected.length));
+        assertArrayEquals(expected, FastProto.encode(object, expected.length));
     }
 }

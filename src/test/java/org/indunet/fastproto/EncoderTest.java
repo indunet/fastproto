@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class EncoderTest {
     @Test
     public void testGet1() {
-        val expected = new byte[]{1, 0, 3, 0, 4, 0, 0, 0, 0, 32};
+        val expected = new byte[] {1, 0, 3, 0, 4, 0, 0, 0, 0, 32};
         val actual = FastProto.create(expected.length)
                 .writeUInt8(0, 1)
                 .writeUInt16(2, 3, 4)
@@ -41,7 +41,7 @@ public class EncoderTest {
         System.arraycopy(BinaryUtils.valueOf(1.1), 0, expected, 8, DoubleType.SIZE);
 
         var actual = FastProto.create(expected.length)
-                .boolType(0, 0, true)
+                .writeBool(0, 0, true)
                 .writeInt8(1, 1)
                 .writeInt16(2, ByteOrder.BIG, 3)
                 .writeFloat(4, 1.0f)
@@ -51,7 +51,7 @@ public class EncoderTest {
         assertArrayEquals(expected, actual);
 
         actual = FastProto.create()
-                .boolType(0, 0, true)
+                .writeBool(0, 0, true)
                 .writeInt8(1, 1)
                 .writeInt16(2, ByteOrder.BIG, 3)
                 .writeFloat(4, 1.0f)
@@ -111,26 +111,29 @@ public class EncoderTest {
         val bytes = FastProto.create()
                 .writeInt8(2, (byte) 0x10)
                 .align(8)
+                .appendInt16(0x0102)
                 .get();
 
-        assertEquals(8, bytes.length);
+        assertEquals(10, bytes.length);
     }
 
     @Test
     public void testSkip() {
         var bytes = FastProto.create()
                 .writeInt8(1, (byte) 0x10)
-                .skip(6)
+                .skip(7)
+                .appendInt8((byte) 0x02)
                 .get();
 
-        assertEquals(8, bytes.length);
+        assertEquals(10, bytes.length);
 
         bytes = FastProto.create()
                 .writeInt8(0, (byte) 0x01)
                 .skip()
+                .appendInt8((byte) 0x02)
                 .get();
 
-        assertEquals(2, bytes.length);
+        assertEquals(3, bytes.length);
 
         assertThrows(IllegalArgumentException.class, () -> FastProto.create()
                 .skip(-1)

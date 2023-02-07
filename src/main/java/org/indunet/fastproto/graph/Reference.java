@@ -18,7 +18,6 @@ package org.indunet.fastproto.graph;
 
 import lombok.*;
 import org.indunet.fastproto.BitOrder;
-import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.exception.DecodingException;

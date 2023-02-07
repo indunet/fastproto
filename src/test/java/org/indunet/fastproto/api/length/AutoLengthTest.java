@@ -20,15 +20,15 @@ public class AutoLengthTest {
     public void testAutoLength() {
         val object1 = new TestObject1();
 
-        assertEquals(2, FastProto.toBytes(object1).length);
+        assertEquals(2, FastProto.encode(object1).length);
 
         val object2 = new TestObject2();
 
-        assertEquals(9, FastProto.toBytes(object2).length);
+        assertEquals(9, FastProto.encode(object2).length);
 
         val object3 = new TestObject3();
 
-        assertEquals(12, FastProto.toBytes(object3).length);
+        assertEquals(12, FastProto.encode(object3).length);
     }
 
     public static class TestObject1 {

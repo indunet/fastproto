@@ -17,7 +17,6 @@
 package org.indunet.fastproto.codec;
 
 import org.indunet.fastproto.BitOrder;
-import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.annotation.BoolType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
@@ -27,7 +26,7 @@ import org.indunet.fastproto.util.AnnotationUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.indunet.fastproto.annotation.BoolType.BIT_0;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit test of bool type codec.

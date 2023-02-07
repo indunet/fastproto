@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet.org
+ * Copyright 2019-2022 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,12 +17,11 @@
 package org.indunet.fastproto.api.bitorder;
 
 import lombok.val;
-import org.indunet.fastproto.BitOrder;
 import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.exception.CodecException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
  * Unit test of bit order.
@@ -32,18 +31,18 @@ import static org.junit.jupiter.api.Assertions.*;
  */
 class BitOrderTest {
     @Test
-    public void testParse() {
+    public void testDecode() {
         val expected = new TestObject();
         val bytes = expected.toBytes();
 
-        assertEquals(FastProto.parse(bytes, TestObject.class), expected);
+        assertEquals(FastProto.decode(bytes, TestObject.class), expected);
     }
 
     @Test
-    public void testToBytes() {
+    public void testEncode() {
         val object = new TestObject();
         val expected = object.toBytes();
 
-        assertArrayEquals(expected, FastProto.toBytes(object, 2));
+        assertArrayEquals(expected, FastProto.encode(object, 2));
     }
 }

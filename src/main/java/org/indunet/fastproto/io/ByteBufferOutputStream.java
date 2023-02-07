@@ -1,6 +1,21 @@
+/**
+ * Copyright 2019-2023 indunet.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.indunet.fastproto.io;
 
-import lombok.val;
 import org.indunet.fastproto.BitOrder;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.*;
@@ -16,7 +31,8 @@ import java.util.stream.IntStream;
  */
 public final class ByteBufferOutputStream {
     ByteBuffer byteBuffer;
-    int index;
+    int byteIndex;
+    int bitIndex;
 
     public ByteBufferOutputStream() {
         this(new ByteBuffer());
@@ -28,7 +44,12 @@ public final class ByteBufferOutputStream {
 
     public ByteBufferOutputStream(ByteBuffer buffer) {
         this.byteBuffer = buffer;
-        this.index = 0;
+        this.byteIndex = 0;
+        this.bitIndex = 0;
+    }
+
+    public void writeBool(BitOrder order, boolean value) {
+        this.writeBool(byteIndex, bitIndex, order, value);
     }
 
     public void writeBool(int byteOffset, int bitOffset, BitOrder order, boolean value) {
@@ -42,6 +63,11 @@ public final class ByteBufferOutputStream {
             bo = 7 - bitOffset;
         }
 
+        if (bo == BoolType.BIT_7) {
+            this.byteIndex ++;
+            this.bitIndex = BoolType.BIT_0;
+        }
+
         if (value) {
             byteBuffer.orEq(byteOffset, (byte) (0x01 << bo));
         } else {
@@ -49,12 +75,23 @@ public final class ByteBufferOutputStream {
         }
     }
 
+    public void writeByte(byte value) {
+        byteBuffer.set(byteIndex ++, value);
+    }
+
     public void writeByte(int offset, byte value) {
+        byteIndex = byteBuffer.reverse(offset) + Int8Type.SIZE;
         byteBuffer.set(offset, value);
     }
 
-    public void writeShort( int offset, ByteOrder order, short value) {
+    public void writeShort(ByteOrder order, short value) {
+        this.writeShort(byteIndex, order, value);
+    }
+
+    public void writeShort(int offset, ByteOrder order, short value) {
         int o = byteBuffer.reverse(offset);
+
+        this.byteIndex = o + Int16Type.SIZE;
 
         if (order == ByteOrder.LITTLE) {
             byteBuffer.set(o, (byte) (value));
@@ -65,12 +102,25 @@ public final class ByteBufferOutputStream {
         }
     }
 
+    public void writeInt8(int value) {
+        if (value < Int8Type.MIN_VALUE || value > Int8Type.MAX_VALUE) {
+            throw new IllegalArgumentException("Out of int8 range.");
+        }
+
+        byteBuffer.set(byteIndex ++, (byte) value);
+    }
+
     public void writeInt8(int offset, int value) {
         if (value < Int8Type.MIN_VALUE || value > Int8Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of int8 range.");
         }
 
+        byteIndex = byteBuffer.reverse(offset) + Int8Type.SIZE;
         byteBuffer.set(offset, (byte) value);
+    }
+
+    public void writeInt16(ByteOrder order, int value) {
+        this.writeInt16(byteIndex, order, value);
     }
 
     public void writeInt16(int offset, ByteOrder order, int value) {
@@ -79,6 +129,8 @@ public final class ByteBufferOutputStream {
         }
 
         int o = byteBuffer.reverse(offset);
+
+        this.byteIndex = o + Int16Type.SIZE;
 
         if (order == ByteOrder.BIG) {
             byteBuffer.set(o + 1, (byte) value);
@@ -89,8 +141,14 @@ public final class ByteBufferOutputStream {
         }
     }
 
+    public void writeInt32(ByteOrder order, int value) {
+        this.writeInt32(byteIndex, order, value);
+    }
+
     public void writeInt32(int offset, ByteOrder order, int value) {
         int o = byteBuffer.reverse(offset);
+
+        this.byteIndex = o + Int32Type.SIZE;
 
         if (order == ByteOrder.LITTLE) {
             byteBuffer.set(o, (byte) value);
@@ -105,8 +163,14 @@ public final class ByteBufferOutputStream {
         }
     }
 
+    public void writeInt64(ByteOrder order, long value) {
+        this.writeInt64(byteIndex, order, value);
+    }
+
     public void writeInt64(int offset, ByteOrder order, long value) {
         int o = byteBuffer.reverse(offset);
+
+        this.byteIndex = o + Int64Type.SIZE;
 
         if (order == ByteOrder.BIG) {
             byteBuffer.set(o + 7, (byte) value);
@@ -131,12 +195,21 @@ public final class ByteBufferOutputStream {
         }
     }
 
+    public void writeUInt8(int value) {
+        this.writeUInt8(byteIndex, value);
+    }
+
     public void writeUInt8(int offset, int value) {
         if (value < UInt8Type.MIN_VALUE || value > UInt8Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of uint8 range.");
         }
 
+        byteIndex = byteBuffer.reverse(offset) + UInt8Type.SIZE;
         byteBuffer.set(offset, (byte) value);
+    }
+
+    public void writeUInt16(ByteOrder order, int value) {
+        this.writeUInt16(byteIndex, order, value);
     }
 
     public void writeUInt16(int offset, ByteOrder order, int value) {
@@ -145,6 +218,8 @@ public final class ByteBufferOutputStream {
         }
 
         int o = byteBuffer.reverse(offset);
+
+        this.byteIndex = o + UInt16Type.SIZE;
 
         if (order == ByteOrder.BIG) {
             byteBuffer.set(o + 1, (byte) (value));
@@ -155,12 +230,18 @@ public final class ByteBufferOutputStream {
         }
     }
 
+    public void writeUInt32(ByteOrder order, long value) {
+        this.writeUInt32(byteIndex, order, value);
+    }
+
     public void writeUInt32(int offset, ByteOrder order, long value) {
         if (value < UInt32Type.MIN_VALUE || value > UInt32Type.MAX_VALUE) {
             throw new IllegalArgumentException("Out of uint32 range.");
         }
 
         int o = byteBuffer.reverse(offset);
+
+        this.byteIndex = o + UInt32Type.SIZE;
 
         if (order == ByteOrder.BIG) {
             byteBuffer.set(o + 3, (byte) (value));
@@ -175,6 +256,10 @@ public final class ByteBufferOutputStream {
         }
     }
 
+    public void writeUInt64(ByteOrder order, BigInteger value) {
+        this.writeUInt64(byteIndex, order, value);
+    }
+
     public void writeUInt64(int offset, ByteOrder order, BigInteger value) {
         if (value.compareTo(UInt64Type.MAX_VALUE) > 0 || value.compareTo(UInt64Type.MIN_VALUE) < 0) {
             throw new IllegalArgumentException("Out of uinteger64 range.");
@@ -187,6 +272,8 @@ public final class ByteBufferOutputStream {
         long high = value
                 .shiftRight(32)
                 .longValueExact();
+
+        this.byteIndex = o + UInt64Type.SIZE;
 
         if (order == ByteOrder.BIG) {
             byteBuffer.set(o + 7, (byte) low);
@@ -211,9 +298,15 @@ public final class ByteBufferOutputStream {
         }
     }
 
+    public void writeFloat(ByteOrder order, float value) {
+        this.writeFloat(byteIndex, order, value);
+    }
+
     public void writeFloat(int offset, ByteOrder order, float value) {
         int o = byteBuffer.reverse(offset);
         int bits = Float.floatToIntBits(value);
+
+        this.byteIndex = o + FloatType.SIZE;
 
         if (order == ByteOrder.LITTLE) {
             byteBuffer.set(o, (byte) bits);
@@ -228,9 +321,15 @@ public final class ByteBufferOutputStream {
         }
     }
 
+    public void writeDouble(ByteOrder order, double value) {
+        this.writeDouble(byteIndex, order, value);
+    }
+
     public void writeDouble(int offset, ByteOrder order, double value) {
         int o = byteBuffer.reverse(offset);
         long bits = Double.doubleToRawLongBits(value);
+
+        this.byteIndex = o + DoubleType.SIZE;
 
         if (order == ByteOrder.BIG) {
             byteBuffer.set(o + 7, (byte) bits);
@@ -255,12 +354,40 @@ public final class ByteBufferOutputStream {
         }
     }
 
-    public void writeBytes(int offset, int length, byte[] values) {
-        int o = byteBuffer.reverse(offset);
-        int l = byteBuffer.reverse(offset, length);
+    public void writeBytes(byte[] values) {
+        this.writeBytes(byteIndex, values);
+    }
 
-        IntStream.range(0, Math.min(l, values.length))
+    public void writeBytes(int offset, byte[] values) {
+        int o = byteBuffer.reverse(offset);
+
+        this.byteIndex = o + values.length;
+
+        IntStream.range(0, values.length)
                 .forEach(i -> byteBuffer.set(o + i, values[i]));
+    }
+
+    public void align(int alignment) {
+        if (alignment <= 0 || (alignment & 0x01) != 0) {
+            throw new IllegalArgumentException("alignment must be a positive even number");
+        }
+
+        int index = this.byteIndex;
+        int after = ((index + (alignment - 1)) & ~(alignment - 1));
+
+        this.byteIndex = Math.max(after, 0);
+    }
+
+    public void skip() {
+        this.byteIndex ++;
+    }
+
+    public void skip(int num) {
+        if (num >= 0) {
+            this.byteIndex += num;
+        } else {
+            throw new IllegalArgumentException("num must be a positive number.");
+        }
     }
 
     public ByteBuffer toByteBuffer() {

@@ -85,15 +85,15 @@ public class FastProtoTest {
 
         // Test decode with multi-thread.
         IntStream.range(0, 10).parallel()
-                .forEach(__ -> assertEquals(FastProto.parse(datagram, Tesla.class).toString(), tesla.toString()));
+                .forEach(__ -> assertEquals(FastProto.decode(datagram, Tesla.class).toString(), tesla.toString()));
 
         // Test encode with multi-thread.
         IntStream.range(0, 10).parallel()
                 .forEach(__ -> {
-                    byte[] bytes = FastProto.toBytes(tesla, 44);
+                    byte[] bytes = FastProto.encode(tesla, 44);
                     assertArrayEquals(datagram, bytes);
 
-                    FastProto.toBytes(tesla, bytes);
+                    FastProto.encode(tesla, bytes);
                     assertArrayEquals(datagram, bytes);
                 });
     }
@@ -124,10 +124,10 @@ public class FastProtoTest {
 
         // Test decode.
         assertEquals(
-                FastProto.parse(datagram, Weather.class).toString(), metrics.toString());
+                FastProto.decode(datagram, Weather.class).toString(), metrics.toString());
 
         // Test encode.
-        byte[] cache = FastProto.toBytes(metrics, 30);
+        byte[] cache = FastProto.encode(metrics, 30);
         assertArrayEquals(datagram, cache);
     }
 
@@ -157,10 +157,10 @@ public class FastProtoTest {
 
         // Test decode.
         assertEquals(
-                FastProto.parse(datagram, Weather.class).toString(), weather.toString());
+                FastProto.decode(datagram, Weather.class).toString(), weather.toString());
 
         // Test encode.
-        byte[] cache = FastProto.toBytes(weather, 23);
+        byte[] cache = FastProto.encode(weather, 23);
         assertArrayEquals(cache, datagram);
     }
 
@@ -221,8 +221,8 @@ public class FastProtoTest {
         CodecUtils.uint8Type(datagram, 66, (int) (everything.getSpeed() * 10));
 
         // Test with gzip
-        byte[] compressed = FastProto.toBytes(everything, 103);
-        assertEquals(FastProto.parse(compressed, Everything.class).toString(), everything.toString());
+        byte[] compressed = FastProto.encode(everything, 103);
+        assertEquals(FastProto.decode(compressed, Everything.class).toString(), everything.toString());
     }
 
     @Test
@@ -233,15 +233,15 @@ public class FastProtoTest {
                 .voltage((short) 24)
                 .build();
 
-        byte[] datagram = FastProto.toBytes(motor);
+        byte[] datagram = FastProto.encode(motor);
         assertEquals(44, datagram.length);
-        assertEquals(motor.toString(), FastProto.parse(datagram, Motor.class).toString());
+        assertEquals(motor.toString(), FastProto.decode(datagram, Motor.class).toString());
     }
 
     @Test
     public void testSensor() {
         val sensor = new Sensor(10, 11);
-        val datagram = FastProto.toBytes(sensor, 10);
+        val datagram = FastProto.encode(sensor, 10);
 
         assertEquals(10, datagram.length);
     }
@@ -251,18 +251,18 @@ public class FastProtoTest {
     public void testStateDatagram() {
         byte[] datagram = new byte[600];
 
-        StateDatagram stateDatagram = FastProto.parse(datagram, StateDatagram.class);
+        StateDatagram stateDatagram = FastProto.decode(datagram, StateDatagram.class);
         assertNotNull(stateDatagram);
     }
 
     @Test
     public void testNonObject() {
         val datagram = new byte[10];
-        val nonObject = FastProto.parse(datagram, NonObject.class);
+        val nonObject = FastProto.decode(datagram, NonObject.class);
 
         assertNotNull(nonObject);
 
-        val bytes = FastProto.toBytes(nonObject, 10);
+        val bytes = FastProto.encode(nonObject, 10);
 
         assertNotNull(bytes);
     }
@@ -273,8 +273,8 @@ public class FastProtoTest {
         val datagram = Phone.getDatagram();
         val phone = Phone.getDefault();
 
-        assertEquals(phone.toString(), FastProto.parse(datagram, Phone.class).toString());
-        assertArrayEquals(datagram, FastProto.toBytes(phone, Phone.getLength()));
+        assertEquals(phone.toString(), FastProto.decode(datagram, Phone.class).toString());
+        assertArrayEquals(datagram, FastProto.encode(phone, Phone.getLength()));
     }
 
     @DefaultByteOrder(ByteOrder.BIG)

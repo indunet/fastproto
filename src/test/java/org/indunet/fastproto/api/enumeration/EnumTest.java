@@ -31,7 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class EnumTest {
     @Test
-    public void testParse() {
+    public void testDecode() {
         byte[] bytes = new byte[4];
         val expected = new EnumObject();
 
@@ -39,11 +39,11 @@ public class EnumTest {
         bytes[1] =  (byte) expected.yellow.ordinal();
         bytes[2] = (byte) expected.green.getCode();
 
-        assertEquals(FastProto.parse(bytes, EnumObject.class), expected);
+        assertEquals(FastProto.decode(bytes, EnumObject.class), expected);
     }
 
     @Test
-    public void testToBytes() {
+    public void testEncode() {
         byte[] expected = new byte[4];
         val object = new EnumObject();
 
@@ -51,6 +51,6 @@ public class EnumTest {
         expected[1] =  (byte) object.yellow.ordinal();
         expected[2] = (byte) object.green.getCode();
 
-        assertArrayEquals(FastProto.toBytes(object, 4), expected);
+        assertArrayEquals(FastProto.encode(object, 4), expected);
     }
 }

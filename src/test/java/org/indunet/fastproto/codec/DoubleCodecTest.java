@@ -16,8 +16,6 @@
 
 package org.indunet.fastproto.codec;
 
-import org.indunet.fastproto.annotation.DoubleArrayType;
-import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.DoubleType;
 import org.indunet.fastproto.exception.DecodingException;

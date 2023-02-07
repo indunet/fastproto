@@ -16,6 +16,7 @@
 
 package org.indunet.fastproto.codec;
 
+import lombok.val;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.TimeType;
 import org.indunet.fastproto.exception.DecodingException;
@@ -24,11 +25,18 @@ import org.indunet.fastproto.io.ByteBufferInputStream;
 import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.AnnotationUtils;
 import org.indunet.fastproto.util.BinaryUtils;
+import org.indunet.fastproto.codec.DateCodec.CalendarCodec;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
+import java.sql.Timestamp;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZoneOffset;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,7 +51,7 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since 3.2.1
  */
 public class DateCodecTest {
-    DateCodec codec = new DateCodec();
+    DateCodec dateCodec = new DateCodec();
 
     public static List<Arguments> testDecode1() {
         long current = System.currentTimeMillis();
@@ -66,21 +74,21 @@ public class DateCodecTest {
     @ParameterizedTest
     @MethodSource
     public void testDecode1(byte[] bytes, int offset, ByteOrder order, Date expected) {
-        assertEquals(expected, codec.decode(mock(offset, order), new ByteBufferInputStream(bytes)));
+        assertEquals(expected, dateCodec.decode(mock(offset, order), new ByteBufferInputStream(bytes)));
     }
 
     @Test
     public void testDecode2() {
         byte[] bytes = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.decode(mock(0, ByteOrder.LITTLE), (ByteBufferInputStream) null));
-        assertThrows(DecodingException.class, () -> this.codec.decode(mock(10, ByteOrder.LITTLE), new ByteBufferInputStream(bytes)));
+        assertThrows(NullPointerException.class, () -> this.dateCodec.decode(mock(0, ByteOrder.LITTLE), null));
+        assertThrows(DecodingException.class, () -> this.dateCodec.decode(mock(10, ByteOrder.LITTLE), new ByteBufferInputStream(bytes)));
     }
 
     @ParameterizedTest
     @MethodSource
     public void testEncode1(byte[] bytes, int offset, ByteOrder order, Date value, byte[] expected) {
-        this.codec.encode(mock(offset, order), new ByteBufferOutputStream(bytes), value);
+        this.dateCodec.encode(mock(offset, order), new ByteBufferOutputStream(bytes), value);
 
         assertArrayEquals(expected, bytes);
     }
@@ -90,14 +98,90 @@ public class DateCodecTest {
         byte[] bytes = new byte[10];
 
         assertThrows(NullPointerException.class,
-                () -> this.codec.encode(mock(0, ByteOrder.LITTLE), (ByteBufferOutputStream) null, new Date(System.currentTimeMillis())));
+                () -> this.dateCodec.encode(mock(0, ByteOrder.LITTLE), null, new Date(System.currentTimeMillis())));
         assertThrows(NullPointerException.class,
-                () -> this.codec.encode(mock(0, ByteOrder.LITTLE), (ByteBufferOutputStream) null, null));
+                () -> this.dateCodec.encode(mock(0, ByteOrder.LITTLE), null, null));
 
         assertThrows(EncodingException.class,
-                () -> this.codec.encode(mock(-1, ByteOrder.LITTLE), new ByteBufferOutputStream(bytes), new Date(System.currentTimeMillis())));
+                () -> this.dateCodec.encode(mock(-1, ByteOrder.LITTLE), new ByteBufferOutputStream(bytes), new Date(System.currentTimeMillis())));
         assertThrows(EncodingException.class,
-                () -> this.codec.encode(mock(10, ByteOrder.LITTLE), new ByteBufferOutputStream(bytes), new Date(System.currentTimeMillis())));
+                () -> this.dateCodec.encode(mock(10, ByteOrder.LITTLE), new ByteBufferOutputStream(bytes), new Date(System.currentTimeMillis())));
+    }
+
+    @Test
+    public void testCalendar() {
+        val calendarCodec = dateCodec.new CalendarCodec();
+        val calendar = Calendar.getInstance();
+        val outputStream = new ByteBufferOutputStream();
+
+        outputStream.writeInt64(ByteOrder.LITTLE, calendar.getTimeInMillis());
+
+        val bytes = outputStream.toByteBuffer().toBytes();
+        val actual = calendarCodec.decode(mock(0, ByteOrder.LITTLE), new ByteBufferInputStream(bytes));
+
+        assertEquals(calendar, actual);
+
+        val actuals = new byte[8];
+        calendarCodec.encode(mock(0, ByteOrder.LITTLE), new ByteBufferOutputStream(actuals), calendar);
+
+        assertArrayEquals(bytes, actuals);
+    }
+
+    @Test
+    public void testInstant() {
+        val instantCodec = dateCodec.new InstantCodec();
+        val instant = Instant.now();
+        val outputStream = new ByteBufferOutputStream();
+
+        outputStream.writeInt64(ByteOrder.BIG, instant.toEpochMilli());
+
+        val bytes = outputStream.toByteBuffer().toBytes();
+        val actual = instantCodec.decode(mock(0, ByteOrder.BIG), new ByteBufferInputStream(bytes));
+
+        assertEquals(instant, actual);
+
+        val actuals = new byte[8];
+        instantCodec.encode(mock(0, ByteOrder.BIG), new ByteBufferOutputStream(actuals), instant);
+
+        assertArrayEquals(bytes, actuals);
+    }
+
+    @Test
+    public void testTimestamp() {
+        val timestampCodec = dateCodec.new TimestampCodec();
+        val timestamp = new Timestamp(System.currentTimeMillis());
+        val outputStream = new ByteBufferOutputStream();
+
+        outputStream.writeInt64(ByteOrder.BIG, timestamp.getTime());
+
+        val bytes = outputStream.toByteBuffer().toBytes();
+        val actual = timestampCodec.decode(mock(0, ByteOrder.BIG), new ByteBufferInputStream(bytes));
+
+        assertEquals(timestamp, actual);
+
+        val actuals = new byte[8];
+        timestampCodec.encode(mock(0, ByteOrder.BIG), new ByteBufferOutputStream(actuals), timestamp);
+
+        assertArrayEquals(bytes, actuals);
+    }
+
+    @Test
+    public void testLocalDateTime() {
+        val localDateTimeCodec = dateCodec.new LocalDateTimeCodec();
+        val localDateTime = LocalDateTime.now();
+        val outputStream = new ByteBufferOutputStream();
+
+        outputStream.writeInt64(ByteOrder.BIG, localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
+
+        val bytes = outputStream.toByteBuffer().toBytes();
+        val actual = localDateTimeCodec.decode(mock(0, ByteOrder.BIG), new ByteBufferInputStream(bytes));
+
+        assertEquals(localDateTime, actual);
+
+        val actuals = new byte[8];
+        localDateTimeCodec.encode(mock(0, ByteOrder.BIG), new ByteBufferOutputStream(actuals), localDateTime);
+
+        assertArrayEquals(bytes, actuals);
     }
 
     protected CodecContext mock(int offset, ByteOrder order) {

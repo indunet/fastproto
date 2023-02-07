@@ -18,15 +18,12 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
-import org.indunet.fastproto.io.ByteBuffer;
-import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.CharArrayType;
 import org.indunet.fastproto.annotation.CharType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.io.ByteBufferInputStream;
 import org.indunet.fastproto.io.ByteBufferOutputStream;
-import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.CollectionUtils;
 
 import java.util.Collection;
@@ -83,24 +80,6 @@ public class CharArrayCodec implements Codec<char[]> {
 
     public class WrapperCodec implements Codec<Character[]> {
         @Override
-        public Character[] decode(CodecContext context, byte[] bytes) {
-            val chars = CharArrayCodec.this.decode(context, bytes);
-
-            return IntStream.range(0, chars.length)
-                    .mapToObj(i -> Character.valueOf(chars[i]))
-                    .toArray(Character[]::new);
-        }
-
-        @Override
-        public void encode(CodecContext context, ByteBuffer buffer, Character[] values) {
-            val chars = new char[values.length];
-
-            IntStream.range(0, values.length)
-                    .forEach(i -> chars[i] = values[i]);
-            CharArrayCodec.this.encode(context, buffer, chars);
-        }
-
-        @Override
         public Character[] decode(CodecContext context, ByteBufferInputStream inputStream) {
             val chars = CharArrayCodec.this.decode(context, inputStream);
 
@@ -120,34 +99,6 @@ public class CharArrayCodec implements Codec<char[]> {
     }
 
     public class CollectionCodec implements Codec<Collection<Character>> {
-        @Override
-        public Collection<Character> decode(CodecContext context, byte[] bytes) {
-            try {
-                val type = (Class<? extends Collection>) context.getFieldType();
-                Collection<Character> collection = CollectionUtils.newInstance(type);
-
-                for (val c: CharArrayCodec.this.decode(context, bytes)) {
-                    collection.add(c);
-                }
-
-                return collection;
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new DecodingException(
-                        String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
-            }
-        }
-
-        @Override
-        public void encode(CodecContext context, ByteBuffer buffer, Collection<Character> collection) {
-            val chars = new char[collection.size()];
-            val values = collection.stream()
-                    .toArray(Character[]::new);
-
-            IntStream.range(0, chars.length)
-                    .forEach(i -> chars[i] = values[i]);
-            CharArrayCodec.this.encode(context, buffer, chars);
-        }
-
         @Override
         public Collection<Character> decode(CodecContext context, ByteBufferInputStream inputStream) {
             try {

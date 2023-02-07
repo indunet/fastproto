@@ -21,7 +21,6 @@ import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.util.TypeUtils;
 
 import java.lang.reflect.ParameterizedType;
-import java.text.MessageFormat;
 import java.util.Arrays;
 
 /**

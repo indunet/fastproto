@@ -1,8 +1,6 @@
 package org.indunet.fastproto.codec;
 
 import lombok.val;
-import org.indunet.fastproto.BitOrder;
-import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.annotation.BoolArrayType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
@@ -71,27 +69,6 @@ public class BoolArrayCodec implements Codec<boolean[]> {
 
     public class WrapperCodec implements Codec<Boolean[]> {
         @Override
-        public Boolean[] decode(CodecContext context, byte[] bytes) {
-            boolean[] bools = BoolArrayCodec.this.decode(context, bytes);
-            Boolean[] results = new Boolean[bools.length];
-
-            IntStream.range(0, bools.length)
-                    .forEach(i -> results[i] = bools[i]);
-
-            return results;
-        }
-
-        @Override
-        public void encode(CodecContext context, ByteBuffer buffer, Boolean[] values) {
-            boolean[] bools = new boolean[values.length];
-
-            IntStream.range(0, values.length)
-                    .forEach(i -> bools[i] = values[i]);
-
-            BoolArrayCodec.this.encode(context, buffer, bools);
-        }
-
-        @Override
         public Boolean[] decode(CodecContext context, ByteBufferInputStream inputStream) {
             boolean[] bools = BoolArrayCodec.this.decode(context, inputStream);
             Boolean[] results = new Boolean[bools.length];
@@ -114,35 +91,6 @@ public class BoolArrayCodec implements Codec<boolean[]> {
     }
 
     public class CollectionCodec implements Codec<Collection<Boolean>> {
-        @Override
-        public Collection<Boolean> decode(CodecContext context, byte[] bytes) {
-            try {
-                val type = (Class<? extends Collection>) context.getFieldType();
-                Collection<Boolean> collection = CollectionUtils.newInstance(type);
-
-                for (val value : BoolArrayCodec.this.decode(context, bytes)) {
-                    collection.add(value);
-                }
-
-                return collection;
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new DecodingException(
-                        String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
-            }
-        }
-
-        @Override
-        public void encode(CodecContext context, ByteBuffer buffer, Collection<Boolean> collection) {
-            val bools = new boolean[collection.size()];
-            val values = collection.stream()
-                    .toArray(Boolean[]::new);
-
-            IntStream.range(0, values.length)
-                    .forEach(i -> bools[i] = values[i]);
-
-            BoolArrayCodec.this.encode(context, buffer, bools);
-        }
-
         @Override
         public Collection<Boolean> decode(CodecContext context, ByteBufferInputStream inputStream) {
             try {

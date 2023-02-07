@@ -2,9 +2,6 @@ package org.indunet.fastproto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.indunet.fastproto.exception.CodecException;
-
-import java.util.Arrays;
 
 /**
  * Bit order policy.

@@ -33,19 +33,19 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class ArrayTest {
     @Test
-    public void testParse() throws IOException {
+    public void testDecode() throws IOException {
         val expected = new ArrayObject();
         val bytes = expected.toBytes();
 
-        assertEquals(expected, FastProto.parse(bytes, ArrayObject.class));
+        assertEquals(expected, FastProto.decode(bytes, ArrayObject.class));
     }
 
     @Test
-    public void testToBytes() throws IOException {
+    public void testEncode() throws IOException {
         val object = new ArrayObject();
         val expected = object.toBytes();
 
-        assertArrayEquals(expected, FastProto.toBytes(object, expected.length));
+        assertArrayEquals(expected, FastProto.encode(object, expected.length));
     }
 
     @Test
@@ -53,7 +53,7 @@ public class ArrayTest {
         val expected = new WrapperArrayObject();
         val bytes = expected.toBytes();
 
-        assertEquals(expected, FastProto.parse(bytes, WrapperArrayObject.class));
+        assertEquals(expected, FastProto.decode(bytes, WrapperArrayObject.class));
     }
 
     @Test
@@ -61,7 +61,7 @@ public class ArrayTest {
         val object = new WrapperArrayObject();
         val expected = object.toBytes();
 
-        assertArrayEquals(expected, FastProto.toBytes(object, expected.length));
+        assertArrayEquals(expected, FastProto.encode(object, expected.length));
     }
 
     @Test
@@ -69,7 +69,7 @@ public class ArrayTest {
         val expected = new CollectionObject();
         val bytes = expected.toBytes();
 
-        assertEquals(expected.toString(), FastProto.parse(bytes, CollectionObject.class).toString());
+        assertEquals(expected.toString(), FastProto.decode(bytes, CollectionObject.class).toString());
     }
 
     @Test
@@ -77,6 +77,6 @@ public class ArrayTest {
         val object = new CollectionObject();
         val expected = object.toBytes();
 
-        assertArrayEquals(expected, FastProto.toBytes(object, expected.length));
+        assertArrayEquals(expected, FastProto.encode(object, expected.length));
     }
 }

@@ -19,7 +19,6 @@ package org.indunet.fastproto.codec;
 import lombok.val;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.DoubleArrayType;
-import org.indunet.fastproto.annotation.TimeType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.io.ByteBufferInputStream;

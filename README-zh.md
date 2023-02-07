@@ -86,18 +86,18 @@ public class Weather {
 }
 ```
 
-调用`FastProto::parse()`方法将二进制数据解析成Java数据对象`Weather`
+调用`FastProto::decode()`方法将二进制数据解析成Java数据对象`Weather`
 
 ```java
 byte[] datagram = ...   // 检测设备发送的二进制报文
         
-Weather weather = FastProto.parse(datagram, Weather.class);
+Weather weather = FastProto.decode(datagram, Weather.class);
 ```
 
-调用`FastProto::toBytes()`方法将Java数据对象`Weather`封包成二进制数据,其中方法的第二个参数是字节数组长度，如果用户不指定，那么FastProto会自动推测。
+调用`FastProto::encode()`方法将Java数据对象`Weather`封包成二进制数据,其中方法的第二个参数是字节数组长度，如果用户不指定，那么FastProto会自动推测。
 
 ```java
-byte[] datagram = FastProto.toBytes(weather, 20);
+byte[] datagram = FastProto.encode(weather, 20);
 ```
 
 
@@ -324,13 +324,13 @@ FastProto提供了精简的API解决了上述问题，具体如下：
 * *直接解析，不需要数据对象*
 
 ```java
-boolean f1 = FastProto.parse(bytes)
+boolean f1 = FastProto.decode(bytes)
         .boolType(0, 0)
         .getAsBoolean();
-int f2 = FastProto.parse(bytes)
+int f2 = FastProto.decode(bytes)
         .int8Type(1)      // 在字节偏移量1位置解析有符号8位整型数据
         .getAsInt();
-int f3 = FastProto.parse(bytes)
+int f3 = FastProto.decode(bytes)
         .int16Type(2)     // 在字节偏移量2位置解析有符号16位整型数据
         .getAsInt();
 ```
@@ -346,7 +346,7 @@ public class DataObject {
     Integer f3;
 }
 
-JavaObject obj = FastProto.parse(bytes)
+JavaObject obj = FastProto.decode(bytes)
         .boolType(0, 0, "f1")           
         .int8Type(1, "f2")              // 在字节偏移量1位置解析有符号8位整型数据，字段名称f2
         .int16Type(2, "f3")
@@ -374,14 +374,14 @@ byte[] bytes = FastProto.create()
 
 |Benchmark |    模式  | 样本数量  | 评分 |   误差   |   单位   |
 |:--------:|:--------:|:--------:|:--:|:---------:|:---------:|
-| `FastProto::parse` |  吞吐量   |   10  | 240 | ± 4.6    |  次/毫秒   |
-| `FastProto::toBytes` | 吞吐量  |   10  | 317 | ± 11.9    |  次/毫秒   |
+| `FastProto::decode` |  吞吐量   |   10  | 240 | ± 4.6    |  次/毫秒   |
+| `FastProto::encode` | 吞吐量  |   10  | 317 | ± 11.9    |  次/毫秒   |
 
 2. 方法链式API
 
 |Benchmark |    模式  | 样本数量  | 评分 |   误差   |   单位   |
 |:--------:|:--------:|:--------:|:--:|:---------:|:---------:|
-| `FastProto::parse` |  吞吐量   |   10  | 1273 | ± 17    |  次/毫秒   |
+| `FastProto::decode` |  吞吐量   |   10  | 1273 | ± 17    |  次/毫秒   |
 | `FastProto::create` | 吞吐量  |   10  | 6911 | ± 162    |  次/毫秒   |
 
 ## *6. 构建要求*

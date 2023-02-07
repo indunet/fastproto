@@ -6,7 +6,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 /**
- * Unit test of DynamicByteBuffer
+ * Unit test of ByteBuffer.
  *
  * @author Deng Ran
  * @since 3.8.4

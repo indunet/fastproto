@@ -19,14 +19,12 @@ package org.indunet.fastproto.codec;
 import lombok.val;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.CharArrayType;
-import org.indunet.fastproto.annotation.Int8Type;
 import org.indunet.fastproto.io.ByteBufferInputStream;
 import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.util.AnnotationUtils;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 /**
  * Unit test of char array type codec.

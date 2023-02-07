@@ -94,21 +94,21 @@ public class Weather {
 }
 ```
 
-Invoke the `FastProto::parse()` method to parse the binary data into the Java data object `Weather`
+Invoke the `FastProto::decode()` method to parse the binary data into the Java data object `Weather`
 
 ```java
 // datagram sent by monitoring device.
 byte[] datagram = ...   
 
-Weather weather = FastProto.parse(datagram, Weather.class);
+Weather weather = FastProto.decode(datagram, Weather.class);
 ```
 
-Invoke the `FastProto::toBytes()` method to package the Java data object `Weather` into binary data.
+Invoke the `FastProto::encode()` method to package the Java data object `Weather` into binary data.
 The second parameter of this method is the length of the binary data. 
 If the user does not specify it, FastProto will automatically guess the length.
 
 ```java
-byte[] datagram = FastProto.toBytes(weather, 20);
+byte[] datagram = FastProto.encode(weather, 20);
 ```
 ### *1.2 Transformation Formula*
 
@@ -341,13 +341,13 @@ in a simple way. FastProto provides simple API to solve the above problems, as f
 * *Parse without data object*
 
 ```java
-boolean f1 = FastProto.parse(bytes)
+boolean f1 = FastProto.decode(bytes)
         .boolType(0, 0)
         .getAsBoolean();
-int f2 = FastProto.parse(bytes)
+int f2 = FastProto.decode(bytes)
         .int8Type(1)      // Parse signed 8-bit integer data at byte offset 1
         .getAsInt();
-int f3 = FastProto.parse(bytes)
+int f3 = FastProto.decode(bytes)
         .int16Type(2)     // Parse signed 16-bit integer data at byte offset 2
         .getAsInt();
 ```
@@ -363,7 +363,7 @@ public class DataObject {
     Integer f3;
 }
 
-JavaObject obj = FastProto.parse(bytes)
+JavaObject obj = FastProto.decode(bytes)
         .boolType(0, 0, "f1")           
         .int8Type(1, "f2")              // Parse signed 8-bit integer data at byte offset 1, field name f2
         .int16Type(2, "f3")
@@ -390,17 +390,17 @@ byte[] bytes = FastProto.create()
 
 1. api with annotations
 
-|Benchmark |    Mode  | Samples  | Score | Error  |   Units   |
-|:--------:|:--------:|:--------:|:-----:|:------:|:---------:|
-| `FastProto::parse` |  throughput   |   10  |  240  | ± 4.6  |  ops/ms   |
-| `FastProto::toBytes` | throughput  |   10  |  317  | ± 11.9 |  ops/ms   |
+|      Benchmark      |    Mode  | Samples  | Score | Error  |   Units   |
+|:-------------------:|:--------:|:--------:|:-----:|:------:|:---------:|
+| `FastProto::decode` |  throughput   |   10  |  240  | ± 4.6  |  ops/ms   |
+| `FastProto::encode` | throughput  |   10  |  317  | ± 11.9 |  ops/ms   |
 
 
 2. api without annotations
 
 |Benchmark |    Mode  | Samples  | Score | Error  |   Units   |
 |:--------:|:--------:|:--------:|:--:|:---------:|:---------:|
-| `FastProto::parse` |  throughput   |   10  | 1273 | ± 17    |  ops/ms   |
+| `FastProto::decode` |  throughput   |   10  | 1273 | ± 17    |  ops/ms   |
 | `FastProto::create` | throughput  |   10  | 6911 | ± 162    |  ops/ms   |
 
 
@@ -408,7 +408,7 @@ byte[] bytes = FastProto.create()
 
 *   Java 1.8+
 *   Maven 3.5+
-
+!
 
 ## *7. Contribution*
 

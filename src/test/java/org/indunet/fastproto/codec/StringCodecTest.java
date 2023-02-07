@@ -16,8 +16,12 @@
 
 package org.indunet.fastproto.codec;
 
+import org.indunet.fastproto.annotation.StringType;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
+import org.indunet.fastproto.util.AnnotationUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -58,36 +62,48 @@ public class StringCodecTest {
 
     @ParameterizedTest
     @MethodSource
-    public void testDecode1(byte[] datagram, int byteOffset, int length, Charset set, String actual) {
-        assertEquals(codec.decode(datagram, byteOffset, length, set), actual);
+    public void testDecode1(byte[] actuals, int offset, int length, Charset set, String expecteds) {
+        assertEquals(expecteds, codec.decode(mock(offset, length, set.name()), new ByteBufferInputStream(actuals)));
     }
 
     @Test
     public void testDecode2() {
-        assertThrows(NullPointerException.class, () -> this.codec.decode(null, 2, 1, StandardCharsets.UTF_8));
-
-        assertThrows(DecodingException.class, () -> this.codec.decode("ABCabc".getBytes(), -1, 10, StandardCharsets.UTF_8));
-        assertThrows(DecodingException.class, () -> this.codec.decode("ABCabc".getBytes(), 5, -2, StandardCharsets.UTF_8));
-        assertThrows(DecodingException.class, () -> this.codec.decode("ABCabc".getBytes(), 0, 10, StandardCharsets.UTF_8));
-        assertThrows(DecodingException.class, () -> this.codec.decode("ABCabc".getBytes(), 10, -1, StandardCharsets.UTF_8));
+        assertThrows(NullPointerException.class,
+                () -> this.codec.decode(mock(2, 1, StandardCharsets.UTF_8.name()), (ByteBufferInputStream) null));
+        assertThrows(DecodingException.class,
+                () -> this.codec.decode(mock(-1, 10, StandardCharsets.UTF_8.name()), new ByteBufferInputStream("ABCabc".getBytes())));
+        assertThrows(DecodingException.class,
+                () -> this.codec.decode(mock(5, -2, StandardCharsets.UTF_8.name()), new ByteBufferInputStream("ABCabc".getBytes())));
+        assertThrows(DecodingException.class,
+                () -> this.codec.decode(mock(0, 10, StandardCharsets.UTF_8.name()), new ByteBufferInputStream("ABCabc".getBytes())));
+        assertThrows(DecodingException.class,
+                () -> this.codec.decode(mock(10, -1, StandardCharsets.UTF_8.name()), new ByteBufferInputStream("ABCabc".getBytes())));
     }
 
     @ParameterizedTest
     @MethodSource
-    public void testEncode1(byte[] datagram, int byteOffset, int length, Charset set, String value, byte[] actual) {
-        this.codec.encode(datagram, byteOffset, length, Charset.defaultCharset(), value);
-        assertArrayEquals(datagram, actual);
+    public void testEncode1(byte[] actuals, int offset, int length, Charset set, String value, byte[] expecteds) {
+        this.codec.encode(mock(offset, length, set.name()), new ByteBufferOutputStream(actuals), value);
+        assertArrayEquals(expecteds, actuals);
     }
 
     @Test
     public void testEncode2() {
-        byte[] datagram = new byte[10];
+        byte[] bytes = new byte[10];
 
-        assertThrows(NullPointerException.class, () -> this.codec.encode(null, 0, 8, StandardCharsets.UTF_8, "ABC"));
+        assertThrows(NullPointerException.class,
+                () -> this.codec.encode(mock(0, 8, StandardCharsets.UTF_8.name()), (ByteBufferOutputStream) null, "ABC"));
+        assertThrows(EncodingException.class,
+                () -> this.codec.encode(mock(-1, 2, StandardCharsets.UTF_8.name()), new ByteBufferOutputStream(bytes), "ABC"));
+        assertThrows(EncodingException.class,
+                () -> this.codec.encode(mock(10, -1, StandardCharsets.UTF_8.name()), new ByteBufferOutputStream(bytes), "ABC"));
+        assertThrows(EncodingException.class,
+                () -> this.codec.encode(mock(8, 4, StandardCharsets.UTF_8.name()), new ByteBufferOutputStream(bytes), "ABCD"));
+    }
 
-
-        assertThrows(EncodingException.class, () -> this.codec.encode(datagram, -1, 2, StandardCharsets.UTF_8, "ABC"));
-        assertThrows(EncodingException.class, () -> this.codec.encode(datagram, 10, -1, StandardCharsets.UTF_8, "ABC"));
-        assertThrows(EncodingException.class, () -> this.codec.encode(datagram, 2, 10, StandardCharsets.UTF_8, "ABC"));
+    protected CodecContext mock(int offset, int length, String charset) {
+        return CodecContext.builder()
+                .dataTypeAnnotation(AnnotationUtils.mock(StringType.class, offset, length, charset))
+                .build();
     }
 }

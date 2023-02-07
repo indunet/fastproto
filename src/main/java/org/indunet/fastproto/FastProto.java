@@ -16,7 +16,6 @@
 
 package org.indunet.fastproto;
 
-import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.graph.Resolver;
 import org.indunet.fastproto.io.ByteBuffer;
@@ -39,10 +38,10 @@ public class FastProto {
      * @param clazz Java object annotated with FastProto annotations.
      * @return Java object instance.
      */
-    public static <T> T parse(byte[] bytes, Class<T> clazz) {
+    public static <T> T decode(byte[] bytes, Class<T> clazz) {
         val graph = Resolver.resolve(clazz);
         val context = PipelineContext.builder()
-                .inputStream(new ByteBufferInputStream(new ByteBuffer(bytes)))
+                .inputStream(new ByteBufferInputStream(bytes))
                 .clazz(clazz)
                 .graph(graph)
                 .build();
@@ -59,7 +58,7 @@ public class FastProto {
      * @param bytes Binary data to be converted.
      * @return Decoder which supplies FastProto method chain.
      */
-    public static Decoder parse(byte[] bytes) {
+    public static Decoder decode(byte[] bytes) {
         return new Decoder(bytes);
     }
 
@@ -70,7 +69,7 @@ public class FastProto {
      * @param object Java object to be converted.
      * @return Binary data.
      */
-    public static byte[] toBytes(Object object) {
+    public static byte[] encode(Object object) {
         val graph = Resolver.resolve(object.getClass());
         val context = PipelineContext.builder()
                 .outputStream(new ByteBufferOutputStream())
@@ -94,10 +93,10 @@ public class FastProto {
      * @param length The length of the binary data.
      * @return Binary data.
      */
-    public static byte[] toBytes(Object object, int length) {
+    public static byte[] encode(Object object, int length) {
         val bytes = new byte[length];
 
-        toBytes(object, bytes);
+        encode(object, bytes);
 
         return bytes;
     }
@@ -109,7 +108,7 @@ public class FastProto {
      * @param buffer Binary data will be written to this buffer.
      * @return void
      */
-    public static void toBytes(Object object, byte[] buffer) {
+    public static void encode(Object object, byte[] buffer) {
         val graph = Resolver.resolve(object.getClass());
         val context = PipelineContext.builder()
                 .object(object)
@@ -138,6 +137,6 @@ public class FastProto {
      * @return Encoder which supplies FastProto method chain.
      */
     public static Encoder create(int length) {
-        return new Encoder(length);
+        return new Encoder(new byte[length]);
     }
 }

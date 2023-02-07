@@ -15,18 +15,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
  */
 public class FastProtoTest {
     @Test
-    public void testParse() {
+    public void testDecode() {
         val expected = new DataObject();
-        val actual = FastProto.parse(expected.toBytes(), DataObject.class);
+        val actual = FastProto.decode(expected.toBytes(), DataObject.class);
 
         assertEquals(expected, actual);
     }
 
     @Test
-    public void testToBytes() {
+    public void testEncode() {
         val object = new DataObject();
         val expected = object.toBytes();
-        val actual = FastProto.toBytes(object, 6);
+        val actual = FastProto.encode(object, 6);
 
         assertArrayEquals(expected, actual);
     }

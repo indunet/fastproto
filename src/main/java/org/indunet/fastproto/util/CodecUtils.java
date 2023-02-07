@@ -19,9 +19,9 @@ package org.indunet.fastproto.util;
 import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.BitOrder;
-import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.*;
+import org.indunet.fastproto.io.ByteBuffer;
 
 import java.math.BigInteger;
 import java.util.Arrays;

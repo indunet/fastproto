@@ -18,8 +18,6 @@ package org.indunet.fastproto.pipeline;
 
 import lombok.Builder;
 import lombok.Data;
-import lombok.val;
-import org.indunet.fastproto.io.ByteBuffer;
 import org.indunet.fastproto.graph.Graph;
 import org.indunet.fastproto.io.ByteBufferInputStream;
 import org.indunet.fastproto.io.ByteBufferOutputStream;

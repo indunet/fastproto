@@ -18,15 +18,12 @@ package org.indunet.fastproto.codec;
 
 import lombok.val;
 import lombok.var;
-import org.indunet.fastproto.io.ByteBuffer;
-import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.Int32ArrayType;
 import org.indunet.fastproto.annotation.Int32Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
 import org.indunet.fastproto.io.ByteBufferInputStream;
 import org.indunet.fastproto.io.ByteBufferOutputStream;
-import org.indunet.fastproto.util.CodecUtils;
 import org.indunet.fastproto.util.CollectionUtils;
 
 import java.util.Arrays;
@@ -82,26 +79,10 @@ public class Int32ArrayCodec implements Codec<int[]> {
 
     public class WrapperCodec implements Codec<Integer[]> {
         @Override
-        public Integer[] decode(CodecContext context, byte[] bytes) {
-            return IntStream.of(Int32ArrayCodec.this.decode(context, bytes))
-                    .mapToObj(Integer::valueOf)
-                    .toArray(Integer[]::new);
-        }
-
-        @Override
         public Integer[] decode(CodecContext context, ByteBufferInputStream inputStream) {
             return IntStream.of(Int32ArrayCodec.this.decode(context, inputStream))
                     .mapToObj(Integer::valueOf)
                     .toArray(Integer[]::new);
-        }
-
-        @Override
-        public void encode(CodecContext context, ByteBuffer buffer, Integer[] values) {
-            val ints = Stream.of(values)
-                    .mapToInt(i -> i.intValue())
-                    .toArray();
-
-            Int32ArrayCodec.this.encode(context, buffer, ints);
         }
 
         @Override
@@ -116,22 +97,6 @@ public class Int32ArrayCodec implements Codec<int[]> {
 
     public class CollectionCodec implements Codec<Collection<Integer>> {
         @Override
-        public Collection<Integer> decode(CodecContext context, byte[] bytes) {
-            try {
-                val type = (Class<? extends Collection>) context.getFieldType();
-                Collection<Integer> collection = CollectionUtils.newInstance(type);
-
-                Arrays.stream(Int32ArrayCodec.this.decode(context, bytes))
-                        .forEach(collection::add);
-
-                return collection;
-            } catch (InstantiationException | IllegalAccessException e) {
-                throw new DecodingException(
-                        String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
-            }
-        }
-
-        @Override
         public Collection<Integer> decode(CodecContext context, ByteBufferInputStream inputStream) {
             try {
                 val type = (Class<? extends Collection>) context.getFieldType();
@@ -145,13 +110,6 @@ public class Int32ArrayCodec implements Codec<int[]> {
                 throw new DecodingException(
                         String.format("Fail decoding collection type of %s", context.getFieldType().toString()), e);
             }
-        }
-
-        @Override
-        public void encode(CodecContext context, ByteBuffer buffer, Collection<Integer> collection) {
-            Int32ArrayCodec.this.encode(context, buffer, collection.stream()
-                    .mapToInt(Integer::intValue)
-                    .toArray());
         }
 
         @Override
