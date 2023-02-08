@@ -18,7 +18,6 @@ package org.indunet.fastproto.io;
 
 import org.indunet.fastproto.BitOrder;
 import org.indunet.fastproto.ByteOrder;
-import org.indunet.fastproto.Decoder;
 import org.indunet.fastproto.annotation.*;
 
 import java.math.BigInteger;
@@ -30,11 +29,7 @@ import java.util.stream.IntStream;
  * @author Deng Ran
  * @since 3.10.1
  */
-public final class ByteBufferInputStream {
-    ByteBuffer byteBuffer;
-    int byteIndex;
-    int bitIndex;
-
+public final class ByteBufferInputStream extends ByteBufferIOStream {
     public ByteBufferInputStream() {
         this(new ByteBuffer());
     }
@@ -44,9 +39,7 @@ public final class ByteBufferInputStream {
     }
 
     public ByteBufferInputStream(ByteBuffer buffer) {
-        this.byteBuffer = buffer;
-        this.byteIndex = 0;
-        this.bitIndex = 0;
+        super(buffer);
     }
 
     public boolean readBool(BitOrder order) {
@@ -358,32 +351,5 @@ public final class ByteBufferInputStream {
         this.byteIndex = o + l;
 
         return bytes;
-    }
-
-    public void align(int alignment) {
-        if (alignment <= 0 || (alignment & 0x01) != 0) {
-            throw new IllegalArgumentException("alignment must be a positive even number");
-        }
-
-        int index = this.byteIndex;
-        int after = ((index + (alignment - 1)) & ~(alignment - 1));
-
-        this.byteIndex = Math.max(after, 0);
-    }
-
-    public void skip() {
-        this.byteIndex ++;
-    }
-
-    public void skip(int num) {
-        if (num >= 0) {
-            this.byteIndex += num;
-        } else {
-            throw new IllegalArgumentException("num must be a positive number.");
-        }
-    }
-
-    public ByteBuffer toByteBuffer() {
-        return this.byteBuffer;
     }
 }

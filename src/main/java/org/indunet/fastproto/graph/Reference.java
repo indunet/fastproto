@@ -71,10 +71,8 @@ public class Reference {
     Function<ByteBufferInputStream, ?> decoder;
     BiConsumer<ByteBufferOutputStream, ? super Object> encoder;
 
-    Integer byteOffset;
-    Integer bitOffset;
-    Integer size;
-    Integer length;
+    @Builder.Default
+    ThreadLocal<Object> value = new ThreadLocal<>();
 
     public void decode(ByteBufferInputStream inputStream) {
         val value = this.decoder.apply(inputStream);
@@ -85,9 +83,6 @@ public class Reference {
     public void encoder(ByteBufferOutputStream outputStream) {
         this.encoder.accept(outputStream, this.getValue().get());
     }
-
-    @Builder.Default
-    ThreadLocal<Object> value = new ThreadLocal<>();
 
     public Object newInstance() {
         try {
@@ -127,7 +122,7 @@ public class Reference {
         }
     }
 
-    public void setField(@NonNull Reference reference) {
+    public void setField(Reference reference) {
         val field = reference.getField();
 
         if (this.value.get() != null) {

@@ -17,7 +17,7 @@
 package org.indunet.fastproto.mapper;
 
 import org.indunet.fastproto.annotation.*;
-import org.indunet.fastproto.exception.ResolveException;
+import org.indunet.fastproto.exception.ResolvingException;
 
 import java.lang.annotation.Annotation;
 import java.math.BigInteger;
@@ -71,7 +71,7 @@ public class JavaTypeMapper {
         if (map.containsKey(dataTypeAnnotationClass)) {
             return map.get(dataTypeAnnotationClass);
         } else {
-            throw new ResolveException("Data type of %s is not supported.");
+            throw new ResolvingException("Data type of %s is not supported.");
         }
     }
 }

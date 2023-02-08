@@ -17,7 +17,7 @@
 package org.indunet.fastproto.mapper;
 
 import org.indunet.fastproto.annotation.*;
-import org.indunet.fastproto.exception.ResolveException;
+import org.indunet.fastproto.exception.ResolvingException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.ParameterizedType;
@@ -99,6 +99,6 @@ public class AnnotationMapper {
                 .map(Map.Entry::getValue)
                 .findAny()
                 .orElseThrow(() ->
-                        new ResolveException(String.format("Type %s is not supported.", type)));
+                        new ResolvingException(String.format("Type %s is not supported.", type)));
     }
 }

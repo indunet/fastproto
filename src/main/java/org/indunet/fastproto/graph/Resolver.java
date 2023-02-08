@@ -41,7 +41,7 @@ public class Resolver {
     protected static ResolvePipeline resolveClassFlow = ResolvePipeline.getClassPipeline();
     protected static ResolvePipeline resolveFieldFlow = ResolvePipeline.getFieldPipeline();
 
-    public static Graph resolve(@NonNull Class<?> protocolClass) {
+    public static Graph resolve(Class<?> protocolClass) {
         return graphs.computeIfAbsent(protocolClass, __ -> {
             val graph = new Graph();
             val deque = new ArrayDeque<Field>();
@@ -105,7 +105,7 @@ public class Resolver {
         });
     }
 
-    protected static boolean isClass(@NonNull Field field) {
+    protected static boolean isClass(Field field) {
         Predicate<Field> condition = f -> CodecMapper.isSupported(field.getType());
 
         return !condition.or(f -> Modifier.isTransient(f.getModifiers()))
@@ -120,7 +120,7 @@ public class Resolver {
                 .test(field);
     }
 
-    protected static boolean isData(@NonNull Field field) {
+    protected static boolean isData(Field field) {
         Predicate<Field> isTypeFlag = f -> Arrays.stream(f.getAnnotations())
                 .map(Annotation::annotationType)
                 .anyMatch(t -> t.isAnnotationPresent(DataType.class));

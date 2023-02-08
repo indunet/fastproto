@@ -18,7 +18,7 @@ package org.indunet.fastproto.graph;
 
 import lombok.NonNull;
 import lombok.val;
-import org.indunet.fastproto.exception.ResolveException;
+import org.indunet.fastproto.exception.ResolvingException;
 import org.indunet.fastproto.graph.Reference.ConstructorType;
 import org.indunet.fastproto.graph.Reference.ReferenceType;
 
@@ -81,7 +81,7 @@ public class Graph {
                 .filter(s -> s.getProtocolClass()
                         == reference.getField().getDeclaringClass())
                 .findAny()
-                .orElseThrow(ResolveException::new);
+                .orElseThrow(ResolvingException::new);
 
         this.addReference(key, reference);
     }

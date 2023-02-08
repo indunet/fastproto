@@ -31,7 +31,7 @@ import org.indunet.fastproto.domain.datagram.StateDatagram;
 import org.indunet.fastproto.domain.tesla.Battery;
 import org.indunet.fastproto.domain.tesla.Motor;
 import org.indunet.fastproto.domain.tesla.Tesla;
-import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.util.EncodeUtils;
 import org.junit.jupiter.api.Test;
 
 import java.math.BigInteger;
@@ -71,17 +71,17 @@ public class FastProtoTest {
                 .build();
 
         // Init datagram.
-        CodecUtils.int64Type(datagram, 0, ByteOrder.LITTLE, tesla.getId());
-        CodecUtils.int64Type(datagram, 8, ByteOrder.LITTLE, tesla.getTime().getTime());
-        CodecUtils.floatType(datagram, 16, ByteOrder.LITTLE, tesla.getSpeed());
-        CodecUtils.boolType(datagram, 20, 0, BitOrder.LSB_0, tesla.isActive());
-        CodecUtils.shortType(datagram, 22, ByteOrder.LITTLE, tesla.getBattery().getCapacity());
-        CodecUtils.boolType(datagram, 24, 0, BitOrder.LSB_0, tesla.getBattery().isLocked());
-        CodecUtils.int32Type(datagram, 26, ByteOrder.LITTLE, tesla.getBattery().getVoltage());
-        CodecUtils.floatType(datagram, 30, ByteOrder.LITTLE, tesla.getBattery().getTemperature());
-        CodecUtils.int16Type(datagram, 34, ByteOrder.LITTLE, tesla.getMotor().getVoltage());
-        CodecUtils.int32Type(datagram, 36, ByteOrder.LITTLE, tesla.getMotor().getCurrent());
-        CodecUtils.floatType(datagram, 40, ByteOrder.LITTLE, tesla.getMotor().getTemperature());
+        EncodeUtils.writeInt64(datagram, 0, ByteOrder.LITTLE, tesla.getId());
+        EncodeUtils.writeInt64(datagram, 8, ByteOrder.LITTLE, tesla.getTime().getTime());
+        EncodeUtils.writeFloat(datagram, 16, ByteOrder.LITTLE, tesla.getSpeed());
+        EncodeUtils.writeBool(datagram, 20, 0, BitOrder.LSB_0, tesla.isActive());
+        EncodeUtils.writeShort(datagram, 22, ByteOrder.LITTLE, tesla.getBattery().getCapacity());
+        EncodeUtils.writeBool(datagram, 24, 0, BitOrder.LSB_0, tesla.getBattery().isLocked());
+        EncodeUtils.writeInt32(datagram, 26, ByteOrder.LITTLE, tesla.getBattery().getVoltage());
+        EncodeUtils.writeFloat(datagram, 30, ByteOrder.LITTLE, tesla.getBattery().getTemperature());
+        EncodeUtils.writeInt16(datagram, 34, ByteOrder.LITTLE, tesla.getMotor().getVoltage());
+        EncodeUtils.writeInt32(datagram, 36, ByteOrder.LITTLE, tesla.getMotor().getCurrent());
+        EncodeUtils.writeFloat(datagram, 40, ByteOrder.LITTLE, tesla.getMotor().getTemperature());
 
         // Test decode with multi-thread.
         IntStream.range(0, 10).parallel()
@@ -113,14 +113,14 @@ public class FastProtoTest {
                 .build();
 
         // Init datagram.
-        CodecUtils.uint8Type(datagram, 0, metrics.getId());
-        CodecUtils.int64Type(datagram, 2, ByteOrder.LITTLE, metrics.getTime().getTime());
-        CodecUtils.uint16Type(datagram, 10, ByteOrder.LITTLE, metrics.getHumidity());
-        CodecUtils.int16Type(datagram, 12, ByteOrder.LITTLE, metrics.getTemperature());
-        CodecUtils.uint32Type(datagram, 14, ByteOrder.LITTLE, metrics.getPressure());
-        CodecUtils.boolType(datagram, 18, 0, BitOrder.LSB_0, metrics.isHumidityValid());
-        CodecUtils.boolType(datagram, 18, 1, BitOrder.LSB_0, metrics.isTemperatureValid());
-        CodecUtils.boolType(datagram, 18, 2, BitOrder.LSB_0, metrics.isPressureValid());
+        EncodeUtils.writeUInt8(datagram, 0, metrics.getId());
+        EncodeUtils.writeInt64(datagram, 2, ByteOrder.LITTLE, metrics.getTime().getTime());
+        EncodeUtils.writeUInt16(datagram, 10, ByteOrder.LITTLE, metrics.getHumidity());
+        EncodeUtils.writeInt16(datagram, 12, ByteOrder.LITTLE, metrics.getTemperature());
+        EncodeUtils.writeUInt32(datagram, 14, ByteOrder.LITTLE, metrics.getPressure());
+        EncodeUtils.writeBool(datagram, 18, 0, BitOrder.LSB_0, metrics.isHumidityValid());
+        EncodeUtils.writeBool(datagram, 18, 1, BitOrder.LSB_0, metrics.isTemperatureValid());
+        EncodeUtils.writeBool(datagram, 18, 2, BitOrder.LSB_0, metrics.isPressureValid());
 
         // Test decode.
         assertEquals(
@@ -146,14 +146,14 @@ public class FastProtoTest {
                 .build();
 
         // Init datagram.
-        CodecUtils.uint8Type(datagram, 0, weather.getId());
-        CodecUtils.int64Type(datagram, 2, ByteOrder.LITTLE, weather.getTime().getTime());
-        CodecUtils.uint16Type(datagram, 10, ByteOrder.LITTLE, weather.getHumidity());
-        CodecUtils.int16Type(datagram, 12, ByteOrder.LITTLE, weather.getTemperature());
-        CodecUtils.uint32Type(datagram, 14, ByteOrder.LITTLE, weather.getPressure());
-        CodecUtils.boolType(datagram, 18, 0, BitOrder.LSB_0, weather.isHumidityValid());
-        CodecUtils.boolType(datagram, 18, 1, BitOrder.LSB_0, weather.isTemperatureValid());
-        CodecUtils.boolType(datagram, 18, 2, BitOrder.LSB_0, weather.isPressureValid());
+        EncodeUtils.writeUInt8(datagram, 0, weather.getId());
+        EncodeUtils.writeInt64(datagram, 2, ByteOrder.LITTLE, weather.getTime().getTime());
+        EncodeUtils.writeUInt16(datagram, 10, ByteOrder.LITTLE, weather.getHumidity());
+        EncodeUtils.writeInt16(datagram, 12, ByteOrder.LITTLE, weather.getTemperature());
+        EncodeUtils.writeUInt32(datagram, 14, ByteOrder.LITTLE, weather.getPressure());
+        EncodeUtils.writeBool(datagram, 18, 0, BitOrder.LSB_0, weather.isHumidityValid());
+        EncodeUtils.writeBool(datagram, 18, 1, BitOrder.LSB_0, weather.isTemperatureValid());
+        EncodeUtils.writeBool(datagram, 18, 2, BitOrder.LSB_0, weather.isPressureValid());
 
         // Test decode.
         assertEquals(
@@ -196,29 +196,29 @@ public class FastProtoTest {
                 .build();
 
         // Init datagram.
-        CodecUtils.boolType(datagram, 0, 1, BitOrder.LSB_0, everything.getABoolean());
-        CodecUtils.byteType(datagram, 1, everything.getAByte());
-        CodecUtils.shortType(datagram, 2, ByteOrder.LITTLE, everything.getAShort());
-        CodecUtils.int32Type(datagram, 4, ByteOrder.LITTLE, everything.getAInteger());
-        CodecUtils.int64Type(datagram, 8, ByteOrder.LITTLE, everything.getALong());
-        CodecUtils.floatType(datagram, 16, ByteOrder.LITTLE, everything.getAFloat());
-        CodecUtils.doubleType(datagram, 20, ByteOrder.LITTLE, everything.getADouble());
-        CodecUtils.int8Type(datagram, 28, everything.getAInteger8());
-        CodecUtils.int16Type(datagram, 30, ByteOrder.LITTLE, everything.getAInteger16());
-        CodecUtils.uint8Type(datagram, 32, everything.getAUInteger8());
-        CodecUtils.uint16Type(datagram, 34, ByteOrder.LITTLE, everything.getAUInteger16());
-        CodecUtils.uint32Type(datagram, 36, ByteOrder.LITTLE, everything.getAUInteger32());
-        CodecUtils.binaryType(datagram, 40, -1, everything.getAByteArray());
-        CodecUtils.binaryType(datagram, 50, -1, everything.getAString().getBytes());
-        CodecUtils.int64Type(datagram, 56, ByteOrder.LITTLE, everything.getATimestamp().getTime());
-        CodecUtils.int8Type(datagram, 64, everything.getACharacter());
-        CodecUtils.uint64Type(datagram, 70, ByteOrder.LITTLE, everything.getAUInteger64());
-        CodecUtils.int64Type(datagram, 78, ByteOrder.LITTLE, millis);
-        CodecUtils.int64Type(datagram, 86, ByteOrder.LITTLE, millis);
-        CodecUtils.int64Type(datagram, 94, ByteOrder.LITTLE, millis);
+        EncodeUtils.writeBool(datagram, 0, 1, BitOrder.LSB_0, everything.getABoolean());
+        EncodeUtils.writeByte(datagram, 1, everything.getAByte());
+        EncodeUtils.writeShort(datagram, 2, ByteOrder.LITTLE, everything.getAShort());
+        EncodeUtils.writeInt32(datagram, 4, ByteOrder.LITTLE, everything.getAInteger());
+        EncodeUtils.writeInt64(datagram, 8, ByteOrder.LITTLE, everything.getALong());
+        EncodeUtils.writeFloat(datagram, 16, ByteOrder.LITTLE, everything.getAFloat());
+        EncodeUtils.writeDouble(datagram, 20, ByteOrder.LITTLE, everything.getADouble());
+        EncodeUtils.writeInt8(datagram, 28, everything.getAInteger8());
+        EncodeUtils.writeInt16(datagram, 30, ByteOrder.LITTLE, everything.getAInteger16());
+        EncodeUtils.writeUInt8(datagram, 32, everything.getAUInteger8());
+        EncodeUtils.writeUInt16(datagram, 34, ByteOrder.LITTLE, everything.getAUInteger16());
+        EncodeUtils.writeUInt32(datagram, 36, ByteOrder.LITTLE, everything.getAUInteger32());
+        EncodeUtils.writeBytes(datagram, 40, everything.getAByteArray());
+        EncodeUtils.writeBytes(datagram, 50, everything.getAString().getBytes());
+        EncodeUtils.writeInt64(datagram, 56, ByteOrder.LITTLE, everything.getATimestamp().getTime());
+        EncodeUtils.writeInt8(datagram, 64, everything.getACharacter());
+        EncodeUtils.writeUInt64(datagram, 70, ByteOrder.LITTLE, everything.getAUInteger64());
+        EncodeUtils.writeInt64(datagram, 78, ByteOrder.LITTLE, millis);
+        EncodeUtils.writeInt64(datagram, 86, ByteOrder.LITTLE, millis);
+        EncodeUtils.writeInt64(datagram, 94, ByteOrder.LITTLE, millis);
 
         // There is a formula.
-        CodecUtils.uint8Type(datagram, 66, (int) (everything.getSpeed() * 10));
+        EncodeUtils.writeUInt8(datagram, 66, (int) (everything.getSpeed() * 10));
 
         // Test with gzip
         byte[] compressed = FastProto.encode(everything, 103);

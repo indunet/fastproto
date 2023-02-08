@@ -19,7 +19,7 @@ package org.indunet.fastproto.graph.resolve;
 import lombok.val;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.codec.CodecContext;
-import org.indunet.fastproto.exception.ResolveException;
+import org.indunet.fastproto.exception.ResolvingException;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.graph.resolve.validate.TypeValidator;
 import org.indunet.fastproto.graph.resolve.validate.ValidatorContext;
@@ -92,8 +92,8 @@ public class CodecFlow extends ResolvePipeline {
 
             TypeValidator.create(validator.value())
                     .process(ctx);
-        } catch (ResolveException e) {
-            throw new ResolveException(MessageFormat.format(
+        } catch (ResolvingException e) {
+            throw new ResolvingException(MessageFormat.format(
                     "Fail resolving the filed of %s", reference.getField().toString()
             ), e);
         }

@@ -12,7 +12,7 @@ English | [中文](README-zh.md)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 FastProto is a binary data processing tool written in Java. Developers can mark the field information in binary data (data type, byte offset, endianness, etc.) through annotations,
-and then invoke simple API to realize parsing and packaging binary data.
+and then invoke simple API to realize decoding and encoding binary data.
 It simplifies the process of binary data processing, and developers do not need to write complicated code.
 
 
@@ -23,13 +23,11 @@ It simplifies the process of binary data processing, and developers do not need 
 * Support reverse addressing, suitable for non-fixed-length binary data, for example -1 means the end of binary data
 * Customize endianness (byte order)
 * Support decoding formula & encoding formula including lambda expression
+* Provides a variety of APIs for different application scenarios
 
 
 ### *Under Developing*
 
-* Add char type in working without annotations
-* Write doc of Encoder api doc and Decoder api
-* Add dynamic byte array
 * Code structure & performance optimization
 
 ### *Maven*
@@ -38,7 +36,7 @@ It simplifies the process of binary data processing, and developers do not need 
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.9.1</version>
+    <version>3.10.2</version>
 </dependency>
 ```
 
@@ -64,7 +62,7 @@ The binary data contains 8 different types of signals, the specific protocol is 
 | 18          | 3-7        |                   |   reserved   |      |           |
 | 19          |            |                   |   reserved   |      |           |
 
-### *1.1 Parse and Package Binary Data*
+### *1.1 Decode and encode Binary Data*
 
 After the weather station receives the data, it needs to be converted into Java data objects for subsequent business function development.
 First, define the Java data object `Weather` according to the protocol, and then use the FastProto data type annotation to annotate each attribute.
@@ -330,32 +328,18 @@ FastProto supports case class，but Scala is not fully compatible with Java anno
 import org.indunet.fastproto.annotation.scala._
 ```
 
-## *4. Parse and Package without Annotations*
+## *4. Decode and encode without Annotations*
 
 In some special cases, developers do not want or cannot use annotations to decorate data objects, for example, data objects 
 come from third-party libraries, developers cannot modify the source code, and developers only want to create binary data blocks
 in a simple way. FastProto provides simple API to solve the above problems, as follows:
 
-### *4.1 Parse Binary Data*
+### *4.1 Decode Binary Data*
 
-* *Parse without data object*
-
-```java
-boolean f1 = FastProto.decode(bytes)
-        .boolType(0, 0)
-        .getAsBoolean();
-int f2 = FastProto.decode(bytes)
-        .int8Type(1)      // Parse signed 8-bit integer data at byte offset 1
-        .getAsInt();
-int f3 = FastProto.decode(bytes)
-        .int16Type(2)     // Parse signed 16-bit integer data at byte offset 2
-        .getAsInt();
-```
-
-* *Parse with data object*
+* *Decode with data object*
 
 ```java
-byte[] bytes = ... // Binary data to be parsed
+byte[] bytes = ... // Binary data to be decoded
 
 public class DataObject {
     Boolean f1;
@@ -363,22 +347,43 @@ public class DataObject {
     Integer f3;
 }
 
-JavaObject obj = FastProto.decode(bytes)
-        .boolType(0, 0, "f1")           
-        .int8Type(1, "f2")              // Parse signed 8-bit integer data at byte offset 1, field name f2
-        .int16Type(2, "f3")
-        .mapTo(DataObject.class);       // Map parsing result into Java data object according to the field name
+DataObject obj = FastProto.decode(bytes)
+        .readBool("f1", 0, 0)       // Decode boolean data at byte offset 0 and bit offset 0
+        .readInt8("f2", 1)          // Decode signed 8-bit integer data at byte offset 1
+        .readInt16("f3", 2)         // Decode signed 8-bit integer data at byte offset 2
+        .mapTo(DataObject.class);   // Map decoded result into Java data object according to the field name
+```
+
+* *Decode without data object*
+
+```java
+import org.indunet.fastproto.util.DecodeUtils;
+
+byte[] bytes = ... // Binary data to be decoded
+        
+boolean f1 = DecodeUtils.readBool(bytes, 0, 0); // Decode boolean data at byte offset 0 and bit offset 0
+int f2 = DecodeUtils.readInt8(bytes, 1);        // Decode signed 8-bit integer data at byte offset 1
+int f3 = DecodeUtils.readInt16(bytes, 2);       // Decode signed 8-bit integer data at byte offset 2
 ```
 
 ### *4.2 Create Binary Data Block*
 
 ```java
-byte[] bytes = FastProto.create()
-        .length(16)             // The length of the binary data block
-        .uint8Type(0, 1)        // Write unsigned 8-bit integer data 1 at byte offset 0
-        .uint16Type(2, 3, 4)    // Write 2 unsigned 16-bit integer data 3 and 4 consecutively at byte offset 2
-        .uint32Type(6, ByteOrder.BIG, 32)
+byte[] bytes = FastProto.create(16)         // Create binary block with 16 bytes 
+        .writeInt8(0, 1)                    // Write unsigned 8-bit integer 1 at byte offset 0
+        .writeUInt16(2, 3, 4)               // Write 2 unsigned 16-bit integer 3 and 4 consecutively at byte offset 2
+        .writeUInt32(6, ByteOrder.BIG, 256)  // Write unsigned 32-bit integer 256 at byte offset 6 with big endian
         .get();
+```
+
+```java
+import org.indunet.fastproto.util.EncodeUtils;
+
+byte[] bytes = new byte[16];
+
+EncodeUtils.writeInt8(bytes, 0, 1);                     // Write unsigned 8-bit integer 1 at byte offset 0
+EncodeUtils.writeUInt16(bytes, 2, 3, 4);                // Write 2 unsigned 16-bit integer 3 and 4 consecutively at byte offset 2
+EncodeUtils.writeUInt32(bytes, 6, ByteOrder.BIG, 256);  // Write unsigned 32-bit integer 256 at byte offset 6 with big endian
 ```
 
 

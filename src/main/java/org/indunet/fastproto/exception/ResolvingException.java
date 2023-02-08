@@ -17,19 +17,21 @@
 package org.indunet.fastproto.exception;
 
 /**
+ * Throws when exception occurs during resolving.
+ *
  * @author Deng Ran
  * @since 3.0.0
  */
-public class ResolveException extends RuntimeException {
-    public ResolveException() {
+public class ResolvingException extends CodecException {
+    public ResolvingException() {
 
     }
 
-    public ResolveException(String message) {
+    public ResolvingException(String message) {
         super(message);
     }
 
-    public ResolveException(String message, Throwable cause) {
+    public ResolvingException(String message, Throwable cause) {
         super(message, cause);
     }
 }

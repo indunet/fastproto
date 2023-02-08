@@ -106,7 +106,6 @@ public class FastProto {
      *
      * @param object Java object to be converted.
      * @param buffer Binary data will be written to this buffer.
-     * @return void
      */
     public static void encode(Object object, byte[] buffer) {
         val graph = Resolver.resolve(object.getClass());
@@ -131,7 +130,7 @@ public class FastProto {
     }
 
     /**
-     * Create fixed-length binary block with FastProto method chain.
+     * Create fixed-length binary block with FastProto method chain, support reverse addressing.
      *
      * @param  length The length of the byte array
      * @return Encoder which supplies FastProto method chain.

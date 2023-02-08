@@ -19,7 +19,7 @@ package org.indunet.fastproto.graph.resolve;
 import lombok.val;
 import lombok.var;
 import org.indunet.fastproto.exception.CodecException;
-import org.indunet.fastproto.exception.ResolveException;
+import org.indunet.fastproto.exception.ResolvingException;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.graph.Reference.ConstructorType;
 
@@ -57,7 +57,7 @@ public class ConstructorFlow extends ResolvePipeline {
 
                 reference.setConstructorType(ConstructorType.ALL_ARGS);
             } catch (NoSuchMethodException e) {
-                throw new ResolveException(String.format(
+                throw new ResolvingException(String.format(
                         "The constructor parameters of %s and class fields does not match.",
                         protocolClass.getName()), e);
             }
