@@ -3,6 +3,7 @@ package org.indunet.fastproto;
 import lombok.*;
 import org.indunet.fastproto.annotation.DoubleType;
 import org.indunet.fastproto.annotation.FloatType;
+import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
 
@@ -269,30 +270,44 @@ public class DecoderTest {
     @Test
     public void testMapToArg() {
         val bytes = new byte[]{78, 0, 8, 0, 0, 0, 0, 81};
-        val expected = new DataObject(78, 8, 81l);
+        val expected = new DataObject1(78, 8, 81l);
         val actual = FastProto.decode(bytes)
                 .readInt8("f1", 0)
                 .readInt16("f2", 2)
                 .readUInt32("f3", 4, ByteOrder.BIG)
-                .mapTo(DataObject.class);
+                .mapTo(DataObject1.class);
 
         assertEquals(expected.toString(), actual.toString());
+        assertThrows(DecodingException.class, () -> FastProto.decode(bytes)
+                .readInt8("f1", 0)
+                .readInt16("f2", 2)
+                .mapTo(DataObject2.class));
     }
 
     @Data
-    public static class DataObject {
+    public static class DataObject1 {
         Integer f1;
         Integer f2;
         Long f3;
 
-        public DataObject(Integer f1, Integer f2) {
+        public DataObject1(Integer f1, Integer f2) {
             this.f1 = f1;
             this.f2 = f2;
         }
 
-        public DataObject(Integer f1, Integer f2, Long f3) {
+        public DataObject1(Integer f1, Integer f2, Long f3) {
             this.f3 = f3;
             this.f2 = f2;
+            this.f1 = f1;
+        }
+    }
+
+    @Data
+    public static class DataObject2 {
+        Integer f1;
+        Integer f2;
+
+        public DataObject2(Integer f1) {
             this.f1 = f1;
         }
     }

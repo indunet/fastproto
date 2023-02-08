@@ -21,7 +21,7 @@ import lombok.val;
 import org.indunet.fastproto.BitOrder;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.*;
-import org.indunet.fastproto.util.CodecUtils;
+import org.indunet.fastproto.util.EncodeUtils;
 
 import java.util.Random;
 import java.util.stream.IntStream;
@@ -101,19 +101,19 @@ public class Sample {
     public byte[] toBytes() {
         val bytes = new byte[60];
 
-        CodecUtils.boolType(bytes, 0, 1, BitOrder.LSB_0, this.getBool1());
-        CodecUtils.byteType(bytes, 1, this.getByte8());
-        CodecUtils.shortType(bytes, 2, ByteOrder.LITTLE, this.getShort16());
-        CodecUtils.int32Type(bytes, 4, ByteOrder.LITTLE, this.getInt32());
-        CodecUtils.int64Type(bytes, 8, ByteOrder.LITTLE, this.getLong64());
-        CodecUtils.floatType(bytes, 16, ByteOrder.LITTLE, this.getFloat32());
-        CodecUtils.doubleType(bytes, 20, ByteOrder.LITTLE, this.getDouble64());
-        CodecUtils.int8Type(bytes, 28, this.getInt8());
-        CodecUtils.int16Type(bytes, 30, ByteOrder.LITTLE, this.getInt16());
-        CodecUtils.uint8Type(bytes, 32, this.getUint8());
-        CodecUtils.uint16Type(bytes, 34, ByteOrder.LITTLE, this.getUint16());
-        CodecUtils.uint32Type(bytes, 36, ByteOrder.LITTLE, this.getUint32());
-        CodecUtils.binaryType(bytes, 40, -1, this.getBytes());
+        EncodeUtils.writeBool(bytes, 0, 1, BitOrder.LSB_0, this.getBool1());
+        EncodeUtils.writeByte(bytes, 1, this.getByte8());
+        EncodeUtils.writeShort(bytes, 2, ByteOrder.LITTLE, this.getShort16());
+        EncodeUtils.writeInt32(bytes, 4, ByteOrder.LITTLE, this.getInt32());
+        EncodeUtils.writeInt64(bytes, 8, ByteOrder.LITTLE, this.getLong64());
+        EncodeUtils.writeFloat(bytes, 16, ByteOrder.LITTLE, this.getFloat32());
+        EncodeUtils.writeDouble(bytes, 20, ByteOrder.LITTLE, this.getDouble64());
+        EncodeUtils.writeInt8(bytes, 28, this.getInt8());
+        EncodeUtils.writeInt16(bytes, 30, ByteOrder.LITTLE, this.getInt16());
+        EncodeUtils.writeUInt8(bytes, 32, this.getUint8());
+        EncodeUtils.writeUInt16(bytes, 34, ByteOrder.LITTLE, this.getUint16());
+        EncodeUtils.writeUInt32(bytes, 36, ByteOrder.LITTLE, this.getUint32());
+        EncodeUtils.writeBytes(bytes, 40, this.getBytes());
 
         return bytes;
     }

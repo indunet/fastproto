@@ -16,6 +16,7 @@
 
 package org.indunet.fastproto.io;
 
+import lombok.val;
 import org.indunet.fastproto.exception.CodecException;
 
 import java.util.Arrays;
@@ -29,17 +30,12 @@ import java.util.Arrays;
 public final class ByteBuffer {
     byte[] bytes;
     int length;
-    int readIndex;
-    int writeIndex;
     boolean fixed;
 
     public ByteBuffer() {
         this.fixed = false;
         this.bytes = new byte[256];
-
         this.length = 0;
-        this.readIndex = 0;
-        this.writeIndex = 0;
     }
 
     public ByteBuffer(int length) {
@@ -49,46 +45,7 @@ public final class ByteBuffer {
     public ByteBuffer(byte[] bytes) {
         this.fixed = true;
         this.bytes = bytes;
-
         this.length = bytes.length;
-        this.writeIndex = 0;
-        this.readIndex = 0;
-    }
-
-    public int getWriteIndex() {
-        return this.writeIndex;
-    }
-
-    public int getReadIndex() {
-        return this.readIndex;
-    }
-
-    public void resetReadIndex() {
-        this.readIndex = 0;
-    }
-
-    public void nextReadIndex() {
-        this.readIndex ++;
-    }
-
-    public void resetWriteIndex() {
-        this.writeIndex = 0;
-    }
-
-    public void nextWriteIndex() {
-        this.expand();
-        this.writeIndex ++;
-    }
-
-    public void write(byte value) {
-        this.expand();
-
-        bytes[writeIndex ++] = value;
-    }
-
-    // return value at current index and read index doesn't move.
-    public byte read() {
-        return this.get(this.readIndex);
     }
 
     public void andEq(int offset, byte value) {
@@ -112,32 +69,32 @@ public final class ByteBuffer {
     }
 
     public void set(int offset, byte value) {
-        this.writeIndex = this.reverse(offset);
-        this.expand();
+        val o = this.reverse(offset);
 
-        bytes[this.writeIndex ++] = value;
+        this.grow(o);
+
+        bytes[o] = value;
     }
 
-    private void expand() {
-        if (this.writeIndex >= length) {
-            length = this.writeIndex + 1;
-        }
-
-        if (length == bytes.length && !this.fixed) {
+    private void grow(int index) {
+        if (index >= length) {
+            length = index + 1;
+        }else if (length == bytes.length && !this.fixed) {
             bytes = Arrays.copyOf(bytes, bytes.length * 2);
+
+            this.grow(index);
         }
     }
 
     public byte get(int offset) {
-        this.readIndex = this.reverse(offset);
+        val o = this.reverse(offset);
 
-        if (this.readIndex >= this.length) {
+        if (o >= this.length) {
             throw new IndexOutOfBoundsException();
         }
 
-        return bytes[this.readIndex ++];
+        return bytes[o];
     }
-
 
     public int reverse(int offset) {
         if (offset >= 0) {

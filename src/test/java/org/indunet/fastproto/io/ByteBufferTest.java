@@ -1,3 +1,19 @@
+/*
+ * Copyright 2019-2023 indunet.org
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package org.indunet.fastproto.io;
 
 import org.indunet.fastproto.exception.CodecException;
@@ -13,26 +29,11 @@ import static org.junit.Assert.*;
  */
 public class ByteBufferTest {
     @Test
-    public void testWrite1() {
-        ByteBuffer byteBuffer = new ByteBuffer();
-
-        byteBuffer.write((byte) 1);
-        byteBuffer.write((byte) 2);
-        byteBuffer.write((byte) 3);
-        byteBuffer.write((byte) 4);
-
-        assertEquals(1, byteBuffer.get(0));
-        assertEquals(2, byteBuffer.get(1));
-        assertEquals(3, byteBuffer.get(2));
-        assertEquals(4, byteBuffer.get(3));
-    }
-
-    @Test
-    public void testWrite2() {
+    public void testWrite() {
         ByteBuffer byteBuffer = new ByteBuffer();
 
         byteBuffer.set(3, (byte) 0x01);
-        byteBuffer.write((byte) 0x10);
+        byteBuffer.set(4, (byte) 0x10);
 
         assertArrayEquals(new byte[] {0, 0, 0, 0x01, 0x10}, byteBuffer.toBytes());
     }
@@ -42,17 +43,17 @@ public class ByteBufferTest {
         ByteBuffer byteBuffer = new ByteBuffer();
 
         byteBuffer.set(2, (byte) 0x10);
-        byteBuffer.write((byte) 0x20);
+        byteBuffer.set(3, (byte) 0x20);
 
         assertEquals((byte) 0x10, byteBuffer.get(2));
-        assertEquals((byte) 0x20, byteBuffer.read());
+        assertEquals((byte) 0x20, byteBuffer.get(3));
     }
 
     @Test
     public void testOrEq() {
         ByteBuffer byteBuffer = new ByteBuffer();
 
-        byteBuffer.write((byte) 0x01);
+        byteBuffer.set(0, (byte) 0x01);
         byteBuffer.orEq(0, (byte) 0x02);
 
         assertArrayEquals(new byte[] {0x03}, byteBuffer.toBytes());
@@ -62,7 +63,7 @@ public class ByteBufferTest {
     public void testAndEq() {
         ByteBuffer byteBuffer = new ByteBuffer();
 
-        byteBuffer.write((byte) 0x11);
+        byteBuffer.set(0, (byte) 0x11);
         byteBuffer.andEq(0, (byte) 0x10);
 
         assertArrayEquals(new byte[] {0x10}, byteBuffer.toBytes());

@@ -20,7 +20,7 @@ import lombok.val;
 import org.indunet.fastproto.annotation.AutoType;
 import org.indunet.fastproto.annotation.BoolArrayType;
 import org.indunet.fastproto.annotation.BoolType;
-import org.indunet.fastproto.exception.ResolveException;
+import org.indunet.fastproto.exception.ResolvingException;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Proxy;
@@ -47,7 +47,7 @@ public interface ProtocolType {
                 if (ints.length != 0) {
                     return ints[0];
                 } else {
-                    throw new ResolveException(
+                    throw new ResolvingException(
                             String.format("Autotype lack of property %s", mth.getName()));
                 }
             } else if (Arrays.asList("byteOrder", "bitOrder", "charset", "name")

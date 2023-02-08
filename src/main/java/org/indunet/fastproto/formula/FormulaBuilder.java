@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.formula;
 
-import org.indunet.fastproto.exception.ResolveException;
+import org.indunet.fastproto.exception.ResolvingException;
 import org.indunet.fastproto.formula.compiler.JavaStringCompiler;
 
 import java.io.IOException;
@@ -39,7 +39,7 @@ public interface FormulaBuilder {
 
             return (FormulaBuilder) clazz.newInstance();
         } catch (IOException | ClassNotFoundException | InstantiationException | IllegalAccessException e) {
-            throw new ResolveException(String.format("Fail compiling lambda expression: %s", lambda), e);
+            throw new ResolvingException(String.format("Fail compiling lambda expression: %s", lambda), e);
         }
     }
 

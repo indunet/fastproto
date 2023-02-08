@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 indunet.org
+ * Copyright 2019-2023 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,35 +14,36 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.api.time;
+
+package org.indunet.fastproto.util;
 
 import lombok.val;
-import org.indunet.fastproto.FastProto;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 /**
- * Time test.
+ * Unit test of reverse utils.
  *
  * @author Deng Ran
- * @since 3.4.0
+ * @since 3.10.2
  */
-public class TimeTest {
+public class ReverseUtilsTest {
     @Test
-    public void testDecode() {
-        val expected = new TimeObject();
-        val bytes = expected.toBytes();
+    public void testReverseOffset() {
+        val bytes = new byte[10];
 
-        assertEquals(expected, FastProto.decode(bytes, TimeObject.class));
+        assertEquals(9, ReverseUtils.reverse(bytes, -1));
+        assertEquals(8, ReverseUtils.reverse(bytes, -2));
     }
 
     @Test
-    public void testEncode() {
-        val obj = new TimeObject();
-        val expected = obj.toBytes();
+    public void testReverseLength() {
+        val bytes = new byte[10];
 
-        assertArrayEquals(expected, FastProto.encode(obj, 32));
+        assertEquals(10, ReverseUtils.reverse(bytes, 0, 10));
+        assertEquals(9, ReverseUtils.reverse(bytes, 0, 9));
+        assertEquals(10, ReverseUtils.reverse(bytes, 0, -1));
+        assertEquals(9, ReverseUtils.reverse(bytes, 0, -2));
     }
 }

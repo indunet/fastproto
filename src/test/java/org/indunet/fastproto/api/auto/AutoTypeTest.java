@@ -18,7 +18,7 @@ package org.indunet.fastproto.api.auto;
 
 import lombok.val;
 import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.exception.ResolveException;
+import org.indunet.fastproto.exception.ResolvingException;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,7 +51,7 @@ public class AutoTypeTest {
         val object = new TestObject2();
         val bytes = new byte[10];
 
-        assertThrows(ResolveException.class, () -> FastProto.decode(bytes, TestObject2.class));
-        assertThrows(ResolveException.class, () -> FastProto.encode(object, 10));
+        assertThrows(ResolvingException.class, () -> FastProto.decode(bytes, TestObject2.class));
+        assertThrows(ResolvingException.class, () -> FastProto.encode(object, 10));
     }
 }

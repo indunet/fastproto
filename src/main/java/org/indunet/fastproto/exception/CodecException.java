@@ -24,7 +24,6 @@ package org.indunet.fastproto.exception;
  */
 public class CodecException extends RuntimeException {
     public CodecException() {
-        super();
     }
 
     public CodecException(String message) {

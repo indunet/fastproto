@@ -30,6 +30,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
+ * Annotations utils to mock data type annotation.
+ *
  * @author Deng Ran
  * @since 3.0.0
  */

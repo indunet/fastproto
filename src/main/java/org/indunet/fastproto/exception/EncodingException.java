@@ -17,15 +17,13 @@
 package org.indunet.fastproto.exception;
 
 /**
- * Encode exception.
+ * Throws when exception occurs during encoding.
  *
  * @author Deng Ran
- * @see CodecException
  * @since 1.0.0
  */
 public class EncodingException extends CodecException {
     public EncodingException() {
-
     }
 
     public EncodingException(String message) {

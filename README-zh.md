@@ -11,20 +11,20 @@
 [![JetBrain Support](https://img.shields.io/badge/JetBrain-support-blue)](https://www.jetbrains.com/community/opensource)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto是一款Java编写的二进制数据处理工具，开发者可以通过注解来标记二进制数据中的字段信息（数据类型、字节偏移、大小开端等），然后调用简单的API即可实现解析和封包二进制数据。
+FastProto是一款Java编写的二进制数据处理工具，开发者可以通过注解来标记二进制数据中的字段信息（数据类型、字节偏移、大小开端等），然后调用简单的API即可实现解码和编码二进制数据。
 它简化了二进制数据处理的流程，开发者并不需要编写复杂的代码。
 
 ## *功能*
 
-* 通过注解来标记字段信息，快速地解析和封包二进制数据
+* 通过注解来标记字段信息，快速地解码和编码二进制数据
 * 支持Java基本数据类型、无符号类型、字符串类型、时间类型、数组类型和集合类型等
 * 支持反向寻址，适用于非固定长度二进制数据，例如-1表示二进制数据的末尾
 * 支持自定义字节顺序（大小开端）
 * 自定义编码公式 & 解码公式，支持Lambda表达式
+* 提供多种API，适用于不同的应用场景
 
 ### *正在开发*
 
-* 细化API文档
 * 代码结构 & 性能优化
 
 ### *Maven*
@@ -33,7 +33,7 @@ FastProto是一款Java编写的二进制数据处理工具，开发者可以通�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.9.3</version>
+    <version>3.10.2</version>
 </dependency>
 ```
 
@@ -57,9 +57,9 @@ FastProto是一款Java编写的二进制数据处理工具，开发者可以通�
 | 18          | 3-7        |                |   预留   |      |           |
 | 19          |            |                |   预留   |      |           |
 
-### *1.1 解析和封包二进制数据*
+### *1.1 解码和编码二进制数据*
 
-气象站接收到数据后，需要将其解析成Java数据对象，以便后续的业务功能开发。
+气象站接收到数据后，需要将其解码成Java数据对象，以便后续的业务功能开发。
 首先，按照协议定义Java数据对象`Weather`，然后使用FastProto注解修饰各个字段，注解的offset属性信号的字节偏移量（地址）。
 
 ```java
@@ -86,7 +86,7 @@ public class Weather {
 }
 ```
 
-调用`FastProto::decode()`方法将二进制数据解析成Java数据对象`Weather`
+调用`FastProto::decode()`方法将二进制数据解码成Java数据对象`Weather`
 
 ```java
 byte[] datagram = ...   // 检测设备发送的二进制报文
@@ -94,7 +94,7 @@ byte[] datagram = ...   // 检测设备发送的二进制报文
 Weather weather = FastProto.decode(datagram, Weather.class);
 ```
 
-调用`FastProto::encode()`方法将Java数据对象`Weather`封包成二进制数据,其中方法的第二个参数是字节数组长度，如果用户不指定，那么FastProto会自动推测。
+调用`FastProto::encode()`方法将Java数据对象`Weather`编码成二进制数据,其中方法的第二个参数是字节数组长度，如果用户不指定，那么FastProto会自动推测。
 
 ```java
 byte[] datagram = FastProto.encode(weather, 20);
@@ -114,7 +114,7 @@ public class Weather {
     ...
 
     @UInt32Type(offset = 14)
-    @DecodingFormula(lambda = "x -> x * 0.1")           // 解析后得到的pressure等于uint32 * 0.1
+    @DecodingFormula(lambda = "x -> x * 0.1")           // 解码后得到的pressure等于uint32 * 0.1
     @EncodingFormula(lambda = "x -> (long) (x * 10)")   // 写入二进制的数据等于强制转换为长整型的(pressure * 0.1)
     double pressure;
 }
@@ -190,9 +190,9 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 
 #### *2.4.1 字节顺序和位顺序*
 
-FastProto默认使用小开端，可以通过`@DefaultByteOrder`注解修改全局字节顺序，也可以通过`byteOrder`属性修改特定字段的字节顺序，后者优先级更高。
+FastProto默认使用小开端，可以通过`@DefaultByteOrder`注解修改全局字节顺序，也可以通过数据类型注解中的`byteOrder`属性修改特定字段的字节顺序，后者优先级更高。
 
-同理，FastProto默认使用LSB_0，可以通过`@DefaultBitOrder`注解修改全局位顺序，也可以通过`bitOrder`属性修改特定字段的位顺序，后者优先级更高。
+同理，FastProto默认使用LSB_0，可以通过`@DefaultBitOrder`注解修改全局位顺序，也可以通过数据类型注解中的`bitOrder`属性修改特定字段的位顺序，后者优先级更高。
 
 ```java
 import org.indunet.fastproto.ByteOrder;
@@ -289,7 +289,7 @@ public class Weather {
 
 
 #### *2.4.4 忽略字段*
-在特殊场景下，如果在解析时忽略某些字段，或者封包时忽略某些字段，那么可通过注解`@DecodingIgnore`和`@EncodingIgnore`实现。
+在特殊场景下，如果在解码时忽略某些字段，或者编码时忽略某些字段，那么可通过注解`@DecodingIgnore`和`@EncodingIgnore`实现。
 
 ```java
 import org.indunet.fastproto.annotation.*;
@@ -314,31 +314,17 @@ import org.indunet.fastproto.annotation.scala._
 ```
 
 
-## *4. 不使用注解的解析和封包*
+## *4. 不使用注解的解码和编码*
 
 在一些特殊的情况下，开发者不希望或者无法使用注解修饰数据对象，例如数据对象来自第三方库，开发者不能修改源代码，又如开发者仅希望通过简单的方法创建二进制数据块。
 FastProto提供了精简的API解决了上述问题，具体如下：
 
-### *4.1 解析二进制数据*
+### *4.1 解码二进制数据*
 
-* *直接解析，不需要数据对象*
-
-```java
-boolean f1 = FastProto.decode(bytes)
-        .boolType(0, 0)
-        .getAsBoolean();
-int f2 = FastProto.decode(bytes)
-        .int8Type(1)      // 在字节偏移量1位置解析有符号8位整型数据
-        .getAsInt();
-int f3 = FastProto.decode(bytes)
-        .int16Type(2)     // 在字节偏移量2位置解析有符号16位整型数据
-        .getAsInt();
-```
-
-* *解析后映射成数据对象*
+* *解码后映射成数据对象*
 
 ```java
-byte[] bytes = ... // 待解析的二进制数据
+byte[] bytes = ... // 待解码的二进制数据
 
 public class DataObject {
     Boolean f1;
@@ -346,22 +332,43 @@ public class DataObject {
     Integer f3;
 }
 
-JavaObject obj = FastProto.decode(bytes)
-        .boolType(0, 0, "f1")           
-        .int8Type(1, "f2")              // 在字节偏移量1位置解析有符号8位整型数据，字段名称f2
-        .int16Type(2, "f3")
-        .mapTo(JavaObject.class);       // 将解析结果按照字段名称映射成指定的数据对象
+DataObject obj = FastProto.decode(bytes)
+        .readBool("f1", 0, 0)           // 在字节偏移0和位偏移0位置解码布尔型数据
+        .readInt8("f2", 1)              // 在字节偏移1位置解码有符号8位整型数据
+        .readInt16("f3", 2)             // 在字节偏移2位置解码有符号16位整型数据
+        .mapTo(JavaObject.class);       // 将解码结果按照字段名称映射成指定的数据对象
+```
+
+* *直接解码，不需要数据对象*
+
+```java
+import org.indunet.fastproto.util.DecodeUtils;
+
+byte[] bytes = ... // Binary data to be decoded
+
+boolean f1 = DecodeUtils.readBool(bytes, 0, 0); // 在字节偏移0和位偏移0位置解码布尔型数据
+int f2 = DecodeUtils.readInt8(bytes, 1);        // 在字节偏移1位置解码有符号8位整型数据
+int f3 = DecodeUtils.readInt16(bytes, 2);       // 在字节偏移2位置解码有符号16位整型数据
 ```
 
 ### *4.2 创建二进制数据块*
 
 ```java
-byte[] bytes = FastProto.create()
-        .length(16)             // 二进制数据块的长度
-        .uint8Type(0, 1)        // 在字节偏移量0位置写入无符号8位整型数据1
-        .uint16Type(2, 3, 4)    // 在字节偏移量2位置连续写入2个无符号16位整型数据3和4
-        .uint32Type(6, ByteOrder.BIG, 32)
+byte[] bytes = FastProto.create(16)             // 创建16字节的二进制数据块
+        .writeInt8(0, 1)                        // 在字节偏移0位置写入无符号8位整型数据1
+        .writeUInt16(2, 3, 4)                   // 在字节偏移2位置连续写入2个无符号16位整型数据3和4
+        .writeUInt32(6, ByteOrder.BIG, 256)     // 在字节偏移6位置以大开端形式写入无符号32位整型数据256
         .get();
+```
+
+```java
+import org.indunet.fastproto.util.EncodeUtils;
+
+byte[] bytes = new byte[16];
+
+EncodeUtils.writeInt8(bytes, 0, 1);                     // 在字节偏移0位置写入无符号8位整型数据1
+EncodeUtils.writeUInt16(bytes, 2, 3, 4);                // 在字节偏移2位置连续写入2个无符号16位整型数据3和4
+EncodeUtils.writeUInt32(bytes, 6, ByteOrder.BIG, 256);  // 在字节偏移6位置以大开端形式写入无符号32位整型数据256
 ```
 
 ## *5. 基准测试*

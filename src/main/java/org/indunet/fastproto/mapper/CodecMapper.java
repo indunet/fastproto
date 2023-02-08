@@ -21,7 +21,7 @@ import org.indunet.fastproto.annotation.*;
 import org.indunet.fastproto.codec.*;
 import org.indunet.fastproto.exception.CodecException;
 import org.indunet.fastproto.exception.DecodingException;
-import org.indunet.fastproto.exception.ResolveException;
+import org.indunet.fastproto.exception.ResolvingException;
 import org.indunet.fastproto.io.ByteBufferInputStream;
 import org.indunet.fastproto.io.ByteBufferOutputStream;
 
@@ -244,7 +244,7 @@ public class CodecMapper {
                         .anyMatch(p -> p.test(fieldType)))
                 .map(Map.Entry::getKey)
                 .findAny()
-                .orElseThrow(() -> new ResolveException(
+                .orElseThrow(() -> new ResolvingException(
                         String.format("%s is not supported", fieldType.getName())));
     }
 

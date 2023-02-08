@@ -20,7 +20,7 @@ import lombok.val;
 import org.indunet.fastproto.ProtocolType;
 import org.indunet.fastproto.annotation.AutoType;
 import org.indunet.fastproto.annotation.DataType;
-import org.indunet.fastproto.exception.ResolveException;
+import org.indunet.fastproto.exception.ResolvingException;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.mapper.AnnotationMapper;
 
@@ -40,7 +40,7 @@ public class TypeAnnotationFlow extends ResolvePipeline {
         val typeAnnotation = Arrays.stream(field.getAnnotations())
                 .filter(a -> a.annotationType().isAnnotationPresent(DataType.class))
                 .findAny()
-                .orElseThrow(ResolveException::new);
+                .orElseThrow(ResolvingException::new);
 
         if (typeAnnotation instanceof AutoType) {
             Class<? extends Annotation> type = AnnotationMapper.get(field.getGenericType());

@@ -214,7 +214,7 @@ public class BinaryUtils {
                 .forEach(i -> {
                     val buf = new byte[8];
 
-                    CodecUtils.uint64Type(buf, 0, policy, values[i]);
+                    EncodeUtils.writeUInt64(buf, 0, policy, values[i]);
                     System.arraycopy(buf, 0, bytes, i * 8, 8);
                 });
 

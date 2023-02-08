@@ -29,11 +29,7 @@ import java.util.stream.IntStream;
  * @author Deng Ran
  * @since 3.10.1
  */
-public final class ByteBufferOutputStream {
-    ByteBuffer byteBuffer;
-    int byteIndex;
-    int bitIndex;
-
+public final class ByteBufferOutputStream extends ByteBufferIOStream {
     public ByteBufferOutputStream() {
         this(new ByteBuffer());
     }
@@ -43,9 +39,7 @@ public final class ByteBufferOutputStream {
     }
 
     public ByteBufferOutputStream(ByteBuffer buffer) {
-        this.byteBuffer = buffer;
-        this.byteIndex = 0;
-        this.bitIndex = 0;
+        super(buffer);
     }
 
     public void writeBool(BitOrder order, boolean value) {
@@ -365,32 +359,5 @@ public final class ByteBufferOutputStream {
 
         IntStream.range(0, values.length)
                 .forEach(i -> byteBuffer.set(o + i, values[i]));
-    }
-
-    public void align(int alignment) {
-        if (alignment <= 0 || (alignment & 0x01) != 0) {
-            throw new IllegalArgumentException("alignment must be a positive even number");
-        }
-
-        int index = this.byteIndex;
-        int after = ((index + (alignment - 1)) & ~(alignment - 1));
-
-        this.byteIndex = Math.max(after, 0);
-    }
-
-    public void skip() {
-        this.byteIndex ++;
-    }
-
-    public void skip(int num) {
-        if (num >= 0) {
-            this.byteIndex += num;
-        } else {
-            throw new IllegalArgumentException("num must be a positive number.");
-        }
-    }
-
-    public ByteBuffer toByteBuffer() {
-        return this.byteBuffer;
     }
 }

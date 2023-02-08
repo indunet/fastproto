@@ -16,7 +16,7 @@
 
 package org.indunet.fastproto.formula.compiler;
 
-import org.indunet.fastproto.exception.ResolveException;
+import org.indunet.fastproto.exception.ResolvingException;
 
 import javax.tools.JavaCompiler;
 import javax.tools.JavaCompiler.CompilationTask;
@@ -54,7 +54,7 @@ public class JavaStringCompiler {
 			Boolean result = task.call();
 
 			if (result == null || !result.booleanValue()) {
-				throw new ResolveException("Fail compiling lambda expression.");
+				throw new ResolvingException("Fail compiling lambda expression.");
 			}
 
 			return manager.getClassBytes();
