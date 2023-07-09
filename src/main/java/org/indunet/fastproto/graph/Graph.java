@@ -42,16 +42,6 @@ public class Graph {
 
     }
 
-    public int countReference() {
-        return this.adj.values().stream()
-                .mapToInt(List::size)
-                .sum();
-    }
-
-    public LinkedHashMap<Reference, ArrayList<Reference>> getAdj() {
-        return this.adj;
-    }
-
     public boolean contains(@NonNull Class<?> protocolClass) {
         return this.adj.keySet().stream()
                 .anyMatch(s -> s.getProtocolClass() == protocolClass);

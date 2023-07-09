@@ -35,7 +35,6 @@ import java.util.function.Function;
  * @since 2.0.0
  */
 public class TypeUtils {
-    protected final static String SIZE_NAME = "SIZE";
     protected final static String BYTE_OFFSET_NAME = "value";
     protected final static String BIT_OFFSET_NAME = "bitOffset";
     protected final static String LENGTH_NAME = "length";
