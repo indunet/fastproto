@@ -413,7 +413,7 @@ EncodeUtils.writeUInt32(bytes, 6, ByteOrder.BIG, 256);  // Write unsigned 32-bit
 
 *   Java 1.8+
 *   Maven 3.5+
-!
+
 
 ## *7. Contribution*
 
