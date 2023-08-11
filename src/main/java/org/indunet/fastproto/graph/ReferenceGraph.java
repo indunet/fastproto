@@ -42,16 +42,6 @@ public class ReferenceGraph {
 
     }
 
-    public int countClass() {
-        return adj.size();
-    }
-
-    public int countReference() {
-        return this.adj.values().stream()
-                .mapToInt(List::size)
-                .sum();
-    }
-
     public LinkedHashMap<Reference, ArrayList<Reference>> getAdj() {
         return this.adj;
     }
@@ -62,9 +52,8 @@ public class ReferenceGraph {
     }
 
     public boolean contains(@NonNull Reference reference) {
-//        return this.adj.keySet().stream()
-//                .anyMatch(s -> s.equals(reference));
-        return this.adj.keySet().contains(reference);
+        return this.adj.keySet()
+                .contains(reference);
     }
 
     public void addClass(@NonNull Reference reference) {
@@ -103,31 +92,11 @@ public class ReferenceGraph {
         return this.adj.get(reference);
     }
 
-    public int degree(@NonNull Reference schema) {
-        if (this.adj.containsKey(schema)) {
-            return this.adj
-                    .get(schema)
-                    .size();
-        } else {
-            return 0;
-        }
-    }
-
     public Reference root() {
         return this.adj.keySet()
                 .stream()
                 .findFirst()
                 .get();
-    }
-
-    public void print() {
-        this.adj.entrySet()
-                .forEach(entry -> {
-                    System.out.println(entry.getKey());
-
-                    entry.getValue()
-                            .forEach(s -> System.out.println("\t" + s));
-                });
     }
 
     public List<DecodeContext> decodeContexts(@NonNull byte[] datagram) {

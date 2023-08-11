@@ -123,7 +123,11 @@ public class Reference {
 
         if (this.value.get() != null) {
             try {
-                field.set(this.value.get(), reference.getValue().get());
+                val value = reference.getValue().get();
+
+                if (value != null || !field.getType().isPrimitive()) {
+                    field.set(this.value.get(), value);
+                }
             } catch (IllegalAccessException e) {
                 throw new DecodingException(
                         String.format("Fail decoding the field %s of class %s", field.toString(), this.protocolClass.getName()), e);

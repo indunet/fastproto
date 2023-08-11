@@ -101,6 +101,22 @@ public class ReferenceResolver {
                 }
             }
 
+            // DecodingIgnore or EncodingIgnore field.
+            graph.adj.entrySet()
+                    .forEach(entry -> {
+                        val ref = entry.getKey();
+
+                        if (ref.decodingIgnore) {
+                            entry.getValue()
+                                    .forEach(r -> r.decodingIgnore = true);
+                        }
+
+                        if (ref.encodingIgnore) {
+                            entry.getValue()
+                                    .forEach(r -> r.encodingIgnore = true);
+                        }
+                    });
+
             return graph;
         });
     }
