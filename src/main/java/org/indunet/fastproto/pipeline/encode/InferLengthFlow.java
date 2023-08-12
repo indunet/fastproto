@@ -41,6 +41,7 @@ public class InferLengthFlow extends Pipeline<CodecContext> {
 
         int max = graph.stream()
                 .filter(r -> r.getReferenceType() == Reference.ReferenceType.FIELD)
+                .filter(r -> !r.getEncodingIgnore())
                 .mapToInt(r -> {
                     val type = r.getProtocolType();
 
