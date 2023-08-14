@@ -3,10 +3,7 @@ package org.indunet.fastproto.ignore;
 import lombok.Data;
 import lombok.val;
 import org.indunet.fastproto.FastProto;
-import org.indunet.fastproto.annotation.DecodingIgnore;
-import org.indunet.fastproto.annotation.EncodingIgnore;
-import org.indunet.fastproto.annotation.Int16Type;
-import org.indunet.fastproto.annotation.Int8Type;
+import org.indunet.fastproto.annotation.*;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,6 +22,19 @@ public class IgnoreTest {
         @DecodingIgnore
         @Int16Type(offset = 2)
         Integer mileage;
+
+        @DecodingIgnore
+        @EncodingIgnore
+        Motor motor = new Motor();
+    }
+
+    @Data
+    public static class Motor {
+        @Int8Type(offset = 4)
+        int current;
+
+        @UInt16Type(offset = 6)
+        int voltage;
     }
 
     @Test
@@ -43,7 +53,7 @@ public class IgnoreTest {
         vehicle.setSpeed(1);
         vehicle.setMileage(2);
 
-        val bytes = FastProto.encode(vehicle, 4);
+        val bytes = FastProto.encode(vehicle);
         assertArrayEquals(bytes, new byte[] {0, 0, 2, 0});
     }
 }

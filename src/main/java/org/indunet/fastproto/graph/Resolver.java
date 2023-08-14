@@ -101,6 +101,21 @@ public class Resolver {
                 }
             }
 
+            graph.adj.entrySet()
+                    .stream()
+                    .forEach(entry -> {
+                        val parent = entry.getKey();
+                        val children = entry.getValue();
+
+                        if (parent.decodingIgnore) {
+                            children.forEach(child -> child.decodingIgnore = true);
+                        }
+
+                        if (parent.encodingIgnore) {
+                            children.forEach(child -> child.encodingIgnore = true);
+                        }
+                    });
+
             return graph;
         });
     }
