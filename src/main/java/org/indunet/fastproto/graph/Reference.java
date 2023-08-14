@@ -125,7 +125,7 @@ public class Reference {
     public void setField(Reference reference) {
         val field = reference.getField();
 
-        if (this.value.get() != null) {
+        if (this.value.get() != null && reference.getValue().get() != null) {
             try {
                 field.set(this.value.get(), reference.getValue().get());
             } catch (IllegalAccessException e) {
