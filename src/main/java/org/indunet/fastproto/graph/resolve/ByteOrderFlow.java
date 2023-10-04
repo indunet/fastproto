@@ -31,25 +31,23 @@ import java.util.Optional;
  * @since 2.5.0
  */
 public class ByteOrderFlow extends ResolvePipeline {
-    protected final static ByteOrder DEFAULT_BYTE_ORDER = ByteOrder.LITTLE;
-
     @Override
     public void process(@NonNull Reference reference) {
         if (reference.getReferenceType() == Reference.ReferenceType.CLASS) {
             val protocolClass = reference.getProtocolClass();
             val endianPolicy = Optional.ofNullable(protocolClass.getAnnotation(DefaultByteOrder.class))
                     .map(DefaultByteOrder::value)
-                    .orElse(DEFAULT_BYTE_ORDER);
+                    .orElse(ByteOrder.nativeOrder());
 
             reference.setByteOrder(endianPolicy);
         } else if (reference.getReferenceType() == Reference.ReferenceType.FIELD) {
             val field = reference.getField();
             val endianPolicy = Optional.ofNullable(field.getAnnotation(DefaultByteOrder.class))
                     .map(DefaultByteOrder::value)
-                    .orElseGet(() -> Optional.ofNullable(reference.getField().getDeclaringClass())
+                    .orElseGet(() -> Optional.of(reference.getField().getDeclaringClass())
                             .map(c -> c.getAnnotation(DefaultByteOrder.class))
                             .map(DefaultByteOrder::value)
-                            .orElse(DEFAULT_BYTE_ORDER));     // Inherit endian of declaring class.
+                            .orElse(ByteOrder.nativeOrder()));     // Inherit endian of declaring class.
 
             reference.setByteOrder(endianPolicy);
         }
