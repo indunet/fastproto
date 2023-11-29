@@ -11,20 +11,17 @@ English | [中文](README-zh.md)
 [![JetBrain Support](https://img.shields.io/badge/JetBrain-support-blue)](https://www.jetbrains.com/community/opensource)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto is a binary data processing tool written in Java. Developers can mark the field information in binary data (data type, byte offset, endianness, etc.) through annotations,
-and then invoke simple API to realize decoding and encoding binary data.
-It simplifies the process of binary data processing, and developers do not need to write complicated code.
+FastProto is a powerful binary data processing tool designed to simplify binary data encoding and decoding in a Java environment. 
+By combining annotations with straightforward APIs, it allows developers to easily manage complex binary data structures, eliminating the need for cumbersome manual coding.
 
+## *Key Features*
 
-## *Features*
-
-* Mark field information through annotations, quickly parse and package binary data
-* Support Java primitive type, unsigned type, string type, time type, array type and collection type, etc.
-* Support reverse addressing, suitable for non-fixed-length binary data, for example -1 means the end of binary data
-* Customize endianness (byte order)
-* Support decoding formula & encoding formula including lambda expression
-* Provides a variety of APIs for different application scenarios
-
+* **Annotation-Driven:** FastProto utilizes annotations to mark field information in binary data (such as data type, byte offset, endianness, etc.), making parsing and packaging of data fast and intuitive.
+* **Extensive Type Support:** Supports Java primitive types, unsigned types, string types, time types, arrays, and collection types, catering to diverse data processing needs.
+* **Flexible Addressing:** Offers reverse addressing capabilities, ideal for handling non-fixed-length binary data, significantly enhancing its application flexibility.
+* **Customizable Byte Order:** Users can customize the byte order (big-endian or little-endian) to match various data specifications.
+* **Encoding and Decoding Formulas:** Supports encoding and decoding formulas, including lambda expressions, offering greater flexibility for complex data operations.
+* **Diverse APIs:** Provides a variety of APIs to suit different application scenarios, ensuring efficiency and reliability in various environments.
 
 ### *Under Developing*
 
@@ -36,7 +33,7 @@ It simplifies the process of binary data processing, and developers do not need 
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.10.2</version>
+    <version>3.10.3</version>
 </dependency>
 ```
 
