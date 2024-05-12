@@ -25,18 +25,20 @@ import org.indunet.fastproto.pipeline.Pipeline;
 import org.indunet.fastproto.pipeline.PipelineContext;
 
 /**
- * Convert binary data to Java object, or convert Java object to binary data.
+ * This class provides methods to convert binary data into a Java object and vice versa.
+ * The conversion process utilizes FastProto annotations.
  *
  * @author Deng Ran
  * @since 1.0.0
  */
 public class FastProto {
     /**
-     * Convert binary data to Java object with FastProto annotations.
+     * Converts binary data into a Java object with FastProto annotations.
      *
-     * @param bytes Binary data to be converted.
-     * @param clazz Java object annotated with FastProto annotations.
-     * @return Java object instance.
+     * @param <T>   The type of the Java object that the binary data will be converted into.
+     * @param bytes The binary data to be converted.
+     * @param clazz The class of the Java object, annotated with FastProto annotations.
+     * @return An instance of the Java object.
      */
     public static <T> T decode(byte[] bytes, Class<T> clazz) {
         val graph = Resolver.resolve(clazz);
@@ -53,21 +55,21 @@ public class FastProto {
     }
 
     /**
-     * Convert Java object to binary data with FastProto method chain.
+     * Converts a Java object into binary data using the FastProto method chain.
      *
-     * @param bytes Binary data to be converted.
-     * @return Decoder which supplies FastProto method chain.
+     * @param bytes The binary data that will be converted.
+     * @return A Decoder instance that provides a FastProto method chain for further operations.
      */
     public static Decoder decode(byte[] bytes) {
         return new Decoder(bytes);
     }
 
     /**
-     * Convert Java object to binary data with FastProto annotations, the length of the binary data is automatically
-     * calculated, but reverse addressing is not supported.
+     * Converts a Java object into binary data using FastProto annotations. The binary data's length is automatically determined.
+     * Note: This method does not support reverse addressing.
      *
-     * @param object Java object to be converted.
-     * @return Binary data.
+     * @param object The Java object to be converted, which should be annotated with FastProto annotations.
+     * @return The resulting binary data from the conversion.
      */
     public static byte[] encode(Object object) {
         val graph = Resolver.resolve(object.getClass());
@@ -87,11 +89,11 @@ public class FastProto {
     }
 
     /**
-     * Convert Java object to binary data with FastProto annotations, reverse addressing is supported because of fixed length.
+     * Transforms a Java object into binary data using FastProto annotations. This method supports reverse addressing due to the fixed length of the binary data.
      *
-     * @param object Java object to be converted.
-     * @param length The length of the binary data.
-     * @return Binary data.
+     * @param object The Java object to be converted. It should be annotated with FastProto annotations.
+     * @param length The predetermined length of the resulting binary data.
+     * @return The binary data resulting from the conversion of the Java object.
      */
     public static byte[] encode(Object object, int length) {
         val bytes = new byte[length];
@@ -102,10 +104,10 @@ public class FastProto {
     }
 
     /**
-     * Convert Java object to binary data with FastProto annotations, reverse addressing is supported because of fixed length.
+     * Converts a Java object into binary data using FastProto annotations. This method supports reverse addressing due to the fixed length of the binary data.
      *
-     * @param object Java object to be converted.
-     * @param buffer Binary data will be written to this buffer.
+     * @param object The Java object to be converted. It should be annotated with FastProto annotations.
+     * @param buffer The buffer where the resulting binary data will be written.
      */
     public static void encode(Object object, byte[] buffer) {
         val graph = Resolver.resolve(object.getClass());
@@ -121,19 +123,19 @@ public class FastProto {
     }
 
     /**
-     * Create binary block with FastProto method chain.
+     * Generates a binary block using the FastProto method chain.
      *
-     * @return Encoder object which supplies chain api.
+     * @return An Encoder instance that provides a chain API for further operations.
      */
     public static Encoder create() {
         return new Encoder();
     }
 
     /**
-     * Create fixed-length binary block with FastProto method chain, support reverse addressing.
+     * Creates a binary block of a fixed length using the FastProto method chain. This method supports reverse addressing.
      *
-     * @param  length The length of the byte array
-     * @return Encoder which supplies FastProto method chain.
+     * @param length The predetermined length of the binary block.
+     * @return An Encoder instance that provides a FastProto method chain for further operations.
      */
     public static Encoder create(int length) {
         return new Encoder(new byte[length]);

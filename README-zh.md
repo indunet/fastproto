@@ -11,7 +11,7 @@
 [![JetBrain Support](https://img.shields.io/badge/JetBrain-support-blue)](https://www.jetbrains.com/community/opensource)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto 是一个高效的二进制数据处理工具，专为简化在Java环境中的二进制数据编解码设计。
+FastProto是一款高效的二进制数据处理工具，专为简化Java环境中的二进制数据编解码设计。
 它通过注解和简单API的结合，使得开发人员可以轻松地处理复杂的二进制数据结构，避免了繁琐的手动编码工作。
 
 ## *核心功能*
