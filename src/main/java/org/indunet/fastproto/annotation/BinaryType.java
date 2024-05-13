@@ -25,7 +25,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Binary type, can be used to annotate field type of Byte[]/byte[].
+ * Defines a Binary type annotation. This annotation is used to mark fields of type Byte[] or byte[].
+ * It represents binary data where each byte is considered as a separate entity.
  *
  * @author Deng Ran
  * @since 1.0.0

@@ -25,7 +25,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * ASCII type which takes 1 byte, can be used to annotate field type of Character/char.
+ * Defines an Ascii type annotation. This annotation is used to mark fields of type Character or char.
+ * It uses the Ascii character set, where each character occupies 1 byte.
  *
  * @author Deng Ran
  * @since 1.0.0

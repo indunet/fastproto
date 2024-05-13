@@ -9,8 +9,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Ascii array type which use ascii charset, each character takes 1 byte, can be used to annotate field type of
- * Character[]/char[]/List<Character>/Set<Character>.
+ * Defines an Ascii array type annotation. This annotation is used to mark fields of type
+ * Character[], char[], List<Character>, Set<Character>.
+ * It uses the Ascii character set, where each character occupies 1 byte.
  *
  * @author Deng Ran
  * @since 3.9.1
