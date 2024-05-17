@@ -24,7 +24,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * FastProto uses little endian by default, this annotation can modify the default byte order.
+ * Annotation for modifying the default byte order in FastProto. By default, FastProto uses little endian.
+ * This annotation allows for a change in the default byte order.
  *
  * @author Deng Ran
  * @since 1.0.0

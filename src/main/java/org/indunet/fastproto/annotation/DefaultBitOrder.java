@@ -24,7 +24,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * FastProto uses LSB_0 by default, this annotation can modify the default bit order.
+ * Annotation for modifying the default bit order in FastProto. By default, FastProto uses LSB_0.
+ * This annotation allows for a change in the default bit order.
  *
  * @author Deng Ran
  * @since 3.9.1

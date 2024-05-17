@@ -23,7 +23,8 @@ import java.lang.annotation.Target;
 import java.util.function.Function;
 
 /**
- * The parsed result will be substituted into the decoding formula, and the final result will be assigned to the annotated field.
+ * Annotation for decoding formula. The result of parsing is substituted into this formula,
+ * and the final result is assigned to the field with this annotation.
  *
  * @author Deng Ran
  * @since 3.5.0

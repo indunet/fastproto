@@ -22,7 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotated field will be ignored when decoding.
+ * Annotation indicating that the annotated field should be ignored during the decoding process.
  *
  * @author Deng Ran
  * @since 1.0.0

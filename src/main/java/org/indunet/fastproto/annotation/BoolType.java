@@ -27,10 +27,10 @@ import java.lang.annotation.Target;
 
 
 /**
- * Boolean type, each unit takes 1 bit, can be used to annotate field type of Boolean/boolean.
+ * Defines a Boolean type annotation. This annotation is used to mark fields of type Boolean or boolean.
+ * Each unit takes 1 bit in the binary data.
  *
  * @author Deng Ran
- * @see DataType
  * @since 1.0.0
  */
 @DataType
