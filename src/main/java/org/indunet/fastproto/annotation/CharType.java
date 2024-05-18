@@ -10,10 +10,10 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Char type which use unicode charset, each character takes 2 bytes, it can be used to annotate field type of Character/char.
+ * Defines a CharType annotation. This annotation is used to mark fields of type Character or char.
+ * It uses the Unicode character set, where each character occupies 2 bytes.
  *
  * @author Deng Ran
- * @see DataType
  * @since 3.8.4
  */
 @DataType

@@ -28,7 +28,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * FastProto is able to infer the annotation type based on the field type when using @AutoType.
+ * Defines an AutoType annotation. FastProto can infer the annotation type based on the field type when using @AutoType.
+ * This annotation is used to automatically determine the type of the field in the binary data.
  *
  * @author Deng Ran
  * @since 3.7.1

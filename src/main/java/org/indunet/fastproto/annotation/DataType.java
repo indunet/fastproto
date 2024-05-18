@@ -22,7 +22,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * An annotation used to mark data type annotation.
+ * Annotation used to identify other annotations that represent data types.
  *
  * @author Deng Ran
  * @since 1.0.0

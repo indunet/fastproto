@@ -6,8 +6,10 @@ import org.indunet.fastproto.annotation.DoubleType;
 import org.indunet.fastproto.annotation.FloatType;
 import org.indunet.fastproto.util.BinaryUtils;
 import org.junit.jupiter.api.Test;
+import org.junit.platform.commons.util.StringUtils;
 
 import java.math.BigInteger;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
