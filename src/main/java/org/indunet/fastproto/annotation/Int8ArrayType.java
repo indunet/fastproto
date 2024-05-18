@@ -25,8 +25,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Int8 array type, each int8 takes 1 byte, it can be used to annotate field type of Byte[]/byte[]/Integer[]/int[]/
- * List<Byte>/Set<Byte>/List<Integer>/Set<Integer>.
+ * Annotation for Int8 array type. Each Int8 unit occupies 1 byte.
+ * This annotation can be used to mark fields of type Byte[], byte[], Integer[], int[], List<Byte>, Set<Byte>, List<Integer>, or Set<Integer>.
  *
  * @author Deng Ran
  * @since 3.6.0

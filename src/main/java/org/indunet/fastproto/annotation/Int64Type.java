@@ -26,7 +26,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Int64 type which takes 8 bytes, it can be used to annotate field type of Long/long.
+ * Annotation for Int64 type. This type occupies 8 bytes and can be used to annotate fields of type Long or long.
  *
  * @author Deng Ran
  * @since 1.0.0

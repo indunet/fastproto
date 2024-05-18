@@ -22,7 +22,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotated field will be ignored when encoding.
+ * Annotation to ignore a field during the encoding process.
+ * Fields marked with this annotation will not be included in the encoded output.
  *
  * @author Deng Ran
  * @since 1.0.0

@@ -27,7 +27,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Int64 array type, each element takes 8 bytes, it can be used to annotate field type of Long[]/long[]/List<Long>/Set<Long>.
+ * Annotation for Int64 array type. Each Int64 unit occupies 8 bytes.
+ * This annotation can be used to mark fields of type Long[], long[], List<Long>, or Set<Long>.
  *
  * @author Deng Ran
  * @since 3.6.0

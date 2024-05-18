@@ -26,7 +26,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * UInt32 array type, each element takes 4 bytes, it can be used to annotate field type of Integer[]/int[]/List<Integer>/Set<Integer>.
+ * Annotation for UInt32 array type. Each UInt32 unit occupies 4 bytes.
+ * This annotation can be used to mark fields of type Integer[], int[], List<Integer>, or Set<Integer>.
  *
  * @author Deng Ran
  * @since 3.6.0

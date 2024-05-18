@@ -26,8 +26,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Int16 array type, each element takes 2 byte, can be used to annotate field type of  Integer[]/int[]/List<Integer>/Set<Integer>/
- * Short[]/short[]/List<Short>/Set<Short>.
+ * Annotation for Int16 array type. Each Int16 unit occupies 2 bytes.
+ * This annotation can be used to mark fields of type Integer[], int[], List<Integer>, Set<Integer>, Short[], short[], List<Short>, or Set<Short>.
  *
  * @author Deng Ran
  * @since 3.6.0
