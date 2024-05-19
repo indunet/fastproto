@@ -30,7 +30,10 @@ import java.util.Collection;
 import java.util.stream.IntStream;
 
 /**
- * Float array type codec.
+ * Codec for Float Array type.
+ * This codec is responsible for encoding and decoding float array types.
+ * It provides support for both primitive float array and wrapper Float array, as well as collections of Float.
+ * It is used in conjunction with the FloatArrayType annotation.
  *
  * @author Deng Ran
  * @since 3.6.0

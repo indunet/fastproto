@@ -26,7 +26,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * UInt8 array type, each element takes 1 byte, it can be used to annotate field type of Integer[]/int[]/List<Integer>/Set<Integer>.
+ * Annotation for UInt8 array type. Each UInt8 unit occupies 1 byte.
+ * This annotation can be used to mark fields of type Integer[], int[], List<Integer>, or Set<Integer>.
  *
  * @author Deng Ran
  * @since 3.6.0

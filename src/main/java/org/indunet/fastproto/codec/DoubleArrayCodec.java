@@ -33,7 +33,10 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * Double array type codec.
+ * Codec for Double Array type.
+ * This codec is responsible for encoding and decoding double array types.
+ * It provides support for both primitive double array and wrapper Double array, as well as collections of Double.
+ * It is used in conjunction with the DoubleArrayType annotation.
  *
  * @author Deng Ran
  * @since 3.6.0

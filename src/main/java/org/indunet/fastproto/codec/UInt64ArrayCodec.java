@@ -32,7 +32,10 @@ import java.util.Collection;
 import java.util.stream.IntStream;
 
 /**
- * UInt64 array type codec.
+ * Codec for UInt64 Array type.
+ * This codec is responsible for encoding and decoding UInt64 array types.
+ * It provides support for both primitive UInt64 array and wrapper BigInteger array, as well as collections of BigInteger.
+ * It is used in conjunction with the UInt64ArrayType annotation.
  *
  * @author Deng Ran
  * @since 3.6.0

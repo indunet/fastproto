@@ -34,7 +34,10 @@ import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 /**
- * Schema.
+ * Represents a Reference in the graph.
+ * A Reference can be a class or a field, and it contains various properties and methods related to encoding and decoding.
+ * It also provides methods to create new instances of the protocol class and set field values.
+ * This class is a crucial part of the fastproto library's internal workings.
  *
  * @author Deng Ran
  * @since 2.5.0

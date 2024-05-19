@@ -27,7 +27,7 @@ import java.lang.annotation.Target;
 import java.math.BigInteger;
 
 /**
- * UInt64 type which takes 8 bytes, it can be used to annotate field type of BitInteger.
+ * Annotation for UInt64 type. This type occupies 8 bytes and can be used to annotate fields of type BigInteger.
  *
  * @author Deng Ran
  * @since 1.5.0

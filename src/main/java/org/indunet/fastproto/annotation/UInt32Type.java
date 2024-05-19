@@ -26,7 +26,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * UInt32 type which takes 4 bytes, it can be used to annotate field type of Long/long.
+ * Annotation for UInt32 type. This type occupies 4 bytes and can be used to annotate fields of type Long or long.
  *
  * @author Deng Ran
  * @since 1.2.0

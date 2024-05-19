@@ -33,7 +33,10 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 /**
- * UInt32 array type codec.
+ * Codec for UInt32 Array type.
+ * This codec is responsible for encoding and decoding UInt32 array types.
+ * It provides support for both primitive UInt32 array and wrapper Long array, as well as collections of Long.
+ * It is used in conjunction with the UInt32ArrayType annotation.
  *
  * @author Deng Ran
  * @since 3.6.0

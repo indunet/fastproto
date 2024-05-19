@@ -31,7 +31,12 @@ import java.util.Calendar;
 import java.util.Date;
 
 /**
- * Date type codec.
+ * Codec for Date type.
+ * This codec is responsible for encoding and decoding Date types.
+ * It is used in conjunction with the TimeType annotation.
+ * The codec ensures that the Date value is correctly encoded and decoded.
+ * If there are any issues during the encoding or decoding process, an exception is thrown.
+ * It also provides additional codecs for Timestamp, Calendar, Instant, and LocalDateTime types.
  *
  * @author Deng Ran
  * @since 3.2.1

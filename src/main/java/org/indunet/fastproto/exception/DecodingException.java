@@ -17,7 +17,10 @@
 package org.indunet.fastproto.exception;
 
 /**
- * Throws when exception occurs during decoding.
+ * Exception class for Decoding operations.
+ * This class extends CodecException and is used to handle exceptions that occur during the decoding process in the fastproto library.
+ * It provides constructors to create an exception with a message, a cause, or both.
+ * This exception is thrown when there are issues during the decoding process.
  *
  * @author Deng Ran
  * @since 1.0.0

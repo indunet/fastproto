@@ -12,7 +12,10 @@ import java.util.Collection;
 import java.util.stream.IntStream;
 
 /**
- * Boolean array type codec.
+ * Codec for Boolean array type.
+ * This codec is responsible for encoding and decoding Boolean array types.
+ * It provides support for both primitive boolean array and wrapper Boolean array, as well as collections of Boolean.
+ * It is used in conjunction with the BoolArrayType annotation.
  *
  * @author Deng Ran
  * @since 3.8.3

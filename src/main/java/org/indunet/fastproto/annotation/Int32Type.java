@@ -26,7 +26,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Int16 type which takes 2 bytes, it can be used to annotate field type of Integer/int.
+ * Annotation for Int32 type. This type occupies 4 bytes and can be used to annotate fields of type Integer or int.
  *
  * @author Deng Ran
  * @since 1.0.0

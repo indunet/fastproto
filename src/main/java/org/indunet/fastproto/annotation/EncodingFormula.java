@@ -23,7 +23,8 @@ import java.lang.annotation.Target;
 import java.util.function.Function;
 
 /**
- * The value of annotated field will be substituted into the encoding formula, and the final result will be written into binary.
+ * Annotation for encoding formula. The value of the annotated field will be substituted into the encoding formula.
+ * The final result will be written into binary. This annotation is used in conjunction with fields that need to be encoded into binary format.
  *
  * @author Deng Ran
  * @since 3.5.0

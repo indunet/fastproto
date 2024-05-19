@@ -26,8 +26,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- /**
- * Double array type, each double takes 8 bytes, it can be used to annotate field type of Double[]/double[]/List<Double>/Set<Double>.
+ * Annotation for a Double array type. Each element in the array occupies 8 bytes.
+ * This annotation can be used to mark fields of type Double[], double[], List<Double>, or Set<Double>.
  *
  * @author Deng Ran
  * @since 3.6.0
@@ -37,9 +37,27 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface DoubleArrayType {
+    /**
+     * Specifies the offset where the Double array starts in the byte array.
+     * The offset is measured in bytes.
+     *
+     * @return the offset in bytes.
+     */
     int offset();
 
+    /**
+     * Specifies the length of the Double array.
+     * The length is measured in number of elements, not bytes.
+     *
+     * @return the length of the Double array.
+     */
     int length();
 
+    /**
+     * Specifies the byte order used when decoding the Double array.
+     * If not specified, the default byte order is used.
+     *
+     * @return the byte order.
+     */
     ByteOrder[] byteOrder() default {};
 }

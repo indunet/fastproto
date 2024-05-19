@@ -26,7 +26,10 @@ import org.indunet.fastproto.io.ByteBufferOutputStream;
 import java.math.BigInteger;
 
 /**
- * UInt64 type codec.
+ * Codec for UInt64 type.
+ * This codec is responsible for encoding and decoding UInt64 types.
+ * It is used in conjunction with the UInt64Type annotation.
+ * If there are any issues during the encoding or decoding process, an exception is thrown.
  *
  * @author Deng Ran
  * @since 3.2.1

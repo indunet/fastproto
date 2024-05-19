@@ -28,7 +28,8 @@ import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 /**
- * Reference Graph.
+ * This class represents a Graph of References.
+ * It is used to manage and manipulate a collection of Reference objects.
  *
  * @author Deng Ran
  * @since 2.5.0

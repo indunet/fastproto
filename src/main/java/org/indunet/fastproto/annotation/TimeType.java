@@ -26,7 +26,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Time type which takes 8 bytes, it can be used to annotate field type of Timestamp/Date/Calendar/LocalDateTime/Instant.
+ * Annotation for Time type. This type occupies 8 bytes and can be used to annotate fields of type Timestamp, Date, Calendar, LocalDateTime, or Instant.
  *
  * @author Deng Ran
  * @since 1.1.0

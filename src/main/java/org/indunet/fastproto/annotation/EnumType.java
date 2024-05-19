@@ -25,7 +25,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Boolean type, each unit takes 1 byte, can be used to annotate field type of enum.
+ * Annotation for Enum type. Each Enum unit occupies 1 byte.
+ * This annotation can be used to mark fields of Enum type.
  *
  * @author Deng Ran
  * @since 2.1.0

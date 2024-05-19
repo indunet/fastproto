@@ -26,7 +26,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Float type which takes 4 bytes, it can be used to annotate field type of Float/float.
+ * Annotation for Float type. This type occupies 4 bytes and can be used to annotate fields of type Float or float.
  *
  * @author Deng Ran
  * @since 1.0.0

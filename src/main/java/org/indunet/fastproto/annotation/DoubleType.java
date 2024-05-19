@@ -26,7 +26,7 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Double type which takes 8 bytes, it can be used to annotate field type of Double/double.
+ * Annotation for a Double type. This type occupies 8 bytes and can be used to annotate fields of type Double or double.
  *
  * @author Deng Ran
  * @since 1.0.0

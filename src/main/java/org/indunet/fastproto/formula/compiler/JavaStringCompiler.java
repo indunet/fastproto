@@ -29,22 +29,31 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * In-memory compile Java source code as String.
+ * Java String Compiler Class.
+ * This class is responsible for compiling Java source code in-memory from a string.
+ * It uses the JavaCompiler and StandardJavaFileManager from javax.tools package.
+ * The class provides methods to compile the source code and load the compiled classes.
  *
  * @author Deng Ran
  * @since 3.7.0
  */
 public class JavaStringCompiler {
-	JavaCompiler compiler;
-	StandardJavaFileManager stdManager;
-
-	public JavaStringCompiler() {
-		this.compiler = ToolProvider.getSystemJavaCompiler();
-		this.stdManager = compiler.getStandardFileManager(null, null, null);
-	}
-
+	/**
+	 * Compile Method.
+	 * This method compiles Java source code from a string in-memory.
+	 * The method throws IOException if an I/O error occurs during the compilation process.
+	 * The method returns a map of class names to class bytes.
+	 *
+	 * @param fileName the name of the file to compile
+	 * @param sourceCode the source code to compile
+	 * @return a map of class names to class bytes
+	 * @throws IOException if an I/O error occurs during the compilation process
+	 */
 	public Map<String, byte[]> compile(String fileName, String sourceCode) throws IOException {
-		try (MemoryJavaFileManager manager = new MemoryJavaFileManager(stdManager)) {
+		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+		try (StandardJavaFileManager stdManager = compiler.getStandardFileManager(null, null, null);
+			 MemoryJavaFileManager manager = new MemoryJavaFileManager(stdManager)) {
+
 			JavaFileObject javaFileObject = manager.makeStringSource(fileName, sourceCode);
 			List<String> options = Arrays.asList(
 					"-source", "1.8",
@@ -62,17 +71,16 @@ public class JavaStringCompiler {
 	}
 
 	/**
-	 * Load class from compiled classes.
-	 * 
-	 * @param name
-	 *            Full class name.
-	 * @param classBytes
-	 *            Compiled results as a Map.
-	 * @return The Class instance.
-	 * @throws ClassNotFoundException
-	 *             If class not found.
-	 * @throws IOException
-	 *             If load error.
+	 * Load Class Method.
+	 * This method loads a class from a map of class bytes.
+	 * It creates a new instance of MemoryClassLoader with the class bytes, and uses it to load the class.
+	 * The method throws ClassNotFoundException if the class cannot be found, and IOException if an I/O error occurs.
+	 *
+	 * @param name the name of the class to load
+	 * @param classBytes a map of class names to class bytes
+	 * @return the loaded class
+	 * @throws ClassNotFoundException if the class cannot be found
+	 * @throws IOException if an I/O error occurs
 	 */
 	public Class<?> loadClass(String name, Map<String, byte[]> classBytes) throws ClassNotFoundException, IOException {
 		try (MemoryClassLoader classLoader = new MemoryClassLoader(classBytes)) {

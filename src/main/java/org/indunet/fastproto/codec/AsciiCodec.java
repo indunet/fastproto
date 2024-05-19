@@ -24,7 +24,11 @@ import org.indunet.fastproto.io.ByteBufferInputStream;
 import org.indunet.fastproto.io.ByteBufferOutputStream;
 
 /**
- * ASCII type codec.
+ * Codec for ASCII type.
+ * This codec handles the encoding and decoding of ASCII characters.
+ * It is used in conjunction with the AsciiType annotation.
+ * The codec ensures that the ASCII value does not exceed the maximum value for a byte.
+ * If the value exceeds the maximum, an exception is thrown.
  *
  * @author Deng Ran
  * @since 3.2.1

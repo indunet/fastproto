@@ -30,7 +30,10 @@ import java.util.Collection;
 import java.util.stream.IntStream;
 
 /**
- * Short array type codec.
+ * Codec for Short Array type.
+ * This codec is responsible for encoding and decoding Short array types.
+ * It provides support for both primitive Short array and wrapper Short array, as well as collections of Short.
+ * It is used in conjunction with the Int16ArrayType annotation.
  *
  * @author Deng Ran
  * @since 3.6.0

@@ -25,7 +25,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * String type which uses utf-8 charset by default, it can be used to annotate field type of String/StringBuilder/StringBuffer.
+ * Annotation for StringType. This annotation is used to mark fields of type String, StringBuilder, or StringBuffer.
+ * The default charset used is UTF-8.
  *
  * @author Deng Ran
  * @since 1.1.0

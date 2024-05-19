@@ -27,7 +27,10 @@ import java.util.Arrays;
 import java.util.function.Supplier;
 
 /**
- * Codec context.
+ * The CodecContext class.
+ * This class is used to store the context for a codec operation in the fastproto library.
+ * It contains information such as the default byte order, bit order, field type, field, and data type annotation.
+ * The class provides methods to retrieve the data type annotation and to get the byte and bit order.
  *
  * @author Deng Ran
  * @since 3.2.2

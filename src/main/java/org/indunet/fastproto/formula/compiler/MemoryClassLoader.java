@@ -22,7 +22,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Load class from byte[] which is compiled in memory.
+ * Memory Class Loader Class.
+ * This class is a custom class loader that loads classes from byte arrays which are compiled in memory.
+ * It extends URLClassLoader and overrides the findClass method to load a class from a byte array instead of a location.
+ * This class is used in the fastproto library's formula compiler to load compiled classes.
  *
  * @author Deng Ran
  * @since 3.7.0

@@ -26,7 +26,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Float array type, each float takes 4 bytes, it can be used to annotate field type of Float[]/float[]/List<Float>/Set<Float>.
+ * Annotation for a Float array type. Each element in the array occupies 4 bytes.
+ * This annotation can be used to mark fields of type Float[], float[], List<Float>, or Set<Float>.
  *
  * @author Deng Ran
  * @since 3.6.0

@@ -26,7 +26,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * UInt64 array type, each element takes 8 bytes, it can be used to annotate field type of BitInteger[]/List<BitInteger>/Set<BitInteger>.
+ * Annotation for UInt64 array type. Each UInt64 unit occupies 8 bytes.
+ * This annotation can be used to mark fields of type BigInteger[], List<BigInteger>, or Set<BigInteger>.
  *
  * @author Deng Ran
  * @since 3.6.0

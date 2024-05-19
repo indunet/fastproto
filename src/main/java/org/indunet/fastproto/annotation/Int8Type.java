@@ -25,7 +25,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Int8 type which takes 1 byte, it can be used to annotate field type of Integer/int.
+ * Annotation for Int8 type. This type occupies 1 byte and can be used to annotate fields of type Integer or int.
+ * This annotation is used in conjunction with fields that need to be encoded into binary format.
  *
  * @author Deng Ran
  * @since 1.2.0

@@ -29,7 +29,10 @@ import java.util.Collection;
 import java.util.stream.IntStream;
 
 /**
- * Byte array type codec.
+ * Codec for handling byte array type.
+ * This codec is responsible for encoding and decoding byte array types.
+ * It provides support for both primitive byte array and wrapper Byte array, as well as collections of Byte.
+ * It is used in conjunction with the BinaryType annotation.
  *
  * @author Deng Ran
  * @since 3.2.1
