@@ -33,7 +33,10 @@ import java.util.stream.LongStream;
 import java.util.stream.Stream;
 
 /**
- * Int64 array type codec.
+ * Codec for Int64 Array type.
+ * This codec is responsible for encoding and decoding Int64 array types.
+ * It provides support for both primitive Int64 array and wrapper Long array, as well as collections of Long.
+ * It is used in conjunction with the Int64ArrayType annotation.
  *
  * @author Deng Ran
  * @since 3.6.0

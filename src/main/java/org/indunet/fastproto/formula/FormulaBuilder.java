@@ -24,7 +24,10 @@ import java.util.Map;
 import java.util.function.Function;
 
 /**
- * Formula Builder.
+ * Formula Builder Interface.
+ * This interface provides a static method to create a FormulaBuilder instance.
+ * It takes an input type and a lambda expression as parameters, compiles the lambda expression into a class, and returns an instance of that class.
+ * The created FormulaBuilder instance can be used to build a function from the compiled lambda expression.
  *
  * @author Deng Ran
  * @since 3.7.0

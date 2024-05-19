@@ -30,7 +30,10 @@ import java.util.Collection;
 import java.util.stream.IntStream;
 
 /**
- * UInt16 array type codec.
+ * Codec for Char array type.
+ * This codec is responsible for encoding and decoding Char array types.
+ * It provides support for both primitive char array and wrapper Character array, as well as collections of Character.
+ * It is used in conjunction with the CharArrayType annotation.
  *
  * @author Deng Ran
  * @since 3.6.0

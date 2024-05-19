@@ -30,7 +30,10 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * UInt8 array type codec.
+ * Codec for UInt8 Array type.
+ * This codec is responsible for encoding and decoding UInt8 array types.
+ * It provides support for both primitive UInt8 array and wrapper Integer array, as well as collections of Integer.
+ * It is used in conjunction with the UInt8ArrayType annotation.
  *
  * @author Deng Ran
  * @since 3.6.0

@@ -17,7 +17,10 @@
 package org.indunet.fastproto.exception;
 
 /**
- * Codec exception.
+ * Exception class for Codec operations.
+ * This class extends RuntimeException and is used to handle exceptions that occur during the encoding and decoding process in the fastproto library.
+ * It provides constructors to create an exception with a message, a cause, or both.
+ * This exception is thrown when there are issues during the encoding or decoding process.
  *
  * @author Deng Ran
  * @since 1.0.0

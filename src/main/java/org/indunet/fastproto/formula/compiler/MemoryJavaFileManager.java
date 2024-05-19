@@ -28,7 +28,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * In-memory java file manager.
+ * Memory Java File Manager Class.
+ * This class is a custom Java file manager that manages Java files in-memory.
+ * It extends ForwardingJavaFileManager and provides methods to handle Java files, such as creating a new Java file for output.
+ * The class also maintains a map to store the compiled classes in bytes.
+ * It is a crucial part of the fastproto library's formula compiler.
  *
  * @author Deng Ran
  * @since 3.7.0

@@ -24,7 +24,10 @@ import org.indunet.fastproto.io.ByteBufferInputStream;
 import org.indunet.fastproto.io.ByteBufferOutputStream;
 
 /**
- * Int8 type codec.
+ * Codec for Int8 type.
+ * This codec is responsible for encoding and decoding Int8 types.
+ * It is used in conjunction with the Int8Type annotation.
+ * If there are any issues during the encoding or decoding process, an exception is thrown.
  *
  * @author Deng Ran
  * @since 3.2.1

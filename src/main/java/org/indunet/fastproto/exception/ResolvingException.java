@@ -17,7 +17,10 @@
 package org.indunet.fastproto.exception;
 
 /**
- * Throws when exception occurs during resolving.
+ * Exception class for Resolving operations.
+ * This class extends CodecException and is used to handle exceptions that occur during the resolving process in the fastproto library.
+ * It provides constructors to create an exception with a message, a cause, or both.
+ * This exception is thrown when there are issues during the resolving process.
  *
  * @author Deng Ran
  * @since 3.0.0

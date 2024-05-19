@@ -16,7 +16,6 @@
 
 package org.indunet.fastproto.graph;
 
-import lombok.NonNull;
 import lombok.val;
 import org.indunet.fastproto.annotation.DataType;
 import org.indunet.fastproto.graph.Reference.ReferenceType;
@@ -31,7 +30,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Predicate;
 
 /**
- * Reference resolver.
+ * This class is responsible for resolving references within a protocol class.
+ * It creates a graph of references, where each reference can be a class or a field.
+ * The graph is used to manage and manipulate the references, and is crucial for the encoding and decoding processes.
+ * The class uses a ConcurrentHashMap to store the graphs for each protocol class, ensuring thread safety.
+ * It also uses two ResolvePipelines to process class and field references.
  *
  * @author Deng Ran
  * @since 2.5.0

@@ -32,7 +32,10 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * Int16 array type codec.
+ * Codec for Int16 Array type.
+ * This codec is responsible for encoding and decoding Int16 array types.
+ * It provides support for both primitive Int16 array and wrapper Integer array, as well as collections of Integer.
+ * It is used in conjunction with the Int16ArrayType annotation.
  *
  * @author Deng Ran
  * @since 3.6.0

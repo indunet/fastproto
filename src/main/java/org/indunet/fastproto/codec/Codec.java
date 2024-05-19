@@ -25,7 +25,11 @@ import java.util.function.Function;
 
 
 /**
- * Codec interface.
+ * Interface for Codec.
+ * This interface defines the structure for a Codec in the fastproto library.
+ * A Codec is responsible for encoding and decoding data.
+ * It provides methods for decoding from a CodecContext and ByteBufferInputStream, and encoding into a ByteBufferOutputStream.
+ * It is implemented by various classes to handle different types of data.
  *
  * @author Deng Ran
  * @since 3.2.1

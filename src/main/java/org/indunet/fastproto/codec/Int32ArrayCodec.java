@@ -32,7 +32,10 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 /**
- * Int32 array type codec.
+ * Codec for Int32 Array type.
+ * This codec is responsible for encoding and decoding Int32 array types.
+ * It provides support for both primitive Int32 array and wrapper Integer array, as well as collections of Integer.
+ * It is used in conjunction with the Int32ArrayType annotation.
  *
  * @author Deng Ran
  * @since 3.6.0
