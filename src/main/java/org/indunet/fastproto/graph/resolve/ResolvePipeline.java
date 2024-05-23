@@ -1,10 +1,14 @@
 package org.indunet.fastproto.graph.resolve;
 
-import lombok.val;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.pipeline.Pipeline;
 
 /**
+ * ResolvePipeline Class.
+ * This class is responsible for resolving the reference in the context.
+ * It checks the reference for the necessary information and sets the corresponding properties in the reference accordingly.
+ * This class extends the Pipeline class and overrides the process method to implement its functionality.
+ *
  * @author Deng Ran
  * @since 3.2.0
  */
@@ -15,23 +19,17 @@ public abstract class ResolvePipeline extends Pipeline<Reference> {
     }
 
     public static ResolvePipeline getClassPipeline() {
-        val head = new ByteOrderFlow();
-
-        head.setNext(new ConstructorFlow())
-            .setNext(new CodecIgnoreFlow());
-
-        return head;
+        return buildPipeline(new ByteOrderFlow(), new ConstructorFlow(), new CodecIgnoreFlow());
     }
 
     public static ResolvePipeline getFieldPipeline() {
-        val typeAnnotationFlow = new TypeAnnotationFlow();
+        return buildPipeline(new TypeAnnotationFlow(), new ByteOrderFlow(), new BitOrderFlow(), new FormulaFlow(), new CodecFlow(), new CodecIgnoreFlow());
+    }
 
-        typeAnnotationFlow.setNext(new ByteOrderFlow())
-                .setNext(new BitOrderFlow())
-                .setNext(new FormulaFlow())
-                .setNext(new CodecFlow())
-                .setNext(new CodecIgnoreFlow());
-
-        return typeAnnotationFlow;
+    private static ResolvePipeline buildPipeline(ResolvePipeline... pipelines) {
+        for (int i = 0; i < pipelines.length - 1; i++) {
+            pipelines[i].setNext(pipelines[i + 1]);
+        }
+        return pipelines[0];
     }
 }

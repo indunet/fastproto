@@ -26,7 +26,10 @@ import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.mapper.JavaTypeMapper;
 
 /**
- * Formula flow.
+ * FormulaFlow Class.
+ * This class is responsible for resolving the decoding and encoding formulas in the context.
+ * It checks the protocol field for the DecodingFormula and EncodingFormula annotations and sets the decoding and encoding formulas in the reference accordingly.
+ * This class extends the ResolvePipeline class and overrides the process method to implement its functionality.
  *
  * @author Deng Ran
  * @since 3.5.0
@@ -37,54 +40,57 @@ public class FormulaFlow extends ResolvePipeline {
         val field = reference.getField();
 
         if (field.isAnnotationPresent(DecodingFormula.class)) {
-            val formula = field.getAnnotation(DecodingFormula.class);
-
-            if (formula.value().length != 0) {
-                val clazz = formula.value()[0];
-
-                try {
-                    reference.setDecodingFormulaClass(clazz);
-                    reference.setDecodingFormula(clazz.newInstance());
-                } catch (InstantiationException | IllegalAccessException e) {
-                    throw new DecodingException(String.format("fail initializing formula %s", clazz.getSimpleName()), e);
-                }
-            } else if (!formula.lambda().isEmpty()) {
-                val inputType = JavaTypeMapper.get(reference.getDataTypeAnnotation().annotationType());
-                val builder = FormulaBuilder.create(inputType, formula.lambda());
-
-                reference.setDecodingLambda(builder.build());
-            } else {
-                throw new DecodingException(
-                        String.format("value and lambda of @DecodingFormula of %s should not be empty at the same time.",
-                                reference.getField().toString()));
-            }
-
+            setDecodingFormula(reference, field.getAnnotation(DecodingFormula.class));
         }
 
         if (field.isAnnotationPresent(EncodingFormula.class)) {
-            val formula = field.getAnnotation(EncodingFormula.class);
-
-            if (formula.value().length != 0) {
-                val clazz = formula.value()[0];
-
-                try {
-                    reference.setEncodingFormulaClass(clazz);
-                    reference.setEncodingFormula(clazz.newInstance());
-                } catch (InstantiationException | IllegalAccessException e) {
-                    throw new EncodingException(String.format("fail initializing formula %s", clazz.getSimpleName()), e);
-                }
-            } else if (!formula.lambda().isEmpty()) {
-                val inputType = reference.getField().getType();
-                val builder = FormulaBuilder.create(inputType, formula.lambda());
-
-                reference.setEncodingLambda(builder.build());
-            } else {
-                throw new EncodingException(
-                        String.format("value and lambda of @EncodingFormula of %s should not be empty at the same time.",
-                                reference.getField().toString()));
-            }
+            setEncodingFormula(reference, field.getAnnotation(EncodingFormula.class));
         }
 
         this.forward(reference);
+    }
+
+    private void setDecodingFormula(Reference reference, DecodingFormula formula) {
+        if (formula.value().length != 0) {
+            val clazz = formula.value()[0];
+
+            try {
+                reference.setDecodingFormulaClass(clazz);
+                reference.setDecodingFormula(clazz.newInstance());
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new DecodingException(String.format("fail initializing formula %s", clazz.getSimpleName()), e);
+            }
+        } else if (!formula.lambda().isEmpty()) {
+            val inputType = JavaTypeMapper.get(reference.getDataTypeAnnotation().annotationType());
+            val builder = FormulaBuilder.create(inputType, formula.lambda());
+
+            reference.setDecodingLambda(builder.build());
+        } else {
+            throw new DecodingException(
+                    String.format("value and lambda of @DecodingFormula of %s should not be empty at the same time.",
+                            reference.getField().toString()));
+        }
+    }
+
+    private void setEncodingFormula(Reference reference, EncodingFormula formula) {
+        if (formula.value().length != 0) {
+            val clazz = formula.value()[0];
+
+            try {
+                reference.setEncodingFormulaClass(clazz);
+                reference.setEncodingFormula(clazz.newInstance());
+            } catch (InstantiationException | IllegalAccessException e) {
+                throw new EncodingException(String.format("fail initializing formula %s", clazz.getSimpleName()), e);
+            }
+        } else if (!formula.lambda().isEmpty()) {
+            val inputType = reference.getField().getType();
+            val builder = FormulaBuilder.create(inputType, formula.lambda());
+
+            reference.setEncodingLambda(builder.build());
+        } else {
+            throw new EncodingException(
+                    String.format("value and lambda of @EncodingFormula of %s should not be empty at the same time.",
+                            reference.getField().toString()));
+        }
     }
 }

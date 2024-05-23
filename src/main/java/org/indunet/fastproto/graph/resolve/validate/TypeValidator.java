@@ -23,6 +23,12 @@ import org.indunet.fastproto.pipeline.Pipeline;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
+ * TypeValidator Class.
+ * This abstract class is a pipeline for validating types in the context.
+ * It provides a static method to create a TypeValidator instance based on the provided Validator annotation.
+ * The created TypeValidator instance is cached in a ConcurrentHashMap for future use.
+ * This class extends the Pipeline class and overrides the getCode method to implement its functionality.
+ *
  * @author Chance
  * @since 1.0.0
  */

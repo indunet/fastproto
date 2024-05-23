@@ -25,7 +25,11 @@ import org.indunet.fastproto.graph.Reference;
 import java.util.Optional;
 
 /**
- * Resolve byte order flow.
+ * ByteOrderFlow Class.
+ * This class is responsible for resolving the byte order in the context.
+ * It checks the protocol class or field for the DefaultByteOrder annotation and sets the byte order in the reference accordingly.
+ * If no DefaultByteOrder annotation is found, it uses a default byte order.
+ * This class extends the ResolvePipeline class and overrides the process method to implement its functionality.
  *
  * @author Deng Ran
  * @since 2.5.0
@@ -35,25 +39,30 @@ public class ByteOrderFlow extends ResolvePipeline {
 
     @Override
     public void process(@NonNull Reference reference) {
+        ByteOrder byteOrder = getByteOrder(reference);
+
+        reference.setByteOrder(byteOrder);
+        this.forward(reference);
+    }
+
+    protected ByteOrder getByteOrder(Reference reference) {
         if (reference.getReferenceType() == Reference.ReferenceType.CLASS) {
             val protocolClass = reference.getProtocolClass();
-            val endianPolicy = Optional.ofNullable(protocolClass.getAnnotation(DefaultByteOrder.class))
+
+            return Optional.ofNullable(protocolClass.getAnnotation(DefaultByteOrder.class))
                     .map(DefaultByteOrder::value)
                     .orElse(DEFAULT_BYTE_ORDER);
-
-            reference.setByteOrder(endianPolicy);
         } else if (reference.getReferenceType() == Reference.ReferenceType.FIELD) {
             val field = reference.getField();
-            val endianPolicy = Optional.ofNullable(field.getAnnotation(DefaultByteOrder.class))
+
+            return Optional.ofNullable(field.getAnnotation(DefaultByteOrder.class))
                     .map(DefaultByteOrder::value)
                     .orElseGet(() -> Optional.ofNullable(reference.getField().getDeclaringClass())
                             .map(c -> c.getAnnotation(DefaultByteOrder.class))
                             .map(DefaultByteOrder::value)
-                            .orElse(DEFAULT_BYTE_ORDER));     // Inherit endian of declaring class.
-
-            reference.setByteOrder(endianPolicy);
+                            .orElse(DEFAULT_BYTE_ORDER));   // Inherit endian of declaring class.
         }
 
-        this.forward(reference);
+        return DEFAULT_BYTE_ORDER;
     }
 }

@@ -20,11 +20,17 @@ import lombok.val;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.util.TypeUtils;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
 import java.util.Arrays;
 
 /**
- * Decode formula validation flow.
+ * DecodingFormulaValidator Class.
+ * This class is responsible for validating the decoding formula in the context.
+ * It checks if the data type annotation and the field type match according to the decoding formula.
+ * If they do not match, a DecodingException is thrown.
+ * This class extends the TypeValidator class and overrides the process method to implement its functionality.
  *
  * @author Deng Ran
  * @since 2.3.0
@@ -41,20 +47,23 @@ public class DecodingFormulaValidator extends TypeValidator {
                     .filter(i -> i instanceof ParameterizedType)
                     .map(i -> ((ParameterizedType) i).getActualTypeArguments())
                     .map(a -> a[1])
-                    .filter(t -> {
-                        if (field.getType().isPrimitive()) {
-                            return t == TypeUtils.wrapperClass(field.getType().getName());
-                        } else if (field.getType().isEnum()) {
-                            // Enum type.
-                            return ((Class<?>) t).isAssignableFrom(field.getType());
-                        } else {
-                            return t == field.getType();
-                        }
-                    }).findAny()
+                    .filter(t -> matchType(t, field))
+                    .findAny()
                     .orElseThrow(() -> new DecodingException(
-                            String.format("Data type annotation and field does not match", typeAnnotation.annotationType().getName(), field.getName())));
+                            String.format("Data type annotation %s and field %s does not match", typeAnnotation.annotationType().getName(), field.getName())));
         }
 
         this.forward(context);
+    }
+
+    private boolean matchType(Type t, Field field) {
+        if (field.getType().isPrimitive()) {
+            return t == TypeUtils.wrapperClass(field.getType().getName());
+        } else if (field.getType().isEnum()) {
+            // Enum type.
+            return ((Class<?>) t).isAssignableFrom(field.getType());
+        } else {
+            return t == field.getType();
+        }
     }
 }
