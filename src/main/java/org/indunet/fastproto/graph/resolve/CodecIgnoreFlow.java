@@ -21,8 +21,13 @@ import org.indunet.fastproto.annotation.DecodingIgnore;
 import org.indunet.fastproto.annotation.EncodingIgnore;
 import org.indunet.fastproto.graph.Reference;
 
+import java.lang.reflect.Field;
+
 /**
- * Resolve decode ignore and encode ignore flow.
+ * CodecIgnoreFlow Class.
+ * This class is responsible for resolving the decoding and encoding ignore flags in the context.
+ * It checks the protocol field for the DecodingIgnore and EncodingIgnore annotations and sets the decoding and encoding ignore flags in the reference accordingly.
+ * This class extends the ResolvePipeline class and overrides the process method to implement its functionality.
  *
  * @author Deng Ran
  * @since 2.5.0
@@ -33,13 +38,18 @@ public class CodecIgnoreFlow extends ResolvePipeline {
         val field = reference.getField();
 
         if (field != null) {
-            val decodeIgnore = field.isAnnotationPresent(DecodingIgnore.class);
-            val encodeIngore = field.isAnnotationPresent(EncodingIgnore.class);
-
-            reference.setDecodingIgnore(decodeIgnore);
-            reference.setEncodingIgnore(encodeIngore);
+            reference.setDecodingIgnore(isDecodingIgnored(field));
+            reference.setEncodingIgnore(isEncodingIgnored(field));
         }
 
         this.forward(reference);
+    }
+
+    protected boolean isDecodingIgnored(Field field) {
+        return field.isAnnotationPresent(DecodingIgnore.class);
+    }
+
+    protected boolean isEncodingIgnored(Field field) {
+        return field.isAnnotationPresent(EncodingIgnore.class);
     }
 }

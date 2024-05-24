@@ -25,7 +25,11 @@ import java.lang.reflect.Field;
 import java.util.function.Function;
 
 /**
- * Validation context.
+ * ValidatorContext Class.
+ * This class is used to store the context for the validation process.
+ * It includes the field to be validated, the type annotation of the field, the protocol type,
+ * the class of the type annotation, and the classes of the decoding and encoding formulas.
+ * This class uses Lombok annotations for automatic generation of getters, setters, and builder pattern methods.
  *
  * @author Deng Ran
  * @since 2.3.0

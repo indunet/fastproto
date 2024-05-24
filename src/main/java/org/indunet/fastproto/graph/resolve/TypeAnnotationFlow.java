@@ -25,10 +25,15 @@ import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.mapper.AnnotationMapper;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.util.Arrays;
 
 /**
- * Resolve element type flow.
+ * TypeAnnotationFlow Class.
+ * This class is responsible for resolving the data type annotation in the context.
+ * It checks the protocol field for the DataType annotation and sets the data type annotation in the reference accordingly.
+ * If the annotation is AutoType, it will automatically determine the appropriate data type annotation.
+ * This class extends the ResolvePipeline class and overrides the process method to implement its functionality.
  *
  * @author Deng Ran
  * @since 2.5.0
@@ -37,25 +42,36 @@ public class TypeAnnotationFlow extends ResolvePipeline {
     @Override
     public void process(Reference reference) {
         val field = reference.getField();
-        val typeAnnotation = Arrays.stream(field.getAnnotations())
-                .filter(a -> a.annotationType().isAnnotationPresent(DataType.class))
-                .findAny()
-                .orElseThrow(ResolvingException::new);
+        val typeAnnotation = findDataTypeAnnotation(field);
 
         if (typeAnnotation instanceof AutoType) {
-            Class<? extends Annotation> type = AnnotationMapper.get(field.getGenericType());
-            Annotation proxy = ProtocolType.proxy((AutoType) typeAnnotation, type);
-
-            reference.setDataTypeAnnotation(proxy);
-            reference.setProtocolType(ProtocolType.proxy(proxy));
+            setAutoTypeAnnotation(reference, (AutoType) typeAnnotation);
         } else {
-            reference.setDataTypeAnnotation(typeAnnotation);
-            reference.setProtocolType(ProtocolType.proxy(typeAnnotation));
+            setDataTypeAnnotation(reference, typeAnnotation);
         }
 
         reference.setReferenceType(Reference.ReferenceType.FIELD);
 
-
         this.forward(reference);
+    }
+
+    private Annotation findDataTypeAnnotation(Field field) {
+        return Arrays.stream(field.getAnnotations())
+                .filter(a -> a.annotationType().isAnnotationPresent(DataType.class))
+                .findAny()
+                .orElseThrow(ResolvingException::new);
+    }
+
+    private void setAutoTypeAnnotation(Reference reference, AutoType autoType) {
+        Class<? extends Annotation> type = AnnotationMapper.get(reference.getField().getGenericType());
+        Annotation proxy = ProtocolType.proxy(autoType, type);
+
+        reference.setDataTypeAnnotation(proxy);
+        reference.setProtocolType(ProtocolType.proxy(proxy));
+    }
+
+    private void setDataTypeAnnotation(Reference reference, Annotation typeAnnotation) {
+        reference.setDataTypeAnnotation(typeAnnotation);
+        reference.setProtocolType(ProtocolType.proxy(typeAnnotation));
     }
 }

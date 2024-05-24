@@ -25,7 +25,11 @@ import org.indunet.fastproto.graph.Reference;
 import java.util.Optional;
 
 /**
- * Resolve bit order flow.
+ * BitOrderFlow Class.
+ * This class is responsible for resolving the bit order in the context.
+ * It checks the protocol class or field for the DefaultBitOrder annotation and sets the bit order in the reference accordingly.
+ * If no DefaultBitOrder annotation is found, it uses a default bit order.
+ * This class extends the ResolvePipeline class and overrides the process method to implement its functionality.
  *
  * @author Deng Ran
  * @since 3.9.1
@@ -35,25 +39,30 @@ public class BitOrderFlow extends ResolvePipeline {
 
     @Override
     public void process(@NonNull Reference reference) {
+        BitOrder bitOrder = getBitOrder(reference);
+
+        reference.setBitOrder(bitOrder);
+        this.forward(reference);
+    }
+
+    protected BitOrder getBitOrder(Reference reference) {
         if (reference.getReferenceType() == Reference.ReferenceType.CLASS) {
             val protocolClass = reference.getProtocolClass();
-            val bitOrder = Optional.ofNullable(protocolClass.getAnnotation(DefaultBitOrder.class))
+
+            return Optional.ofNullable(protocolClass.getAnnotation(DefaultBitOrder.class))
                     .map(DefaultBitOrder::value)
                     .orElse(DEFAULT_BIT_ORDER);
-
-            reference.setBitOrder(bitOrder);
         } else if (reference.getReferenceType() == Reference.ReferenceType.FIELD) {
             val field = reference.getField();
-            val bitOrder = Optional.ofNullable(field.getAnnotation(DefaultBitOrder.class))
+
+            return Optional.ofNullable(field.getAnnotation(DefaultBitOrder.class))
                     .map(DefaultBitOrder::value)
                     .orElseGet(() -> Optional.ofNullable(reference.getField().getDeclaringClass())
                             .map(c -> c.getAnnotation(DefaultBitOrder.class))
                             .map(DefaultBitOrder::value)
                             .orElse(DEFAULT_BIT_ORDER));     // Inherit endian of declaring class.
-
-            reference.setBitOrder(bitOrder);
         }
 
-        this.forward(reference);
+        return DEFAULT_BIT_ORDER;
     }
 }

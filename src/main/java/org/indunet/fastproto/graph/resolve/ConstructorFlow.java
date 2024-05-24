@@ -28,7 +28,10 @@ import java.lang.reflect.Modifier;
 import java.util.Arrays;
 
 /**
- * Resolve Constructor type flow.
+ * ConstructorFlow Class.
+ * This class is responsible for resolving the constructor type in the context.
+ * It checks the protocol class for the constructors and sets the constructor type in the reference accordingly.
+ * This class extends the ResolvePipeline class and overrides the process method to implement its functionality.
  *
  * @author Deng Ran
  * @since 2.5.0
@@ -37,32 +40,40 @@ public class ConstructorFlow extends ResolvePipeline {
     @Override
     public void process(Reference reference) {
         val protocolClass = reference.getProtocolClass();
-        var cnt = Arrays.stream(protocolClass.getConstructors())
-                    .mapToInt(java.lang.reflect.Constructor::getParameterCount)
-                    .min()
-                    .orElseThrow(() -> new CodecException(
-                            String.format("Fail getting constructor parameters of %s", protocolClass.getName())));
+        var cnt = getMinConstructorParameterCount(protocolClass);
 
         if (cnt == 0) {
             reference.setConstructorType(ConstructorType.NO_ARGS);
         } else {
-            // Filter transient fields, jacoco would add it during test.
-            val paramTypes = Arrays.stream(protocolClass.getDeclaredFields())
-                    .filter(f -> !Modifier.isTransient(f.getModifiers()))
-                    .map(Field::getType)
-                    .toArray(Class<?>[]::new);
-
-            try {
-                protocolClass.getConstructor(paramTypes);
-
-                reference.setConstructorType(ConstructorType.ALL_ARGS);
-            } catch (NoSuchMethodException e) {
-                throw new ResolvingException(String.format(
-                        "The constructor parameters of %s and class fields does not match.",
-                        protocolClass.getName()), e);
-            }
+            setAllArgsConstructorType(reference, protocolClass);
         }
 
         this.forward(reference);
+    }
+
+    protected int getMinConstructorParameterCount(Class<?> protocolClass) {
+        return Arrays.stream(protocolClass.getConstructors())
+                .mapToInt(java.lang.reflect.Constructor::getParameterCount)
+                .min()
+                .orElseThrow(() -> new CodecException(
+                        String.format("Fail getting constructor parameters of %s", protocolClass.getName())));
+    }
+
+    protected void setAllArgsConstructorType(Reference reference, Class<?> protocolClass) {
+        // Filter transient fields, jacoco would add it during test.
+        val paramTypes = Arrays.stream(protocolClass.getDeclaredFields())
+                .filter(f -> !Modifier.isTransient(f.getModifiers()))
+                .map(Field::getType)
+                .toArray(Class<?>[]::new);
+
+        try {
+            protocolClass.getConstructor(paramTypes);
+
+            reference.setConstructorType(ConstructorType.ALL_ARGS);
+        } catch (NoSuchMethodException e) {
+            throw new ResolvingException(String.format(
+                    "The constructor parameters of %s and class fields does not match.",
+                    protocolClass.getName()), e);
+        }
     }
 }
