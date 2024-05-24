@@ -34,4 +34,12 @@ public enum ByteOrder {
 
     final int code;
     final String name;
+
+    public static ByteOrder nativeOrder() {
+        if (java.nio.ByteOrder.nativeOrder().equals(java.nio.ByteOrder.LITTLE_ENDIAN)) {
+            return LITTLE;
+        } else {
+            return BIG;
+        }
+    }
 }

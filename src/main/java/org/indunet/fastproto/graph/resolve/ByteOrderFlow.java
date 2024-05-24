@@ -35,8 +35,6 @@ import java.util.Optional;
  * @since 2.5.0
  */
 public class ByteOrderFlow extends ResolvePipeline {
-    protected final static ByteOrder DEFAULT_BYTE_ORDER = ByteOrder.LITTLE;
-
     @Override
     public void process(@NonNull Reference reference) {
         ByteOrder byteOrder = getByteOrder(reference);
@@ -51,7 +49,7 @@ public class ByteOrderFlow extends ResolvePipeline {
 
             return Optional.ofNullable(protocolClass.getAnnotation(DefaultByteOrder.class))
                     .map(DefaultByteOrder::value)
-                    .orElse(DEFAULT_BYTE_ORDER);
+                    .orElse(ByteOrder.nativeOrder());
         } else if (reference.getReferenceType() == Reference.ReferenceType.FIELD) {
             val field = reference.getField();
 
@@ -60,9 +58,9 @@ public class ByteOrderFlow extends ResolvePipeline {
                     .orElseGet(() -> Optional.ofNullable(reference.getField().getDeclaringClass())
                             .map(c -> c.getAnnotation(DefaultByteOrder.class))
                             .map(DefaultByteOrder::value)
-                            .orElse(DEFAULT_BYTE_ORDER));   // Inherit endian of declaring class.
+                            .orElse(ByteOrder.nativeOrder()));   // Inherit endian of declaring class.
         }
 
-        return DEFAULT_BYTE_ORDER;
+        return ByteOrder.nativeOrder();
     }
 }
