@@ -16,18 +16,20 @@
 
 package org.indunet.fastproto.io;
 
-import lombok.val;
 import org.indunet.fastproto.exception.CodecException;
 
 import java.util.Arrays;
 
 /**
- * Dynamic byte array, which can automatically expand according to writing offset.
+ * ByteBuffer is a dynamic byte array that can automatically expand based on the writing offset.
+ * It provides a flexible way to handle byte data, especially when dealing with network or file data.
+ * ByteBuffer supports both forward and reverse addressing, making it more convenient when dealing with complex data structures.
  *
  * @author Deng Ran
  * @since 3.8.3
  */
 public final class ByteBuffer {
+    private static final int MAX_ARRAY_SIZE = Integer.MAX_VALUE - 8;
     byte[] bytes;
     int length;
     boolean fixed;
@@ -69,7 +71,7 @@ public final class ByteBuffer {
     }
 
     public void set(int offset, byte value) {
-        val o = this.reverse(offset);
+        int o = this.reverse(offset);
 
         this.grow(o);
 
@@ -79,15 +81,16 @@ public final class ByteBuffer {
     private void grow(int index) {
         if (index >= length) {
             length = index + 1;
-        }else if (length == bytes.length && !this.fixed) {
-            bytes = Arrays.copyOf(bytes, bytes.length * 2);
+        } else if (length == bytes.length && !this.fixed) {
+            int newLength = Math.min(bytes.length * 2, MAX_ARRAY_SIZE);
+            bytes = Arrays.copyOf(bytes, newLength);
 
             this.grow(index);
         }
     }
 
     public byte get(int offset) {
-        val o = this.reverse(offset);
+        int o = this.reverse(offset);
 
         if (o >= this.length) {
             throw new IndexOutOfBoundsException();

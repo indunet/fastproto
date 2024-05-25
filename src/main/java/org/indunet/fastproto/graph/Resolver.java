@@ -44,6 +44,12 @@ public class Resolver {
     protected static ResolvePipeline resolveClassFlow = ResolvePipeline.getClassPipeline();
     protected static ResolvePipeline resolveFieldFlow = ResolvePipeline.getFieldPipeline();
 
+    private static final Predicate<Field> IS_CLASS_CONDITION = f -> CodecMapper.isSupported(f.getType());
+
+    private static final Predicate<Field> IS_DATA_CONDITION = f -> Arrays.stream(f.getAnnotations())
+            .map(Annotation::annotationType)
+            .anyMatch(t -> t.isAnnotationPresent(DataType.class));
+
     public static Graph resolve(Class<?> protocolClass) {
         return graphs.computeIfAbsent(protocolClass, __ -> {
             val graph = new Graph();
@@ -124,9 +130,8 @@ public class Resolver {
     }
 
     protected static boolean isClass(Field field) {
-        Predicate<Field> condition = f -> CodecMapper.isSupported(field.getType());
-
-        return !condition.or(f -> Modifier.isTransient(f.getModifiers()))
+        return !IS_CLASS_CONDITION
+                .or(f -> Modifier.isTransient(f.getModifiers()))
                 .or(f -> f.isEnumConstant() || Enum.class.isAssignableFrom(f.getType()))
                 .or(f -> EnumSet.class.isAssignableFrom(f.getType()))
                 .or(f -> f.getType().isArray())
@@ -139,10 +144,6 @@ public class Resolver {
     }
 
     protected static boolean isData(Field field) {
-        Predicate<Field> isTypeFlag = f -> Arrays.stream(f.getAnnotations())
-                .map(Annotation::annotationType)
-                .anyMatch(t -> t.isAnnotationPresent(DataType.class));
-
-        return isTypeFlag.test(field);
+        return IS_DATA_CONDITION.test(field);
     }
 }

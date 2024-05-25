@@ -59,12 +59,9 @@ public class Graph {
     }
 
     public void addReference(@NonNull Reference parent, @NonNull Reference child) {
-        if (this.contains(parent)) {
-            adj.get(parent).add(child);
-        } else {
-            adj.put(parent, new ArrayList<>());
-            adj.get(parent).add(child);
-        }
+        List<Reference> children = adj.computeIfAbsent(parent, k -> new ArrayList<>());
+
+        children.add(child);
     }
 
     public void addReference(@NonNull Reference reference) {
@@ -106,11 +103,15 @@ public class Graph {
     }
 
     public void print() {
-        this.adj.forEach((key, value) -> {
-            System.out.println(key);
+        StringBuilder sb = new StringBuilder();
 
-            value.forEach(s -> System.out.println("\t" + s));
+        this.adj.forEach((key, value) -> {
+            sb.append(key).append("\n");
+
+            value.forEach(s -> sb.append("\t").append(s).append("\n"));
         });
+
+        System.out.println(sb);
     }
 
     public synchronized List<Reference> getValidReferences() {
