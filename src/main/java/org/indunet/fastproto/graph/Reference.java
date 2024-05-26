@@ -109,7 +109,6 @@ public class Reference {
 
         try {
             Constructor<?> constructor = this.protocolClass.getDeclaredConstructor(types);
-            constructor.setAccessible(true);
 
             val args = Arrays.stream(references)
                     .filter(r -> r.getReferenceType() != ReferenceType.INVALID)
