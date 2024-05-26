@@ -26,6 +26,7 @@ By combining annotations with straightforward APIs, it allows developers to easi
 ### *Under Developing*
 
 * Code structure & performance optimization
+* Add crc checksum support
 
 ### *Maven*
 

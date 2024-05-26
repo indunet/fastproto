@@ -23,11 +23,15 @@ import org.indunet.fastproto.annotation.*;
 import java.math.BigInteger;
 import java.util.stream.IntStream;
 
+
 /**
- * Input stream of ByteBuffer which supplies more convenient methods for reading.
+ * ByteBufferInputStream is an input stream that provides more convenient methods for reading from a ByteBuffer.
+ * It extends the ByteBufferIOStream and overrides its methods to provide more specific functionality.
+ * This class is designed to make it easier to read different types of data from a ByteBuffer, including booleans, bytes, shorts, ints, longs, floats, and doubles.
+ * It also provides methods to read these types of data from specific offsets within the ByteBuffer.
  *
  * @author Deng Ran
- * @since 3.10.1
+ * @version 3.10.1
  */
 public final class ByteBufferInputStream extends ByteBufferIOStream {
     public ByteBufferInputStream() {

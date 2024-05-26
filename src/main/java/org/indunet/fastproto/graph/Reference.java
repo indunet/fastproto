@@ -108,7 +108,8 @@ public class Reference {
                 .toArray(Class<?>[]::new);
 
         try {
-            Constructor<?> constructor = this.protocolClass.getConstructor(types);
+            Constructor<?> constructor = this.protocolClass.getDeclaredConstructor(types);
+
             val args = Arrays.stream(references)
                     .filter(r -> r.getReferenceType() != ReferenceType.INVALID)
                     .map(r -> r.getValue().get())

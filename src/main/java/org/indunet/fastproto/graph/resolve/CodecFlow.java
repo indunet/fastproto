@@ -16,29 +16,34 @@
 
 package org.indunet.fastproto.graph.resolve;
 
-import lombok.val;
 import org.indunet.fastproto.annotation.Validator;
 import org.indunet.fastproto.codec.CodecContext;
 import org.indunet.fastproto.exception.ResolvingException;
 import org.indunet.fastproto.graph.Reference;
 import org.indunet.fastproto.graph.resolve.validate.TypeValidator;
 import org.indunet.fastproto.graph.resolve.validate.ValidatorContext;
+import org.indunet.fastproto.io.ByteBufferInputStream;
+import org.indunet.fastproto.io.ByteBufferOutputStream;
 import org.indunet.fastproto.mapper.CodecMapper;
 import org.indunet.fastproto.mapper.JavaTypeMapper;
 
 import java.text.MessageFormat;
+import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 /**
- * Resolve decoder and encoder flow.
+ * This class is responsible for resolving the decoder and encoder flow.
+ * It creates a CodecContext and then parses out the decoder and encoder based on this context.
+ * Finally, it validates whether the parsed references are valid.
  *
  * @author Deng Ran
  * @since 2.5.0
  */
 public class CodecFlow extends ResolvePipeline {
+
     @Override
     public void process(Reference reference) {
-        val context = CodecContext.builder()
+        CodecContext ctx = CodecContext.builder()
                 .dataTypeAnnotation(reference.getDataTypeAnnotation())
                 .fieldType(reference.getField().getType())
                 .field(reference.getField())
@@ -46,58 +51,62 @@ public class CodecFlow extends ResolvePipeline {
                 .defaultBitOrder(reference.getBitOrder())
                 .build();
 
+        reference.setDecoder(resolveDecoder(reference, ctx));
+        reference.setEncoder(resolveEncoder(reference, ctx));
+
+        validateReference(reference);
+
+        this.forward(reference);
+    }
+
+    // Resolve decoder.
+    protected Function<ByteBufferInputStream, ?> resolveDecoder(Reference reference, CodecContext context) {
         if (reference.getDecodingFormulaClass() != null) {
-            Function decoder = CodecMapper.getDecoder(context, reference.getDecodingFormulaClass());
-
-            reference.setDecoder(decoder);
+            return CodecMapper.getDecoder(context, reference.getDecodingFormulaClass());
         } else if (reference.getDecodingLambda() != null) {
-            val javaType = JavaTypeMapper.get(reference.getDataTypeAnnotation().annotationType());
-            val decoder = CodecMapper.getDefaultDecoder(context, javaType);
-            val func = reference.getDecodingLambda();
+            Class<?> javaType = JavaTypeMapper.get(reference.getDataTypeAnnotation().annotationType());
+            Function<ByteBufferInputStream, ?> decoder = CodecMapper.getDefaultDecoder(context, javaType);
 
-            reference.setDecoder(decoder.andThen(func));
+            return decoder.andThen(reference.getDecodingLambda());
         } else {
-            Function decoder = CodecMapper.getDecoder(context, null);
-
-            reference.setDecoder(decoder);
+            return CodecMapper.getDecoder(context, null);
         }
+    }
 
+    // Resolve encoder.
+    protected BiConsumer<ByteBufferOutputStream, Object> resolveEncoder(Reference reference, CodecContext context) {
         if (reference.getEncodingFormulaClass() != null) {
-            val encoder = CodecMapper.getEncoder(context, reference.getEncodingFormulaClass());
-
-            reference.setEncoder(encoder);
+            return CodecMapper.getEncoder(context, reference.getEncodingFormulaClass());
         } else if (reference.getEncodingLambda() != null) {
-            val javaType = JavaTypeMapper.get(reference.getDataTypeAnnotation().annotationType());
-            val encoder = CodecMapper.getDefaultEncoder(context, javaType);
-            val func = reference.getEncodingLambda();
+            Class<?> javaType = JavaTypeMapper.get(reference.getDataTypeAnnotation().annotationType());
+            BiConsumer<ByteBufferOutputStream, Object> encoder = CodecMapper.getDefaultEncoder(context, javaType);
+            Function<Object, Object> func = reference.getEncodingLambda();
 
-            reference.setEncoder((outputStream, value) -> encoder.accept(outputStream, func.apply(value)));
+            return (outputStream, value) -> encoder.accept(outputStream, func.apply(value));
         } else {
-            val encoder = CodecMapper.getEncoder(context, null);
-
-            reference.setEncoder(encoder);
+            return CodecMapper.getEncoder(context, null);
         }
+    }
 
+    // Validate reference.
+    protected void validateReference(Reference reference) {
         try {
-            val ctx = ValidatorContext.builder()
+            ValidatorContext ctx = ValidatorContext.builder()
                     .field(reference.getField())
                     .typeAnnotation(reference.getDataTypeAnnotation())
                     .protocolType(reference.getProtocolType())
                     .decodingFormulaClass(reference.getDecodingFormulaClass())
                     .encodingFormulaClass(reference.getEncodingFormulaClass())
                     .build();
-            val validator = reference.getDataTypeAnnotation()
+            Validator validator = reference.getDataTypeAnnotation()
                     .annotationType()
                     .getAnnotation(Validator.class);
 
-            TypeValidator.create(validator.value())
-                    .process(ctx);
+            TypeValidator.create(validator.value()).process(ctx);
         } catch (ResolvingException e) {
             throw new ResolvingException(MessageFormat.format(
-                    "Fail resolving the filed of %s", reference.getField().toString()
+                    "Failed resolving the field of %s", reference.getField().toString()
             ), e);
         }
-
-        this.forward(reference);
     }
 }
