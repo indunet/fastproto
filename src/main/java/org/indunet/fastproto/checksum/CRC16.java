@@ -24,7 +24,7 @@ package org.indunet.fastproto.checksum;
  * @author Deng Ran
  * @since 3.11.0
  */
-public class CRC16 implements CRC {
+public class CRC16 extends CRC {
     public static final int CRC16_IBM_POLYNOMIAL = 0x8005;
     public static final int CRC16_IBM_INITIAL_VALUE = 0x0000;
 
@@ -38,8 +38,8 @@ public class CRC16 implements CRC {
     protected int initialValue;
 
     public CRC16() {
-        this.polynomial = CRC16_IBM_POLYNOMIAL;
         this.initialValue = CRC16_IBM_INITIAL_VALUE;
+        this.polynomial = CRC16_IBM_POLYNOMIAL;
     }
 
     @Override
@@ -67,6 +67,7 @@ public class CRC16 implements CRC {
         int crc = initialValue;
 
         for (byte b : data) {
+            b = reverseBits(b);  // 输入数据翻转
             crc ^= ((b & 0xFF) << 8);
 
             for (int i = 0; i < 8; i++) {
@@ -78,6 +79,8 @@ public class CRC16 implements CRC {
             }
         }
 
-        return crc & 0xFFFF;
+        crc &= 0xFFFF;
+        crc = reverseBits(crc, 16);  // 输出数据翻转
+        return crc;
     }
 }
