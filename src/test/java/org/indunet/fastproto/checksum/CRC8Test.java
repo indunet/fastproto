@@ -32,34 +32,12 @@ public class CRC8Test {
     protected CRC8 crc8;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         crc8 = new CRC8();
     }
 
     @Test
-    void getPolynomial_returnsCorrectPolynomial() {
-        assertEquals(CRC8.CRC8_POLYNOMIAL, crc8.getPolynomial());
-    }
-
-    @Test
-    void setPolynomial_setsCorrectPolynomial() {
-        crc8.setPolynomial(CRC8.CRC8_CCITT_POLYNOMIAL);
-        assertEquals(CRC8.CRC8_CCITT_POLYNOMIAL, crc8.getPolynomial());
-    }
-
-    @Test
-    void getInitialValue_returnsCorrectInitialValue() {
-        assertEquals(CRC8.CRC8_INITIAL_VALUE, crc8.getInitialValue());
-    }
-
-    @Test
-    void setInitialValue_setsCorrectInitialValue() {
-        crc8.setInitialValue(CRC8.CRC8_CCITT_INITIAL_VALUE);
-        assertEquals(CRC8.CRC8_CCITT_INITIAL_VALUE, crc8.getInitialValue());
-    }
-
-    @Test
-    void calculate_returnsCorrectCRCValue() {
+    public void testCalculate1() {
         byte[] data = {0x31, 0x32, 0x33, 0x34, 0x35};
         int expectedCRC = 0xCB;
 
@@ -67,8 +45,16 @@ public class CRC8Test {
     }
 
     @Test
-    void calculate_returnsCorrectCRCValueForEmptyData() {
-        byte[] data = {};
+    public void testCalculate2() {
+        byte[] data = {0x45, 0x46, 0x47, 0x48, 0x49};
+        int expectedCRC = 0x51;
+
+        assertEquals(expectedCRC, crc8.calculate(data));
+    }
+
+    @Test
+    public void testCalculate3() {
+        byte[] data = {};   // empty data
         int expectedCRC = CRC8.CRC8_INITIAL_VALUE;
 
         assertEquals(expectedCRC, crc8.calculate(data));

@@ -26,7 +26,7 @@ package org.indunet.fastproto.checksum;
  * @author Deng Ran
  * @since 3.11.0
  */
-public class CRC32 implements CRC {
+public class CRC32 extends CRC {
     public static final int DEFAULT_POLYNOMIAL = 0x04C11DB7;
     public static final int DEFAULT_INITIAL_VALUE = 0xFFFFFFFF;
     protected static final int[] CRC32_TABLE = new int[256];
@@ -52,8 +52,8 @@ public class CRC32 implements CRC {
     }
 
     public CRC32() {
-        this.polynomial = DEFAULT_POLYNOMIAL;
         this.initialValue = DEFAULT_INITIAL_VALUE;
+        this.polynomial = DEFAULT_POLYNOMIAL;
     }
 
     @Override
@@ -81,12 +81,12 @@ public class CRC32 implements CRC {
         int crc = initialValue;
 
         for (byte b : data) {
+            b = reverseBits(b); // 输入数据翻转
             int tableIndex = (crc >>> 24) ^ (b & 0xFF);
-
             crc = (crc << 8) ^ CRC32_TABLE[tableIndex];
         }
 
-        return crc ^ 0xFFFFFFFF;
+        return reverseBits(crc, 32) ^ 0xFFFFFFFF;
     }
 }
 

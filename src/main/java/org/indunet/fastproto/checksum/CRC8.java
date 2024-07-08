@@ -25,7 +25,7 @@ package org.indunet.fastproto.checksum;
  * @author Deng Ran
  * @since 3.11.0
  */
-public class CRC8 implements CRC {
+public class CRC8 extends CRC {
     public static final int CRC8_POLYNOMIAL = 0x07;
     public static final int CRC8_INITIAL_VALUE = 0x00;
 
@@ -39,8 +39,8 @@ public class CRC8 implements CRC {
     protected int initialValue;
 
     public CRC8() {
-        this.polynomial = CRC8_POLYNOMIAL;
         this.initialValue = CRC8_INITIAL_VALUE;
+        this.polynomial = CRC8_POLYNOMIAL;
     }
 
     @Override

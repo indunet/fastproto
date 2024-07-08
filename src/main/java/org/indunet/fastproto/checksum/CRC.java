@@ -20,39 +20,39 @@ package org.indunet.fastproto.checksum;
 /**
  * CRC (Cyclic Redundancy Check) is a common method for data verification.
  * Its main function is to detect whether there are errors in the data transmission process.
- * This interface defines the basic methods of CRC verification, including getting and setting polynomials, initial values, and calculating CRC values.
+ * This abstract class defines the basic methods of CRC verification, including getting and setting polynomials, initial values, and calculating CRC values.
  *
  * @author Deng Ran
  * @since 3.11.0
  */
-public interface CRC {
+public abstract class CRC {
     /**
      * Get the polynomial for CRC verification.
      *
      * @return The polynomial for CRC verification.
      */
-    int getPolynomial();
+    abstract int getPolynomial();
 
     /**
      * Set the polynomial for CRC verification.
      *
      * @param polynomial The polynomial for CRC verification.
      */
-    void setPolynomial(int polynomial);
+    abstract void setPolynomial(int polynomial);
 
     /**
      * Get the initial value for CRC verification.
      *
      * @return The initial value for CRC verification.
      */
-    int getInitialValue();
+    abstract int getInitialValue();
 
     /**
      * Set the initial value for CRC verification.
      *
      * @param initialValue The initial value for CRC verification.
      */
-    void setInitialValue(int initialValue);
+    abstract void setInitialValue(int initialValue);
 
     /**
      * Calculate the CRC value of the given data.
@@ -60,5 +60,23 @@ public interface CRC {
      * @param data The data to be verified by CRC.
      * @return The calculated CRC value.
      */
-    int calculate(byte[] data);
+    abstract int calculate(byte[] data);
+
+    public int reverseBits(int value, int bitSize) {
+        int reversed = 0;
+        for (int i = 0; i < bitSize; i++) {
+            reversed = (reversed << 1) | (value & 1);
+            value >>= 1;
+        }
+        return reversed;
+    }
+
+    protected static byte reverseBits(byte value) {
+        int reversed = 0;
+        for (int i = 0; i < 8; i++) {
+            reversed = (reversed << 1) | (value & 1);
+            value >>= 1;
+        }
+        return (byte) reversed;
+    }
 }

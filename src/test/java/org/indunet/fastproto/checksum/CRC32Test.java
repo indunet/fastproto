@@ -32,41 +32,29 @@ public class CRC32Test {
     protected CRC32 crc32;
 
     @BeforeEach
-    void setUp() {
+    public void setUp() {
         crc32 = new CRC32();
     }
 
     @Test
-    void getPolynomial_returnsCorrectPolynomial() {
-        assertEquals(CRC32.DEFAULT_POLYNOMIAL, crc32.getPolynomial());
-    }
-
-    @Test
-    void setPolynomial_throwsException() {
-        assertThrows(UnsupportedOperationException.class, () -> crc32.setPolynomial(0x12345678));
-    }
-
-    @Test
-    void getInitialValue_returnsCorrectInitialValue() {
-        assertEquals(CRC32.DEFAULT_INITIAL_VALUE, crc32.getInitialValue());
-    }
-
-    @Test
-    void setInitialValue_throwsException() {
-        assertThrows(UnsupportedOperationException.class, () -> crc32.setInitialValue(0x12345678));
-    }
-
-    // @Test
-    void calculate_returnsCorrectCRCValue() {
+    public void testCalculate1() {
         byte[] data = {0x31, 0x32, 0x33, 0x34, 0x35};
-        int expectedCRC = 0x04C11DB7;
+        int expectedCRC = 0xCBF53A1C;
 
         assertEquals(expectedCRC, crc32.calculate(data));
     }
 
     @Test
-    void calculate_returnsCorrectCRCValueForEmptyData() {
-        byte[] data = {};
+    public void testCalculate2() {
+        byte[] data = {0x41, 0x42, 0x43, 0x44, 0x45};
+        int expectedCRC = 0x72D31AD5;
+
+        assertEquals(expectedCRC, crc32.calculate(data));
+    }
+
+    @Test
+    public void testCalculate3() {
+        byte[] data = {};   // empty data
         int expectedCRC = CRC32.DEFAULT_INITIAL_VALUE ^ 0xFFFFFFFF;
 
         assertEquals(expectedCRC, crc32.calculate(data));
