@@ -46,5 +46,6 @@ public interface FormulaBuilder {
         }
     }
 
+    @SuppressWarnings("rawtypes")
     Function build();
 }

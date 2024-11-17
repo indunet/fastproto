@@ -2,7 +2,7 @@
 
 English | [中文](README-zh.md)
 
-# *Fast Protocol*
+# FastProto
 
 [![Build Status](https://app.travis-ci.com/indunet/fastproto.svg?branch=master)](https://app.travis-ci.com/indunet/fastproto)
 [![codecov](https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU)](https://codecov.io/gh/indunet/fastproto)
@@ -11,17 +11,16 @@ English | [中文](README-zh.md)
 [![JetBrain Support](https://img.shields.io/badge/JetBrain-support-blue)](https://www.jetbrains.com/community/opensource)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto is a powerful binary data processing tool designed to simplify binary data encoding and decoding in a Java environment. 
-By combining annotations with straightforward APIs, it allows developers to easily manage complex binary data structures, eliminating the need for cumbersome manual coding.
+FastProto is a powerful Java library designed to simplify binary data processing. It offers an intuitive, annotation-driven approach to encoding and decoding complex binary data structures, eliminating the need for cumbersome manual coding.
 
 ## *Key Features*
 
-* **Annotation-Driven:** FastProto utilizes annotations to mark field information in binary data (such as data type, byte offset, endianness, etc.), making parsing and packaging of data fast and intuitive.
-* **Extensive Type Support:** Supports Java primitive types, unsigned types, string types, time types, arrays, and collection types, catering to diverse data processing needs.
-* **Flexible Addressing:** Offers reverse addressing capabilities, ideal for handling non-fixed-length binary data, significantly enhancing its application flexibility.
-* **Customizable Byte Order:** Users can customize the byte order (big-endian or little-endian) to match various data specifications.
-* **Encoding and Decoding Formulas:** Supports encoding and decoding formulas, including lambda expressions, offering greater flexibility for complex data operations.
-* **Diverse APIs:** Provides a variety of APIs to suit different application scenarios, ensuring efficiency and reliability in various environments.
+- **Annotation-Driven:** Use annotations to define binary data structures, making parsing and packaging fast and intuitive.
+- **Extensive Type Support:** Handle Java primitives, unsigned types, strings, time types, arrays, and collections.
+- **Flexible Addressing:** Support for reverse addressing, ideal for non-fixed-length binary data.
+- **Customizable Byte Order:** Specify big-endian or little-endian byte order to match various data specifications.
+- **Encoding and Decoding Formulas:** Support for custom formulas, including lambda expressions, for complex data operations.
+- **Diverse APIs:** Variety of APIs to suit different application scenarios, ensuring efficiency and reliability.
 
 ### *Under Developing*
 
