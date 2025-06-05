@@ -22,7 +22,7 @@ FastProto is a powerful Java library designed to simplify binary data processing
 - **Encoding and Decoding Formulas:** Support for custom formulas, including lambda expressions, for complex data operations.
 - **Diverse APIs:** Variety of APIs to suit different application scenarios, ensuring efficiency and reliability.
 
-### *Under Developing*
+### *Under Development*
 
 * Code structure & performance optimization
 * Add crc checksum support
