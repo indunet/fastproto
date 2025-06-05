@@ -329,8 +329,8 @@ public final class ByteBufferInputStream extends ByteBufferIOStream {
             value |= ((byteBuffer.get(o + 2) & 0xFFL) << 40);
             value |= ((byteBuffer.get(o + 3) & 0xFFL) << 32);
 
-            value |= ((byteBuffer.get(o + 5) & 0xFFL) << 16);
             value |= ((byteBuffer.get(o + 4) & 0xFFL) << 24);
+            value |= ((byteBuffer.get(o + 5) & 0xFFL) << 16);
             value |= ((byteBuffer.get(o + 6) & 0xFFL) << 8);
             value |= (byteBuffer.get(o + 7) & 0xFFL);
         }
