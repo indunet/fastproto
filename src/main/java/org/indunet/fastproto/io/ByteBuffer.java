@@ -102,7 +102,7 @@ public final class ByteBuffer {
     public int reverse(int offset) {
         if (offset >= 0) {
             return offset;
-        } else if (this.fixed) {    // offset less than 0 and non-fixed.
+        } else if (this.fixed) {    // offset < 0 on fixed-length buffer.
             int o = this.bytes.length + offset;
 
             if (o >= 0) {
