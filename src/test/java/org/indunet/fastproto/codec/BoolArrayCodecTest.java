@@ -50,9 +50,9 @@ public class BoolArrayCodecTest {
     public void testEncode1() {
         byte[] expected = new byte[] {(byte) 0b1010_1010};
         byte[] actual = new byte[1];
-        boolean[] datas = new boolean[] {true, false, true, false, true, false, true, false};
+        boolean[] data = new boolean[] {true, false, true, false, true, false, true, false};
 
-        codec.encode(mock(0, 0, 8, BitOrder.MSB_0), new ByteBufferOutputStream(actual), datas);
+        codec.encode(mock(0, 0, 8, BitOrder.MSB_0), new ByteBufferOutputStream(actual), data);
         assertArrayEquals(expected, actual);
     }
 
