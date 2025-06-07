@@ -8,7 +8,7 @@
 [![codecov](https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU)](https://codecov.io/gh/indunet/fastproto)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ed904d7aacd142f08b5cd50b16b1d74b)](https://www.codacy.com/gh/indunet/fastproto/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=indunet/fastproto&amp;utm_campaign=Badge_Grade)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
-[![JetBrain Support](https://img.shields.io/badge/JetBrain-support-blue)](https://www.jetbrains.com/community/opensource)
+[![JetBrains Support](https://img.shields.io/badge/JetBrains-support-blue)](https://www.jetbrains.com/community/opensource)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 FastProto是一款高效的二进制数据处理工具，专为简化Java环境中的二进制数据编解码设计。
@@ -399,7 +399,7 @@ EncodeUtils.writeUInt32(bytes, 6, ByteOrder.BIG, 256);  // 在字节偏移6位�
 
 ## *7. 贡献*
 
-FastProto取得了JetBrain开源计划的支持，可提供核心开发人员免费的全家桶许可证。
+FastProto取得了JetBrains开源计划的支持，可提供核心开发人员免费的全家桶许可证。
 如果你对该项目感兴趣，并希望加入承担部分工作（开发/测试/文档），请通过邮件<deng_ran@foxmail.com>联系我。
 
 ## *8. 许可证*
