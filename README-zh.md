@@ -132,8 +132,8 @@ FastProto支持Java基础数据类型，考虑到跨语言跨平台的数据交�
 |     注解      |                Java                |     C/C++      |  大小  |
 |:-----------:|:----------------------------------:|:--------------:|:----:|
 |  @BoolType  |          Boolean/boolean           |      bool      | 1 位  |    
-|  @AsciiTye  |           Character/char           |      char      | 1 字节 |   
-|  @CharTye   |           Character/char           |       --       | 2 字节 |
+|  @AsciiType |           Character/char           |      char      | 1 字节 |
+|  @CharType  |           Character/char           |       --       | 2 字节 |
 |  @Int8Type  |       Byte/byte/Integer/int        |      char      | 1 字节 |  
 | @Int16Type  |      Short/short/Integer/int       |     short      | 2 字节 |  
 | @Int32Type  |            Integer/int             |      int       | 4 字节 | 
