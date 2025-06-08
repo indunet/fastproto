@@ -181,7 +181,7 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 
 |        注解         |    作用域    |         描述         |
 |:-----------------:|:---------:|:------------------:|
-| @DefaultByteOrder |   Class   | 默认字节顺序，如无指定，使用小开端  |
+| @DefaultByteOrder |   Class   | 默认字节顺序，如无指定，使用小端  |
 | @DefaultBitOrder  |   Class   | 默认位顺序，如无指定，使用LSB_0 |
 |  @DecodingIgnore  |   Field   |     反序列化时忽略该字段     |
 |  @EncodingIgnore  |   Field   |     序列化时忽略该字段      |
@@ -191,7 +191,7 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 
 #### *2.4.1 字节顺序和位顺序*
 
-FastProto默认使用小开端，可以通过`@DefaultByteOrder`注解修改全局字节顺序，也可以通过数据类型注解中的`byteOrder`属性修改特定字段的字节顺序，后者优先级更高。
+FastProto默认使用小端，可以通过`@DefaultByteOrder`注解修改全局字节顺序，也可以通过数据类型注解中的`byteOrder`属性修改特定字段的字节顺序，后者优先级更高。
 
 同理，FastProto默认使用LSB_0，可以通过`@DefaultBitOrder`注解修改全局位顺序，也可以通过数据类型注解中的`bitOrder`属性修改特定字段的位顺序，后者优先级更高。
 
@@ -358,7 +358,7 @@ int f3 = DecodeUtils.readInt16(bytes, 2);       // 在字节偏移2位置解码�
 byte[] bytes = FastProto.create(16)             // 创建16字节的二进制数据块
         .writeInt8(0, 1)                        // 在字节偏移0位置写入无符号8位整型数据1
         .writeUInt16(2, 3, 4)                   // 在字节偏移2位置连续写入2个无符号16位整型数据3和4
-        .writeUInt32(6, ByteOrder.BIG, 256)     // 在字节偏移6位置以大开端形式写入无符号32位整型数据256
+        .writeUInt32(6, ByteOrder.BIG, 256)     // 在字节偏移6位置以大端形式写入无符号32位整型数据256
         .get();
 ```
 
@@ -369,7 +369,7 @@ byte[] bytes = new byte[16];
 
 EncodeUtils.writeInt8(bytes, 0, 1);                     // 在字节偏移0位置写入无符号8位整型数据1
 EncodeUtils.writeUInt16(bytes, 2, 3, 4);                // 在字节偏移2位置连续写入2个无符号16位整型数据3和4
-EncodeUtils.writeUInt32(bytes, 6, ByteOrder.BIG, 256);  // 在字节偏移6位置以大开端形式写入无符号32位整型数据256
+EncodeUtils.writeUInt32(bytes, 6, ByteOrder.BIG, 256);  // 在字节偏移6位置以大端形式写入无符号32位整型数据256
 ```
 
 ## *5. 基准测试*
