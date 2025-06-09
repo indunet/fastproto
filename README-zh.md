@@ -337,7 +337,7 @@ DataObject obj = FastProto.decode(bytes)
         .readBool("f1", 0, 0)           // 在字节偏移0和位偏移0位置解码布尔型数据
         .readInt8("f2", 1)              // 在字节偏移1位置解码有符号8位整型数据
         .readInt16("f3", 2)             // 在字节偏移2位置解码有符号16位整型数据
-        .mapTo(JavaObject.class);       // 将解码结果按照字段名称映射成指定的数据对象
+        .mapTo(DataObject.class);       // 将解码结果按照字段名称映射成指定的数据对象
 ```
 
 * *直接解码，不需要数据对象*
