@@ -281,10 +281,10 @@ import org.indunet.fastproto.annotation.AutoType;
 
 public class Weather {
     @AutoType(offset = 10, byteOrder = ByteOrder.LITTLE)
-    int humidity;   // default Int32Type
+    int humidity;   // 默认 Int32Type
 
     @AutoType(offset = 14)
-    long pressure;  // default Int64Type
+    long pressure;  // 默认 Int64Type
 }
 ```
 
@@ -298,11 +298,11 @@ import org.indunet.fastproto.annotation.*;
 public class Weather {
     @DecodingFormula
     @Int16Type(offset = 10)
-    int humidity;   // ignore when parsing
+    int humidity;   // 解析时忽略
 
     @EncodingIgnore
     @Int32Type(offset = 14)
-    long pressure; // ignore when packaging
+    long pressure; // 编码时忽略
 }
 ```
 
@@ -345,7 +345,7 @@ DataObject obj = FastProto.decode(bytes)
 ```java
 import org.indunet.fastproto.util.DecodeUtils;
 
-byte[] bytes = ... // Binary data to be decoded
+byte[] bytes = ... // 待解码的二进制数据
 
 boolean f1 = DecodeUtils.readBool(bytes, 0, 0); // 在字节偏移0和位偏移0位置解码布尔型数据
 int f2 = DecodeUtils.readInt8(bytes, 1);        // 在字节偏移1位置解码有符号8位整型数据
@@ -404,20 +404,18 @@ FastProto取得了JetBrains开源计划的支持，可提供核心开发人员�
 
 ## *8. 许可证*
 
-FastProto is released under the [Apache 2.0 license](license).
+FastProto在 [Apache 2.0 许可证](license) 下发布。
 
 ```
 Copyright 2019-2021 indunet.org
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at the following link.
+根据 Apache License 2.0 版本（以下简称“许可证”）授权；
+除非遵守此许可证，否则您不能使用此文件。
+您可以通过下列链接获取许可证副本：
 
      http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+除非适用法律要求或书面同意，按本许可证分发的软件
+均按“原样”提供，不附带任何明示或暗示的保证。
+有关许可证中的具体语言以及权限限制，请参阅该许可证。
 ```
