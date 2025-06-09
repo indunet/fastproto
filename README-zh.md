@@ -400,7 +400,7 @@ EncodeUtils.writeUInt32(bytes, 6, ByteOrder.BIG, 256);  // 在字节偏移6位�
 ## *7. 贡献*
 
 FastProto取得了JetBrain开源计划的支持，可提供核心开发人员免费的全家桶许可证。
-如果你对该项目感兴趣，并希望加入承担部分工作（开发/测试/文档），请通过邮件<deng_ran@foxmail.com>联系我。
+如果你对该项目感兴趣，并希望加入承担部分工作（开发/测试/文档），请通过邮件<deng_ran@aliyun.com>联系我。
 
 ## *8. 许可证*
 

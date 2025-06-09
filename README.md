@@ -417,7 +417,7 @@ EncodeUtils.writeUInt32(bytes, 6, ByteOrder.BIG, 256);  // Write unsigned 32-bit
 FastProto has obtained the support of JetBrain Open Source Project, which can provide free license of all product pack for
 all core contributors.
 If you are interested in this project and want to join and undertake part of the work (development/testing/documentation),
-please feel free to contact me via email <deng_ran@foxmail.com>
+please feel free to contact me via email <deng_ran@aliyun.com>
 
 
 ## *8. License*
