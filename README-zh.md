@@ -2,13 +2,13 @@
 
 [English](README.md) | 中文
 
-# *Fast Protocol*
+# FastProto
 
 [![Build Status](https://app.travis-ci.com/indunet/fastproto.svg?branch=master)](https://app.travis-ci.com/indunet/fastproto)
 [![codecov](https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU)](https://codecov.io/gh/indunet/fastproto)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ed904d7aacd142f08b5cd50b16b1d74b)](https://www.codacy.com/gh/indunet/fastproto/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=indunet/fastproto&amp;utm_campaign=Badge_Grade)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
-[![JetBrain Support](https://img.shields.io/badge/JetBrain-support-blue)](https://www.jetbrains.com/community/opensource)
+[![JetBrains Support](https://img.shields.io/badge/JetBrains-support-blue)](https://www.jetbrains.com/community/opensource)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
 FastProto是一款高效的二进制数据处理工具，专为简化Java环境中的二进制数据编解码设计。
@@ -181,7 +181,7 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 
 |        注解         |    作用域    |         描述         |
 |:-----------------:|:---------:|:------------------:|
-| @DefaultByteOrder |   Class   | 默认字节顺序，如无指定，使用小开端  |
+| @DefaultByteOrder |   Class   | 默认字节顺序，如无指定，使用小端  |
 | @DefaultBitOrder  |   Class   | 默认位顺序，如无指定，使用LSB_0 |
 |  @DecodingIgnore  |   Field   |     反序列化时忽略该字段     |
 |  @EncodingIgnore  |   Field   |     序列化时忽略该字段      |
@@ -191,7 +191,7 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 
 #### *2.4.1 字节顺序和位顺序*
 
-FastProto默认使用小开端，可以通过`@DefaultByteOrder`注解修改全局字节顺序，也可以通过数据类型注解中的`byteOrder`属性修改特定字段的字节顺序，后者优先级更高。
+FastProto默认使用小端，可以通过`@DefaultByteOrder`注解修改全局字节顺序，也可以通过数据类型注解中的`byteOrder`属性修改特定字段的字节顺序，后者优先级更高。
 
 同理，FastProto默认使用LSB_0，可以通过`@DefaultBitOrder`注解修改全局位顺序，也可以通过数据类型注解中的`bitOrder`属性修改特定字段的位顺序，后者优先级更高。
 
@@ -281,10 +281,10 @@ import org.indunet.fastproto.annotation.AutoType;
 
 public class Weather {
     @AutoType(offset = 10, byteOrder = ByteOrder.LITTLE)
-    int humidity;   // default Int32Type
+    int humidity;   // 默认 Int32Type
 
     @AutoType(offset = 14)
-    long pressure;  // default Int64Type
+    long pressure;  // 默认 Int64Type
 }
 ```
 
@@ -298,11 +298,11 @@ import org.indunet.fastproto.annotation.*;
 public class Weather {
     @DecodingFormula
     @Int16Type(offset = 10)
-    int humidity;   // ignore when parsing
+    int humidity;   // 解析时忽略
 
     @EncodingIgnore
     @Int32Type(offset = 14)
-    long pressure; // ignore when packaging
+    long pressure; // 编码时忽略
 }
 ```
 
@@ -337,7 +337,7 @@ DataObject obj = FastProto.decode(bytes)
         .readBool("f1", 0, 0)           // 在字节偏移0和位偏移0位置解码布尔型数据
         .readInt8("f2", 1)              // 在字节偏移1位置解码有符号8位整型数据
         .readInt16("f3", 2)             // 在字节偏移2位置解码有符号16位整型数据
-        .mapTo(JavaObject.class);       // 将解码结果按照字段名称映射成指定的数据对象
+        .mapTo(DataObject.class);       // 将解码结果按照字段名称映射成指定的数据对象
 ```
 
 * *直接解码，不需要数据对象*
@@ -345,7 +345,7 @@ DataObject obj = FastProto.decode(bytes)
 ```java
 import org.indunet.fastproto.util.DecodeUtils;
 
-byte[] bytes = ... // Binary data to be decoded
+byte[] bytes = ... // 待解码的二进制数据
 
 boolean f1 = DecodeUtils.readBool(bytes, 0, 0); // 在字节偏移0和位偏移0位置解码布尔型数据
 int f2 = DecodeUtils.readInt8(bytes, 1);        // 在字节偏移1位置解码有符号8位整型数据
@@ -358,7 +358,7 @@ int f3 = DecodeUtils.readInt16(bytes, 2);       // 在字节偏移2位置解码�
 byte[] bytes = FastProto.create(16)             // 创建16字节的二进制数据块
         .writeInt8(0, 1)                        // 在字节偏移0位置写入无符号8位整型数据1
         .writeUInt16(2, 3, 4)                   // 在字节偏移2位置连续写入2个无符号16位整型数据3和4
-        .writeUInt32(6, ByteOrder.BIG, 256)     // 在字节偏移6位置以大开端形式写入无符号32位整型数据256
+        .writeUInt32(6, ByteOrder.BIG, 256)     // 在字节偏移6位置以大端形式写入无符号32位整型数据256
         .get();
 ```
 
@@ -369,7 +369,7 @@ byte[] bytes = new byte[16];
 
 EncodeUtils.writeInt8(bytes, 0, 1);                     // 在字节偏移0位置写入无符号8位整型数据1
 EncodeUtils.writeUInt16(bytes, 2, 3, 4);                // 在字节偏移2位置连续写入2个无符号16位整型数据3和4
-EncodeUtils.writeUInt32(bytes, 6, ByteOrder.BIG, 256);  // 在字节偏移6位置以大开端形式写入无符号32位整型数据256
+EncodeUtils.writeUInt32(bytes, 6, ByteOrder.BIG, 256);  // 在字节偏移6位置以大端形式写入无符号32位整型数据256
 ```
 
 ## *5. 基准测试*
@@ -404,20 +404,18 @@ FastProto取得了JetBrain开源计划的支持，可提供核心开发人员免
 
 ## *8. 许可证*
 
-FastProto is released under the [Apache 2.0 license](license).
+FastProto在 [Apache 2.0 许可证](license) 下发布。
 
 ```
 Copyright 2019-2021 indunet.org
 
-Licensed under the Apache License, Version 2.0 (the "License");
-you may not use this file except in compliance with the License.
-You may obtain a copy of the License at the following link.
+根据 Apache License 2.0 版本（以下简称“许可证”）授权；
+除非遵守此许可证，否则您不能使用此文件。
+您可以通过下列链接获取许可证副本：
 
      http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
+除非适用法律要求或书面同意，按本许可证分发的软件
+均按“原样”提供，不附带任何明示或暗示的保证。
+有关许可证中的具体语言以及权限限制，请参阅该许可证。
 ```
