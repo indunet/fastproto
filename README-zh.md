@@ -421,3 +421,4 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
+[更新日志](CHANGELOG.md) | [更新日志(中文版)](CHANGELOG-zh.md)
