@@ -22,12 +22,12 @@ FastProto 是一款轻量级的 Java 二进制协议库。只需使用注解描�
 * **公式支持：** Lambda 或自定义类均可实现编解码公式。
 * **多种API：** 兼顾效率与易用性。
 
+查看[更新日志](CHANGELOG-zh.md)获取版本历史，英文版请查阅[CHANGELOG](CHANGELOG.md)。
+
 ### *正在开发*
 
 * 代码结构 & 性能优化
 * 添加CRC校验和支持
-
-查看[更新日志](CHANGELOG-zh.md)获取版本历史，英文版请查阅[CHANGELOG](CHANGELOG.md)。
 
 ### *Maven*
 

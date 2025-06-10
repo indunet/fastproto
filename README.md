@@ -22,12 +22,12 @@ FastProto is a lightweight Java library that makes binary protocols effortless. 
 - **Custom Formulas:** Use lambdas or classes to transform values during encode/decode.
 - **Easy APIs:** Multiple APIs tuned for efficiency and reliability.
 
+See the [CHANGELOG](CHANGELOG.md) for recent updates.
+
 ### *Under Development*
 
 * Code structure & performance optimization
 * Add crc checksum support
-
-See the [CHANGELOG](CHANGELOG.md) for recent updates.
 
 ### *Maven*
 
