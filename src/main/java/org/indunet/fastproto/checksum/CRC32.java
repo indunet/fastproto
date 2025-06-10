@@ -18,10 +18,10 @@ package org.indunet.fastproto.checksum;
 
 
 /**
- * The CRC32 class implements the CRC interface and defines the CRC32 checksum calculation.
- * It provides the polynomial and initial value for CRC32.
- * The calculate method is used to calculate the CRC32 value of the given data.
- * Note that the polynomial and initial value for CRC32 are fixed and cannot be set.
+ * The CRC32 class implements the CRC interface and calculates CRC32 checksums.
+ * It uses {@code DEFAULT_POLYNOMIAL} and {@code DEFAULT_INITIAL_VALUE} as defaults.
+ * These constants may be changed in the constructor or dynamically via
+ * {@link #setPolynomial(int)} and {@link #setInitialValue(int)}.
  *
  * @author Deng Ran
  * @since 3.11.0
