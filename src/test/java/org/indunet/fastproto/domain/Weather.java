@@ -20,6 +20,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.BitOrder;
 import org.indunet.fastproto.annotation.*;
 
 import java.sql.Timestamp;
@@ -32,6 +34,8 @@ import java.sql.Timestamp;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
+@DefaultByteOrder(ByteOrder.LITTLE)
+@DefaultBitOrder(BitOrder.MSB_0)
 public class Weather {
     @UInt8Type(offset = 0)
     int id;
@@ -39,16 +43,18 @@ public class Weather {
     @TimeType(offset = 2)
     Timestamp time;
 
-    @UInt16Type(offset = 10)
+    @UInt16Type(offset = 10, byteOrder = ByteOrder.BIG)
     int humidity;
 
     @Int16Type(offset = 12)
     int temperature;
 
     @UInt32Type(offset = 14)
-    long pressure;
+    @DecodingFormula(lambda = "x -> x * 0.1")
+    @EncodingFormula(lambda = "x -> (long) (x * 10)")
+    double pressure;
 
-    @BoolType(byteOffset = 18, bitOffset = 0)
+    @BoolType(byteOffset = 18, bitOffset = 0, bitOrder = BitOrder.LSB_0)
     boolean temperatureValid;
 
     @BoolType(byteOffset = 18, bitOffset = 1)
@@ -63,7 +69,7 @@ public class Weather {
                 .time(new Timestamp(System.currentTimeMillis()))
                 .humidity(85)
                 .temperature(-15)
-                .pressure(13)
+                .pressure(1.3)
                 .humidityValid(true)
                 .temperatureValid(true)
                 .pressureValid(true)
