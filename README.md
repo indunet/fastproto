@@ -11,21 +11,23 @@ English | [中文](README-zh.md)
 [![JetBrains Support](https://img.shields.io/badge/JetBrains-support-blue)](https://www.jetbrains.com/community/opensource)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto is a powerful Java library designed to simplify binary data processing. It offers an intuitive, annotation-driven approach to encoding and decoding complex binary data structures, eliminating the need for cumbersome manual coding.
+FastProto is a lightweight Java library that makes binary protocols effortless. Simply annotate your data structure and let FastProto deal with the byte-level work.
 
 ## *Key Features*
 
-- **Annotation-Driven:** Use annotations to define binary data structures, making parsing and packaging fast and intuitive.
-- **Extensive Type Support:** Handle Java primitives, unsigned types, strings, time types, arrays, and collections.
-- **Flexible Addressing:** Support for reverse addressing, ideal for non-fixed-length binary data.
-- **Customizable Byte Order:** Specify big-endian or little-endian byte order to match various data specifications.
-- **Encoding and Decoding Formulas:** Support for custom formulas, including lambda expressions, for complex data operations.
-- **Diverse APIs:** Variety of APIs to suit different application scenarios, ensuring efficiency and reliability.
+- **Annotation-Driven:** Quickly map binary data to Java fields.
+- **Broad Type Support:** Works with primitives, unsigned numbers, strings, time types, arrays and collections.
+- **Flexible Addressing:** Reverse addressing for variable-length packets.
+- **Configurable Byte Order:** Choose big-endian or little-endian to match your protocol.
+- **Custom Formulas:** Use lambdas or classes to transform values during encode/decode.
+- **Easy APIs:** Multiple APIs tuned for efficiency and reliability.
 
 ### *Under Development*
 
 * Code structure & performance optimization
 * Add crc checksum support
+
+See the [CHANGELOG](CHANGELOG.md) for recent updates.
 
 ### *Maven*
 
@@ -33,19 +35,18 @@ FastProto is a powerful Java library designed to simplify binary data processing
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.10.3</version>
+    <version>3.11.0</version>
 </dependency>
 ```
 
 
 ## *1. Quick Start*
 
-Imagine such an application, there is a monitoring device collecting weather data in realtime and sends to
-the weather station in binary format，the binary data has fixed length of 20 bytes:
+This quick example parses a 20‑byte packet sent from a weather device:
 
 >   65 00 7F 69 3D 84 7A 01 00 00 55 00 F1 FF 0D 00 00 00 07 00
 
-The binary data contains 8 different types of signals, the specific protocol is as follows:
+It contains eight signals as described below:
 
 | Byte Offset | Bit Offset | Data Type(C/C++)  | Signal Name  | Unit |  Formula  |
 |:-----------:|:----------:|:-----------------:|:------------:|:----:|:---------:|
@@ -61,9 +62,7 @@ The binary data contains 8 different types of signals, the specific protocol is 
 
 ### *1.1 Decode and encode Binary Data*
 
-After the weather station receives the data, it needs to be converted into Java data objects for subsequent business function development.
-First, define the Java data object `Weather` according to the protocol, and then use the FastProto data type annotation to annotate each attribute.
-It should be noted that the `offset` attribute of annotation corresponds to the byte offset of the signal.
+After receiving the packet, convert it into a `Weather` object. Each field is annotated with its byte offset in the data.
 
 ```java
 import org.indunet.fastproto.annotation.*;
@@ -89,7 +88,7 @@ public class Weather {
 }
 ```
 
-Invoke the `FastProto::decode()` method to parse the binary data into the Java data object `Weather`
+Use `FastProto::decode()` to parse the packet into a `Weather` object
 
 ```java
 // datagram sent by monitoring device.
@@ -98,19 +97,14 @@ byte[] datagram = ...
 Weather weather = FastProto.decode(datagram, Weather.class);
 ```
 
-Invoke the `FastProto::encode()` method to package the Java data object `Weather` into binary data.
-The second parameter of this method is the length of the binary data. 
-If the user does not specify it, FastProto will automatically guess the length.
+Use `FastProto::encode()` to create the binary packet. The second argument is the byte length—omit it and FastProto will guess.
 
 ```java
 byte[] datagram = FastProto.encode(weather, 20);
 ```
 ### *1.2 Transformation Formula*
 
-Perhaps you have noticed that the pressure signal corresponds to a conversion formula, usually requiring the user to multiply
-the serialized result by 0.1, which is an extremely common operation in IoT data exchange.
-To help users reduce intermediate steps, FastProto introduces decoding formula annotation `@DecodingFormula` and encoding formula annotation `@EncodingFormula`,
-the above simple formula transformation can be implemented by Lambda expression.
+The pressure field uses a simple conversion. FastProto provides `@DecodingFormula` and `@EncodingFormula` so this logic can be expressed directly with lambdas:
 
 ```java
 import org.indunet.fastproto.annotation.DecodingFormula;
@@ -439,4 +433,4 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 ```
-[更新日志](CHANGELOG.md)
+

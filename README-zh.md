@@ -11,22 +11,23 @@
 [![JetBrains Support](https://img.shields.io/badge/JetBrains-support-blue)](https://www.jetbrains.com/community/opensource)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto是一款高效的二进制数据处理工具，专为简化Java环境中的二进制数据编解码设计。
-它通过注解和简单API的结合，使得开发人员可以轻松地处理复杂的二进制数据结构，避免了繁琐的手动编码工作。
+FastProto 是一款轻量级的 Java 二进制协议库。只需使用注解描述数据结构，其余字节操作都由 FastProto 处理。
 
 ## *核心功能*
 
-* **注解驱动：** FastProto通过使用注解来标记二进制数据中的字段信息（如数据类型、字节偏移量、字节顺序等），从而使得数据解析和封装变得快速且直观。
-* **类型支持广泛：** 支持Java的原始数据类型、无符号类型、字符串类型、时间类型、数组和集合类型等，以应对不同的数据处理需求。
-* **灵活的地址处理：** 提供逆向地址支持，适用于非固定长度的二进制数据处理，极大地增加了其应用的灵活性。
-* **自定义字节顺序：** 用户可以自定义字节顺序（大端或小端），以匹配不同的数据规范。
-* **编解码公式支持：** 支持包括Lambda表达式在内的编解码公式，为复杂的数据操作提供更高的灵活性。
-* **多样的API：** 提供多种API以适应不同的应用场景，确保在不同环境下的高效性和可靠性。
+* **注解驱动：** 字段用注解标记，解析和封装一目了然。
+* **类型丰富：** 支持 Java 原始类型、无符号类型、字符串、时间以及集合。
+* **灵活地址：** 提供反向地址，适配变长协议。
+* **字节顺序可选：** 大端或小端随心切换。
+* **公式支持：** Lambda 或自定义类均可实现编解码公式。
+* **多种API：** 兼顾效率与易用性。
 
 ### *正在开发*
 
 * 代码结构 & 性能优化
 * 添加CRC校验和支持
+
+查看[更新日志](CHANGELOG-zh.md)获取版本历史，英文版请查阅[CHANGELOG](CHANGELOG.md)。
 
 ### *Maven*
 
@@ -34,17 +35,17 @@ FastProto是一款高效的二进制数据处理工具，专为简化Java环境�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.10.3</version>
+    <version>3.11.0</version>
 </dependency>
 ```
 
 ## *1. 快速入门*
 
-有这样一个应用场景，一台气象监测设备实时采集气象数据，并以二进制格式发送数据到气象站，数据报文固定长度20字节，具体如下:
+下面展示如何解析一条 20 字节的气象报文：
 
 >   65 00 7F 69 3D 84 7A 01 00 00 55 00 F1 FF 0D 00 00 00 07 00
 
-数据报文包含8种不同类型的信号，具体协议如下：
+报文共包含八个信号，协议如下：
 
 | 字节偏移 | 位偏移 |  数据类型(C/C++)   |  信号名称  | 单位 |  换算公式  |
 |:-----------:|:----------:|:--------------:|:------:|:----:|:---------:|
@@ -60,8 +61,7 @@ FastProto是一款高效的二进制数据处理工具，专为简化Java环境�
 
 ### *1.1 解码和编码二进制数据*
 
-气象站接收到数据后，需要将其解码成Java数据对象，以便后续的业务功能开发。
-首先，按照协议定义Java数据对象`Weather`，然后使用FastProto注解修饰各个字段，注解的offset属性信号的字节偏移量（地址）。
+气象站接收到报文后，需要把它解码成 Java 对象。按照协议定义 `Weather` 类，并在字段上标注字节偏移。
 
 ```java
 import org.indunet.fastproto.annotation.*;
@@ -95,7 +95,7 @@ byte[] datagram = ...   // 检测设备发送的二进制报文
 Weather weather = FastProto.decode(datagram, Weather.class);
 ```
 
-调用`FastProto::encode()`方法将Java数据对象`Weather`编码成二进制数据,其中方法的第二个参数是字节数组长度，如果用户不指定，那么FastProto会自动推测。
+调用 `FastProto::encode()` 将 `Weather` 对象写回字节数组。第二个参数是数据长度，留空时 FastProto 会自动推测。
 
 ```java
 byte[] datagram = FastProto.encode(weather, 20);
@@ -104,8 +104,7 @@ byte[] datagram = FastProto.encode(weather, 20);
 
 ### *1.2 变换公式*
 
-也许你已经注意到压力信号对应一个换算公式，通常需要用户自行将序列化后的结果乘以0.1，这是物联网数据交换时极其常见的操作。
-为了帮助用户减少中间步骤，FastProto引入了编码公式注解`@EncodingFormula`和解码公式注解`@DecodingFormula`，上述简单的公式变换可以通过Lambda表达式实现。
+压力字段需要做简单的换算。FastProto 提供 `@EncodingFormula` 和 `@DecodingFormula`，可直接用 Lambda 表达式完成转换：
 
 ```java
 import org.indunet.fastproto.annotation.DecodingFormula;
@@ -419,4 +418,4 @@ Copyright 2019-2021 indunet.org
 均按“原样”提供，不附带任何明示或暗示的保证。
 有关许可证中的具体语言以及权限限制，请参阅该许可证。
 ```
-[更新日志](CHANGELOG.md) | [更新日志(中文版)](CHANGELOG-zh.md)
+
