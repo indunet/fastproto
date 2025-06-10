@@ -59,4 +59,24 @@ public class CRC8Test {
 
         assertEquals(expectedCRC, crc8.calculate(data));
     }
+
+    @Test
+    public void testCustomPolynomial() {
+        CRC8 custom = new CRC8();
+        custom.setPolynomial(CRC8.CRC8_DALLAS_MAXIM_POLYNOMIAL);
+        byte[] data = {0x31, 0x32, 0x33, 0x34, 0x35};
+        int expectedCRC = 0x0E;
+
+        assertEquals(expectedCRC, custom.calculate(data));
+    }
+
+    @Test
+    public void testSetInitialValue() {
+        CRC8 custom = new CRC8();
+        custom.setInitialValue(CRC8.CRC8_CCITT_INITIAL_VALUE);
+        byte[] data = {0x31, 0x32, 0x33, 0x34, 0x35};
+        int expectedCRC = 0xF2;
+
+        assertEquals(expectedCRC, custom.calculate(data));
+    }
 }

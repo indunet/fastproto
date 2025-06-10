@@ -58,4 +58,25 @@ public class CRC16Test {
 
         assertEquals(expectedCRC, crc16.calculate(data));
     }
+
+    @Test
+    public void testCustomPolynomial() {
+        CRC16 custom = new CRC16();
+        custom.setPolynomial(CRC16.CRC16_CCITT_POLYNOMIAL);
+        custom.setInitialValue(CRC16.CRC16_CCITT_INITIAL_VALUE);
+        byte[] data = {0x31, 0x32, 0x33, 0x34, 0x35};
+        int expectedCRC = 0x44BF;
+
+        assertEquals(expectedCRC, custom.calculate(data));
+    }
+
+    @Test
+    public void testSetInitialValue() {
+        CRC16 custom = new CRC16();
+        custom.setInitialValue(CRC16.CRC16_MODBUS_INITIAL_VALUE);
+        byte[] data = {0x31, 0x32, 0x33, 0x34, 0x35};
+        int expectedCRC = 0xA471;
+
+        assertEquals(expectedCRC, custom.calculate(data));
+    }
 }
