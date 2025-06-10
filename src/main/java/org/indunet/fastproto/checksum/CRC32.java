@@ -29,26 +29,33 @@ package org.indunet.fastproto.checksum;
 public class CRC32 extends CRC {
     public static final int DEFAULT_POLYNOMIAL = 0x04C11DB7;
     public static final int DEFAULT_INITIAL_VALUE = 0xFFFFFFFF;
-    protected static final int[] CRC32_TABLE = new int[256];
+    protected static final int[] DEFAULT_TABLE;
 
     protected int polynomial;
     protected int initialValue;
 
     static {
-        // Initialize the CRC32 lookup table
+        DEFAULT_TABLE = buildTable(DEFAULT_POLYNOMIAL);
+    }
+
+    protected static int[] buildTable(int polynomial) {
+        int[] table = new int[256];
+
         for (int i = 0; i < 256; i++) {
             int crc = i << 24;
 
             for (int j = 0; j < 8; j++) {
                 if ((crc & 0x80000000) != 0) {
-                    crc = (crc << 1) ^ DEFAULT_POLYNOMIAL;
+                    crc = (crc << 1) ^ polynomial;
                 } else {
                     crc <<= 1;
                 }
             }
 
-            CRC32_TABLE[i] = crc;
+            table[i] = crc;
         }
+
+        return table;
     }
 
     public CRC32() {
@@ -83,7 +90,7 @@ public class CRC32 extends CRC {
         for (byte b : data) {
             b = reverseBits(b); // 输入数据翻转
             int tableIndex = (crc >>> 24) ^ (b & 0xFF);
-            crc = (crc << 8) ^ CRC32_TABLE[tableIndex];
+            crc = (crc << 8) ^ DEFAULT_TABLE[tableIndex];
         }
 
         return reverseBits(crc, 32) ^ 0xFFFFFFFF;
