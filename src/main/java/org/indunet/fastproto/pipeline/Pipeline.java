@@ -86,10 +86,12 @@ public abstract class Pipeline<T> {
 
     static {
         // remove unnecessary flow.
-        decodePipeline = new DecodeFlow();
+        decodePipeline = new DecodeFlow()
+                .append(org.indunet.fastproto.pipeline.checksum.ChecksumDecodeFlow.class);
 
         // remove unnecessary flow.
-        encodePipeline = new EncodeFlow();
+        encodePipeline = new EncodeFlow()
+                .append(org.indunet.fastproto.pipeline.checksum.ChecksumEncodeFlow.class);
     }
 
     protected static Pipeline<ValidatorContext> validateFlow;
