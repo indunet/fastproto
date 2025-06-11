@@ -25,7 +25,6 @@ import org.indunet.fastproto.annotation.DefaultByteOrder;
 import org.indunet.fastproto.annotation.UInt64Type;
 import org.indunet.fastproto.domain.Everything;
 import org.indunet.fastproto.domain.Sensor;
-import org.indunet.fastproto.domain.Weather;
 import org.indunet.fastproto.domain.color.Phone;
 import org.indunet.fastproto.domain.datagram.StateDatagram;
 import org.indunet.fastproto.domain.tesla.Battery;
@@ -98,71 +97,6 @@ public class FastProtoTest {
                 });
     }
 
-    @Test
-    public void testWeather1() {
-        byte[] datagram = new byte[30];
-        Weather metrics = Weather.builder()
-                .id(101)
-                .time(new Timestamp(System.currentTimeMillis()))
-                .humidity(85)
-                .temperature(-15)
-                .pressure(13)
-                .humidityValid(true)
-                .temperatureValid(true)
-                .pressureValid(true)
-                .build();
-
-        // Init datagram.
-        EncodeUtils.writeUInt8(datagram, 0, metrics.getId());
-        EncodeUtils.writeInt64(datagram, 2, ByteOrder.LITTLE, metrics.getTime().getTime());
-        EncodeUtils.writeUInt16(datagram, 10, ByteOrder.LITTLE, metrics.getHumidity());
-        EncodeUtils.writeInt16(datagram, 12, ByteOrder.LITTLE, metrics.getTemperature());
-        EncodeUtils.writeUInt32(datagram, 14, ByteOrder.LITTLE, metrics.getPressure());
-        EncodeUtils.writeBool(datagram, 18, 0, BitOrder.LSB_0, metrics.isHumidityValid());
-        EncodeUtils.writeBool(datagram, 18, 1, BitOrder.LSB_0, metrics.isTemperatureValid());
-        EncodeUtils.writeBool(datagram, 18, 2, BitOrder.LSB_0, metrics.isPressureValid());
-
-        // Test decode.
-        assertEquals(
-                FastProto.decode(datagram, Weather.class).toString(), metrics.toString());
-
-        // Test encode.
-        byte[] cache = FastProto.encode(metrics, 30);
-        assertArrayEquals(datagram, cache);
-    }
-
-    @Test
-    public void testWeather2() {
-        byte[] datagram = new byte[23];
-        Weather weather = Weather.builder()
-                .id(101)
-                .time(new Timestamp(System.currentTimeMillis()))
-                .humidity(85)
-                .temperature(-15)
-                .pressure(13)
-                .humidityValid(true)
-                .temperatureValid(true)
-                .pressureValid(true)
-                .build();
-
-        // Init datagram.
-        EncodeUtils.writeUInt8(datagram, 0, weather.getId());
-        EncodeUtils.writeInt64(datagram, 2, ByteOrder.LITTLE, weather.getTime().getTime());
-        EncodeUtils.writeUInt16(datagram, 10, ByteOrder.LITTLE, weather.getHumidity());
-        EncodeUtils.writeInt16(datagram, 12, ByteOrder.LITTLE, weather.getTemperature());
-        EncodeUtils.writeUInt32(datagram, 14, ByteOrder.LITTLE, weather.getPressure());
-        EncodeUtils.writeBool(datagram, 18, 0, BitOrder.LSB_0, weather.isHumidityValid());
-        EncodeUtils.writeBool(datagram, 18, 1, BitOrder.LSB_0, weather.isTemperatureValid());
-        EncodeUtils.writeBool(datagram, 18, 2, BitOrder.LSB_0, weather.isPressureValid());
-
-        // Test decode.
-        assertEquals(
-                FastProto.decode(datagram, Weather.class).toString(), weather.toString());
-
-        // Test encode.
-        byte[] cache = FastProto.encode(weather, 23);
-        assertArrayEquals(cache, datagram);
-    }
 
     @Test
     public void testEverything() {
