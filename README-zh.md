@@ -35,7 +35,7 @@ FastProto 是一款轻量级的 Java 二进制协议库。只需使用注解描�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.11.0</version>
+    <version>3.10.3</version>
 </dependency>
 ```
 
