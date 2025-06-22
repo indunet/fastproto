@@ -59,4 +59,42 @@ public class CRC32Test {
 
         assertEquals(expectedCRC, crc32.calculate(data));
     }
+
+    @Test
+    public void testCustomPolynomial() {
+        CRC32 custom = new CRC32(0x1EDC6F41, CRC32.DEFAULT_INITIAL_VALUE);
+        byte[] data = {0x31, 0x32, 0x33, 0x34, 0x35};
+        int expectedCRC = 0x18D12335;
+
+        assertEquals(expectedCRC, custom.calculate(data));
+    }
+
+    @Test
+    public void testCustomInitialValue() {
+        CRC32 custom = new CRC32(0x1EDC6F41, 0x00000000);
+        byte[] data = {0x31, 0x32, 0x33, 0x34, 0x35};
+        int expectedCRC = 0xA25CAAFF;
+
+        assertEquals(expectedCRC, custom.calculate(data));
+    }
+
+    @Test
+    public void testSetPolynomial() {
+        CRC32 custom = new CRC32();
+        custom.setPolynomial(0x1EDC6F41);
+        byte[] data = {0x31, 0x32, 0x33, 0x34, 0x35};
+        int expectedCRC = 0x18D12335;
+
+        assertEquals(expectedCRC, custom.calculate(data));
+    }
+
+    @Test
+    public void testSetInitialValue() {
+        CRC32 custom = new CRC32();
+        custom.setInitialValue(0x00000000);
+        byte[] data = {0x31, 0x32, 0x33, 0x34, 0x35};
+        int expectedCRC = 0xF22832FE;
+
+        assertEquals(expectedCRC, custom.calculate(data));
+    }
 }
