@@ -30,10 +30,13 @@ import java.util.Arrays;
  * @since 1.7.0
  */
 public abstract class Pipeline<T> {
-    protected static Class<? extends Pipeline>[] decodeFlowClasses = new Class[] {
-            DecodeFlow.class};
-    protected static Class<? extends Pipeline>[] encodeFlowClasses = new Class[] {
+    protected static Class<? extends Pipeline<PipelineContext>>[] decodeFlowClasses = new Class[]{
+            DecodeFlow.class,
+            ChecksumFlow.class
+    };
+    protected static Class<? extends Pipeline<PipelineContext>>[] encodeFlowClasses = new Class[]{
             EncodeFlow.class,
+            ChecksumFlow.class
     };
 
     Pipeline<T> next = null;
@@ -85,13 +88,8 @@ public abstract class Pipeline<T> {
     protected static Pipeline encodePipeline;
 
     static {
-        // remove unnecessary flow.
-        decodePipeline = new DecodeFlow()
-                .append(org.indunet.fastproto.pipeline.checksum.ChecksumDecodeFlow.class);
-
-        // remove unnecessary flow.
-        encodePipeline = new EncodeFlow()
-                .append(org.indunet.fastproto.pipeline.checksum.ChecksumEncodeFlow.class);
+        decodePipeline = Pipeline.create(decodeFlowClasses);
+        encodePipeline = Pipeline.create(encodeFlowClasses);
     }
 
     protected static Pipeline<ValidatorContext> validateFlow;
