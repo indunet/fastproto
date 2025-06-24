@@ -64,7 +64,7 @@ public class Phone {
 
         datagram[0] = (byte) Color.RED.getCode();
         datagram[1] = (byte) Color.YELLOW.getCode();
-        datagram[2] = 0x01;                      // nfcEnabled
+        datagram[2] = (byte) 0x80;                      // nfcEnabled
         datagram[3] = 0x00;
         datagram[4] = 0x00;
         datagram[5] = 0x00;
