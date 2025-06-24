@@ -30,11 +30,11 @@ import java.util.Arrays;
  * @since 1.7.0
  */
 public abstract class Pipeline<T> {
-    protected static Class<? extends Pipeline>[] decodeFlowClasses = new Class[] {
+    protected static Class<? extends Pipeline<PipelineContext>>[] decodeFlowClasses = new Class[]{
             DecodeFlow.class,
             ChecksumFlow.class
     };
-    protected static Class<? extends Pipeline>[] encodeFlowClasses = new Class[] {
+    protected static Class<? extends Pipeline<PipelineContext>>[] encodeFlowClasses = new Class[]{
             EncodeFlow.class,
             ChecksumFlow.class
     };
