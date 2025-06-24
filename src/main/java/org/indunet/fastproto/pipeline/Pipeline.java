@@ -31,9 +31,12 @@ import java.util.Arrays;
  */
 public abstract class Pipeline<T> {
     protected static Class<? extends Pipeline>[] decodeFlowClasses = new Class[] {
-            DecodeFlow.class};
+            DecodeFlow.class,
+            ChecksumFlow.class
+    };
     protected static Class<? extends Pipeline>[] encodeFlowClasses = new Class[] {
             EncodeFlow.class,
+            ChecksumFlow.class
     };
 
     Pipeline<T> next = null;
@@ -85,11 +88,8 @@ public abstract class Pipeline<T> {
     protected static Pipeline encodePipeline;
 
     static {
-        // remove unnecessary flow.
-        decodePipeline = new DecodeFlow();
-
-        // remove unnecessary flow.
-        encodePipeline = new EncodeFlow();
+        decodePipeline = Pipeline.create(decodeFlowClasses);
+        encodePipeline = Pipeline.create(encodeFlowClasses);
     }
 
     protected static Pipeline<ValidatorContext> validateFlow;

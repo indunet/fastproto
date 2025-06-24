@@ -16,10 +16,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Checksum {
     /** Start offset of the data for CRC calculation. */
-    int start();
-
-    /** Length of the data for CRC calculation. */
-    int length();
+    int offset();
 
     /** Checksum algorithm. */
     Type type() default Type.CRC16;
@@ -28,6 +25,8 @@ public @interface Checksum {
     ByteOrder byteOrder() default ByteOrder.LITTLE;
 
     enum Type {
-        CRC16, CRC32
+        CRC8,
+        CRC16,
+        CRC32
     }
 }

@@ -7,6 +7,16 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ChecksumUtilsTest {
     @Test
+    public void testCrc8LittleAndBig() {
+        byte[] data = {0x31,0x32,0x33,0x34,0x35};
+        int crc = new CRC8().calculate(data);
+        byte[] little = {(byte) crc};
+        byte[] big = {(byte) crc};
+        assertEquals(0xCB, crc);
+        assertArrayEquals(new byte[]{(byte)0xCB}, little);
+        assertArrayEquals(new byte[]{(byte)0xCB}, big);
+    }
+    @Test
     public void testCrc16LittleAndBig() {
         byte[] data = {0x31,0x32,0x33,0x34,0x35};
         int crc = CRC16.CRC16_IBM_INITIAL_VALUE;
@@ -32,8 +42,10 @@ public class ChecksumUtilsTest {
     @Test
     public void testCalculateRange() {
         byte[] data = {1,2,3,4,5};
+        long crc8 = ChecksumUtils.calculate(data,0,5, Checksum.Type.CRC8);
         long crc16 = ChecksumUtils.calculate(data,0,5, Checksum.Type.CRC16);
         long crc32 = ChecksumUtils.calculate(data,0,5, Checksum.Type.CRC32);
+        assertEquals(new CRC8().calculate(data) & 0xFF, crc8);
         assertEquals(new CRC16().calculate(data) & 0xFFFF, crc16);
         assertEquals(new CRC32().calculate(data) & 0xFFFFFFFFL, crc32);
     }
