@@ -26,3 +26,6 @@ hs_err_pid*
 .idea/
 /target
 fastproto.iml
+
+# Development notes
+dev_note.md

@@ -29,91 +29,102 @@ import java.util.stream.IntStream;
 import static java.lang.Math.abs;
 
 /**
- * Benchmark sample.
+ * Benchmark sample with optimized field alignment and primitive types.
  *
  * @author Deng Ran
- * @since 1.4.0
+ * @since 3.11.0
  */
 @Data
+@DefaultByteOrder(ByteOrder.LITTLE)
 public class Sample {
-    @BoolType(byteOffset = 0, bitOffset = 1)
-    Boolean bool1;
+    // 1-byte aligned fields
+    @BoolType(byteOffset = 0, bitOffset = 0)
+    boolean bool1;
 
     @Int8Type(offset = 1)
-    Byte byte8;
+    byte byte8;
 
+    // 2-byte aligned fields
     @Int16Type(offset = 2)
-    Short short16;
+    short short16;
 
+    // 4-byte aligned fields
     @Int32Type(offset = 4)
-    Integer int32;
+    int int32;
 
-    @Int64Type(offset = 8)
-    Long long64;
+    @UInt32Type(offset = 8)
+    long uint32;
 
-    @FloatType(offset = 16)
-    Float float32;
+    @FloatType(offset = 12)
+    float float32;
 
-    @DoubleType(offset = 20)
-    Double double64;
+    // 8-byte aligned fields
+    @Int64Type(offset = 16)
+    long long64;
 
-    @Int8Type(offset = 28)
-    Integer int8;
+    @DoubleType(offset = 24)
+    double double64;
 
-    @Int16Type(offset = 30)
-    Integer int16;
+    // Additional fields
+    @Int8Type(offset = 32)
+    byte int8;
 
-    @UInt8Type(offset = 32)
-    Integer uint8;
+    @Int16Type(offset = 34)
+    short int16;
 
-    @UInt16Type(offset = 34)
-    Integer uint16;
+    @UInt8Type(offset = 36)
+    int uint8;
 
-    @UInt32Type(offset = 36)
-    Long uint32;
+    @UInt16Type(offset = 38)
+    int uint16;
 
     @BinaryType(offset = 40, length = 10)
     byte[] bytes;
 
     public Sample() {
-        val random = new Random();
+        this(true);
+    }
 
-        this.bool1 = random.nextBoolean();
-        this.byte8 = (byte) random.nextInt(Byte.MAX_VALUE);
-        this.short16 = (short) random.nextInt(Short.MAX_VALUE);
-        this.int32 = random.nextInt();
-        this.long64 = random.nextLong();
-        this.float32 = random.nextFloat();
-        this.double64 = random.nextDouble();
-        this.int8 = random.nextInt(Byte.MAX_VALUE);
-        this.int16 = random.nextInt(Short.MAX_VALUE);
-        this.uint8 = abs(random.nextInt(UInt8Type.MAX_VALUE));
-        this.uint16 = abs(random.nextInt(UInt16Type.MAX_VALUE));
-        this.uint32 = (long) abs(random.nextInt());
+    public Sample(boolean initializeData) {
+        if (initializeData) {
+            val random = new Random();
 
-        val bytes = new byte[10];
+            this.bool1 = random.nextBoolean();
+            this.byte8 = (byte) random.nextInt(Byte.MAX_VALUE);
+            this.short16 = (short) random.nextInt(Short.MAX_VALUE);
+            this.int32 = random.nextInt();
+            this.long64 = random.nextLong();
+            this.float32 = random.nextFloat();
+            this.double64 = random.nextDouble();
+            this.int8 = (byte) random.nextInt(Byte.MAX_VALUE);
+            this.int16 = (short) random.nextInt(Short.MAX_VALUE);
+            this.uint8 = abs(random.nextInt(UInt8Type.MAX_VALUE));
+            this.uint16 = abs(random.nextInt(UInt16Type.MAX_VALUE));
+            this.uint32 = (long) abs(random.nextInt());
 
-        IntStream.range(0, bytes.length)
-                .forEach(i -> bytes[i] = (byte) random.nextInt(Byte.MAX_VALUE));
-        this.bytes = bytes;
+            val bytes = new byte[10];
+            IntStream.range(0, bytes.length)
+                    .forEach(i -> bytes[i] = (byte) random.nextInt(Byte.MAX_VALUE));
+            this.bytes = bytes;
+        }
     }
 
     public byte[] toBytes() {
         val bytes = new byte[60];
 
-        EncodeUtils.writeBool(bytes, 0, 1, BitOrder.LSB_0, this.getBool1());
-        EncodeUtils.writeByte(bytes, 1, this.getByte8());
-        EncodeUtils.writeShort(bytes, 2, ByteOrder.LITTLE, this.getShort16());
-        EncodeUtils.writeInt32(bytes, 4, ByteOrder.LITTLE, this.getInt32());
-        EncodeUtils.writeInt64(bytes, 8, ByteOrder.LITTLE, this.getLong64());
-        EncodeUtils.writeFloat(bytes, 16, ByteOrder.LITTLE, this.getFloat32());
-        EncodeUtils.writeDouble(bytes, 20, ByteOrder.LITTLE, this.getDouble64());
-        EncodeUtils.writeInt8(bytes, 28, this.getInt8());
-        EncodeUtils.writeInt16(bytes, 30, ByteOrder.LITTLE, this.getInt16());
-        EncodeUtils.writeUInt8(bytes, 32, this.getUint8());
-        EncodeUtils.writeUInt16(bytes, 34, ByteOrder.LITTLE, this.getUint16());
-        EncodeUtils.writeUInt32(bytes, 36, ByteOrder.LITTLE, this.getUint32());
-        EncodeUtils.writeBytes(bytes, 40, this.getBytes());
+        EncodeUtils.writeBool(bytes, 0, 0, BitOrder.LSB_0, this.bool1);
+        EncodeUtils.writeByte(bytes, 1, this.byte8);
+        EncodeUtils.writeShort(bytes, 2, this.short16);
+        EncodeUtils.writeInt32(bytes, 4, this.int32);
+        EncodeUtils.writeUInt32(bytes, 8, this.uint32);
+        EncodeUtils.writeFloat(bytes, 12, this.float32);
+        EncodeUtils.writeInt64(bytes, 16, this.long64);
+        EncodeUtils.writeDouble(bytes, 24, this.double64);
+        EncodeUtils.writeInt8(bytes, 32, this.int8);
+        EncodeUtils.writeInt16(bytes, 34, this.int16);
+        EncodeUtils.writeUInt8(bytes, 36, this.uint8);
+        EncodeUtils.writeUInt16(bytes, 38, this.uint16);
+        EncodeUtils.writeBytes(bytes, 40, this.bytes);
 
         return bytes;
     }

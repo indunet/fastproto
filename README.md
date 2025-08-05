@@ -35,7 +35,7 @@ See the [CHANGELOG](CHANGELOG.md) for recent updates.
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.10.3</version>
+    <version>3.11.0</version>
 </dependency>
 ```
 

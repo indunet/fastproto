@@ -9,7 +9,7 @@
     <version>3.11.0</version>
     <packaging>jar</packaging>
     <name>FastProto</name>
-    <description>FastProto is a binary data processing tool written in Java.</description>
+    <description>FastProto is a lightweight Java library that makes binary protocols effortless.</description>
 
     <url>http://fastproto.indunet.org</url>
     <inceptionYear>2019</inceptionYear>
@@ -204,6 +204,15 @@
 
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.sonatype.central</groupId>
+                <artifactId>central-publishing-maven-plugin</artifactId>
+                <version>0.8.0</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <publishingServerId>central</publishingServerId>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
