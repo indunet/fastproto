@@ -21,7 +21,7 @@ public class ChecksumAnnotationObject {
     @UInt8Type(offset = 4)
     int b5;
 
-    @UInt8Type(offset = 5)
-    @Checksum(offset = 0, type = Checksum.Type.CRC8)
+    // CRC8 stored at 5, computed over [0,5)
+    @Checksum(start = 0, length = 5, offset = 5, type = Checksum.Type.CRC8)
     int crc;
 }
