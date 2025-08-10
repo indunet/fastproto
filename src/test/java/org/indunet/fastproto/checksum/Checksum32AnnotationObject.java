@@ -5,7 +5,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.Checksum;
-import org.indunet.fastproto.annotation.UInt32Type;
 import org.indunet.fastproto.annotation.UInt8Type;
 
 @Data
@@ -23,7 +22,7 @@ public class Checksum32AnnotationObject {
     @UInt8Type(offset = 4)
     int b5;
 
-    @UInt32Type(offset = 5, byteOrder = ByteOrder.BIG)
-    @Checksum(offset = 0, type = Checksum.Type.CRC32, byteOrder = ByteOrder.BIG)
+    // CRC32 big-endian stored at 5..8, computed over [0,5)
+    @Checksum(start = 0, length = 5, offset = 5, type = Checksum.Type.CRC32, byteOrder = ByteOrder.BIG)
     long crc;
 }
