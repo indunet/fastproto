@@ -2,12 +2,27 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.12.0] - 2025-08-11
+### Added
+- Single-annotation checksum: `@Checksum(start, length, offset, type, byteOrder)` with encode auto-write and decode auto-verify flows.
+- Algorithm coverage: `CRC8_SMBUS`, `CRC8_MAXIM`, `XOR8 (BCC)`, `LRC8`, `CRC16_MODBUS`, `CRC16_CCITT`, `CRC32C`, `CRC64_ECMA-182`, `CRC64/ISO`.
+
+### Changed
+- `ChecksumUtils` now reuses singleton engines and throws `CodecException` for unsupported types.
+- ChecksumFlow supports 8/16/32/64-bit checksum read/write and decode-time validation.
+- Expanded documentation: annotation mapping, byte/bit order, checksum/CRC, formulas, arrays & strings, no-annotation APIs, FAQ.
+
+### Breaking
+- `@Checksum` parameters changed to `start`, `length`, `offset`. The checksum field no longer requires a `@UIntXType` solely to provide offset.
+
 ## [3.11.0] - 2025-06-08
 ### Added
 - Added optional CRC checksum verification.
 - Default to the host's native byte order.
+
 ### Fixed
 - Fixed incorrect endianness when decoding doubles.
+
 ### Changed
 - Expanded documentation with additional examples.
 
