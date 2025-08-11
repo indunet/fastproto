@@ -33,13 +33,13 @@ FastProto 是一款轻量级的 Java 二进制协议库。只需使用注解描�
 
 ### *文档*
 
-- Annotation Mapping: [doc/annotation-mapping.md](doc/annotation-mapping.md)
-- Byte & Bit Order: [doc/byte-and-bit-order.md](doc/byte-and-bit-order.md)
-- Checksum/CRC: [doc/checksum.md](doc/checksum.md)
-- Transformation Formulas: [doc/formulas.md](doc/formulas.md)
-- Arrays & Strings: [doc/arrays-and-strings.md](doc/arrays-and-strings.md)
-- Using APIs without Annotations: [doc/without-annotations.md](doc/without-annotations.md)
-- FAQ: [doc/faq.md](doc/faq.md)
+- Annotation Mapping: [docs/annotation-mapping.md](docs/annotation-mapping.md)
+- Byte & Bit Order: [docs/byte-and-bit-order.md](docs/byte-and-bit-order.md)
+- Checksum/CRC: [docs/checksum.md](docs/checksum.md)
+- Transformation Formulas: [docs/formulas.md](docs/formulas.md)
+- Arrays & Strings: [docs/arrays-and-strings.md](docs/arrays-and-strings.md)
+- Using APIs without Annotations: [docs/without-annotations.md](docs/without-annotations.md)
+- FAQ: [docs/faq.md](docs/faq.md)
 
 ### *安装*
 
@@ -124,7 +124,7 @@ byte[] datagram = FastProto.encode(weather, 20);
 
 ### *1.2 变换公式*
 
-压力字段需要做简单的换算。FastProto 提供 `@EncodingFormula` 和 `@DecodingFormula`，可直接用 Lambda 表达式完成转换。 查看 [变换公式文档](doc/formulas.md) 了解更多。
+压力字段需要做简单的换算。FastProto 提供 `@EncodingFormula` 和 `@DecodingFormula`，可直接用 Lambda 表达式完成转换。 查看 [变换公式文档](docs/formulas.md) 了解更多。
 
 ```java
 import org.indunet.fastproto.annotation.DecodingFormula;
@@ -210,7 +210,7 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 
 #### *2.4.1 字节顺序和位顺序*
 
-FastProto默认使用小端，可以通过`@DefaultByteOrder`注解修改全局字节顺序，也可以通过数据类型注解中的`byteOrder`属性修改特定字段的字节顺序，后者优先级更高。 查看 [字节序与位序文档](doc/byte-and-bit-order.md) 了解更多。
+FastProto默认使用小端，可以通过`@DefaultByteOrder`注解修改全局字节顺序，也可以通过数据类型注解中的`byteOrder`属性修改特定字段的字节顺序，后者优先级更高。 查看 [字节序与位序文档](docs/byte-and-bit-order.md) 了解更多。
 
 同理，FastProto默认使用LSB_0，可以通过`@DefaultBitOrder`注解修改全局位顺序，也可以通过数据类型注解中的`bitOrder`属性修改特定字段的位顺序，后者优先级更高。
 
@@ -328,7 +328,7 @@ public class Weather {
 
 ### *2.5 校验和/CRC*
 
-使用 `@Checksum` 一次性定义“起始地址 + 长度 + 校验和存放地址”。FastProto 会在编码时自动写入校验和，在解码时自动校验并在不匹配时抛出异常。 查看 [校验和文档](doc/checksum.md) 了解更多。
+使用 `@Checksum` 一次性定义“起始地址 + 长度 + 校验和存放地址”。FastProto 会在编码时自动写入校验和，在解码时自动校验并在不匹配时抛出异常。 查看 [校验和文档](docs/checksum.md) 了解更多。
 
 - CRC16（小端）示例：计算区间 [0,5)，CRC 写入字节 5..6
 ```java

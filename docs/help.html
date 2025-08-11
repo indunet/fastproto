@@ -116,7 +116,7 @@
       }catch(e1){
         // Fallback to GitHub raw (use develop branch)
         try{
-          const raw = 'https://raw.githubusercontent.com/indunet/fastproto/develop/doc/' + file;
+          const raw = 'https://raw.githubusercontent.com/indunet/fastproto/develop/docs/' + file;
           const res2 = await fetch(raw, {cache:'no-cache'});
           if(!res2.ok) throw new Error('HTTP '+res2.status);
           md = await res2.text();
