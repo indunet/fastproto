@@ -1,0 +1,227 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>FastProto — Binary Protocols for Java</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="FastProto is a lightweight Java library that makes binary protocols effortless, with annotation-driven mapping and built-in checksum/CRC support (CRC8/16/32/64, LRC, XOR).">
+  <meta name="keywords" content="FastProto, binary, Java, codec, CRC, checksum, protocol, annotation">
+  <link rel="icon" href="../logo.png">
+  <link rel="canonical" href="https://indunet.github.io/fastproto/">
+  <meta property="og:title" content="FastProto — Binary Protocols for Java">
+  <meta property="og:description" content="Annotation-driven binary mapping. Checksums/CRC built-in. Simple, fast, reliable.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://indunet.github.io/fastproto/logo.png">
+  <meta property="og:url" content="https://indunet.github.io/fastproto/">
+  <style>
+    :root{
+      --bg:#f7f9fc; --card:#ffffff; --text:#111111; --muted:#4a5568; --brand:#2563eb; --accent:#059669;
+      --border:#e5e7eb; --code:#f5f7fa; --shadow:0 8px 20px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text); background:linear-gradient(180deg, #ffffff, var(--bg));
+    }
+    a{color:var(--brand); text-decoration:none}
+    a:hover{opacity:.9}
+    .container{max-width:1060px; margin:0 auto; padding:28px}
+    .nav{display:flex; align-items:center; justify-content:space-between; gap:16px; margin-bottom:20px}
+    .nav .links a{margin-left:14px; font-weight:600}
+    .hero{
+      display:grid; grid-template-columns:1fr; gap:18px; padding:38px 28px; border:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(37,99,235,.04), rgba(5,150,105,.03));
+      border-radius:16px; box-shadow:var(--shadow)
+    }
+    .brand{display:flex; align-items:center; gap:14px}
+    .brand img{width:44px; height:44px; border-radius:10px}
+    .brand h1{margin:0; font-size:28px; letter-spacing:.2px}
+    .tagline{margin:4px 0 0; color:var(--muted)}
+    .cta{display:flex; flex-wrap:wrap; gap:12px; margin-top:16px}
+    .btn{
+      display:inline-flex; align-items:center; gap:8px; padding:10px 16px; border-radius:10px; font-weight:700;
+      border:1px solid var(--border); background:var(--card); color:var(--text)
+    }
+    .btn.primary{background:linear-gradient(90deg, var(--brand), var(--accent)); color:#ffffff; border-color:transparent}
+    .grid{display:grid; gap:16px; grid-template-columns:repeat(12,1fr); margin-top:24px}
+    .card{
+      grid-column:span 12; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px
+    }
+    @media (min-width:860px){
+      .card.span-6{grid-column:span 6}
+      .card.span-4{grid-column:span 4}
+      .card.span-8{grid-column:span 8}
+    }
+    .card h3{margin:0 0 8px 0; font-size:18px}
+    .features{display:grid; grid-template-columns:repeat(1, minmax(0, 1fr)); gap:12px}
+    @media (min-width:720px){ .features{grid-template-columns:repeat(2, minmax(0, 1fr))} }
+    .feature{padding:14px; border:1px dashed var(--border); border-radius:12px}
+    pre, code{font:13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace}
+    pre{
+      margin:0; padding:14px; background:var(--code); color:var(--text); border-radius:10px; overflow:auto;
+      border:1px solid var(--border)
+    }
+    .footer{color:var(--muted); text-align:center; margin:28px 0 8px}
+    .badges img{height:22px; margin-right:8px; vertical-align:middle}
+    .list{margin:0; padding-left:18px}
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"SoftwareApplication",
+    "name":"FastProto",
+    "applicationCategory":"DeveloperApplication",
+    "operatingSystem":"Cross-platform",
+    "description":"Annotation-driven binary protocol toolkit for Java. Built-in checksum/CRC support.",
+    "softwareVersion":"3.12.0",
+    "license":"https://www.apache.org/licenses/LICENSE-2.0",
+    "url":"https://indunet.github.io/fastproto/",
+    "downloadUrl":"https://repo1.maven.org/maven2/org/indunet/fastproto/3.12.0/",
+    "programmingLanguage":"Java"
+  }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <nav class="nav">
+      <div class="brand">
+        <img src="../logo.png" alt="FastProto">
+        <div>
+          <h1>FastProto</h1>
+          <p class="tagline">Annotation-driven binary protocols for Java — simple, fast, reliable.</p>
+        </div>
+      </div>
+      <div class="links">
+        <a href="../README-zh.md">中文</a>
+        <a href="help.html">Help</a>
+        <a href="https://github.com/indunet/fastproto">GitHub</a>
+        <a href="https://search.maven.org/artifact/org.indunet/fastproto/3.12.0/jar">Maven Central</a>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="badges">
+        <a href="https://app.travis-ci.com/indunet/fastproto"><img alt="Build" src="https://app.travis-ci.com/indunet/fastproto.svg?branch=master"></a>
+        <a href="https://codecov.io/gh/indunet/fastproto"><img alt="codecov" src="https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU"></a>
+        <a href="https://www.codacy.com/gh/indunet/fastproto/dashboard"><img alt="Codacy" src="https://img.shields.io/badge/Codacy-A.svg"></a>
+        <a href="https://www.jetbrains.com/community/opensource"><img alt="JetBrains" src="https://img.shields.io/badge/JetBrains-support-blue"></a>
+        <a href="https://www.apache.org/licenses/LICENSE-2.0.html"><img alt="License" src="https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg"></a>
+      </div>
+      <div class="cta">
+        <a class="btn primary" href="#get-started">Get Started</a>
+        <a class="btn" href="#features">Features</a>
+        <a class="btn" href="#example">Example</a>
+        <a class="btn" href="#docs">Docs</a>
+      </div>
+    </section>
+
+    <section id="features" class="grid">
+      <div class="card">
+        <h3>Why FastProto?</h3>
+        <div class="features">
+          <div class="feature">
+            <strong>Annotation-Driven</strong>
+            <div>Map byte layouts to Java fields with clear, type-safe annotations.</div>
+          </div>
+          <div class="feature">
+            <strong>Checksums Built-in</strong>
+            <div>Single-annotation <code>@Checksum</code> with CRC8/16/32/64, LRC, XOR.</div>
+          </div>
+          <div class="feature">
+            <strong>Byte & Bit Order</strong>
+            <div>Per-field or global endianness and bit order.</div>
+          </div>
+          <div class="feature">
+            <strong>Fast APIs</strong>
+            <div>Encode/decode with or without annotations, low overhead.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card" id="get-started">
+        <h3>Install</h3>
+        <p style="margin:12px 0 6px; color:var(--muted)">Maven</p>
+        <pre><code>&lt;dependency&gt;
+  &lt;groupId&gt;org.indunet&lt;/groupId&gt;
+  &lt;artifactId&gt;fastproto&lt;/artifactId&gt;
+  &lt;version&gt;3.12.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+        <p style="margin:12px 0 6px; color:var(--muted)">Gradle</p>
+        <pre><code>implementation "org.indunet:fastproto:3.12.0"</code></pre>
+      </div>
+    </section>
+
+    <section id="example" class="grid">
+      <div class="card">
+        <h3>Quick Example</h3>
+        <pre><code>import org.indunet.fastproto.annotation.*;
+
+public class Weather {
+  @UInt8Type(offset = 0) int id;
+  @TimeType(offset = 2) java.sql.Timestamp time;
+  @UInt16Type(offset = 10) int humidity;
+  @Int16Type(offset = 12) int temperature;
+  @UInt32Type(offset = 14) long pressure;
+  @BoolType(byteOffset = 18, bitOffset = 0) boolean deviceValid;
+}</code></pre>
+        <pre style="margin-top:10px"><code>// Decode / Encode
+byte[] bytes = ...;
+Weather w = org.indunet.fastproto.FastProto.decode(bytes, Weather.class);
+byte[] out = org.indunet.fastproto.FastProto.encode(w, 20);</code></pre>
+      </div>
+    </section>
+
+    <section id="checksum" class="grid">
+      <div class="card">
+        <h3>Checksum/CRC</h3>
+        <pre><code>import org.indunet.fastproto.annotation.Checksum;
+import org.indunet.fastproto.ByteOrder;
+
+public class Packet {
+  @UInt8Type(offset = 0) int b1;
+  @UInt8Type(offset = 1) int b2;
+  @UInt8Type(offset = 2) int b3;
+  @UInt8Type(offset = 3) int b4;
+  @UInt8Type(offset = 4) int b5;
+
+  // Compute over [0,5), write CRC16 LE at 5..6
+  @Checksum(start = 0, length = 5, offset = 5,
+            type = Checksum.Type.CRC16,
+            byteOrder = ByteOrder.LITTLE)
+  int crc16;
+}</code></pre>
+      </div>
+    </section>
+
+    <section id="docs" class="grid">
+      <div class="card span-6">
+        <h3>Documentation</h3>
+        <ul class="list">
+          <li><a href="https://github.com/indunet/fastproto/blob/develop/doc/annotation-mapping.md">Annotation Mapping</a></li>
+          <li><a href="https://github.com/indunet/fastproto/blob/develop/doc/byte-and-bit-order.md">Byte & Bit Order</a></li>
+          <li><a href="https://github.com/indunet/fastproto/blob/develop/doc/checksum.md">Checksum / CRC</a></li>
+          <li><a href="https://github.com/indunet/fastproto/blob/develop/doc/formulas.md">Transformation Formulas</a></li>
+          <li><a href="https://github.com/indunet/fastproto/blob/develop/doc/arrays-and-strings.md">Arrays & Strings</a></li>
+          <li><a href="https://github.com/indunet/fastproto/blob/develop/doc/without-annotations.md">APIs without Annotations</a></li>
+          <li><a href="https://github.com/indunet/fastproto/blob/develop/doc/faq.md">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="card span-6">
+        <h3>Key Features</h3>
+        <ul class="list">
+          <li>Annotation-Driven mapping</li>
+          <li>Broad Type Support (incl. unsigned)</li>
+          <li>Flexible addressing (reverse offsets)</li>
+          <li>Configurable Byte Order</li>
+          <li>Custom Formulas (lambda/class)</li>
+          <li>Checksum/CRC: CRC8/16/32/64, LRC, XOR</li>
+          <li>Easy APIs with/without annotations</li>
+        </ul>
+      </div>
+    </section>
+
+    <p class="footer">
+      Released under the Apache 2.0 License. © 2019‑2025 indunet.org
+    </p>
+  </div>
+</body>
+</html> 

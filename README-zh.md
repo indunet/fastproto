@@ -41,7 +41,9 @@ FastProto 是一款轻量级的 Java 二进制协议库。只需使用注解描�
 - Using APIs without Annotations: [doc/without-annotations.md](doc/without-annotations.md)
 - FAQ: [doc/faq.md](doc/faq.md)
 
-### *Maven*
+### *安装*
+
+* Maven
 
 ```xml
 <dependency>
@@ -49,6 +51,12 @@ FastProto 是一款轻量级的 Java 二进制协议库。只需使用注解描�
     <artifactId>fastproto</artifactId>
     <version>3.12.0</version>
 </dependency>
+```
+
+* Gradle
+
+```gradle
+implementation "org.indunet:fastproto:3.12.0"
 ```
 
 ## *1. 快速入门*
