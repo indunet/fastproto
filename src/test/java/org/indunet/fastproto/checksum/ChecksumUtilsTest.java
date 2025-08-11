@@ -1,6 +1,5 @@
 package org.indunet.fastproto.checksum;
 
-import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.annotation.Checksum;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
@@ -10,33 +9,50 @@ public class ChecksumUtilsTest {
     public void testCrc8LittleAndBig() {
         byte[] data = {0x31,0x32,0x33,0x34,0x35};
         int crc = new CRC8().calculate(data);
-        byte[] little = {(byte) crc};
-        byte[] big = {(byte) crc};
         assertEquals(0xCB, crc);
-        assertArrayEquals(new byte[]{(byte)0xCB}, little);
-        assertArrayEquals(new byte[]{(byte)0xCB}, big);
     }
+
+    @Test
+    public void testCrc8Smbus() {
+        byte[] data = {0x31,0x32,0x33,0x34,0x35};
+        int crc = new CRC8SMBus().calculate(data);
+        // SMBus PEC over ASCII '1'..'5' equals CRC8(0x07, init=0x00) result; value depends on dataset
+        assertEquals(ChecksumUtils.crc8smbus(data), crc);
+    }
+
     @Test
     public void testCrc16LittleAndBig() {
         byte[] data = {0x31,0x32,0x33,0x34,0x35};
-        int crc = CRC16.CRC16_IBM_INITIAL_VALUE;
-        crc = new CRC16().calculate(data);
-        byte[] little = {(byte) crc, (byte) (crc >>> 8)};
-        byte[] big = {(byte) (crc >>> 8), (byte) crc};
+        int crc = new CRC16().calculate(data);
         assertEquals(0xA455, crc);
-        assertArrayEquals(new byte[]{(byte)0x55,(byte)0xA4}, little);
-        assertArrayEquals(new byte[]{(byte)0xA4,(byte)0x55}, big);
+    }
+
+    @Test
+    public void testCrc16Modbus() {
+        byte[] data = {0x31,0x32,0x33,0x34,0x35};
+        int crc = new CRC16Modbus().calculate(data);
+        assertEquals(ChecksumUtils.crc16modbus(data), crc);
     }
 
     @Test
     public void testCrc32LittleAndBig() {
         byte[] data = {0x31,0x32,0x33,0x34,0x35};
         int crc = new CRC32().calculate(data);
-        byte[] little = {(byte)crc,(byte)(crc>>>8),(byte)(crc>>>16),(byte)(crc>>>24)};
-        byte[] big = {(byte)(crc>>>24),(byte)(crc>>>16),(byte)(crc>>>8),(byte)crc};
         assertEquals(0xCBF53A1C, crc);
-        assertArrayEquals(new byte[]{(byte)0x1C,(byte)0x3A,(byte)0xF5,(byte)0xCB}, little);
-        assertArrayEquals(new byte[]{(byte)0xCB,(byte)0xF5,(byte)0x3A,(byte)0x1C}, big);
+    }
+
+    @Test
+    public void testCrc32C() {
+        byte[] data = {0x31,0x32,0x33,0x34,0x35};
+        int crc = new CRC32C().calculate(data);
+        assertEquals(ChecksumUtils.crc32c(data), crc);
+    }
+
+    @Test
+    public void testLrcAndBcc() {
+        byte[] data = {1,2,3,4,5};
+        assertEquals(ChecksumUtils.lrc(data) & 0xFF, new LRC().calculate(data) & 0xFF);
+        assertEquals(ChecksumUtils.bcc(data) & 0xFF, new BCC().calculate(data) & 0xFF);
     }
 
     @Test

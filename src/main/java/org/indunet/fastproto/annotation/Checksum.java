@@ -8,8 +8,8 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for checksum validation.
- * Single-annotation configuration: specify data start, length, and where to store/read the checksum.
+ * CRC utilities for CRC8/CRC16/CRC32.
+ * Single-annotation configuration: specify data range and checksum storage address.
  */
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
@@ -30,8 +30,21 @@ public @interface Checksum {
     ByteOrder byteOrder() default ByteOrder.LITTLE;
 
     enum Type {
+        // 8-bit
         CRC8,
+        CRC8_SMBUS,
+        CRC8_MAXIM,
+        XOR8,
+        LRC8,
+        // 16-bit
         CRC16,
-        CRC32
+        CRC16_MODBUS,
+        CRC16_CCITT,
+        // 32-bit
+        CRC32,
+        CRC32C,
+        // 64-bit
+        CRC64_ECMA182,
+        CRC64_ISO
     }
 }
