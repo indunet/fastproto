@@ -6,10 +6,10 @@
 
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.11.0</version>
+    <version>3.12.0</version>
     <packaging>jar</packaging>
     <name>FastProto</name>
-    <description>FastProto is a lightweight Java library that makes binary protocols effortless.</description>
+    <description>FastProto is a lightweight Java library that makes binary protocols effortless, with annotation-driven mapping and built-in checksum/CRC support (CRC8/16/32/64, LRC, XOR).</description>
 
     <url>http://fastproto.indunet.org</url>
     <inceptionYear>2019</inceptionYear>
