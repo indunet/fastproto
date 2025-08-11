@@ -20,6 +20,7 @@ FastProto is a lightweight Java library that makes binary protocols effortless. 
 - **Flexible Addressing:** Reverse addressing for variable-length packets.
 - **Configurable Byte Order:** Choose big-endian or little-endian to match your protocol.
 - **Custom Formulas:** Use lambdas or classes to transform values during encode/decode.
+- **Checksum/CRC:** Single-annotation `@Checksum` to define start, length and storage offset; built-ins include CRC8 (SMBus, MAXIM), CRC16 (MODBUS, CCITT), CRC32/CRC32C, CRC64 (ECMA/ISO), plus LRC and XOR.
 - **Easy APIs:** Multiple APIs tuned for efficiency and reliability.
 
 See the [CHANGELOG](CHANGELOG.md) for recent updates.
@@ -28,6 +29,17 @@ See the [CHANGELOG](CHANGELOG.md) for recent updates.
 
 * Code structure & performance optimization
 * Add crc checksum support
+* Richer documentation (expanded core feature guides)
+
+### *Documentation*
+
+- Annotation Mapping: [doc/annotation-mapping.md](doc/annotation-mapping.md)
+- Byte & Bit Order: [doc/byte-and-bit-order.md](doc/byte-and-bit-order.md)
+- Checksum/CRC: [doc/checksum.md](doc/checksum.md)
+- Transformation Formulas: [doc/formulas.md](doc/formulas.md)
+- Arrays & Strings: [doc/arrays-and-strings.md](doc/arrays-and-strings.md)
+- Using APIs without Annotations: [doc/without-annotations.md](doc/without-annotations.md)
+- FAQ: [doc/faq.md](doc/faq.md)
 
 ### *Maven*
 
@@ -35,7 +47,7 @@ See the [CHANGELOG](CHANGELOG.md) for recent updates.
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.11.0</version>
+    <version>3.12.0</version>
 </dependency>
 ```
 
@@ -104,7 +116,7 @@ byte[] datagram = FastProto.encode(weather, 20);
 ```
 ### *1.2 Transformation Formula*
 
-The pressure field uses a simple conversion. FastProto provides `@DecodingFormula` and `@EncodingFormula` so this logic can be expressed directly with lambdas:
+The pressure field uses a simple conversion. FastProto provides `@DecodingFormula` and `@EncodingFormula` so this logic can be expressed directly with lambdas. See the [formulas documentation](doc/formulas.md) for details.
 
 ```java
 import org.indunet.fastproto.annotation.DecodingFormula;
@@ -125,7 +137,7 @@ public class Weather {
 
 ### *2.1 Primitive Data Type Annotations*
 
-FastProto supports Java primitive data types, taking into account cross-language and cross-platform data exchange, unsigned types are also introduced.
+FastProto supports Java primitive data types, taking into account cross-language and cross-platform data exchange, unsigned types are also introduced. See the [annotation mapping documentation](doc/annotation-mapping.md) for details.
 
 | Annotation  |               Java                |     C/C++      |  Size   |
 |:-----------:|:---------------------------------:|:--------------:|:-------:|
@@ -133,7 +145,7 @@ FastProto supports Java primitive data types, taking into account cross-language
 | @AsciiType  |          Character/char           |      char      | 1 bytes |   
 |  @CharType  |          Character/char           |       --       | 2 bytes |
 |  @Int8Type  |       Byte/byte/Integer/int       |      char      | 1 byte  |  
-| @Int16Type  |     Short/short / Integer/int     |     short      | 2 bytes |  
+| @Int16Type  |     Short/short/Integer/int     |     short      | 2 bytes |  
 | @Int32Type  |            Integer/int            |      int       | 4 bytes | 
 | @Int64Type  |             Long/long             |      long      | 8 bytes |
 | @UInt8Type  |            Integer/int            | unsigned char  | 1 byte  |   
@@ -190,8 +202,7 @@ FastProto also provides some auxiliary annotations to help users further customi
 
 #### *2.4.1 Byte Order and Bit Order*
 
-FastProto uses little endian by default. You can modify the global byte order through `@DefaultByteOrder` annotation, or you can 
-modify the byte order of specific field through `byteOrder` attribute which has a higher priority.
+FastProto uses little endian by default. You can modify the global byte order through `@DefaultByteOrder` annotation, or you can modify the byte order of specific field through `byteOrder` attribute which has a higher priority. See the [byte and bit order documentation](doc/byte-and-bit-order.md) for details.
 
 Similarly, FastProto uses LSB_0 by default. You can modify the global bit order through `@DefaultBitOrder` annotation, or you can
 modify the bit order of specific field through `bitOrder` attribute which has a higher priority.
@@ -309,6 +320,47 @@ public class Weather {
     @Int32Type(offset = 14)
     long pressure; // ignore when packaging
 }
+```
+
+### *2.5 Checksum/CRC*
+
+Use `@Checksum` to define start, length and where to store the checksum. FastProto writes the checksum automatically when encoding and validates it when decoding (throws on mismatch). See the [checksum documentation](doc/checksum.md) for details.
+
+- CRC16 (little-endian): compute over [0,5), write at 5..6
+```java
+import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.FastProto;
+import org.indunet.fastproto.annotation.*;
+
+public class Packet {
+    @UInt8Type(offset = 0) int b1;
+    @UInt8Type(offset = 1) int b2;
+    @UInt8Type(offset = 2) int b3;
+    @UInt8Type(offset = 3) int b4;
+    @UInt8Type(offset = 4) int b5;
+
+    // Single annotation: start=0, length=5, CRC16 little-endian at 5..6
+    @Checksum(start = 0, length = 5, offset = 5, type = Checksum.Type.CRC16, byteOrder = ByteOrder.LITTLE)
+    int crc16;
+}
+
+Packet p = new Packet();
+p.b1 = 0x31; p.b2 = 0x32; p.b3 = 0x33; p.b4 = 0x34; p.b5 = 0x35;
+byte[] bytes = FastProto.encode(p, 7);  // write CRC automatically
+
+// Decoding validates CRC automatically (throws DecodingException on mismatch)
+Packet q = FastProto.decode(bytes, Packet.class);
+```
+
+- Or, compute the checksum directly via utilities (no annotations):
+```java
+import org.indunet.fastproto.annotation.Checksum;
+import org.indunet.fastproto.checksum.ChecksumUtils;
+
+byte[] bytes = new byte[]{0x31,0x32,0x33,0x34,0x35};
+long crc = ChecksumUtils.calculate(bytes, /*start=*/0, /*length=*/5, Checksum.Type.CRC16);
+// Or:
+int crc16 = ChecksumUtils.crc16(bytes) & 0xFFFF;  // compute CRC16 for the whole array
 ```
 
 

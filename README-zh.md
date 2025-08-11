@@ -20,6 +20,7 @@ FastProto 是一款轻量级的 Java 二进制协议库。只需使用注解描�
 * **灵活地址：** 提供反向地址，适配变长协议。
 * **字节顺序可选：** 大端或小端随心切换。
 * **公式支持：** Lambda 或自定义类均可实现编解码公式。
+* **校验和/CRC：** 使用 `@Checksum` 注解一次性定义起始地址、长度与存放地址，内置 CRC8（SMBus、MAXIM）、CRC16（MODBUS、CCITT）、CRC32/CRC32C、CRC64（ECMA/ISO）、LRC、XOR 等。
 * **多种API：** 兼顾效率与易用性。
 
 查看[更新日志](CHANGELOG-zh.md)获取版本历史，英文版请查阅[CHANGELOG](CHANGELOG.md)。
@@ -28,6 +29,17 @@ FastProto 是一款轻量级的 Java 二进制协议库。只需使用注解描�
 
 * 代码结构 & 性能优化
 * 添加CRC校验和支持
+* 丰富文档（新增核心功能使用指南）
+
+### *文档*
+
+- Annotation Mapping: [doc/annotation-mapping.md](doc/annotation-mapping.md)
+- Byte & Bit Order: [doc/byte-and-bit-order.md](doc/byte-and-bit-order.md)
+- Checksum/CRC: [doc/checksum.md](doc/checksum.md)
+- Transformation Formulas: [doc/formulas.md](doc/formulas.md)
+- Arrays & Strings: [doc/arrays-and-strings.md](doc/arrays-and-strings.md)
+- Using APIs without Annotations: [doc/without-annotations.md](doc/without-annotations.md)
+- FAQ: [doc/faq.md](doc/faq.md)
 
 ### *Maven*
 
@@ -35,7 +47,7 @@ FastProto 是一款轻量级的 Java 二进制协议库。只需使用注解描�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.11.0</version>
+    <version>3.12.0</version>
 </dependency>
 ```
 
@@ -104,7 +116,7 @@ byte[] datagram = FastProto.encode(weather, 20);
 
 ### *1.2 变换公式*
 
-压力字段需要做简单的换算。FastProto 提供 `@EncodingFormula` 和 `@DecodingFormula`，可直接用 Lambda 表达式完成转换：
+压力字段需要做简单的换算。FastProto 提供 `@EncodingFormula` 和 `@DecodingFormula`，可直接用 Lambda 表达式完成转换。 查看 [变换公式文档](doc/formulas.md) 了解更多。
 
 ```java
 import org.indunet.fastproto.annotation.DecodingFormula;
@@ -190,7 +202,7 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 
 #### *2.4.1 字节顺序和位顺序*
 
-FastProto默认使用小端，可以通过`@DefaultByteOrder`注解修改全局字节顺序，也可以通过数据类型注解中的`byteOrder`属性修改特定字段的字节顺序，后者优先级更高。
+FastProto默认使用小端，可以通过`@DefaultByteOrder`注解修改全局字节顺序，也可以通过数据类型注解中的`byteOrder`属性修改特定字段的字节顺序，后者优先级更高。 查看 [字节序与位序文档](doc/byte-and-bit-order.md) 了解更多。
 
 同理，FastProto默认使用LSB_0，可以通过`@DefaultBitOrder`注解修改全局位顺序，也可以通过数据类型注解中的`bitOrder`属性修改特定字段的位顺序，后者优先级更高。
 
@@ -285,4 +297,180 @@ public class Weather {
     @AutoType(offset = 14)
     long pressure;  // 默认 Int64Type
 }
+```
+
+
+#### *2.4.4 忽略字段*
+在一些特殊情况下，如果你希望在解析时忽略某些字段，或在封装时忽略某些字段，可以使用 `@DecodingIgnore` 与 `@EncodingIgnore`。
+
+```java
+import org.indunet.fastproto.annotation.*;
+
+public class Weather {
+    @DecodingIgnore
+    @Int16Type(offset = 10)
+    int humidity;   // 解析时忽略
+
+    @EncodingIgnore
+    @Int32Type(offset = 14)
+    long pressure;  // 封装时忽略
+}
+```
+
+
+### *2.5 校验和/CRC*
+
+使用 `@Checksum` 一次性定义“起始地址 + 长度 + 校验和存放地址”。FastProto 会在编码时自动写入校验和，在解码时自动校验并在不匹配时抛出异常。 查看 [校验和文档](doc/checksum.md) 了解更多。
+
+- CRC16（小端）示例：计算区间 [0,5)，CRC 写入字节 5..6
+```java
+import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.FastProto;
+import org.indunet.fastproto.annotation.*;
+
+public class Packet {
+    @UInt8Type(offset = 0) int b1;
+    @UInt8Type(offset = 1) int b2;
+    @UInt8Type(offset = 2) int b3;
+    @UInt8Type(offset = 3) int b4;
+    @UInt8Type(offset = 4) int b5;
+
+    // 只需一个注解即可：起始=0，长度=5，CRC16 小端写到 5..6
+    @Checksum(start = 0, length = 5, offset = 5, type = Checksum.Type.CRC16, byteOrder = ByteOrder.LITTLE)
+    int crc16;
+}
+
+// 编码：自动计算并写入 CRC
+Packet p = new Packet();
+p.b1 = 0x31; p.b2 = 0x32; p.b3 = 0x33; p.b4 = 0x34; p.b5 = 0x35;
+byte[] bytes = FastProto.encode(p, 7);  // 5 字节数据 + 2 字节 CRC16
+
+// 解码：自动校验 CRC，不匹配将抛出 DecodingException
+Packet q = FastProto.decode(bytes, Packet.class);
+```
+
+- 也可不使用注解，直接调用工具方法计算校验和：
+```java
+import org.indunet.fastproto.annotation.Checksum;
+import org.indunet.fastproto.checksum.ChecksumUtils;
+
+byte[] bytes = new byte[]{0x31,0x32,0x33,0x34,0x35};
+long crc = ChecksumUtils.calculate(bytes, /*start=*/0, /*length=*/5, Checksum.Type.CRC16);
+// 或者：
+int crc16 = ChecksumUtils.crc16(bytes) & 0xFFFF;  // 计算整个数组的 CRC16
+```
+
+
+## *3. Scala*
+FastProto 支持 case class。但由于 Scala 与 Java 注解并非完全兼容，使用时请参考如下导入：
+
+```scala
+import org.indunet.fastproto.annotation.scala._
+```
+
+
+## *4. 不使用注解的编解码*
+在某些场景下，开发者不想或不能用注解修饰数据对象，例如对象来源于第三方库无法修改源代码，或只是想以更直接的方式创建二进制数据块。FastProto 提供了简单 API 来满足上述需求。
+
+### *4.1 解码二进制数据*
+
+- 解码到数据对象
+```java
+byte[] bytes = ... // 待解码的二进制数据
+
+public class DataObject {
+    Boolean f1;
+    Integer f2;
+    Integer f3;
+}
+
+DataObject obj = FastProto.decode(bytes)
+        .readBool("f1", 0, 0)       // 读取字节偏移 0、位偏移 0 的布尔值
+        .readInt8("f2", 1)          // 读取字节偏移 1 的有符号 8 位整数
+        .readInt16("f3", 2)         // 读取字节偏移 2 的有符号 16 位整数
+        .mapTo(DataObject.class);    // 根据字段名映射到 Java 对象
+```
+
+- 不使用数据对象
+```java
+import org.indunet.fastproto.util.DecodeUtils;
+
+byte[] bytes = ... // 待解码的二进制数据
+
+boolean f1 = DecodeUtils.readBool(bytes, 0, 0); // 读取字节偏移 0、位偏移 0 的布尔值
+int     f2 = DecodeUtils.readInt8(bytes, 1);    // 读取字节偏移 1 的有符号 8 位整数
+int     f3 = DecodeUtils.readInt16(bytes, 2);   // 读取字节偏移 2 的有符号 16 位整数
+```
+
+### *4.2 创建二进制数据块*
+```java
+byte[] bytes = FastProto.create(16)         // 创建长度为 16 字节的二进制块
+        .writeInt8(0, 1)                    // 在偏移 0 写入无符号 8 位整数 1
+        .writeUInt16(2, 3, 4)               // 在偏移 2 连续写入两个无符号 16 位整数 3、4
+        .writeUInt32(6, ByteOrder.BIG, 256) // 在偏移 6 按大端写入无符号 32 位整数 256
+        .get();
+```
+
+```java
+import org.indunet.fastproto.util.EncodeUtils;
+
+byte[] bytes = new byte[16];
+
+EncodeUtils.writeInt8(bytes, 0, 1);                     // 在偏移 0 写入无符号 8 位整数 1
+EncodeUtils.writeUInt16(bytes, 2, 3, 4);                // 在偏移 2 连续写入两个无符号 16 位整数 3、4
+EncodeUtils.writeUInt32(bytes, 6, ByteOrder.BIG, 256);  // 在偏移 6 按大端写入无符号 32 位整数 256
+```
+
+
+## *5. Benchmark*
+
+- windows 11, i7 11th, 32gb
+- openjdk 1.8.0_292
+- 60 字节二进制数据、13 个字段的协议类
+
+1. 注解 API
+
+|      Benchmark      |    Mode  | Samples  | Score | Error  |   Units   |
+|:-------------------:|:--------:|:--------:|:-----:|:------:|:---------:|
+| `FastProto::decode` | throughput |   10    |  240  | ± 4.6  |  ops/ms   |
+| `FastProto::encode` | throughput |   10    |  317  | ± 11.9 |  ops/ms   |
+
+2. 非注解 API
+
+|   Benchmark   |   Mode   | Samples | Score | Error |  Units  |
+|:-------------:|:--------:|:-------:|:-----:|:-----:|:-------:|
+| `decode`      | throughput |   10   | 1273  | ± 17  | ops/ms  |
+| `create`      | throughput |   10   | 6911  | ± 162 | ops/ms  |
+
+
+## *6. 构建要求*
+
+- Java 1.8+
+- Maven 3.5+
+
+
+## *7. 贡献*
+
+FastProto 获得 JetBrains 开源项目支持，为核心贡献者提供全产品包的免费 License。
+如果你对本项目感兴趣并希望参与（开发/测试/文档），欢迎通过邮箱联系：<deng_ran@aliyun.com>
+
+
+## *8. 许可*
+
+FastProto 以 [Apache 2.0 许可](license) 发布。
+
+```
+Copyright 2019-2021 indunet.org
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at the following link.
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
 ```
