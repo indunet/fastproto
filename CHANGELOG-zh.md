@@ -2,12 +2,27 @@
 
 该文件记录项目的主要更新内容。
 
+## [3.12.0] - 2025-08-11
+### 新增
+- 单注解校验和：`@Checksum(start, length, offset, type, byteOrder)`，编码自动写入、解码自动校验。
+- 算法覆盖更广：`CRC8_SMBUS`、`CRC8_MAXIM`、`XOR8 (BCC)`、`LRC8`、`CRC16_MODBUS`、`CRC16_CCITT`、`CRC32C`、`CRC64_ECMA-182`、`CRC64/ISO`。
+
+### 变更
+- `ChecksumUtils` 复用单例引擎，新增不支持类型时报错 `CodecException`。
+- ChecksumFlow 支持 8/16/32/64 位校验值的读写与解码校验。
+- 文档扩展：注解映射、字节序/位序、校验和/CRC、公式、数组与字符串、无注解 API、FAQ。
+
+### 不兼容变更
+- `@Checksum` 参数改为 `start`、`length`、`offset`。不再需要通过 `@UIntXType` 仅用于提供偏移。
+
 ## [3.11.0] - 2025-06-08
 ### 新增
 - 新增可选的CRC校验机制。
 - 默认字节序改为与主机一致。
+
 ### 修复
 - 修复读取double时字节序处理不正确的问题。
+
 ### 变更
 - 补充更多文档示例。
 

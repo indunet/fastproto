@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>FastProto — Binary Protocols for Java</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="FastProto is a lightweight Java library that makes binary protocols effortless, with annotation-driven mapping and built-in checksum/CRC support (CRC8/16/32/64, LRC, XOR).">
+  <meta name="keywords" content="FastProto, binary, Java, codec, CRC, checksum, protocol, annotation">
+  <link rel="icon" href="../logo.png">
+  <link rel="canonical" href="https://indunet.github.io/fastproto/">
+  <meta property="og:title" content="FastProto — Binary Protocols for Java">
+  <meta property="og:description" content="Annotation-driven binary mapping. Checksums/CRC built-in. Simple, fast, reliable.">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://indunet.github.io/fastproto/logo.png">
+  <meta property="og:url" content="https://indunet.github.io/fastproto/">
+  <style>
+    :root{
+      --bg:#f7f9fc; --card:#ffffff; --text:#111111; --muted:#4a5568; --brand:#2563eb; --accent:#059669;
+      --border:#e5e7eb; --code:#f5f7fa; --shadow:0 8px 20px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0; font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
+      color:var(--text); background:linear-gradient(180deg, #ffffff, var(--bg));
+    }
+    a{color:var(--brand); text-decoration:none}
+    a:hover{opacity:.9}
+    .container{max-width:1060px; margin:0 auto; padding:0 28px 0}
+    .nav{position:sticky; top:0; z-index:10; background:var(--card); border-bottom:1px solid var(--border);
+      display:flex; align-items:center; justify-content:space-between; gap:16px; padding:12px 20px; margin:0 0 16px 0; border-top-left-radius:0; border-top-right-radius:0; border-bottom:none;
+      background:var(--card); position:sticky; isolation:isolate;}
+    .nav::before{content:""; position:absolute; left:50%; transform:translateX(-50%); top:0; width:100vw; height:100%;
+      background-image:linear-gradient(90deg, #eef2ff, #e9faf3); pointer-events:none; z-index:-1}
+    .nav::after{content:""; position:absolute; left:50%; transform:translateX(-50%); bottom:0; width:100vw; height:1px; background:var(--border)}
+    .nav .links{display:flex; gap:12px}
+    .nav .links a{
+      position:relative; overflow:hidden;
+      display:inline-flex; align-items:center; gap:8px; padding:9px 14px; border-radius:12px; font-weight:800;
+      border:1px solid #e5e7eb; color:var(--text);
+      background:linear-gradient(180deg, #ffffff 0%, #f6f8fb 100%);
+      box-shadow: inset 0 1px 0 rgba(255,255,255,.9), inset 0 -1px 0 rgba(2,6,23,.06), 0 3px 8px rgba(2,6,23,.08);
+      transition:transform .18s ease, box-shadow .18s ease, color .18s ease, border-color .18s ease;
+      backdrop-filter:saturate(140%) blur(2px);
+    }
+    .nav .links a::before{content:""; position:absolute; inset:0; border-radius:inherit; background:linear-gradient(90deg, var(--brand), var(--accent)); opacity:0; transition:opacity .18s ease}
+    .nav .links a::after{content:""; position:absolute; top:-25%; left:-10%; width:65%; height:90%; border-radius:50%; pointer-events:none;
+      background:radial-gradient( circle at 30% 30%, rgba(255,255,255,.75), rgba(255,255,255,0) 60% ); opacity:.6; transform:rotate(-15deg)}
+    .nav .links a span, .nav .links a svg{position:relative; z-index:1}
+    .nav .links a svg{width:16px; height:16px; display:block; padding:3px; border-radius:7px;
+      background:linear-gradient(180deg, rgba(37,99,235,.12), rgba(37,99,235,.06));
+      border:1px solid rgba(30,64,175,.25);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.6), 0 1px 2px rgba(2,6,23,.15);
+    }
+    .nav .links a:hover{transform:translateY(-1px); box-shadow:0 10px 20px rgba(37,99,235,.15), 0 3px 8px rgba(5,150,105,.12); color:#fff; border-color:transparent}
+    .nav .links a:hover::before{opacity:1}
+    .nav .links a:hover svg{background:rgba(255,255,255,.18)}
+    .nav .links a:focus-visible{outline:3px solid rgba(37,99,235,.35); outline-offset:2px}
+    .nav .links a.primary{color:#fff; border-color:transparent}
+    .nav .links a.primary::before{opacity:1}
+    .hero{
+      display:grid; grid-template-columns:1fr; gap:18px; padding:20px 22px; border:1px solid var(--border);
+      background:linear-gradient(180deg, rgba(37,99,235,.04), rgba(5,150,105,.03));
+      border-radius:16px; box-shadow:var(--shadow)
+    }
+    .brand{display:flex; align-items:center; gap:14px}
+    .brand img{width:44px; height:44px; border-radius:10px}
+    .fp-icon{--size:44px; width:var(--size); height:var(--size); border-radius:calc(var(--size)*.32);
+      position:relative; display:inline-flex; align-items:center; justify-content:center;
+      background:linear-gradient(135deg, #4f46e5 0%, #22c55e 100%);
+      box-shadow:0 10px 18px rgba(79,70,229,.25), inset 0 1px 0 rgba(255,255,255,.35);
+      color:#fff; font-weight:800; font-size:calc(var(--size)*.32); line-height:1; letter-spacing:.6px;
+    }
+    .fp-icon span{display:block; text-align:center; font-family:ui-sans-serif, -apple-system, Segoe UI, Roboto, Helvetica, Arial}
+    .fp-icon::before, .fp-icon::after{content:""; position:absolute; background:#fff; border-radius:50%}
+    .fp-icon::before{width:calc(var(--size)*.14); height:calc(var(--size)*.14); top:10%; right:10%; opacity:.7}
+    .fp-icon::after{width:calc(var(--size)*.14); height:calc(var(--size)*.14); bottom:10%; left:10%; opacity:.35}
+    .brand h1{margin:0; font-size:18px; letter-spacing:.2px; font-weight:700}
+    .nav-inner{max-width:1200px; margin:0 auto; display:flex; align-items:center; justify-content:space-between; width:100%}
+    .nav .tagline{display:none}
+    .tagline{margin:4px 0 0; color:var(--muted)}
+    .cta{display:flex; flex-wrap:wrap; gap:12px; margin-top:16px}
+    .btn{
+      display:inline-flex; align-items:center; gap:8px; padding:10px 16px; border-radius:10px; font-weight:700;
+      border:1px solid var(--border); background:var(--card); color:var(--text)
+    }
+    .btn.primary{background:linear-gradient(90deg, var(--brand), var(--accent)); color:#ffffff; border-color:transparent}
+    .grid{display:grid; gap:16px; grid-template-columns:repeat(12,1fr); margin-top:24px}
+    .card{
+      grid-column:span 12; background:var(--card); border:1px solid var(--border); border-radius:14px; padding:18px
+    }
+    @media (min-width:860px){
+      .card.span-6{grid-column:span 6}
+      .card.span-4{grid-column:span 4}
+      .card.span-8{grid-column:span 8}
+    }
+    .card h3{margin:0 0 8px 0; font-size:18px}
+    .features{display:grid; grid-template-columns:repeat(1, minmax(0, 1fr)); gap:12px}
+    @media (min-width:720px){ .features{grid-template-columns:repeat(2, minmax(0, 1fr))} }
+    .feature{padding:14px; border:1px dashed var(--border); border-radius:12px}
+    pre, code{font:13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace}
+    pre{
+      margin:0; padding:14px; background:var(--code); color:var(--text); border-radius:10px; overflow:auto;
+      border:1px solid var(--border)
+    }
+    .footer{color:var(--muted); text-align:center; margin:28px 0 8px}
+    /* Footer full-width gradient bar */
+    .footer{
+      color:#e5e7eb; text-align:center; margin:28px calc(50% - 50vw) 0; padding:14px 0;
+      background:linear-gradient(90deg, #111827, #1f2937, #374151);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.04), 0 -2px 8px rgba(0,0,0,.06);
+    }
+    .badges img{height:22px; margin-right:8px; vertical-align:middle}
+    .list{margin:0; padding-left:18px}
+    /* Remove extra bottom space that caused a white strip under the full-width footer */
+    .container{padding-bottom:0}
+  </style>
+  <script type="application/ld+json">
+  {
+    "@context":"https://schema.org",
+    "@type":"SoftwareApplication",
+    "name":"FastProto",
+    "applicationCategory":"DeveloperApplication",
+    "operatingSystem":"Cross-platform",
+    "description":"Annotation-driven binary protocol toolkit for Java. Built-in checksum/CRC support.",
+    "softwareVersion":"3.12.0",
+    "license":"https://www.apache.org/licenses/LICENSE-2.0",
+    "url":"https://indunet.github.io/fastproto/",
+    "downloadUrl":"https://repo1.maven.org/maven2/org/indunet/fastproto/3.12.0/",
+    "programmingLanguage":"Java"
+  }
+  </script>
+</head>
+<body>
+  <div class="container">
+    <nav class="nav">
+      <div class="nav-inner">
+      <div class="brand">
+        <div class="fp-icon" aria-hidden="true"><span>01<br>10</span></div>
+        <div>
+          <h1>FastProto</h1>
+          <p class="tagline">Annotation-driven binary protocols for Java — simple, fast, reliable.</p>
+        </div>
+      </div>
+      <div class="links">
+        <a href="help.html" title="Document">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M7 2h7l4 4v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm7 1.5V7h3.5L14 3.5zM8 12h8v1.5H8V12zm0 3h8v1.5H8V15zM8 9h5v1.5H8V9z"/></svg>
+          <span>Document</span>
+        </a>
+        <a href="https://github.com/indunet/fastproto" title="GitHub">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .5A12 12 0 0 0 8.21 23.9c.6.11.82-.26.82-.58 0-.29-.01-1.05-.02-2.06-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.83 1.23 1.83 1.23 1.07 1.84 2.8 1.31 3.49 1 .11-.78.42-1.31.76-1.61-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.23-3.22-.12-.3-.54-1.52.12-3.17 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.66 1.65.24 2.87.12 3.17.77.84 1.23 1.9 1.23 3.22 0 4.61-2.81 5.62-5.49 5.92.43.37.81 1.1.81 2.22 0 1.6-.01 2.89-.01 3.29 0 .32.22.7.82.58A12 12 0 0 0 12 .5z"/></svg>
+          <span>GitHub</span>
+        </a>
+        <a href="https://search.maven.org/artifact/org.indunet/fastproto/3.12.0/jar" title="Maven">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 2l7 4v8l-7 4-7-4V6l7-4zm0 2.2L7 6.7v6.6l5 2.9 5-2.9V6.7L12 4.2z"/></svg>
+          <span>Maven</span>
+        </a>
+      </div>
+      </div>
+    </nav>
+
+    <section class="hero">
+      <div class="badges">
+        <a href="https://app.travis-ci.com/indunet/fastproto"><img alt="Build" src="https://app.travis-ci.com/indunet/fastproto.svg?branch=master"></a>
+        <a href="https://codecov.io/gh/indunet/fastproto"><img alt="codecov" src="https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU"></a>
+        <a href="https://www.codacy.com/gh/indunet/fastproto/dashboard"><img alt="Codacy" src="https://img.shields.io/badge/Codacy-A.svg"></a>
+        <a href="https://www.jetbrains.com/community/opensource"><img alt="JetBrains" src="https://img.shields.io/badge/JetBrains-support-blue"></a>
+        <a href="https://www.apache.org/licenses/LICENSE-2.0.html"><img alt="License" src="https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg"></a>
+      </div>
+      
+    </section>
+
+    <section id="features" class="grid">
+      <div class="card">
+        <h3>Why FastProto?</h3>
+        <div class="features">
+          <div class="feature">
+            <strong>Annotation-Driven</strong>
+            <div>Map byte layouts to Java fields with clear, type-safe annotations.</div>
+          </div>
+          <div class="feature">
+            <strong>Checksums Built-in</strong>
+            <div>Single-annotation <code>@Checksum</code> with CRC8/16/32/64, LRC, XOR.</div>
+          </div>
+          <div class="feature">
+            <strong>Byte & Bit Order</strong>
+            <div>Per-field or global endianness and bit order.</div>
+          </div>
+          <div class="feature">
+            <strong>Fast APIs</strong>
+            <div>Encode/decode with or without annotations, low overhead.</div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <h3>Key Features</h3>
+        <ul class="list">
+          <li>Annotation-Driven mapping</li>
+          <li>Broad Type Support (incl. unsigned)</li>
+          <li>Flexible addressing (reverse offsets)</li>
+          <li>Configurable Byte Order</li>
+          <li>Custom Formulas (lambda/class)</li>
+          <li>Checksum/CRC: CRC8/16/32/64, LRC, XOR</li>
+          <li>Easy APIs with/without annotations</li>
+        </ul>
+      </div>
+      <div class="card" id="get-started">
+        <h3>Install</h3>
+        <p style="margin:12px 0 6px; color:var(--muted)">Maven</p>
+        <pre><code>&lt;dependency&gt;
+  &lt;groupId&gt;org.indunet&lt;/groupId&gt;
+  &lt;artifactId&gt;fastproto&lt;/artifactId&gt;
+  &lt;version&gt;3.12.0&lt;/version&gt;
+&lt;/dependency&gt;</code></pre>
+        <p style="margin:12px 0 6px; color:var(--muted)">Gradle</p>
+        <pre><code>implementation "org.indunet:fastproto:3.12.0"</code></pre>
+      </div>
+    </section>
+
+    <section id="example" class="grid">
+      <div class="card">
+        <h3>Quick Example</h3>
+        <pre><code>import org.indunet.fastproto.annotation.*;
+
+public class Weather {
+  @UInt8Type(offset = 0) int id;
+  @TimeType(offset = 2) java.sql.Timestamp time;
+  @UInt16Type(offset = 10) int humidity;
+  @Int16Type(offset = 12) int temperature;
+  @UInt32Type(offset = 14) long pressure;
+  @BoolType(byteOffset = 18, bitOffset = 0) boolean deviceValid;
+}</code></pre>
+        <pre style="margin-top:10px"><code>// Decode / Encode
+byte[] bytes = ...;
+Weather w = org.indunet.fastproto.FastProto.decode(bytes, Weather.class);
+byte[] out = org.indunet.fastproto.FastProto.encode(w, 20);</code></pre>
+      </div>
+    </section>
+
+    <section id="checksum" class="grid">
+      <div class="card">
+        <h3>Checksum/CRC</h3>
+        <pre><code>import org.indunet.fastproto.annotation.Checksum;
+import org.indunet.fastproto.ByteOrder;
+
+public class Packet {
+  @UInt8Type(offset = 0) int b1;
+  @UInt8Type(offset = 1) int b2;
+  @UInt8Type(offset = 2) int b3;
+  @UInt8Type(offset = 3) int b4;
+  @UInt8Type(offset = 4) int b5;
+
+  // Compute over [0,5), write CRC16 LE at 5..6
+  @Checksum(start = 0, length = 5, offset = 5,
+            type = Checksum.Type.CRC16,
+            byteOrder = ByteOrder.LITTLE)
+  int crc16;
+}</code></pre>
+      </div>
+    </section>
+
+    
+
+    <p class="footer">
+      Released under the Apache 2.0 License. © 2019‑2025 indunet.org
+    </p>
+  </div>
+</body>
+</html> 

@@ -29,3 +29,6 @@ fastproto.iml
 
 # Development notes
 dev_note.md
+
+# VSCode settings
+.vscode/
