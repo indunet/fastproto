@@ -1,0 +1,190 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>FastProto — Documentation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="FastProto documentation: annotation mapping, byte/bit order, checksum/CRC, formulas, arrays & strings, APIs without annotations, FAQ.">
+  <link rel="icon" href="../logo.png">
+  <style>
+    :root{
+      --bg:#f7f9fc; --card:#ffffff; --text:#111; --muted:#4a5568; --brand:#2563eb; --accent:#059669;
+      --border:#e5e7eb; --code:#f5f7fa; --shadow:0 8px 20px rgba(0,0,0,.08);
+    }
+    *{box-sizing:border-box}
+    body{margin:0; font:16px/1.6 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial; color:var(--text); background:linear-gradient(180deg,#fff,var(--bg))}
+    a{color:var(--brand); text-decoration:none}
+    a:hover{opacity:.9}
+    .topbar{position:sticky; top:0; z-index:10; background:var(--card); border-bottom:1px solid var(--border);} 
+    .topbar-inner{max-width:1200px; margin:0 auto; padding:12px 20px; display:flex; align-items:center; justify-content:space-between}
+    .brand{display:flex; align-items:center; gap:10px}
+    .brand img{width:28px; height:28px; border-radius:6px}
+    .fp-icon{--size:44px; width:var(--size); height:var(--size); border-radius:calc(var(--size)*.32);
+      position:relative; display:inline-flex; align-items:center; justify-content:center;
+      background:linear-gradient(135deg, #4f46e5 0%, #22c55e 100%);
+      box-shadow:0 10px 18px rgba(79,70,229,.25), inset 0 1px 0 rgba(255,255,255,.35);
+      color:#fff; font-weight:800; font-size:calc(var(--size)*.32); line-height:1; letter-spacing:.6px;
+    }
+    .fp-icon span{display:block; text-align:center; font-family:ui-sans-serif, -apple-system, Segoe UI, Roboto, Helvetica, Arial}
+    .fp-icon::before, .fp-icon::after{content:""; position:absolute; background:#fff; border-radius:50%}
+    .fp-icon::before{width:calc(var(--size)*.14); height:calc(var(--size)*.14); top:10%; right:10%; opacity:.7}
+    .fp-icon::after{width:calc(var(--size)*.14); height:calc(var(--size)*.14); bottom:10%; left:10%; opacity:.35}
+    .topbar .brand .fp-icon{ --size:28px; }
+    .actions{display:flex; gap:10px}
+    .actions a{display:inline-flex; align-items:center; gap:8px; padding:8px 12px; border-radius:10px; font-weight:700; border:1px solid var(--border); background:var(--card); color:var(--text); box-shadow:0 1px 0 rgba(255,255,255,.6) inset; transition:transform .15s ease, box-shadow .15s ease}
+    .actions a:hover{transform:translateY(-1px); box-shadow:var(--shadow)}
+    .actions a svg{width:16px; height:16px; display:block}
+    .brand strong{font-size:18px}
+
+    .layout{max-width:1200px; margin:0 auto; display:grid; grid-template-columns:260px 1fr; gap:18px; padding:20px}
+    .sidebar{background:var(--card); border:1px solid var(--border); border-radius:12px; height:calc(100vh - 88px); position:sticky; top:68px; padding:14px; overflow:auto}
+    .content{background:var(--card); border:1px solid var(--border); border-radius:12px; padding:22px; min-height:60vh; box-shadow:var(--shadow)}
+    .sidebar h3{margin:6px 8px 10px; font-size:14px; color:var(--muted); text-transform:uppercase; letter-spacing:.5px}
+    .nav{list-style:none; margin:0; padding:0}
+    .nav li{margin:4px 0}
+    .nav a{display:block; padding:8px 10px; border-radius:8px; color:var(--text)}
+    .nav a.active{background:#eef2ff; color:#1e3a8a}
+
+    .doc h1{margin-top:0}
+    .doc pre{background:var(--code); padding:12px; border-radius:8px; overflow:auto; border:1px solid var(--border)}
+    .doc code{font:13px/1.5 ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace}
+    .doc table{border-collapse:collapse; width:100%}
+    .doc th,.doc td{border:1px solid var(--border); padding:8px; text-align:left}
+    .doc blockquote{margin:0; padding:8px 12px; border-left:3px solid var(--border); color:#374151; background:#fafbff}
+    /* Footer full-width gradient bar */
+    .footer{color:#e5e7eb; text-align:center; margin:28px calc(50% - 50vw) 0; padding:14px 0;
+      background:linear-gradient(90deg, #111827, #1f2937, #374151);
+      box-shadow:inset 0 1px 0 rgba(255,255,255,.04), 0 -2px 8px rgba(0,0,0,.06);
+    }
+    /* Remove extra bottom gap */
+    body{margin:0}
+  </style>
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script>
+    // Fallback loader for marked.js if primary CDN blocked
+    (function(){
+      function loadScript(src){
+        return new Promise(function(resolve,reject){
+          var s=document.createElement('script');
+          s.src=src; s.onload=resolve; s.onerror=reject; document.head.appendChild(s);
+        });
+      }
+      window.ensureMarked = async function(){
+        if(window.marked) return;
+        try{ await loadScript('https://unpkg.com/marked/marked.min.js'); }catch(e){}
+        if(window.marked) return;
+        try{ await loadScript('https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js'); }catch(e){}
+      };
+    })();
+  </script>
+</head>
+<body>
+  <div class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <div class="fp-icon" aria-hidden="true"><span>01<br>10</span></div>
+        <strong>FastProto Document</strong>
+      </div>
+      <div class="actions">
+        <a href="index.html" title="Home">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 3l9 8h-2v9h-6v-6H11v6H5v-9H3l9-8z"/></svg>
+          <span>Home</span>
+        </a>
+        <a href="https://github.com/indunet/fastproto" title="GitHub">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12 .5A12 12 0 0 0 8.21 23.9c.6.11.82-.26.82-.58 0-.29-.01-1.05-.02-2.06-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.74.08-.73.08-.73 1.2.09 1.83 1.23 1.83 1.23 1.07 1.84 2.8 1.31 3.49 1 .11-.78.42-1.31.76-1.61-2.66-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.23-3.22-.12-.3-.54-1.52.12-3.17 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.28-1.55 3.29-1.23 3.29-1.23.66 1.65.24 2.87.12 3.17.77.84 1.23 1.9 1.23 3.22 0 4.61-2.81 5.62-5.49 5.92.43.37.81 1.1.81 2.22 0 1.6-.01 2.89-.01 3.29 0 .32.22.7.82.58A12 12 0 0 0 12 .5z"/></svg>
+          <span>GitHub</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="layout">
+    <aside class="sidebar">
+      <h3>Guides</h3>
+      <ul class="nav" id="nav">
+        <li><a href="#annotation-mapping" data-file="annotation-mapping.md">Annotation Mapping</a></li>
+        <li><a href="#byte-and-bit-order" data-file="byte-and-bit-order.md">Byte & Bit Order</a></li>
+        <li><a href="#checksum" data-file="checksum.md">Checksum / CRC</a></li>
+        <li><a href="#formulas" data-file="formulas.md">Transformation Formulas</a></li>
+        <li><a href="#arrays-and-strings" data-file="arrays-and-strings.md">Arrays & Strings</a></li>
+        <li><a href="#without-annotations" data-file="without-annotations.md">APIs without Annotations</a></li>
+        <li><a href="#faq" data-file="faq.md">FAQ</a></li>
+      </ul>
+      <div id="tip" style="margin-top:10px; color:var(--muted); font-size:12px; line-height:1.4"></div>
+    </aside>
+
+    <main class="content">
+      <div id="doc" class="doc">Loading…</div>
+    </main>
+  </div>
+
+  <p class="footer">Released under the Apache 2.0 License. © 2019‑2025 indunet.org</p>
+
+  <script>
+    const nav = document.getElementById('nav');
+    const docEl = document.getElementById('doc');
+    const tipEl = document.getElementById('tip');
+
+    function setActive(hash){
+      [...nav.querySelectorAll('a')].forEach(a => a.classList.toggle('active', a.getAttribute('href') === hash));
+    }
+
+    function escapeHtml(s){
+      return s.replace(/[&<>"']/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;','\'':'&#39;'}[m]));
+    }
+
+    async function load(file){
+      let md = '';
+      try{
+        const res = await fetch(file, {cache:'no-cache'});
+        if(!res.ok) throw new Error('HTTP '+res.status);
+        md = await res.text();
+      }catch(e1){
+        // Fallback to GitHub raw (use develop branch)
+        try{
+          const raw = 'https://raw.githubusercontent.com/indunet/fastproto/develop/docs/' + file;
+          const res2 = await fetch(raw, {cache:'no-cache'});
+          if(!res2.ok) throw new Error('HTTP '+res2.status);
+          md = await res2.text();
+        }catch(e2){
+          docEl.innerHTML = '<p style="color:#b91c1c">Failed to load '+file+'</p>';
+          return;
+        }
+      }
+
+      // Ensure parser is available, otherwise show raw
+      if(!window.marked){ await window.ensureMarked(); }
+      if(window.marked){
+        docEl.innerHTML = marked.parse(md, { breaks: true });
+      }else{
+        docEl.innerHTML = '<pre>'+ escapeHtml(md) +'</pre>';
+      }
+      document.querySelector('.content').scrollTo({top:0, behavior:'instant'});
+    }
+
+    function route(){
+      const hash = location.hash || '#annotation-mapping';
+      setActive(hash);
+      const link = nav.querySelector('a[href="'+hash+'"]');
+      const file = link ? link.dataset.file : 'annotation-mapping.md';
+      load(file);
+    }
+
+    nav.addEventListener('click', e => {
+      const a = e.target.closest('a');
+      if(!a) return;
+      e.preventDefault();
+      history.pushState(null, '', a.getAttribute('href'));
+      route();
+    });
+
+    if(location.protocol === 'file:'){
+      tipEl.textContent = 'Tip: For best experience, open via a local server (e.g., `npx serve` or `python -m http.server`) to avoid browser restrictions.';
+    }
+
+    window.addEventListener('popstate', route);
+    window.addEventListener('hashchange', route);
+    route();
+  </script>
+</body>
+</html> 

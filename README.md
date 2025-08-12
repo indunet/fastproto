@@ -33,15 +33,17 @@ See the [CHANGELOG](CHANGELOG.md) for recent updates.
 
 ### *Documentation*
 
-- Annotation Mapping: [doc/annotation-mapping.md](doc/annotation-mapping.md)
-- Byte & Bit Order: [doc/byte-and-bit-order.md](doc/byte-and-bit-order.md)
-- Checksum/CRC: [doc/checksum.md](doc/checksum.md)
-- Transformation Formulas: [doc/formulas.md](doc/formulas.md)
-- Arrays & Strings: [doc/arrays-and-strings.md](doc/arrays-and-strings.md)
-- Using APIs without Annotations: [doc/without-annotations.md](doc/without-annotations.md)
-- FAQ: [doc/faq.md](doc/faq.md)
+- Annotation Mapping: [docs/annotation-mapping.md](docs/annotation-mapping.md)
+- Byte & Bit Order: [docs/byte-and-bit-order.md](docs/byte-and-bit-order.md)
+- Checksum/CRC: [docs/checksum.md](docs/checksum.md)
+- Transformation Formulas: [docs/formulas.md](docs/formulas.md)
+- Arrays & Strings: [docs/arrays-and-strings.md](docs/arrays-and-strings.md)
+- Using APIs without Annotations: [docs/without-annotations.md](docs/without-annotations.md)
+- FAQ: [docs/faq.md](docs/faq.md)
 
-### *Maven*
+### *Install*
+
+* Maven
 
 ```xml
 <dependency>
@@ -49,6 +51,12 @@ See the [CHANGELOG](CHANGELOG.md) for recent updates.
     <artifactId>fastproto</artifactId>
     <version>3.12.0</version>
 </dependency>
+```
+
+* Gradle
+
+```gradle
+implementation "org.indunet:fastproto:3.12.0"
 ```
 
 
@@ -116,7 +124,7 @@ byte[] datagram = FastProto.encode(weather, 20);
 ```
 ### *1.2 Transformation Formula*
 
-The pressure field uses a simple conversion. FastProto provides `@DecodingFormula` and `@EncodingFormula` so this logic can be expressed directly with lambdas. See the [formulas documentation](doc/formulas.md) for details.
+The pressure field uses a simple conversion. FastProto provides `@DecodingFormula` and `@EncodingFormula` so this logic can be expressed directly with lambdas. See the [formulas documentation](docs/formulas.md) for details.
 
 ```java
 import org.indunet.fastproto.annotation.DecodingFormula;
@@ -137,7 +145,7 @@ public class Weather {
 
 ### *2.1 Primitive Data Type Annotations*
 
-FastProto supports Java primitive data types, taking into account cross-language and cross-platform data exchange, unsigned types are also introduced. See the [annotation mapping documentation](doc/annotation-mapping.md) for details.
+FastProto supports Java primitive data types, taking into account cross-language and cross-platform data exchange, unsigned types are also introduced. See the [annotation mapping documentation](docs/annotation-mapping.md) for details.
 
 | Annotation  |               Java                |     C/C++      |  Size   |
 |:-----------:|:---------------------------------:|:--------------:|:-------:|
@@ -202,7 +210,7 @@ FastProto also provides some auxiliary annotations to help users further customi
 
 #### *2.4.1 Byte Order and Bit Order*
 
-FastProto uses little endian by default. You can modify the global byte order through `@DefaultByteOrder` annotation, or you can modify the byte order of specific field through `byteOrder` attribute which has a higher priority. See the [byte and bit order documentation](doc/byte-and-bit-order.md) for details.
+FastProto uses little endian by default. You can modify the global byte order through `@DefaultByteOrder` annotation, or you can modify the byte order of specific field through `byteOrder` attribute which has a higher priority. See the [byte and bit order documentation](docs/byte-and-bit-order.md) for details.
 
 Similarly, FastProto uses LSB_0 by default. You can modify the global bit order through `@DefaultBitOrder` annotation, or you can
 modify the bit order of specific field through `bitOrder` attribute which has a higher priority.
@@ -324,7 +332,7 @@ public class Weather {
 
 ### *2.5 Checksum/CRC*
 
-Use `@Checksum` to define start, length and where to store the checksum. FastProto writes the checksum automatically when encoding and validates it when decoding (throws on mismatch). See the [checksum documentation](doc/checksum.md) for details.
+Use `@Checksum` to define start, length and where to store the checksum. FastProto writes the checksum automatically when encoding and validates it when decoding (throws on mismatch). See the [checksum documentation](docs/checksum.md) for details.
 
 - CRC16 (little-endian): compute over [0,5), write at 5..6
 ```java
