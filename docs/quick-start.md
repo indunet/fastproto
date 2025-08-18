@@ -172,4 +172,4 @@ EncodeUtils.writeUInt16(buf, 2, 3, 4);
 EncodeUtils.writeUInt32(buf, 6, ByteOrder.BIG, 256);
 ```
 
-More: `docs/without-annotations.md`.
+More: `docs/without-annotations.md`. For Android notes, see `docs/android.md`. 

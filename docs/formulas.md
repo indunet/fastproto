@@ -9,6 +9,8 @@ Formulas let you convert between raw on‑wire values and engineering values. Yo
 - Decode formula: raw -> target field type
 - Encode formula: target field type -> raw
 
+> Android note: avoid string-based lambdas in annotations; use class-based `Function` implementations instead. See `docs/android.md`.
+
 ## Quick Steps
 
 1. Pick the field type and its data annotation (e.g., `@UInt32Type`).
