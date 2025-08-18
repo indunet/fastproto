@@ -102,6 +102,7 @@
     <aside class="sidebar">
       <h3>Guides</h3>
       <ul class="nav" id="nav">
+        <li><a href="#quick-start" data-file="quick-start.md">Quick Start</a></li>
         <li><a href="#annotation-mapping" data-file="annotation-mapping.md">Annotation Mapping</a></li>
         <li><a href="#byte-and-bit-order" data-file="byte-and-bit-order.md">Byte & Bit Order</a></li>
         <li><a href="#checksum" data-file="checksum.md">Checksum / CRC</a></li>
@@ -163,10 +164,10 @@
     }
 
     function route(){
-      const hash = location.hash || '#annotation-mapping';
+      const hash = location.hash || '#quick-start';
       setActive(hash);
       const link = nav.querySelector('a[href="'+hash+'"]');
-      const file = link ? link.dataset.file : 'annotation-mapping.md';
+      const file = link ? link.dataset.file : 'quick-start.md';
       load(file);
     }
 
