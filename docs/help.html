@@ -102,12 +102,14 @@
     <aside class="sidebar">
       <h3>Guides</h3>
       <ul class="nav" id="nav">
+        <li><a href="#quick-start" data-file="quick-start.md">Quick Start</a></li>
         <li><a href="#annotation-mapping" data-file="annotation-mapping.md">Annotation Mapping</a></li>
         <li><a href="#byte-and-bit-order" data-file="byte-and-bit-order.md">Byte & Bit Order</a></li>
         <li><a href="#checksum" data-file="checksum.md">Checksum / CRC</a></li>
         <li><a href="#formulas" data-file="formulas.md">Transformation Formulas</a></li>
         <li><a href="#arrays-and-strings" data-file="arrays-and-strings.md">Arrays & Strings</a></li>
         <li><a href="#without-annotations" data-file="without-annotations.md">APIs without Annotations</a></li>
+        <li><a href="#android" data-file="android.md">Android</a></li>
         <li><a href="#faq" data-file="faq.md">FAQ</a></li>
       </ul>
       <div id="tip" style="margin-top:10px; color:var(--muted); font-size:12px; line-height:1.4"></div>
@@ -163,10 +165,10 @@
     }
 
     function route(){
-      const hash = location.hash || '#annotation-mapping';
+      const hash = location.hash || '#quick-start';
       setActive(hash);
       const link = nav.querySelector('a[href="'+hash+'"]');
-      const file = link ? link.dataset.file : 'annotation-mapping.md';
+      const file = link ? link.dataset.file : 'quick-start.md';
       load(file);
     }
 
