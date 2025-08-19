@@ -20,6 +20,8 @@ package org.indunet.fastproto.util;
 import lombok.val;
 import org.indunet.fastproto.BitOrder;
 import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.exception.DecodingException;
+import org.indunet.fastproto.exception.EncodingException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -178,6 +180,28 @@ public class EncodeUtilsTest {
         byte[] cache = new byte[]{0x04, 0x03, 0x02, 0x01, 0x05, 0x06, 0x07, 0x08};
 
         assertArrayEquals(bytes, cache);
+    }
+
+    @Test
+    public void testWriteUInt32Boundary() {
+        byte[] bytes = new byte[8];
+
+        // min (0x00000000) and max (0xFFFFFFFF) with LITTLE endian via convenience overload
+        EncodeUtils.writeUInt32(bytes, 0, 0L);
+        assertArrayEquals(new byte[] {0,0,0,0, 0,0,0,0}, bytes);
+
+        EncodeUtils.writeUInt32(bytes, 0, 0xFFFF_FFFFL);
+        assertArrayEquals(new byte[] {(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF, 0,0,0,0}, bytes);
+
+        // big-endian path
+        EncodeUtils.writeUInt32(bytes, 4, ByteOrder.BIG, 0x8000_0000L);
+        assertArrayEquals(new byte[] {(byte)0xFF,(byte)0xFF,(byte)0xFF,(byte)0xFF, (byte)0x80,0x00,0x00,0x00}, bytes);
+
+        // out-of-range
+        assertThrows(EncodingException.class, () -> EncodeUtils.writeUInt32(new byte[4], 0, -1L));
+        assertThrows(EncodingException.class, () -> EncodeUtils.writeUInt32(new byte[4], 0, 0x1_0000_0000L));
+        assertThrows(EncodingException.class, () -> EncodeUtils.writeUInt32(new byte[4], 0, ByteOrder.LITTLE, -1L));
+        assertThrows(EncodingException.class, () -> EncodeUtils.writeUInt32(new byte[4], 0, ByteOrder.LITTLE, 0x1_0000_0000L));
     }
 
     public static List<Arguments> testWriteUInt64() {

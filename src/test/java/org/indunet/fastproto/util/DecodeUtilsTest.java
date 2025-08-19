@@ -187,6 +187,15 @@ public class DecodeUtilsTest {
         assertEquals(DecodeUtils.readUInt32(bytes, 0 - bytes.length, ByteOrder.BIG), 256 * 256 * 256 + 2);
     }
 
+    @Test
+    public void testReadUInt32Boundary() {
+        byte[] leMin = new byte[] {0x00, 0x00, 0x00, (byte) 0x80}; // 0x80000000 in little-endian
+        assertEquals(0x8000_0000L, DecodeUtils.readUInt32(leMin, 0));
+
+        byte[] leMax = new byte[] {(byte) 0xFF, (byte) 0xFF, (byte) 0xFF, (byte) 0xFF}; // 0xFFFFFFFF
+        assertEquals(0xFFFF_FFFFL, DecodeUtils.readUInt32(leMax, 0));
+    }
+
     @ParameterizedTest
     @MethodSource
     public void testReadUInt64(byte[] datagram, ByteOrder policy, BigInteger value) {
