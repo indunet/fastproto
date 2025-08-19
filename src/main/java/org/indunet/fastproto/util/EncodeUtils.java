@@ -306,7 +306,7 @@ public class EncodeUtils {
      * @param value The uint32 value to be encoded.
      */
     public static void writeUInt32(byte[] bytes, int offset, long value) {
-        writeUInt32(bytes, offset, ByteOrder.LITTLE, (int) value);
+        writeUInt32(bytes, offset, ByteOrder.LITTLE, value);
     }
 
     /**

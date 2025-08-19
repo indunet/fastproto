@@ -296,7 +296,7 @@ public class DecodeUtils {
      * @return Decoded uint32 value.
      */
     public static long readUInt32(byte[] bytes, int offset) {
-        return readInt32(bytes, offset, ByteOrder.LITTLE);
+        return readInt32(bytes, offset, ByteOrder.LITTLE) & 0xFFFF_FFFFL;
     }
 
     /**
