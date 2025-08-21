@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.12.1] - 2025-08-19
+### Fixed
+- ByteBuffer: auto-growth when writing beyond current capacity on non-fixed buffers to prevent ArrayIndexOutOfBounds.
+- ByteBufferIOStream.align: validation now requires a positive power-of-two alignment; incorrect values throw IllegalArgumentException.
+
+### Changed
+- Docs site: redesigned `docs/index.html` homepage (overview, features, basic usage), set Quick Start as default in help, added icons to features.
+- Version references in docs updated to 3.12.1.
+
+### Added
+- Android compatibility guide `docs/android.md` and cross-links.
+
 ## [3.12.0] - 2025-08-11
 ### Added
 - Single-annotation checksum: `@Checksum(start, length, offset, type, byteOrder)` with encode auto-write and decode auto-verify flows.

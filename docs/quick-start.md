@@ -10,12 +10,12 @@ Add the dependency via Maven or Gradle.
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.12.0</version>
+    <version>3.12.1</version>
 </dependency>
 ```
 
 ```gradle
-implementation "org.indunet:fastproto:3.12.0"
+implementation "org.indunet:fastproto:3.12.1"
 ```
 
 ## Define Your Protocol Model

@@ -79,15 +79,30 @@ public final class ByteBuffer {
     }
 
     private void grow(int index) {
-        if (index >= length) {
-            length = index + 1;
-        } else if (length == bytes.length && !this.fixed) {
-            int newLength = Math.min(bytes.length * 2, MAX_ARRAY_SIZE);
-            bytes = Arrays.copyOf(bytes, newLength);
+		// If buffer is fixed-length and index exceeds capacity, fail fast.
+		if (this.fixed && index >= this.bytes.length) {
+			throw new IndexOutOfBoundsException();
+		}
 
-            this.grow(index);
-        }
-    }
+		// Auto-grow when not fixed and the target index exceeds current capacity.
+		if (!this.fixed && index >= this.bytes.length) {
+			int newCapacity = this.bytes.length > 0 ? this.bytes.length : 1;
+			while (newCapacity <= index && newCapacity < MAX_ARRAY_SIZE) {
+				int next = newCapacity << 1;
+				if (next <= 0 || next > MAX_ARRAY_SIZE) {
+					newCapacity = MAX_ARRAY_SIZE;
+					break;
+				}
+				newCapacity = next;
+			}
+			this.bytes = Arrays.copyOf(this.bytes, newCapacity);
+		}
+
+		// Update logical length to include the written index.
+		if (index >= this.length) {
+			this.length = index + 1;
+		}
+	}
 
     public byte get(int offset) {
         int o = this.reverse(offset);
