@@ -34,8 +34,8 @@ public abstract class ByteBufferIOStream {
     }
 
     public void align(int alignment) {
-        if (alignment <= 0 || (alignment & 0x01) != 0) {
-            throw new IllegalArgumentException("alignment must be a positive even number");
+        if (alignment <= 0 || (alignment & (alignment - 1)) != 0) {
+            throw new IllegalArgumentException("alignment must be a positive power of two");
         }
 
         int index = this.byteIndex;

@@ -85,6 +85,47 @@ public class ByteBufferTest {
         assertThrows(CodecException.class, () -> byteBuffer.get(-1));
     }
 
+    @Test
+    public void testDynamicGrowth() {
+        // Test auto-expansion when writing beyond initial capacity
+        ByteBuffer byteBuffer = new ByteBuffer();
+        
+        // Write at a large offset to trigger capacity expansion
+        byteBuffer.set(500, (byte) 0x42);
+        
+        assertEquals((byte) 0x42, byteBuffer.get(500));
+        assertEquals(501, byteBuffer.size());
+        assertTrue(byteBuffer.toBytes().length >= 501);
+    }
 
+    @Test
+    public void testFixedBufferBounds() {
+        // Test that fixed-length buffer throws on out-of-bounds write
+        byte[] fixedArray = new byte[10];
+        ByteBuffer fixedBuffer = new ByteBuffer(fixedArray);
+        
+        // Should work within bounds
+        fixedBuffer.set(9, (byte) 0x99);
+        assertEquals((byte) 0x99, fixedBuffer.get(9));
+        
+        // Should throw on out-of-bounds write
+        assertThrows(IndexOutOfBoundsException.class, () -> fixedBuffer.set(10, (byte) 0x01));
+    }
+
+    @Test
+    public void testGrowthFromZeroCapacity() {
+        // Test growth when starting with minimal capacity
+        ByteBuffer byteBuffer = new ByteBuffer();
+        
+        // Write at index 0 to establish baseline
+        byteBuffer.set(0, (byte) 0x01);
+        assertEquals(1, byteBuffer.size());
+        
+        // Write at a much larger index to test multiple expansions
+        byteBuffer.set(1000, (byte) 0x02);
+        assertEquals(1001, byteBuffer.size());
+        assertEquals((byte) 0x01, byteBuffer.get(0));
+        assertEquals((byte) 0x02, byteBuffer.get(1000));
+    }
 }
 

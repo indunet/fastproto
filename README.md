@@ -49,14 +49,14 @@ See the [CHANGELOG](CHANGELOG.md) for recent updates.
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.12.0</version>
+    <version>3.12.1</version>
 </dependency>
 ```
 
 * Gradle
 
 ```gradle
-implementation "org.indunet:fastproto:3.12.0"
+implementation "org.indunet:fastproto:3.12.1"
 ```
 
 
