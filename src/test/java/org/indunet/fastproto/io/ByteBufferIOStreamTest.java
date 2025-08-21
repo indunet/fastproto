@@ -57,6 +57,49 @@ public class ByteBufferIOStreamTest {
     }
 
     @Test
+    public void testAlignPowerOfTwoValidation() {
+        val stream = new MockByteBufferOutputStream();
+
+        // Valid power-of-two alignments should work
+        stream.align(1);
+        stream.align(2);
+        stream.align(4);
+        stream.align(8);
+        stream.align(16);
+        stream.align(32);
+
+        // Invalid alignments should throw IllegalArgumentException
+        assertThrows(IllegalArgumentException.class, () -> stream.align(0));
+        assertThrows(IllegalArgumentException.class, () -> stream.align(-1));
+        assertThrows(IllegalArgumentException.class, () -> stream.align(3));
+        assertThrows(IllegalArgumentException.class, () -> stream.align(5));
+        assertThrows(IllegalArgumentException.class, () -> stream.align(6));
+        assertThrows(IllegalArgumentException.class, () -> stream.align(7));
+        assertThrows(IllegalArgumentException.class, () -> stream.align(9));
+        assertThrows(IllegalArgumentException.class, () -> stream.align(10));
+        assertThrows(IllegalArgumentException.class, () -> stream.align(12));
+        assertThrows(IllegalArgumentException.class, () -> stream.align(15));
+    }
+
+    @Test
+    public void testAlignBehavior() {
+        val stream = new MockByteBufferOutputStream();
+
+        // Test alignment from various starting positions
+        stream.append((byte) 0x01); // byteIndex = 1
+        stream.align(4); // Should align to 4
+        assertEquals(4, stream.byteIndex);
+
+        stream.append((byte) 0x02); // byteIndex = 5
+        stream.align(8); // Should align to 8
+        assertEquals(8, stream.byteIndex);
+
+        // Test alignment when already aligned
+        stream.align(8); // Should stay at 8
+        assertEquals(8, stream.byteIndex);
+    }
+
+    @Test
     public void testSkip() {
         val stream = new MockByteBufferOutputStream();
 
