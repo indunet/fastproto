@@ -11,7 +11,7 @@
     <name>FastProto</name>
     <description>FastProto is a lightweight Java library that makes binary protocols effortless, with annotation-driven mapping and built-in checksum/CRC.</description>
 
-    <url>http://fastproto.indunet.org</url>
+    <url>https://indunet.github.io/fastproto</url>
     <inceptionYear>2019</inceptionYear>
 
     <scm>
