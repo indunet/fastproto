@@ -373,20 +373,13 @@ int crc16 = ChecksumUtils.crc16(bytes) & 0xFFFF;  // compute CRC16 for the whole
 ```
 
 
-## *3. Scala*
-FastProto supports case class，but Scala is not fully compatible with Java annotations, so please refer to FastProto as follows.
-
-```scala
-import org.indunet.fastproto.annotation.scala._
-```
-
-## *4. Decode and encode without Annotations*
+## *3. Decode and encode without Annotations*
 
 In some special cases, developers do not want or cannot use annotations to decorate data objects, for example, data objects 
 come from third-party libraries, developers cannot modify the source code, and developers only want to create binary data blocks
 in a simple way. FastProto provides simple API to solve the above problems, as follows:
 
-### *4.1 Decode Binary Data*
+### *3.1 Decode Binary Data*
 
 * *Decode with data object*
 
@@ -418,7 +411,7 @@ int f2 = DecodeUtils.readInt8(bytes, 1);        // Decode signed 8-bit integer d
 int f3 = DecodeUtils.readInt16(bytes, 2);       // Decode signed 8-bit integer data at byte offset 2
 ```
 
-### *4.2 Create Binary Data Block*
+### *3.2 Create Binary Data Block*
 
 ```java
 byte[] bytes = FastProto.create(16)         // Create binary block with 16 bytes 
@@ -439,7 +432,7 @@ EncodeUtils.writeUInt32(bytes, 6, ByteOrder.BIG, 256);  // Write unsigned 32-bit
 ```
 
 
-## *5. Benchmark*
+## *4. Benchmark*
 
 *   windows 11, i7 11th, 32gb
 *   openjdk 1.8.0_292

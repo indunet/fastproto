@@ -369,18 +369,10 @@ int crc16 = ChecksumUtils.crc16(bytes) & 0xFFFF;  // 计算整个数组的 CRC16
 ```
 
 
-## *3. Scala*
-FastProto 支持 case class。但由于 Scala 与 Java 注解并非完全兼容，使用时请参考如下导入：
-
-```scala
-import org.indunet.fastproto.annotation.scala._
-```
-
-
-## *4. 不使用注解的编解码*
+## *3. 不使用注解的编解码*
 在某些场景下，开发者不想或不能用注解修饰数据对象，例如对象来源于第三方库无法修改源代码，或只是想以更直接的方式创建二进制数据块。FastProto 提供了简单 API 来满足上述需求。
 
-### *4.1 解码二进制数据*
+### *3.1 解码二进制数据*
 
 - 解码到数据对象
 ```java
@@ -410,7 +402,7 @@ int     f2 = DecodeUtils.readInt8(bytes, 1);    // 读取字节偏移 1 的有�
 int     f3 = DecodeUtils.readInt16(bytes, 2);   // 读取字节偏移 2 的有符号 16 位整数
 ```
 
-### *4.2 创建二进制数据块*
+### *3.2 创建二进制数据块*
 ```java
 byte[] bytes = FastProto.create(16)         // 创建长度为 16 字节的二进制块
         .writeInt8(0, 1)                    // 在偏移 0 写入无符号 8 位整数 1
@@ -430,7 +422,7 @@ EncodeUtils.writeUInt32(bytes, 6, ByteOrder.BIG, 256);  // 在偏移 6 按大端
 ```
 
 
-## *5. Benchmark*
+## *4. Benchmark*
 
 - windows 11, i7 11th, 32gb
 - openjdk 1.8.0_292
