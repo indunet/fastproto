@@ -19,6 +19,7 @@ package org.indunet.fastproto.formula;
 import org.indunet.fastproto.exception.ResolvingException;
 import org.indunet.fastproto.formula.compiler.JavaStringCompiler;
 
+import javax.tools.ToolProvider;
 import java.io.IOException;
 import java.util.Map;
 import java.util.function.Function;
@@ -34,6 +35,14 @@ import java.util.function.Function;
  */
 public interface FormulaBuilder {
     static FormulaBuilder create(Class inputType, String lambda) {
+        // Allow disabling string-lambda compilation via system property: fastproto.lambda.disabled=true
+        if (Boolean.parseBoolean(System.getProperty("fastproto.lambda.disabled", "false"))) {
+            throw new ResolvingException("String lambda compilation is disabled. Set -Dfastproto.lambda.disabled=false or use a precompiled Function class.");
+        }
+        // Quick check: without a system compiler we should fail fast with a clear message
+        if (ToolProvider.getSystemJavaCompiler() == null) {
+            throw new ResolvingException("No system Java compiler (javax.tools). Run with a JDK or include jdk.compiler module, or avoid lambda formulas.");
+        }
         try {
             JavaStringCompiler compiler = new JavaStringCompiler();
             FormulaBuilderTemplate template = new FormulaBuilderTemplate(inputType, lambda);
