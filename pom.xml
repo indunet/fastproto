@@ -165,7 +165,7 @@
 
     <properties>
         <junit.version>5.10.2</junit.version>
-        <lombok.version>1.18.22</lombok.version>
+        <lombok.version>1.18.34</lombok.version>
         <jmh-core>1.37</jmh-core>
         <jmh-generator-annprocess>1.37</jmh-generator-annprocess>
         <maven.compiler.source>1.8</maven.compiler.source>
