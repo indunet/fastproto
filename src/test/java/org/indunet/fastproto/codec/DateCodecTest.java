@@ -34,6 +34,7 @@ import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -128,7 +129,7 @@ public class DateCodecTest {
     @Test
     public void testInstant() {
         val instantCodec = dateCodec.new InstantCodec();
-        val instant = Instant.now();
+        val instant = Instant.now().truncatedTo(ChronoUnit.MILLIS);
         val outputStream = new ByteBufferOutputStream();
 
         outputStream.writeInt64(ByteOrder.BIG, instant.toEpochMilli());
@@ -166,7 +167,7 @@ public class DateCodecTest {
     @Test
     public void testLocalDateTime() {
         val localDateTimeCodec = dateCodec.new LocalDateTimeCodec();
-        val localDateTime = LocalDateTime.now();
+        val localDateTime = LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
         val outputStream = new ByteBufferOutputStream();
 
         outputStream.writeInt64(ByteOrder.BIG, localDateTime.atZone(ZoneId.systemDefault()).toInstant().toEpochMilli());
