@@ -25,4 +25,14 @@ public class LRC extends CRC {
         int lrc = ((~sum) + 1) & 0xFF; // two's complement
         return lrc;
     }
+
+    @Override
+    public int calculate(byte[] data, int offset, int length) {
+        int sum = 0;
+        for (int i = 0; i < length; i++) {
+            sum = (sum + (data[offset + i] & 0xFF)) & 0xFF;
+        }
+        int lrc = ((~sum) + 1) & 0xFF; // two's complement
+        return lrc;
+    }
 } 

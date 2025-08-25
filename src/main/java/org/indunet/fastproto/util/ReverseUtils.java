@@ -16,8 +16,7 @@
 
 package org.indunet.fastproto.util;
 
-import lombok.val;
-import org.indunet.fastproto.exception.CodecException;
+import org.indunet.fastproto.io.ByteBuffer;
 
 /**
  * Reverse utils which can reverse byte offset or length.
@@ -26,24 +25,11 @@ import org.indunet.fastproto.exception.CodecException;
  * @since 3.10.2
  */
 public class ReverseUtils {
-    public static int reverse(byte[] bytes, int offset) {
-        val o = offset >= 0 ? offset : bytes.length + offset;
+	public static int reverse(byte[] bytes, int offset) {
+		return new ByteBuffer(bytes).reverse(offset);
+	}
 
-        if (o >= 0) {
-            return o;
-        } else {
-            throw new CodecException(String.format("Illegal offset %d", o));
-        }
-    }
-
-    public static int reverse(byte[] bytes, int offset, int length) {
-        int o = reverse(bytes, offset);
-        int l = length >= 0 ? length : bytes.length + length - o + 1;
-
-        if (l > 0) {
-            return l;
-        } else {
-            throw new CodecException(String.format("Illegal length %d", l));
-        }
-    }
+	public static int reverse(byte[] bytes, int offset, int length) {
+		return new ByteBuffer(bytes).reverse(offset, length);
+	}
 }

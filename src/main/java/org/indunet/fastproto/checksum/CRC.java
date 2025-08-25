@@ -62,6 +62,16 @@ public abstract class CRC {
      */
     abstract int calculate(byte[] data);
 
+    /**
+     * Calculate the CRC value of the given data range to avoid byte array copying.
+     *
+     * @param data The data to be verified by CRC.
+     * @param offset The offset to start calculation from.
+     * @param length The length of data to calculate.
+     * @return The calculated CRC value.
+     */
+    abstract int calculate(byte[] data, int offset, int length);
+
     public int reverseBits(int value, int bitSize) {
         int reversed = 0;
         for (int i = 0; i < bitSize; i++) {

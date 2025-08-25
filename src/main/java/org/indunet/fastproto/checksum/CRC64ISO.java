@@ -39,4 +39,14 @@ public class CRC64ISO {
         crc = reflect64(crc) ^ 0xFFFFFFFFFFFFFFFFL;
         return crc;
     }
+
+    public long calculate(byte[] data, int offset, int length) {
+        long crc = initialValue;
+        for (int i = 0; i < length; i++) {
+            int idx = (int) ((crc ^ reflect8(data[offset + i] & 0xFF)) & 0xFF);
+            crc = (crc >>> 8) ^ TABLE[idx];
+        }
+        crc = reflect64(crc) ^ 0xFFFFFFFFFFFFFFFFL;
+        return crc;
+    }
 } 

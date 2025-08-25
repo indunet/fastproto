@@ -199,9 +199,9 @@ public class CodecMapper {
 
         val stringCodec = new StringCodec();
         codecMap.get(StringType.class).put(c -> c.equals(String.class), stringCodec);
-        codecMap.get(StringType.class).put(c -> c.equals(StringBuffer.class), stringCodec.new StringBufferCodec());
-        codecMap.get(StringType.class).put(c -> c.equals(StringBuilder.class), stringCodec.new StringBuilderCodec());
-
+        codecMap.get(StringType.class).put(c -> c.equals(StringBuffer.class), new StringCodec.StringBufferCodec());
+        codecMap.get(StringType.class).put(c -> c.equals(StringBuilder.class), new StringCodec.StringBuilderCodec());
+        
         val enumCodec = new EnumCodec<>();
         codecMap.get(EnumType.class).put(t -> Enum.class.isAssignableFrom((Class) t), enumCodec);
     }

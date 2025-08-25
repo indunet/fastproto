@@ -46,36 +46,51 @@ public class ChecksumUtils {
     public static long crc64ecma182(byte[] data) { return CRC64_ECMA182_INSTANCE.calculate(data); }
     public static long crc64iso(byte[] data) { return CRC64_ISO_INSTANCE.calculate(data); }
 
+    // Overloaded methods for range calculations to avoid byte array copying
+    public static int crc8(byte[] data, int offset, int length) { return CRC8_INSTANCE.calculate(data, offset, length); }
+    public static int crc8smbus(byte[] data, int offset, int length) { return CRC8_SMBUS_INSTANCE.calculate(data, offset, length); }
+    public static int crc8maxim(byte[] data, int offset, int length) { return CRC8_MAXIM_INSTANCE.calculate(data, offset, length); }
+    public static int bcc(byte[] data, int offset, int length) { return BCC_INSTANCE.calculate(data, offset, length); }
+    public static int lrc(byte[] data, int offset, int length) { return LRC_INSTANCE.calculate(data, offset, length); }
+
+    public static int crc16(byte[] data, int offset, int length) { return CRC16_INSTANCE.calculate(data, offset, length); }
+    public static int crc16modbus(byte[] data, int offset, int length) { return CRC16_MODBUS_INSTANCE.calculate(data, offset, length); }
+    public static int crc16ccitt(byte[] data, int offset, int length) { return CRC16_CCITT_INSTANCE.calculate(data, offset, length); }
+
+    public static int crc32(byte[] data, int offset, int length) { return CRC32_INSTANCE.calculate(data, offset, length); }
+    public static int crc32c(byte[] data, int offset, int length) { return CRC32C_INSTANCE.calculate(data, offset, length); }
+
+    public static long crc64ecma182(byte[] data, int offset, int length) { return CRC64_ECMA182_INSTANCE.calculate(data, offset, length); }
+    public static long crc64iso(byte[] data, int offset, int length) { return CRC64_ISO_INSTANCE.calculate(data, offset, length); }
+
     /** Calculate checksum for specific range. */
     public static long calculate(byte[] data, int offset, int length, org.indunet.fastproto.annotation.Checksum.Type type) {
-        byte[] slice = new byte[length];
-        System.arraycopy(data, offset, slice, 0, length);
-
+        // Use overloaded methods directly to avoid byte array copying
         switch (type) {
             case CRC8:
-                return crc8(slice) & 0xFF;
+                return crc8(data, offset, length) & 0xFF;
             case CRC8_SMBUS:
-                return crc8smbus(slice) & 0xFF;
+                return crc8smbus(data, offset, length) & 0xFF;
             case CRC8_MAXIM:
-                return crc8maxim(slice) & 0xFF;
+                return crc8maxim(data, offset, length) & 0xFF;
             case XOR8:
-                return bcc(slice) & 0xFF;
+                return bcc(data, offset, length) & 0xFF;
             case LRC8:
-                return lrc(slice) & 0xFF;
+                return lrc(data, offset, length) & 0xFF;
             case CRC16:
-                return crc16(slice) & 0xFFFF;
+                return crc16(data, offset, length) & 0xFFFF;
             case CRC16_MODBUS:
-                return crc16modbus(slice) & 0xFFFF;
+                return crc16modbus(data, offset, length) & 0xFFFF;
             case CRC16_CCITT:
-                return crc16ccitt(slice) & 0xFFFF;
+                return crc16ccitt(data, offset, length) & 0xFFFF;
             case CRC32:
-                return crc32(slice) & 0xFFFFFFFFL;
+                return crc32(data, offset, length) & 0xFFFFFFFFL;
             case CRC32C:
-                return crc32c(slice) & 0xFFFFFFFFL;
+                return crc32c(data, offset, length) & 0xFFFFFFFFL;
             case CRC64_ECMA182:
-                return crc64ecma182(slice);
+                return crc64ecma182(data, offset, length);
             case CRC64_ISO:
-                return crc64iso(slice);
+                return crc64iso(data, offset, length);
             default:
                 throw new CodecException("Unsupported checksum type: " + type);
         }

@@ -27,7 +27,12 @@
     <developers>
         <developer>
             <name>Deng Ran</name>
+            <id>dengran</id>
             <email>deng_ran@aliyun.com</email>
+            <roles>
+                <role>developer</role>
+                <role>lead</role>
+            </roles>
         </developer>
     </developers>
 

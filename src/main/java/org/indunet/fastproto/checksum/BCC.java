@@ -24,4 +24,13 @@ public class BCC extends CRC {
         }
         return x & 0xFF;
     }
+
+    @Override
+    public int calculate(byte[] data, int offset, int length) {
+        int x = 0;
+        for (int i = 0; i < length; i++) {
+            x ^= (data[offset + i] & 0xFF);
+        }
+        return x & 0xFF;
+    }
 } 

@@ -41,4 +41,21 @@ public class CRC8Maxim extends CRC {
         }
         return crc & 0xFF; // refout=true, xorout=0
     }
+
+    @Override
+    public int calculate(byte[] data, int offset, int length) {
+        int crc = initialValue & 0xFF;
+        for (int idx = 0; idx < length; idx++) {
+            int b = data[offset + idx] & 0xFF;
+            for (int i = 0; i < 8; i++) {
+                int mix = (crc ^ b) & 0x01;
+                crc >>>= 1;
+                if (mix != 0) {
+                    crc ^= POLY_REVERSED;
+                }
+                b >>>= 1;
+            }
+        }
+        return crc & 0xFF; // refout=true, xorout=0
+    }
 } 
