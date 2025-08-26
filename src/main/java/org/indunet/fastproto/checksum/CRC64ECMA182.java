@@ -35,4 +35,13 @@ public class CRC64ECMA182 {
         }
         return crc;
     }
+
+    public long calculate(byte[] data, int offset, int length) {
+        long crc = initialValue;
+        for (int i = 0; i < length; i++) {
+            int idx = (int) (((crc >>> 56) ^ (data[offset + i] & 0xFF)) & 0xFF);
+            crc = (crc << 8) ^ TABLE[idx];
+        }
+        return crc;
+    }
 } 

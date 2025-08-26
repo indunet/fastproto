@@ -32,6 +32,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 import java.util.function.BiConsumer;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Represents a Reference in the graph.
@@ -73,6 +74,9 @@ public class Reference {
     Function encodingLambda;
     Function<ByteBufferInputStream, ?> decoder;
     BiConsumer<ByteBufferOutputStream, ? super Object> encoder;
+
+    // Supplier for dynamic length resolution (nullable). When present, codecs should use it to override annotation length().
+    Supplier<Integer> lengthSupplier;
 
     @Builder.Default
     ThreadLocal<Object> value = new ThreadLocal<>();

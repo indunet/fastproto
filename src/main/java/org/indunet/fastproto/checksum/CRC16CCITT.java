@@ -38,4 +38,20 @@ public class CRC16CCITT extends CRC {
         }
         return crc & 0xFFFF;
     }
+
+    @Override
+    public int calculate(byte[] data, int offset, int length) {
+        int crc = initialValue & 0xFFFF;
+        for (int i = 0; i < length; i++) {
+            crc ^= (data[offset + i] & 0xFF) << 8;
+            for (int j = 0; j < 8; j++) {
+                if ((crc & 0x8000) != 0) {
+                    crc = ((crc << 1) ^ polynomial) & 0xFFFF;
+                } else {
+                    crc = (crc << 1) & 0xFFFF;
+                }
+            }
+        }
+        return crc & 0xFFFF;
+    }
 } 

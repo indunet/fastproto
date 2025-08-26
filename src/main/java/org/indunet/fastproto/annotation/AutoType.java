@@ -60,6 +60,11 @@ public @interface AutoType {
     int[] length() default {};
 
     /*
+     * Reference to a length field name in the same class. Accepts optional leading '$'.
+     */
+    String lengthRef() default "";
+
+    /*
      * The byte order of the field in the binary data, its priority is higher than @DefaultByteOrder.
      */
     ByteOrder[] byteOrder() default {};

@@ -57,15 +57,19 @@ public final class ByteBufferOutputStream extends ByteBufferIOStream {
             bo = 7 - bitOffset;
         }
 
-        if (bo == BoolType.BIT_7) {
-            this.byteIndex ++;
-            this.bitIndex = BoolType.BIT_0;
-        }
-
         if (value) {
             byteBuffer.orEq(byteOffset, (byte) (0x01 << bo));
         } else {
             byteBuffer.andEq(byteOffset, (byte) ~(0x01 << bo));
+        }
+
+        // advance bit cursor sequentially (logical LSB_0 progression)
+        if (bitOffset == BoolType.BIT_7) {
+            this.byteIndex = byteOffset + 1;
+            this.bitIndex = BoolType.BIT_0;
+        } else {
+            this.byteIndex = byteOffset;
+            this.bitIndex = bitOffset + 1;
         }
     }
 

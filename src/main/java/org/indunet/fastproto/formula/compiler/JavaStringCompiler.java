@@ -51,6 +51,9 @@ public class JavaStringCompiler {
 	 */
 	public Map<String, byte[]> compile(String fileName, String sourceCode) throws IOException {
 		JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+		if (compiler == null) {
+			throw new ResolvingException("No system Java compiler (javax.tools). Run with a JDK or include jdk.compiler module, or avoid lambda formulas.");
+		}
 		try (StandardJavaFileManager stdManager = compiler.getStandardFileManager(null, null, null);
 			 MemoryJavaFileManager manager = new MemoryJavaFileManager(stdManager)) {
 

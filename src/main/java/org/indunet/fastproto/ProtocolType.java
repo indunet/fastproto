@@ -50,7 +50,7 @@ public interface ProtocolType {
                     throw new ResolvingException(
                             String.format("Autotype lack of property %s", mth.getName()));
                 }
-            } else if (Arrays.asList("byteOrder", "bitOrder", "charset", "name")
+            } else if (Arrays.asList("byteOrder", "bitOrder", "charset", "name", "lengthRef")
                     .contains(method.getName())) {
                 return mth.invoke(autoType, args);
             } else if (mth.getName().equals("annotationType")) {

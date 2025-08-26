@@ -81,5 +81,25 @@ public class CRC8 extends CRC {
 
         return crc & 0xFF;
     }
+
+    @Override
+    public int calculate(byte[] data, int offset, int length) {
+        int crc = initialValue;
+
+        for (int i = 0; i < length; i++) {
+            byte b = data[offset + i];
+            crc ^= b & 0xFF;
+
+            for (int j = 0; j < 8; j++) {
+                if ((crc & 0x80) != 0) {
+                    crc = (crc << 1) ^ polynomial;
+                } else {
+                    crc <<= 1;
+                }
+            }
+        }
+
+        return crc & 0xFF;
+    }
 }
 

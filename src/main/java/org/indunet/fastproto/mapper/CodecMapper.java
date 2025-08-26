@@ -79,6 +79,7 @@ public class CodecMapper {
         codecMap.put(TimeType.class, new HashMap<>());
         codecMap.put(EnumType.class, new HashMap<>());
         codecMap.put(StringType.class, new HashMap<>());
+        codecMap.put(StructArrayType.class, new HashMap<>());
 
         BiFunction<Type, Class, Boolean> collectionType = (t, c) -> t instanceof ParameterizedType
                 && Collection.class.isAssignableFrom((Class) ((ParameterizedType) t).getRawType())
@@ -199,9 +200,13 @@ public class CodecMapper {
 
         val stringCodec = new StringCodec();
         codecMap.get(StringType.class).put(c -> c.equals(String.class), stringCodec);
-        codecMap.get(StringType.class).put(c -> c.equals(StringBuffer.class), stringCodec.new StringBufferCodec());
-        codecMap.get(StringType.class).put(c -> c.equals(StringBuilder.class), stringCodec.new StringBuilderCodec());
-
+        codecMap.get(StringType.class).put(c -> c.equals(StringBuffer.class), new StringCodec.StringBufferCodec());
+        codecMap.get(StringType.class).put(c -> c.equals(StringBuilder.class), new StringCodec.StringBuilderCodec());
+        // StructArrayType wiring: support arrays of element class and collections parametrized with element class
+        val structArrayCodec = new StructArrayCodec<>();
+        codecMap.get(StructArrayType.class).put(t -> (t instanceof Class) && ((Class) t).isArray(), structArrayCodec);
+        codecMap.get(StructArrayType.class).put(t -> t instanceof ParameterizedType && Collection.class.isAssignableFrom((Class) ((ParameterizedType) t).getRawType()), structArrayCodec);
+        
         val enumCodec = new EnumCodec<>();
         codecMap.get(EnumType.class).put(t -> Enum.class.isAssignableFrom((Class) t), enumCodec);
     }

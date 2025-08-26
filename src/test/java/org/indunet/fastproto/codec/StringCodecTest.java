@@ -101,6 +101,25 @@ public class StringCodecTest {
                 () -> this.codec.encode(mock(8, 4, StandardCharsets.UTF_8.name()), new ByteBufferOutputStream(bytes), "ABCD"));
     }
 
+    @Test
+    public void testDecodeTrimZeros() {
+        byte[] actuals = new byte[]{'h','i',0,0,0,0};
+        assertEquals("hi", codec.decode(mock(0, 6, StandardCharsets.UTF_8.name()), new ByteBufferInputStream(actuals)));
+    }
+
+    @Test
+    public void testEncodeTruncateAndPad() {
+        // truncate when source longer than length
+        byte[] buf1 = new byte[4];
+        codec.encode(mock(0, 4, StandardCharsets.UTF_8.name()), new ByteBufferOutputStream(buf1), "abcdef");
+        assertArrayEquals(new byte[]{'a','b','c','d'}, buf1);
+
+        // pad with zeros when source shorter than length
+        byte[] buf2 = new byte[8];
+        codec.encode(mock(2, 6, StandardCharsets.UTF_8.name()), new ByteBufferOutputStream(buf2), "ABCabc");
+        assertArrayEquals(new byte[]{0,0,'A','B','C','a','b','c'}, buf2);
+    }
+
     protected CodecContext mock(int offset, int length, String charset) {
         return CodecContext.builder()
                 .dataTypeAnnotation(AnnotationUtils.mock(StringType.class, offset, length, charset))

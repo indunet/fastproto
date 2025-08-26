@@ -45,5 +45,10 @@ public @interface UInt8ArrayType {
     /*
      * The length of the array or string, only valid on array or string type.
      */
-    int length();
+    int length() default 0;
+
+    String lengthRef() default "";
+    boolean useSelfOnEncode() default false;
+    int min() default Integer.MIN_VALUE;
+    int max() default Integer.MAX_VALUE;
 }

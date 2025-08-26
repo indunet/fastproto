@@ -7,7 +7,7 @@ English | [中文](README-zh.md)
 [![Build Status](https://app.travis-ci.com/indunet/fastproto.svg?branch=master)](https://app.travis-ci.com/indunet/fastproto)
 [![codecov](https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU)](https://codecov.io/gh/indunet/fastproto)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ed904d7aacd142f08b5cd50b16b1d74b)](https://www.codacy.com/gh/indunet/fastproto/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=indunet/fastproto&amp;utm_campaign=Badge_Grade)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
+[![Maven Central](https://img.shields.io/maven-central/v/org.indunet/fastproto.svg?label=Maven%20Central)](https://search.maven.org/artifact/org.indunet/fastproto)
 [![JetBrains Support](https://img.shields.io/badge/JetBrains-support-blue)](https://www.jetbrains.com/community/opensource)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -18,9 +18,11 @@ FastProto is a lightweight Java library that makes binary protocols effortless. 
 - **Annotation-Driven:** Quickly map binary data to Java fields.
 - **Broad Type Support:** Works with primitives, unsigned numbers, strings, time types, arrays and collections.
 - **Flexible Addressing:** Reverse addressing for variable-length packets.
+- **Variable-Length Fields:** Use `lengthRef` to reference a count field; supports variable-length strings/arrays and struct arrays. See [Variable Length and Struct Arrays](docs/variable-length.md).
 - **Configurable Byte Order:** Choose big-endian or little-endian to match your protocol.
 - **Custom Formulas:** Use lambdas or classes to transform values during encode/decode.
 - **Checksum/CRC:** Single-annotation `@Checksum` to define start, length and storage offset; built-ins include CRC8 (SMBus, MAXIM), CRC16 (MODBUS, CCITT), CRC32/CRC32C, CRC64 (ECMA/ISO), plus LRC and XOR.
+- **Integrations:** Netty codecs and Kafka Serializer/Deserializer/Serde for drop‑in use. See [Netty Integration](docs/help.html#netty-integration) and [Kafka Integration](docs/help.html#kafka-integration).
 - **Easy APIs:** Multiple APIs tuned for efficiency and reliability.
 
 See the [CHANGELOG](CHANGELOG.md) for recent updates.
@@ -28,18 +30,13 @@ See the [CHANGELOG](CHANGELOG.md) for recent updates.
 ### *Under Development*
 
 * Code structure & performance optimization
-* Add crc checksum support
 * Richer documentation (expanded core feature guides)
+* Support for Kaitai structure export and integration
+
 
 ### *Documentation*
 
-- Annotation Mapping: [docs/annotation-mapping.md](docs/annotation-mapping.md)
-- Byte & Bit Order: [docs/byte-and-bit-order.md](docs/byte-and-bit-order.md)
-- Checksum/CRC: [docs/checksum.md](docs/checksum.md)
-- Transformation Formulas: [docs/formulas.md](docs/formulas.md)
-- Arrays & Strings: [docs/arrays-and-strings.md](docs/arrays-and-strings.md)
-- Using APIs without Annotations: [docs/without-annotations.md](docs/without-annotations.md)
-- FAQ: [docs/faq.md](docs/faq.md)
+- [https://indunet.github.io/fastproto/help.html](https://indunet.github.io/fastproto/help.html)
 
 ### *Install*
 
@@ -49,14 +46,14 @@ See the [CHANGELOG](CHANGELOG.md) for recent updates.
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.12.1</version>
+    <version>3.12.2</version>
 </dependency>
 ```
 
 * Gradle
 
 ```gradle
-implementation "org.indunet:fastproto:3.12.1"
+implementation "org.indunet:fastproto:3.12.2"
 ```
 
 
@@ -372,20 +369,13 @@ int crc16 = ChecksumUtils.crc16(bytes) & 0xFFFF;  // compute CRC16 for the whole
 ```
 
 
-## *3. Scala*
-FastProto supports case class，but Scala is not fully compatible with Java annotations, so please refer to FastProto as follows.
-
-```scala
-import org.indunet.fastproto.annotation.scala._
-```
-
-## *4. Decode and encode without Annotations*
+## *3. Decode and encode without Annotations*
 
 In some special cases, developers do not want or cannot use annotations to decorate data objects, for example, data objects 
 come from third-party libraries, developers cannot modify the source code, and developers only want to create binary data blocks
 in a simple way. FastProto provides simple API to solve the above problems, as follows:
 
-### *4.1 Decode Binary Data*
+### *3.1 Decode Binary Data*
 
 * *Decode with data object*
 
@@ -417,7 +407,7 @@ int f2 = DecodeUtils.readInt8(bytes, 1);        // Decode signed 8-bit integer d
 int f3 = DecodeUtils.readInt16(bytes, 2);       // Decode signed 8-bit integer data at byte offset 2
 ```
 
-### *4.2 Create Binary Data Block*
+### *3.2 Create Binary Data Block*
 
 ```java
 byte[] bytes = FastProto.create(16)         // Create binary block with 16 bytes 
@@ -438,7 +428,7 @@ EncodeUtils.writeUInt32(bytes, 6, ByteOrder.BIG, 256);  // Write unsigned 32-bit
 ```
 
 
-## *5. Benchmark*
+## *4. Benchmark*
 
 *   windows 11, i7 11th, 32gb
 *   openjdk 1.8.0_292
@@ -479,7 +469,7 @@ please feel free to contact me via email <deng_ran@aliyun.com>
 FastProto is released under the [Apache 2.0 license](license).
 
 ```
-Copyright 2019-2021 indunet.org
+Copyright 2019-2025 indunet.org
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

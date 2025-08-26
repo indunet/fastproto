@@ -7,7 +7,7 @@
 [![Build Status](https://app.travis-ci.com/indunet/fastproto.svg?branch=master)](https://app.travis-ci.com/indunet/fastproto)
 [![codecov](https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU)](https://codecov.io/gh/indunet/fastproto)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/ed904d7aacd142f08b5cd50b16b1d74b)](https://www.codacy.com/gh/indunet/fastproto/dashboard?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=indunet/fastproto&amp;utm_campaign=Badge_Grade)
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.indunet/fastproto/)
+[![Maven Central](https://img.shields.io/maven-central/v/org.indunet/fastproto.svg?label=Maven%20Central)](https://search.maven.org/artifact/org.indunet/fastproto)
 [![JetBrains Support](https://img.shields.io/badge/JetBrains-support-blue)](https://www.jetbrains.com/community/opensource)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
@@ -18,9 +18,11 @@ FastProto 是一款轻量级的 Java 二进制协议库。只需使用注解描�
 * **注解驱动：** 字段用注解标记，解析和封装一目了然。
 * **类型丰富：** 支持 Java 原始类型、无符号类型、字符串、时间以及集合。
 * **灵活地址：** 提供反向地址，适配变长协议。
+* **可变长度：** 通过 `lengthRef` 引用计数字段，支持变长字符串/数组与结构体数组。详见[可变长度与结构体数组](docs/variable-length.md)。
 * **字节顺序可选：** 大端或小端随心切换。
 * **公式支持：** Lambda 或自定义类均可实现编解码公式。
 * **校验和/CRC：** 使用 `@Checksum` 注解一次性定义起始地址、长度与存放地址，内置 CRC8（SMBus、MAXIM）、CRC16（MODBUS、CCITT）、CRC32/CRC32C、CRC64（ECMA/ISO）、LRC、XOR 等。
+* **生态集成：** 提供 Netty 编/解码器与 Kafka Serializer/Deserializer/Serde，可即插即用。详见[Netty 集成](docs/help.html#netty-integration)与[Kafka 集成](docs/help.html#kafka-integration)。
 * **多种API：** 兼顾效率与易用性。
 
 查看[更新日志](CHANGELOG-zh.md)获取版本历史，英文版请查阅[CHANGELOG](CHANGELOG.md)。
@@ -28,18 +30,12 @@ FastProto 是一款轻量级的 Java 二进制协议库。只需使用注解描�
 ### *正在开发*
 
 * 代码结构 & 性能优化
-* 添加CRC校验和支持
 * 丰富文档（新增核心功能使用指南）
+* 支持Kaitai结构导出与集成
 
 ### *文档*
 
-- Annotation Mapping: [docs/annotation-mapping.md](docs/annotation-mapping.md)
-- Byte & Bit Order: [docs/byte-and-bit-order.md](docs/byte-and-bit-order.md)
-- Checksum/CRC: [docs/checksum.md](docs/checksum.md)
-- Transformation Formulas: [docs/formulas.md](docs/formulas.md)
-- Arrays & Strings: [docs/arrays-and-strings.md](docs/arrays-and-strings.md)
-- Using APIs without Annotations: [docs/without-annotations.md](docs/without-annotations.md)
-- FAQ: [docs/faq.md](docs/faq.md)
+- [https://indunet.github.io/fastproto/help.html](https://indunet.github.io/fastproto/help.html)
 
 ### *安装*
 
@@ -49,14 +45,14 @@ FastProto 是一款轻量级的 Java 二进制协议库。只需使用注解描�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.12.0</version>
+    <version>3.12.2</version>
 </dependency>
 ```
 
 * Gradle
 
 ```gradle
-implementation "org.indunet:fastproto:3.12.0"
+implementation "org.indunet:fastproto:3.12.2"
 ```
 
 ## *1. 快速入门*
@@ -369,18 +365,10 @@ int crc16 = ChecksumUtils.crc16(bytes) & 0xFFFF;  // 计算整个数组的 CRC16
 ```
 
 
-## *3. Scala*
-FastProto 支持 case class。但由于 Scala 与 Java 注解并非完全兼容，使用时请参考如下导入：
-
-```scala
-import org.indunet.fastproto.annotation.scala._
-```
-
-
-## *4. 不使用注解的编解码*
+## *3. 不使用注解的编解码*
 在某些场景下，开发者不想或不能用注解修饰数据对象，例如对象来源于第三方库无法修改源代码，或只是想以更直接的方式创建二进制数据块。FastProto 提供了简单 API 来满足上述需求。
 
-### *4.1 解码二进制数据*
+### *3.1 解码二进制数据*
 
 - 解码到数据对象
 ```java
@@ -410,7 +398,7 @@ int     f2 = DecodeUtils.readInt8(bytes, 1);    // 读取字节偏移 1 的有�
 int     f3 = DecodeUtils.readInt16(bytes, 2);   // 读取字节偏移 2 的有符号 16 位整数
 ```
 
-### *4.2 创建二进制数据块*
+### *3.2 创建二进制数据块*
 ```java
 byte[] bytes = FastProto.create(16)         // 创建长度为 16 字节的二进制块
         .writeInt8(0, 1)                    // 在偏移 0 写入无符号 8 位整数 1
@@ -430,7 +418,7 @@ EncodeUtils.writeUInt32(bytes, 6, ByteOrder.BIG, 256);  // 在偏移 6 按大端
 ```
 
 
-## *5. Benchmark*
+## *4. Benchmark*
 
 - windows 11, i7 11th, 32gb
 - openjdk 1.8.0_292
@@ -468,7 +456,7 @@ FastProto 获得 JetBrains 开源项目支持，为核心贡献者提供全产�
 FastProto 以 [Apache 2.0 许可](license) 发布。
 
 ```
-Copyright 2019-2021 indunet.org
+Copyright 2019-2025 indunet.org
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

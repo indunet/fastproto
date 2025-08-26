@@ -2,6 +2,23 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.12.2] - 2025-08-26
+### Added
+- `@AutoType` now supports `lengthRef` for variable-length strings/arrays/collections with auto type inference.
+- Checksum enhancements: range-based checksum calculation support.
+- Documentation: added `docs/variable-length.md` (variable length & struct arrays) and new integration pages `docs/netty-integration.md`, `docs/kafka-integration.md`.
+- Variable-length support: via `lengthRef` referencing a count field, enabling variable-length strings/arrays and struct arrays.
+
+### Changed
+- Proxy forwarding: `ProtocolType.proxy(AutoType, ...)` forwards `lengthRef` to target annotations (e.g., `StringType`, `*ArrayType`, `StructArrayType`).
+- Docs & examples: help sidebar includes “Variable Length & Struct Arrays”; installation snippets updated to `3.12.2`.
+
+### Fixed
+- DateCodecTest stability: truncate `Instant`/`LocalDateTime` to milliseconds.
+
+### Removed
+- Dropped Scala-related support.
+
 ## [3.12.1] - 2025-08-19
 ### Fixed
 - ByteBuffer: auto-growth when writing beyond current capacity on non-fixed buffers to prevent ArrayIndexOutOfBounds.

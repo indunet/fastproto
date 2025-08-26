@@ -83,4 +83,26 @@ public class CRC16 extends CRC {
         crc = reverseBits(crc, 16);  // 输出数据翻转
         return crc;
     }
+
+    @Override
+    public int calculate(byte[] data, int offset, int length) {
+        int crc = initialValue;
+
+        for (int i = 0; i < length; i++) {
+            byte b = reverseBits(data[offset + i]);  // 输入数据翻转
+            crc ^= ((b & 0xFF) << 8);
+
+            for (int j = 0; j < 8; j++) {
+                if ((crc & 0x8000) != 0) {
+                    crc = (crc << 1) ^ polynomial;
+                } else {
+                    crc <<= 1;
+                }
+            }
+        }
+
+        crc &= 0xFFFF;
+        crc = reverseBits(crc, 16);  // 输出数据翻转
+        return crc;
+    }
 }

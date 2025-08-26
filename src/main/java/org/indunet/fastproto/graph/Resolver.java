@@ -18,6 +18,8 @@ package org.indunet.fastproto.graph;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.DataType;
+import org.indunet.fastproto.annotation.AutoType;
+import org.indunet.fastproto.exception.ResolvingException;
 import org.indunet.fastproto.graph.Reference.ReferenceType;
 import org.indunet.fastproto.graph.resolve.ResolvePipeline;
 import org.indunet.fastproto.mapper.CodecMapper;
@@ -124,6 +126,78 @@ public class Resolver {
                             children.forEach(child -> child.encodingIgnore = true);
                         }
                     });
+
+            // Bind dynamic length supplier for fields annotated via annotation-level lengthRef
+            val refs = graph.getValidReferences();
+            for (val r : refs) {
+                // Ensure the target annotation supports length()
+                boolean hasLength = Arrays.stream(r.getDataTypeAnnotation().annotationType().getMethods())
+                        .anyMatch(m -> m.getName().equals("length") && m.getParameterCount() == 0);
+                if (!hasLength) {
+                    continue;
+                }
+
+                // Find source reference by field name within the same declaring class
+                String refNameLocal = null;
+                try {
+                    java.lang.reflect.Method mRef = r.getDataTypeAnnotation().annotationType().getMethod("lengthRef");
+                    String value = (String) mRef.invoke(r.getDataTypeAnnotation());
+                    if (value != null && !value.isEmpty()) {
+                        refNameLocal = value.startsWith("$") ? value.substring(1) : value;
+                    }
+                } catch (NoSuchMethodException ignore) {
+                } catch (IllegalAccessException | java.lang.reflect.InvocationTargetException e) {
+                    throw new ResolvingException("Failed reading lengthRef attribute", e);
+                }
+
+                if (refNameLocal == null) {
+                    continue;
+                }
+                final String refName = refNameLocal;
+
+                val src = refs.stream()
+                        .filter(x -> x.getField() != null)
+                        .filter(x -> x.getField().getDeclaringClass() == r.getField().getDeclaringClass())
+                        .filter(x -> x.getField().getName().equals(refName))
+                        .findFirst()
+                        .orElseThrow(() -> new ResolvingException(String.format("lengthRef source '%s' not found for %s", refName, r.getField())));
+
+                // Validate order: source must appear before target
+                if (refs.indexOf(src) >= refs.indexOf(r)) {
+                    throw new ResolvingException(String.format("lengthRef source '%s' must be declared before %s", refName, r.getField()));
+                }
+
+                r.setLengthSupplier(() -> {
+                    int len;
+                    Object v = src.getValue().get();
+                    if (v == null) {
+                        len = 0;
+                    } else if (v instanceof Number) {
+                        len = ((Number) v).intValue();
+                    } else {
+                        throw new IllegalArgumentException("lengthRef source is not a Number");
+                    }
+                    return len;
+                });
+            }
+
+            // Preserve legacy behavior: for fields annotated with @AutoType that target a type with length(),
+            // force-evaluate length() now to surface missing length immediately as ResolvingException.
+            for (val r : refs) {
+                if (r.getField().isAnnotationPresent(AutoType.class)) {
+                    boolean hasLength = Arrays.stream(r.getDataTypeAnnotation().annotationType().getMethods())
+                            .anyMatch(m -> m.getName().equals("length") && m.getParameterCount() == 0);
+                    if (hasLength) {
+                        try {
+                            r.getDataTypeAnnotation().annotationType().getMethod("length").invoke(r.getDataTypeAnnotation());
+                        } catch (RuntimeException e) {
+                            throw e;
+                        } catch (Exception e) {
+                            throw new ResolvingException("Failed resolving @AutoType length", e);
+                        }
+                    }
+                }
+            }
 
             return graph;
         });

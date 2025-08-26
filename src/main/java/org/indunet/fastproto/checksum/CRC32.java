@@ -125,5 +125,18 @@ public class CRC32 extends CRC {
 
         return reverseBits(crc, 32) ^ 0xFFFFFFFF;
     }
+
+    @Override
+    public int calculate(byte[] data, int offset, int length) {
+        int crc = initialValue;
+
+        for (int i = 0; i < length; i++) {
+            byte b = reverseBits(data[offset + i]); // 输入数据翻转
+            int tableIndex = (crc >>> 24) ^ (b & 0xFF);
+            crc = (crc << 8) ^ crcTable[tableIndex];
+        }
+
+        return reverseBits(crc, 32) ^ 0xFFFFFFFF;
+    }
 }
 
