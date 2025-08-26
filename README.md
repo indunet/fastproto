@@ -34,13 +34,7 @@ See the [CHANGELOG](CHANGELOG.md) for recent updates.
 
 ### *Documentation*
 
-- Annotation Mapping: [docs/annotation-mapping.md](docs/annotation-mapping.md)
-- Byte & Bit Order: [docs/byte-and-bit-order.md](docs/byte-and-bit-order.md)
-- Checksum/CRC: [docs/checksum.md](docs/checksum.md)
-- Transformation Formulas: [docs/formulas.md](docs/formulas.md)
-- Arrays & Strings: [docs/arrays-and-strings.md](docs/arrays-and-strings.md)
-- Using APIs without Annotations: [docs/without-annotations.md](docs/without-annotations.md)
-- FAQ: [docs/faq.md](docs/faq.md)
+- [https://indunet.github.io/fastproto/help.html](https://indunet.github.io/fastproto/help.html)
 
 ### *Install*
 

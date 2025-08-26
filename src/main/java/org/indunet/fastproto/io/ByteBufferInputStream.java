@@ -61,12 +61,18 @@ public final class ByteBufferInputStream extends ByteBufferIOStream {
             bo = 7 - bitOffset;
         }
 
-        if (bo == BoolType.BIT_7) {
-            this.byteIndex ++;
+        boolean value = (this.byteBuffer.get(byteOffset) & (1 << bo)) != 0;
+
+        // advance bit cursor sequentially (logical LSB_0 progression)
+        if (bitOffset == BoolType.BIT_7) {
+            this.byteIndex = byteOffset + 1;
             this.bitIndex = BoolType.BIT_0;
+        } else {
+            this.byteIndex = byteOffset;
+            this.bitIndex = bitOffset + 1;
         }
 
-        return (this.byteBuffer.get(byteOffset) & (1 << bo)) != 0;
+        return value;
     }
 
     public byte readByte() {
