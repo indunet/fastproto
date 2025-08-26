@@ -44,7 +44,23 @@ public @interface StringType {
     /*
      * The length of the string.
      */
-    int length();
+    int length() default 0;
+
+    /*
+     * Reference to a length field name in the same class. Accepts optional leading '$'.
+     */
+    String lengthRef() default "";
+
+    /*
+     * When true, encoder uses actual runtime length of the value instead of referenced length.
+     */
+    boolean useSelfOnEncode() default false;
+
+    /*
+     * Optional min/max constraints applied to the effective length.
+     */
+    int min() default Integer.MIN_VALUE;
+    int max() default Integer.MAX_VALUE;
 
     /*
      * The charset of the field in the binary data.

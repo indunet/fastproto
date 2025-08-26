@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-
 package org.indunet.fastproto.annotation;
 
 import org.indunet.fastproto.ByteOrder;
@@ -27,29 +26,19 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for Int32 array type. Each Int32 unit occupies 4 bytes.
- * This annotation can be used to mark fields of type Integer[], int[], List<Integer>, or Set<Integer>.
- *
- * @author Deng Ran
- * @since 3.6.0
+ * Annotation for Int32 array type.
  */
 @DataType
 @Validator({DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface Int32ArrayType {
-    /*
-     * The byte offset of the field in the binary data.
-     */
     int offset();
-
-    /*
-     * The length of the array or string, only valid on array or string type.
-     */
-    int length();
-
-    /*
-     * The byte order of the field in the binary data, its priority is higher than @DefaultByteOrder.
-     */
+    int length() default 0;
     ByteOrder[] byteOrder() default {};
+
+    String lengthRef() default "";
+    boolean useSelfOnEncode() default false;
+    int min() default Integer.MIN_VALUE;
+    int max() default Integer.MAX_VALUE;
 }

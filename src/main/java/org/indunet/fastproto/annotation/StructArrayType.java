@@ -9,30 +9,20 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Defines an Ascii array type annotation. This annotation is used to mark fields of type
- * Character[], char[], List<Character>, Set<Character>.
- * It uses the Ascii character set, where each character occupies 1 byte.
- *
- * @author Deng Ran
- * @since 3.9.1
+ * Defines a struct array/collection type where each element is a POJO with FastProto annotations.
+ * length() represents number of elements. Element size must be determinable at compile time for now.
  */
 @DataType
 @Validator({DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface AsciiArrayType {
-    /*
-     * The byte offset of the field in the binary data.
-     */
+public @interface StructArrayType {
     int offset();
-
-    /*
-     * The length of the array.
-     */
-    int length() default 0;
+    int length() default 0; // element count; supports dynamic override via @LengthRef or lengthRef
+    Class<?> element();
 
     String lengthRef() default "";
     boolean useSelfOnEncode() default false;
     int min() default Integer.MIN_VALUE;
     int max() default Integer.MAX_VALUE;
-}
+} 

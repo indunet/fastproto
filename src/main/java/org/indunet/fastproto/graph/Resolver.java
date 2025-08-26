@@ -18,6 +18,9 @@ package org.indunet.fastproto.graph;
 
 import lombok.val;
 import org.indunet.fastproto.annotation.DataType;
+import org.indunet.fastproto.annotation.LengthRef;
+import org.indunet.fastproto.annotation.AutoType;
+import org.indunet.fastproto.exception.ResolvingException;
 import org.indunet.fastproto.graph.Reference.ReferenceType;
 import org.indunet.fastproto.graph.resolve.ResolvePipeline;
 import org.indunet.fastproto.mapper.CodecMapper;
@@ -124,6 +127,116 @@ public class Resolver {
                             children.forEach(child -> child.encodingIgnore = true);
                         }
                     });
+
+            // Bind dynamic length supplier for fields with dynamic length configuration
+            val refs = graph.getValidReferences();
+            for (val r : refs) {
+                Annotation typeAnn = r.getDataTypeAnnotation();
+                if (typeAnn == null) continue;
+
+                // detect whether annotation has length()
+                boolean hasLength = Arrays.stream(typeAnn.annotationType().getMethods())
+                        .anyMatch(m -> m.getName().equals("length") && m.getParameterCount() == 0);
+                if (!hasLength) {
+                    // also process legacy @LengthRef only when target supports length
+                    continue;
+                }
+
+                // 1) Prefer annotation-level lengthRef if present
+                String annLengthRef = null;
+                boolean annUseSelf = false;
+                int min = Integer.MIN_VALUE, max = Integer.MAX_VALUE;
+                try {
+                    // optional methods
+                    java.lang.reflect.Method mRef = null;
+                    try { mRef = typeAnn.annotationType().getMethod("lengthRef"); } catch (NoSuchMethodException ignore) {}
+                    if (mRef != null) {
+                        annLengthRef = (String) mRef.invoke(typeAnn);
+                        if (annLengthRef != null && annLengthRef.startsWith("$")) {
+                            annLengthRef = annLengthRef.substring(1);
+                        }
+                    }
+                    java.lang.reflect.Method mSelf = null;
+                    try { mSelf = typeAnn.annotationType().getMethod("useSelfOnEncode"); } catch (NoSuchMethodException ignore) {}
+                    if (mSelf != null) {
+                        annUseSelf = (Boolean) mSelf.invoke(typeAnn);
+                    }
+                    java.lang.reflect.Method mMin = null, mMax = null;
+                    try { mMin = typeAnn.annotationType().getMethod("min"); } catch (NoSuchMethodException ignore) {}
+                    try { mMax = typeAnn.annotationType().getMethod("max"); } catch (NoSuchMethodException ignore) {}
+                    if (mMin != null) { min = (Integer) mMin.invoke(typeAnn); }
+                    if (mMax != null) { max = (Integer) mMax.invoke(typeAnn); }
+                } catch (Exception e) {
+                    // ignore, use defaults
+                }
+
+                String refNameTmp = annLengthRef;
+                LengthRef fieldLenRef = r.getField().getAnnotation(LengthRef.class);
+                boolean useFieldLenRef = (refNameTmp == null || refNameTmp.isEmpty()) && fieldLenRef != null;
+                if (useFieldLenRef) {
+                    refNameTmp = fieldLenRef.value();
+                    // override min/max from field-level when annotation-level absent
+                    min = fieldLenRef.min();
+                    max = fieldLenRef.max();
+                }
+                final String refName = refNameTmp;
+
+                // if refName still empty, we may rely on static length from annotation. Validate zero-length rule on decode path later.
+                if (refName != null && !refName.isEmpty()) {
+                    // Find source reference by field name within the same declaring class
+                    val src = refs.stream()
+                            .filter(x -> x.getField() != null)
+                            .filter(x -> x.getField().getDeclaringClass() == r.getField().getDeclaringClass())
+                            .filter(x -> x.getField().getName().equals(refName))
+                            .findFirst()
+                            .orElseThrow(() -> new ResolvingException(String.format("@LengthRef source '%s' not found for %s", refName, r.getField())));
+
+                    // Validate order: source must appear before target
+                    if (refs.indexOf(src) >= refs.indexOf(r)) {
+                        throw new ResolvingException(String.format("@LengthRef source '%s' must be declared before %s", refName, r.getField()));
+                    }
+
+                    final int minF = min;
+                    final int maxF = max;
+                    final val srcRef = src;
+                    r.setLengthSupplier(() -> {
+                        int len;
+                        Object v = srcRef.getValue().get();
+                        if (v == null) {
+                            len = 0;
+                        } else if (v instanceof Number) {
+                            len = ((Number) v).intValue();
+                        } else {
+                            throw new IllegalArgumentException("@LengthRef source is not a Number");
+                        }
+                        if (len < minF || len > maxF) {
+                            throw new IllegalArgumentException("@LengthRef length out of bounds");
+                        }
+                        return len;
+                    });
+                } else {
+                    // No ref: ensure length() is not 0 for decoding; enforcement will be done in CodecFlow via decode supplier
+                    // Here we do nothing; CodecFlow will read original length().
+                }
+            }
+
+            // Preserve legacy behavior: for fields annotated with @AutoType that target a type with length(),
+            // force-evaluate length() now to surface missing length immediately as ResolvingException.
+            for (val r : refs) {
+                if (r.getField().isAnnotationPresent(AutoType.class)) {
+                    boolean hasLength = Arrays.stream(r.getDataTypeAnnotation().annotationType().getMethods())
+                            .anyMatch(m -> m.getName().equals("length") && m.getParameterCount() == 0);
+                    if (hasLength) {
+                        try {
+                            r.getDataTypeAnnotation().annotationType().getMethod("length").invoke(r.getDataTypeAnnotation());
+                        } catch (RuntimeException e) {
+                            throw e;
+                        } catch (Exception e) {
+                            throw new ResolvingException("Failed resolving @AutoType length", e);
+                        }
+                    }
+                }
+            }
 
             return graph;
         });

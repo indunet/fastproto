@@ -51,7 +51,7 @@ public @interface DoubleArrayType {
      *
      * @return the length of the Double array.
      */
-    int length();
+    int length() default 0;
 
     /**
      * Specifies the byte order used when decoding the Double array.
@@ -60,4 +60,9 @@ public @interface DoubleArrayType {
      * @return the byte order.
      */
     ByteOrder[] byteOrder() default {};
+
+    String lengthRef() default "";
+    boolean useSelfOnEncode() default false;
+    int min() default Integer.MIN_VALUE;
+    int max() default Integer.MAX_VALUE;
 }

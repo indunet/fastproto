@@ -34,10 +34,15 @@ public @interface BoolArrayType {
     /*
      * The length of the array.
      */
-    int length();
+    int length() default 0;
 
     /*
      * The bit order of the field in the binary data, its priority is higher than @DefaultBitOrder.
      */
     BitOrder[] bitOrder() default {};
+
+    String lengthRef() default "";
+    boolean useSelfOnEncode() default false;
+    int min() default Integer.MIN_VALUE;
+    int max() default Integer.MAX_VALUE;
 }
