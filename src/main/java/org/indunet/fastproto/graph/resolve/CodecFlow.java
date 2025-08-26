@@ -85,12 +85,7 @@ public class CodecFlow extends ResolvePipeline {
                     java.lang.reflect.Method m = original.annotationType().getMethod("useSelfOnEncode");
                     useSelf = (Boolean) m.invoke(original);
                 } catch (Exception ignore) {}
-                if (!useSelf) {
-                    org.indunet.fastproto.annotation.LengthRef lr = reference.getField().getAnnotation(org.indunet.fastproto.annotation.LengthRef.class);
-                    if (lr != null && lr.useSelfOnEncode()) {
-                        useSelf = true;
-                    }
-                }
+
                 if (useSelf) {
                     return computeSelfLength(reference, reference.getValue().get());
                 }

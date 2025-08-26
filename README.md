@@ -18,6 +18,7 @@ FastProto is a lightweight Java library that makes binary protocols effortless. 
 - **Annotation-Driven:** Quickly map binary data to Java fields.
 - **Broad Type Support:** Works with primitives, unsigned numbers, strings, time types, arrays and collections.
 - **Flexible Addressing:** Reverse addressing for variable-length packets.
+- **Variable-Length Fields:** Use `lengthRef` to reference a count field; supports variable-length strings/arrays and struct arrays. See [Variable Length and Struct Arrays](docs/variable-length.md).
 - **Configurable Byte Order:** Choose big-endian or little-endian to match your protocol.
 - **Custom Formulas:** Use lambdas or classes to transform values during encode/decode.
 - **Checksum/CRC:** Single-annotation `@Checksum` to define start, length and storage offset; built-ins include CRC8 (SMBus, MAXIM), CRC16 (MODBUS, CCITT), CRC32/CRC32C, CRC64 (ECMA/ISO), plus LRC and XOR.
@@ -45,14 +46,14 @@ See the [CHANGELOG](CHANGELOG.md) for recent updates.
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.12.1</version>
+    <version>3.12.2</version>
 </dependency>
 ```
 
 * Gradle
 
 ```gradle
-implementation "org.indunet:fastproto:3.12.1"
+implementation "org.indunet:fastproto:3.12.2"
 ```
 
 

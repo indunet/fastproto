@@ -1,5 +1,22 @@
 # 更新日志
 
+## [3.12.2] - 2025-08-26
+### 新增
+- `@AutoType` 新增 `lengthRef`，支持变长字符串/数组/集合的自动类型推断。
+- 校验和增强：支持基于区间的范围计算。
+- 文档：新增 `docs/variable-length.md`（可变长度与结构体数组），新增 Netty/Kafka 集成文档 `docs/netty-integration.md`、`docs/kafka-integration.md`。
+- 可变长度支持：通过 `lengthRef` 引用计数字段，支持变长字符串/数组与结构体数组。
+
+### 变更
+- 代理转发：`ProtocolType.proxy(AutoType, ...)` 透传 `lengthRef` 至目标注解（`StringType`、各 `*ArrayType`、`StructArrayType`）。
+- 文档与示例：帮助页侧边栏加入“Variable Length & Struct Arrays”入口；安装示例版本更新为 `3.12.2`。
+
+### 修复
+- DateCodecTest：将 Instant/LocalDateTime 按毫秒对齐，提升测试稳定性。
+
+### 移除
+- 移除 Scala 相关支持。
+
 ## [3.12.1] - 2025-08-19
 ### 修复
 - ByteBuffer：在非固定缓冲区写入超出当前容量时自动扩容，避免数组越界异常。

@@ -3,9 +3,9 @@ package org.indunet.fastproto.api.length;
 import lombok.val;
 import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.BinaryType;
-import org.indunet.fastproto.annotation.LengthRef;
 import org.indunet.fastproto.annotation.StringType;
 import org.indunet.fastproto.annotation.UInt16Type;
+import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.ResolvingException;
 import org.junit.jupiter.api.Test;
 
@@ -16,8 +16,7 @@ public class LengthRefTest {
         @UInt16Type(offset = 0)
         public int payloadLen;
 
-        @BinaryType(offset = 2, length = 0)
-        @LengthRef("payloadLen")
+        @BinaryType(offset = 2, length = 0, lengthRef = "$payloadLen")
         public byte[] payload;
     }
 
@@ -33,7 +32,7 @@ public class LengthRefTest {
 
         // change payload and roundtrip encode
         pojo.payload = new byte[]{1,2,3};
-        pojo.payloadLen = 3; // encoded length should follow field since useSelfOnEncode=false by default
+        pojo.payloadLen = 3; // encoded length follows field
         val encoded = FastProto.encode(pojo);
         assertEquals(2 + 3, encoded.length);
         assertArrayEquals(new byte[]{3,0,1,2,3}, encoded);
@@ -43,13 +42,12 @@ public class LengthRefTest {
         @UInt16Type(offset = 100)
         public int strLen;
 
-        @StringType(offset = 0, length = 0, charset = "UTF-8")
-        @LengthRef(value = "strLen", useSelfOnEncode = true)
+        @StringType(offset = 0, length = 0, charset = "UTF-8", lengthRef = "$strLen")
         public String name;
     }
 
     @Test
-    public void testStringUseSelfOnEncode() {
+    public void testStringLengthRef() {
         // decode: strLen provides length
         byte[] bytes = new byte[102];
         // strLen at offset 100 = 4
@@ -60,19 +58,17 @@ public class LengthRefTest {
         assertEquals("ABCD", obj.name);
         assertEquals(4, obj.strLen);
 
-        // encode: useSelfOnEncode=true should ignore strLen and use actual bytes length
-        obj.name = "你好"; // UTF-8: 6 bytes
-        obj.strLen = 4;    // deliberately inconsistent
+        // encode: obey strLen
+        obj.name = "ABCDEF"; // UTF-8: 6 bytes
+        obj.strLen = 6;
         val encoded = FastProto.encode(obj);
         assertEquals(102, encoded.length);
-        // Check first 6 bytes are UTF-8 of "你好"
-        byte[] expectedHead = "你好".getBytes(java.nio.charset.StandardCharsets.UTF_8);
+        byte[] expectedHead = "ABCDEF".getBytes(java.nio.charset.StandardCharsets.UTF_8);
         assertArrayEquals(expectedHead, java.util.Arrays.copyOfRange(encoded, 0, expectedHead.length));
     }
 
     public static class PacketBadOrder {
-        @BinaryType(offset = 2, length = 0)
-        @LengthRef("len")
+        @BinaryType(offset = 2, length = 0, lengthRef = "$len")
         public byte[] payload;
 
         @UInt16Type(offset = 0)
@@ -83,27 +79,5 @@ public class LengthRefTest {
     public void testOrderValidationFails() {
         assertThrows(ResolvingException.class, () -> FastProto.encode(new PacketBadOrder()));
         assertThrows(ResolvingException.class, () -> FastProto.decode(new byte[4], PacketBadOrder.class));
-    }
-
-    public static class PacketBounds {
-        @UInt16Type(offset = 0)
-        public int len;
-
-        @BinaryType(offset = 2, length = 0)
-        @LengthRef(value = "len", min = 1, max = 4)
-        public byte[] payload;
-    }
-
-    @Test
-    public void testMinMaxBounds() {
-        // len=0 violates min=1 during decode
-        byte[] bytes = new byte[] {0,0};
-        assertThrows(org.indunet.fastproto.exception.CodecException.class, () -> FastProto.decode(bytes, PacketBounds.class));
-
-        // encode with too long payload violates max
-        PacketBounds p = new PacketBounds();
-        p.len = 5; // out of bounds
-        p.payload = new byte[]{1,2,3,4,5};
-        assertThrows(org.indunet.fastproto.exception.EncodingException.class, () -> FastProto.encode(p));
     }
 } 

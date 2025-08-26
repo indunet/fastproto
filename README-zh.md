@@ -18,6 +18,7 @@ FastProto 是一款轻量级的 Java 二进制协议库。只需使用注解描�
 * **注解驱动：** 字段用注解标记，解析和封装一目了然。
 * **类型丰富：** 支持 Java 原始类型、无符号类型、字符串、时间以及集合。
 * **灵活地址：** 提供反向地址，适配变长协议。
+* **可变长度：** 通过 `lengthRef` 引用计数字段，支持变长字符串/数组与结构体数组。详见[可变长度与结构体数组](docs/variable-length.md)。
 * **字节顺序可选：** 大端或小端随心切换。
 * **公式支持：** Lambda 或自定义类均可实现编解码公式。
 * **校验和/CRC：** 使用 `@Checksum` 注解一次性定义起始地址、长度与存放地址，内置 CRC8（SMBus、MAXIM）、CRC16（MODBUS、CCITT）、CRC32/CRC32C、CRC64（ECMA/ISO）、LRC、XOR 等。
@@ -44,14 +45,14 @@ FastProto 是一款轻量级的 Java 二进制协议库。只需使用注解描�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.12.0</version>
+    <version>3.12.2</version>
 </dependency>
 ```
 
 * Gradle
 
 ```gradle
-implementation "org.indunet:fastproto:3.12.0"
+implementation "org.indunet:fastproto:3.12.2"
 ```
 
 ## *1. 快速入门*

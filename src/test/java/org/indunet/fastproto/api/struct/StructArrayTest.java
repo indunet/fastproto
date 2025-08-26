@@ -33,8 +33,7 @@ public class StructArrayTest {
         @UInt16Type(offset = 0)
         public int count;
 
-        @StructArrayType(offset = 2, length = 0, element = Item.class)
-        @LengthRef("count")
+        @StructArrayType(offset = 2, element = Item.class, lengthRef = "$count")
         public Item[] items;
     }
 
@@ -70,8 +69,7 @@ public class StructArrayTest {
         @UInt16Type(offset = 0)
         public int count;
 
-        @StructArrayType(offset = 2, length = 0, element = Item.class)
-        @LengthRef("count")
+        @StructArrayType(offset = 2, length = 0, element = Item.class, lengthRef = "$count")
         public List<Item> items;
     }
 
@@ -90,5 +88,35 @@ public class StructArrayTest {
         assertEquals(2, decoded.items.get(0).value);
         assertEquals(3, decoded.items.get(1).id);
         assertEquals(4, decoded.items.get(1).value);
+    }
+
+    @Data
+    @DefaultByteOrder(ByteOrder.LITTLE)
+    public static class PacketFixed {
+        @StructArrayType(offset = 0, length = 2, element = Item.class)
+        public Item[] items;
+    }
+
+    @Test
+    public void testStructArrayDecodeEncode_FixedLength() {
+        // Two items, each 6 bytes, starting at offset 0
+        byte[] bytes = new byte[2 * 6];
+        // item0: id=0x0001, value=0x02030405 (LE)
+        bytes[0] = 0x01; bytes[1] = 0x00;
+        bytes[2] = 0x05; bytes[3] = 0x04; bytes[4] = 0x03; bytes[5] = 0x02;
+        // item1: id=0x0010, value=0x0A0B0C0D (LE)
+        bytes[6] = 0x10; bytes[7] = 0x00;
+        bytes[8] = 0x0D; bytes[9] = 0x0C; bytes[10] = 0x0B; bytes[11] = 0x0A;
+
+        val pkt = FastProto.decode(bytes, PacketFixed.class);
+        assertEquals(2, pkt.items.length);
+        assertEquals(0x0001, pkt.items[0].id);
+        assertEquals(0x02030405, pkt.items[0].value);
+        assertEquals(0x0010, pkt.items[1].id);
+        assertEquals(0x0A0B0C0D, pkt.items[1].value);
+
+        // encode roundtrip
+        byte[] encoded = FastProto.encode(pkt);
+        assertArrayEquals(bytes, encoded);
     }
 } 
