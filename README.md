@@ -21,6 +21,7 @@ FastProto is a lightweight Java library that makes binary protocols effortless. 
 - **Configurable Byte Order:** Choose big-endian or little-endian to match your protocol.
 - **Custom Formulas:** Use lambdas or classes to transform values during encode/decode.
 - **Checksum/CRC:** Single-annotation `@Checksum` to define start, length and storage offset; built-ins include CRC8 (SMBus, MAXIM), CRC16 (MODBUS, CCITT), CRC32/CRC32C, CRC64 (ECMA/ISO), plus LRC and XOR.
+- **Integrations:** Netty codecs and Kafka Serializer/Deserializer/Serde for drop‑in use. See [Netty Integration](docs/help.html#netty-integration) and [Kafka Integration](docs/help.html#kafka-integration).
 - **Easy APIs:** Multiple APIs tuned for efficiency and reliability.
 
 See the [CHANGELOG](CHANGELOG.md) for recent updates.
@@ -467,7 +468,7 @@ please feel free to contact me via email <deng_ran@aliyun.com>
 FastProto is released under the [Apache 2.0 license](license).
 
 ```
-Copyright 2019-2021 indunet.org
+Copyright 2019-2025 indunet.org
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.

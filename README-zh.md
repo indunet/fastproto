@@ -21,6 +21,7 @@ FastProto 是一款轻量级的 Java 二进制协议库。只需使用注解描�
 * **字节顺序可选：** 大端或小端随心切换。
 * **公式支持：** Lambda 或自定义类均可实现编解码公式。
 * **校验和/CRC：** 使用 `@Checksum` 注解一次性定义起始地址、长度与存放地址，内置 CRC8（SMBus、MAXIM）、CRC16（MODBUS、CCITT）、CRC32/CRC32C、CRC64（ECMA/ISO）、LRC、XOR 等。
+* **生态集成：** 提供 Netty 编/解码器与 Kafka Serializer/Deserializer/Serde，可即插即用。详见[Netty 集成](docs/help.html#netty-integration)与[Kafka 集成](docs/help.html#kafka-integration)。
 * **多种API：** 兼顾效率与易用性。
 
 查看[更新日志](CHANGELOG-zh.md)获取版本历史，英文版请查阅[CHANGELOG](CHANGELOG.md)。
@@ -454,7 +455,7 @@ FastProto 获得 JetBrains 开源项目支持，为核心贡献者提供全产�
 FastProto 以 [Apache 2.0 许可](license) 发布。
 
 ```
-Copyright 2019-2021 indunet.org
+Copyright 2019-2025 indunet.org
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
