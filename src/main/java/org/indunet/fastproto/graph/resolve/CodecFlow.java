@@ -64,17 +64,15 @@ public class CodecFlow extends ResolvePipeline {
                     try {
                         Integer l = (Integer) original.annotationType().getMethod("length").invoke(original);
                         if (l != null && l == 0) {
-                            // when length is 0 and no ref bound, it's invalid for decoding
-                            if (reference.getLengthSupplier() == null) {
-                                throw new org.indunet.fastproto.exception.ResolvingException(
-                                        String.format("Length is 0 and no lengthRef provided for %s", reference.getField()));
-                            }
+                            throw new org.indunet.fastproto.exception.ResolvingException(
+                                    String.format("Length is 0 and no lengthRef provided for %s", reference.getField()));
                         }
                         return l;
                     } catch (org.indunet.fastproto.exception.ResolvingException re) {
                         throw re;
                     } catch (Exception e) {
-                        return 0;
+                        throw new org.indunet.fastproto.exception.ResolvingException(
+                                String.format("Failed to resolve length for %s", reference.getField()), e);
                     }
                 }
             };
