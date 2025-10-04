@@ -12,17 +12,19 @@ public class KafkaSerdeTest {
     @Test
     public void testSerializerDeserializer() {
         MyPojo pojo = sample();
-        FastProtoSerializer<MyPojo> serializer = new FastProtoSerializer<>();
-        byte[] bytes = serializer.serialize("t", pojo);
-        Assertions.assertEquals(60, bytes.length);
+        try (FastProtoSerializer<MyPojo> serializer = new FastProtoSerializer<>()) {
+            byte[] bytes = serializer.serialize("t", pojo);
+            Assertions.assertEquals(60, bytes.length);
 
-        FastProtoDeserializer<MyPojo> deserializer = new FastProtoDeserializer<>();
-        Map<String, Object> cfg = new HashMap<>();
-        cfg.put(FastProtoDeserializer.CONFIG_VALUE_TYPE, MyPojo.class.getName());
-        deserializer.configure(cfg, false);
+            try (FastProtoDeserializer<MyPojo> deserializer = new FastProtoDeserializer<>()) {
+                Map<String, Object> cfg = new HashMap<>();
+                cfg.put(FastProtoDeserializer.CONFIG_VALUE_TYPE, MyPojo.class.getName());
+                deserializer.configure(cfg, false);
 
-        MyPojo decoded = deserializer.deserialize("t", bytes);
-        assertEquals(pojo, decoded);
+                MyPojo decoded = deserializer.deserialize("t", bytes);
+                assertEquals(pojo, decoded);
+            }
+        }
     }
 
     private static MyPojo sample() {
@@ -31,6 +33,31 @@ public class KafkaSerdeTest {
             payload[i] = (byte) (255 - i);
         }
         return new MyPojo(7, 123456789L, "Bob", payload);
+    }
+
+    @Test
+    public void testSerde() {
+        MyPojo pojo = sample();
+        FastProtoSerde<MyPojo> serde = new FastProtoSerde<>();
+        
+        // Test serializer and deserializer
+        Assertions.assertNotNull(serde.serializer());
+        Assertions.assertNotNull(serde.deserializer());
+        
+        // Configure serde
+        Map<String, Object> cfg = new HashMap<>();
+        cfg.put(FastProtoDeserializer.CONFIG_VALUE_TYPE, MyPojo.class.getName());
+        serde.configure(cfg, false);
+        
+        // Test serialize and deserialize
+        byte[] bytes = serde.serializer().serialize("t", pojo);
+        Assertions.assertEquals(60, bytes.length);
+        
+        MyPojo decoded = serde.deserializer().deserialize("t", bytes);
+        assertEquals(pojo, decoded);
+        
+        // Test close
+        serde.close();
     }
 
     private static void assertEquals(MyPojo a, MyPojo b) {

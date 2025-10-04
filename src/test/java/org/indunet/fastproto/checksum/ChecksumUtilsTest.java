@@ -56,6 +56,36 @@ public class ChecksumUtilsTest {
     }
 
     @Test
+    public void testBccWithOffset() {
+        byte[] data = {0, 0, 1, 2, 3, 4, 5, 0, 0};
+        BCC bcc = new BCC();
+        int result = bcc.calculate(data, 2, 5);
+        assertEquals(1 ^ 2 ^ 3 ^ 4 ^ 5, result);
+        
+        // Test getters/setters
+        assertEquals(0, bcc.getPolynomial());
+        assertEquals(0, bcc.getInitialValue());
+        bcc.setPolynomial(123); // should be no-op
+        bcc.setInitialValue(456); // should be no-op
+    }
+
+    @Test
+    public void testLrcWithOffset() {
+        byte[] data = {0, 0, 1, 2, 3, 4, 5, 0, 0};
+        LRC lrc = new LRC();
+        int result = lrc.calculate(data, 2, 5);
+        int sum = (1 + 2 + 3 + 4 + 5) & 0xFF;
+        int expected = ((~sum) + 1) & 0xFF;
+        assertEquals(expected, result);
+        
+        // Test getters/setters
+        assertEquals(0, lrc.getPolynomial());
+        assertEquals(0, lrc.getInitialValue());
+        lrc.setPolynomial(123); // should be no-op
+        lrc.setInitialValue(456); // should be no-op
+    }
+
+    @Test
     public void testCalculateRange() {
         byte[] data = {1,2,3,4,5};
         long crc8 = ChecksumUtils.calculate(data,0,5, Checksum.Type.CRC8);
