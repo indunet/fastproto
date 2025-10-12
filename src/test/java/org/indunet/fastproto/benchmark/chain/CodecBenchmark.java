@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.indunet.fastproto.benchmark.annotation;
+package org.indunet.fastproto.benchmark.chain;
 
 import org.indunet.fastproto.FastProto;
 import org.openjdk.jmh.annotations.*;
@@ -26,7 +26,7 @@ import org.openjdk.jmh.runner.options.OptionsBuilder;
 import java.util.concurrent.TimeUnit;
 
 /**
- * FastProto benchmark of annotation API.
+ * FastProto benchmark of chain API.
  *
  * @author Deng Ran
  * @since 3.11.0
@@ -34,18 +34,13 @@ import java.util.concurrent.TimeUnit;
 @State(Scope.Benchmark)
 @BenchmarkMode(Mode.Throughput)
 @OutputTimeUnit(TimeUnit.MILLISECONDS)
-@Warmup(iterations = 5, time = 1)
-@Measurement(iterations = 10, time = 1)
-@Fork(2)
-@Threads(4)
+@Warmup(iterations = 2, time = 1)
+@Measurement(iterations = 5, time = 1)
+@Fork(1)
+@Threads(1)
 public class CodecBenchmark {
-    @Param({"SINGLE_THREAD", "MULTI_THREAD"})
-    private TestMode testMode;
-
     private byte[] bytes;
     private Sample sample;
-    private ThreadLocal<byte[]> threadLocalBytes;
-    private ThreadLocal<Sample> threadLocalSample;
 
     public static void main(String[] args) throws RunnerException {
         Options opt = new OptionsBuilder()
@@ -59,30 +54,44 @@ public class CodecBenchmark {
         // Initialize single thread resources
         this.sample = new Sample(true);
         this.bytes = this.sample.toBytes();
-
-        // Initialize thread local resources
-        this.threadLocalSample = ThreadLocal.withInitial(() -> new Sample(true));
-        this.threadLocalBytes = ThreadLocal.withInitial(() -> threadLocalSample.get().toBytes());
     }
 
     @Benchmark
     @Group("decode")
     public Sample decode() {
-        return testMode == TestMode.SINGLE_THREAD ?
-                FastProto.decode(bytes, Sample.class) :
-                FastProto.decode(threadLocalBytes.get(), Sample.class);
+        return FastProto.decode(bytes)
+                .readBool("bool1", 0, 0)
+                .readByte("byte8", 1)
+                .readShort("short16", 2)
+                .readInt32("int32", 4)
+                .readUInt32("uint32", 8)
+                .readFloat("float32", 12)
+                .readInt64("long64", 16)
+                .readDouble("double64", 24)
+                .readByte("int8", 32)
+                .readShort("int16", 34)
+                .readUInt8("uint8", 36)
+                .readUInt16("uint16", 38)
+                .mapTo(Sample.class);
     }
 
     @Benchmark
     @Group("encode")
     public byte[] encode() {
-        return testMode == TestMode.SINGLE_THREAD ?
-                FastProto.encode(sample, bytes.length) :
-                FastProto.encode(threadLocalSample.get(), threadLocalBytes.get().length);
-    }
-
-    public enum TestMode {
-        SINGLE_THREAD,
-        MULTI_THREAD
+        return FastProto.create(60)
+                .appendBool(sample.isBool1())
+                .appendInt8(sample.getByte8())
+                .appendInt16(sample.getShort16())
+                .appendInt32(sample.getInt32())
+                .appendUInt32(sample.getUint32())
+                .appendFloat(sample.getFloat32())
+                .appendInt64(sample.getLong64())
+                .appendDouble(sample.getDouble64())
+                .appendInt8(sample.getInt8())
+                .appendInt16(sample.getInt16())
+                .appendUInt8(sample.getUint8())
+                .appendUInt16(sample.getUint16())
+                .appendBytes(sample.getBytes())
+                .get();
     }
 }

@@ -10,7 +10,7 @@
 [![Maven Central](https://img.shields.io/maven-central/v/org.indunet/fastproto.svg?label=Maven%20Central)](https://search.maven.org/artifact/org.indunet/fastproto)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto 是一款轻量级的 Java 二进制协议库。只需使用注解描述数据结构，其余字节操作都由 FastProto 处理。
+FastProto 是一款轻量级的 Java 二进制协议库。开发者只需通过注解描述数据结构，底层的字节操作将由 FastProto 自动完成。
 
 ## *核心功能*
 
@@ -419,23 +419,24 @@ EncodeUtils.writeUInt32(bytes, 6, ByteOrder.BIG, 256);  // 在偏移 6 按大端
 
 ## *4. Benchmark*
 
-- windows 11, i7 11th, 32gb
-- openjdk 1.8.0_292
-- 60 字节二进制数据、13 个字段的协议类
+- windows 11, Intel Core Ultra 9 275HX, 64GB
+- openjdk 11.0.20
+- 以下性能测试均在单线程环境下执行，在多线程场景下，性能可实现接近线性的提升。
+- 60 字节二进制数据、13 个字段的协议类。
 
 1. 注解 API
 
 |      Benchmark      |    Mode  | Samples  | Score | Error  |   Units   |
 |:-------------------:|:--------:|:--------:|:-----:|:------:|:---------:|
-| `FastProto::decode` | throughput |   10    |  240  | ± 4.6  |  ops/ms   |
-| `FastProto::encode` | throughput |   10    |  317  | ± 11.9 |  ops/ms   |
+| `FastProto::decode` | throughput |   10    |  239  | ± 4.6  |  ops/ms   |
+| `FastProto::encode` | throughput |   10    |  271  | ± 11.9 |  ops/ms   |
 
 2. 非注解 API
 
 |   Benchmark   |   Mode   | Samples | Score | Error |  Units  |
 |:-------------:|:--------:|:-------:|:-----:|:-----:|:-------:|
-| `decode`      | throughput |   10   | 1273  | ± 17  | ops/ms  |
-| `create`      | throughput |   10   | 6911  | ± 162 | ops/ms  |
+| `decode`      | throughput |   10   | 1699  | ± 17  | ops/ms  |
+| `create`      | throughput |   10   | 10882  | ± 162 | ops/ms  |
 
 
 ## *6. 构建要求*
