@@ -429,24 +429,25 @@ EncodeUtils.writeUInt32(bytes, 6, ByteOrder.BIG, 256);  // Write unsigned 32-bit
 
 ## *4. Benchmark*
 
-*   windows 11, i7 11th, 32gb
-*   openjdk 1.8.0_292
-*   binary data of 60 bytes and protocol class of 13 fields
+- windows 11, Intel Core Ultra 9 275HX, 64GB
+- openjdk 11.0.20
+- All performance tests were executed in a single-threaded environment, performance scales near-linearly in multi-threaded scenarios. 
+- 60-byte binary data; protocol class with 13 fields.
 
-1. api with annotations
+1. API with annotations
 
-|      Benchmark      |    Mode  | Samples  | Score | Error  |   Units   |
-|:-------------------:|:--------:|:--------:|:-----:|:------:|:---------:|
-| `FastProto::decode` |  throughput   |   10  |  240  | ± 4.6  |  ops/ms   |
-| `FastProto::encode` | throughput  |   10  |  317  | ± 11.9 |  ops/ms   |
+|      Benchmark      |   Mode    | Samples | Score |  Error  |  Units  |
+|:-------------------:|:---------:|:-------:|:-----:|:-------:|:-------:|
+| `FastProto::decode` | throughput |   10    |  239  |  ± 4.6  | ops/ms  |
+| `FastProto::encode` | throughput |   10    |  271  | ± 11.9  | ops/ms  |
 
 
-2. api without annotations
+2. API without annotations
 
-|Benchmark |    Mode  | Samples  | Score | Error  |   Units   |
-|:--------:|:--------:|:--------:|:--:|:---------:|:---------:|
-| `FastProto::decode` |  throughput   |   10  | 1273 | ± 17    |  ops/ms   |
-| `FastProto::create` | throughput  |   10  | 6911 | ± 162    |  ops/ms   |
+|   Benchmark   |   Mode    | Samples | Score | Error |  Units  |
+|:-------------:|:---------:|:-------:|:-----:|:-----:|:-------:|
+| `decode`      | throughput |   10    | 1699  |  ± 17 | ops/ms  |
+| `create`      | throughput |   10    | 10882 | ± 162 | ops/ms  |
 
 
 ## *6. Build Requirements*
