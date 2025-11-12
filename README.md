@@ -18,6 +18,7 @@ FastProto is a lightweight Java library that makes binary protocols effortless. 
 - **Broad Type Support:** Works with primitives, unsigned numbers, strings, time types, arrays and collections.
 - **Flexible Addressing:** Reverse addressing for variable-length packets.
 - **Variable-Length Fields:** Use `lengthRef` to reference a count field; supports variable-length strings/arrays and struct arrays. See [Variable Length and Struct Arrays](docs/variable-length.md).
+- **Dynamic Offset:** Use `offsetRef` to bind a field's offset to a previously decoded numeric field (useful for header-with-pointer formats). See [Dynamic Offset](docs/dynamic-offset.md).
 - **Configurable Byte Order:** Choose big-endian or little-endian to match your protocol.
 - **Custom Formulas:** Use lambdas or classes to transform values during encode/decode.
 - **Checksum/CRC:** Single-annotation `@Checksum` to define start, length and storage offset; built-ins include CRC8 (SMBus, MAXIM), CRC16 (MODBUS, CCITT), CRC32/CRC32C, CRC64 (ECMA/ISO), plus LRC and XOR.

@@ -17,7 +17,12 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
 public @interface StructArrayType {
-    int offset();
+    int offset() default Integer.MIN_VALUE;
+
+    /*
+     * Reference to an offset field name in the same class. Accepts optional leading '$'.
+     */
+    String offsetRef() default "";
     int length() default 0; // element count; supports dynamic override via @LengthRef or lengthRef
     Class<?> element();
 

@@ -41,7 +41,12 @@ public @interface TimeType {
     /*
      * The byte offset of the field in the binary data.
      */
-    int offset();
+    int offset() default Integer.MIN_VALUE;
+
+    /*
+     * Reference to an offset field name in the same class. Accepts optional leading '$'.
+     */
+    String offsetRef() default "";
 
     /*
      * The byte order of the field in the binary data, its priority is higher than @DefaultByteOrder.

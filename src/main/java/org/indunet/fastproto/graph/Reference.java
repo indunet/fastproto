@@ -78,6 +78,9 @@ public class Reference {
     // Supplier for dynamic length resolution (nullable). When present, codecs should use it to override annotation length().
     Supplier<Integer> lengthSupplier;
 
+    // Supplier for dynamic offset resolution (nullable). When present, codecs should use it to override annotation offset().
+    Supplier<Integer> offsetSupplier;
+
     @Builder.Default
     ThreadLocal<Object> value = new ThreadLocal<>();
 
