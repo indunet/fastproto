@@ -32,10 +32,12 @@ import java.util.Arrays;
 public abstract class Pipeline<T> {
     protected static Class<? extends Pipeline<PipelineContext>>[] decodeFlowClasses = new Class[]{
             DecodeFlow.class,
+            ExpectFlow.class,
             ChecksumFlow.class
     };
     protected static Class<? extends Pipeline<PipelineContext>>[] encodeFlowClasses = new Class[]{
             EncodeFlow.class,
+            ExpectFlow.class,
             ChecksumFlow.class
     };
 

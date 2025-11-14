@@ -202,6 +202,8 @@ FastProto还提供了一些辅助注解，帮助用户进一步自定义二进�
 |  @EncodingIgnore  |   Field   |     序列化时忽略该字段      |
 | @DecodingFormula  |   Field   |        解码公式        |
 | @EncodingFormula  |   Field   |        编码公式        |
+|     @Expect       |   Field   | 固定断言：在固定偏移校验/写入常量 |
+|     @Expects      |   Field   | 可重复 @Expect 的容器注解 |
 
 
 #### *2.4.1 字节顺序和位顺序*

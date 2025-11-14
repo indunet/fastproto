@@ -203,6 +203,8 @@ FastProto also provides some auxiliary annotations to help users further customi
 | @DecodingFormula  | Field |                    Decoding formula.                    |
 | @EncodingFormula  | Field |                    Encoding formula.                    |
 |     @AutoType     | Field |                    Use default type.                    |
+|      @Expect      | Field |      Constant assertion at fixed offset; verify/write   |
+|      @Expects     | Field |         Container for multiple @Expect entries          |
 
 
 #### *2.4.1 Byte Order and Bit Order*
