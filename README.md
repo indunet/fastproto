@@ -2,7 +2,7 @@
 
 English | [中文](README-zh.md)
 
-# FastProto
+# Fast Protocol
 
 [![Build Status](https://app.travis-ci.com/indunet/fastproto.svg?branch=master)](https://app.travis-ci.com/indunet/fastproto)
 [![codecov](https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU)](https://codecov.io/gh/indunet/fastproto)
@@ -10,7 +10,13 @@ English | [中文](README-zh.md)
 [![Maven Central](https://img.shields.io/maven-central/v/org.indunet/fastproto.svg?label=Maven%20Central)](https://search.maven.org/artifact/org.indunet/fastproto)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto is a lightweight Java library that makes binary protocols effortless. Simply annotate your data structure and let FastProto deal with the byte-level work.
+FastProto is a high-performance serialization/deserialization **library** designed for **binary communication protocols**. By defining complex byte stream structures with simple annotations, it enables Java developers to read and write custom binary packets in the most natural way for scenarios such as IoT, automotive systems, industrial control and energy metering.
+
+## *Design Philosophy*
+
+- **Declarative over imperative:** Protocol fields are defined via annotations, making the structure self‑evident so that code doubles as documentation.
+- **Performance with maintainability:** Architectural optimizations such as reflection caching and zero‑copy are built in to keep high throughput without sacrificing readability and maintainability.
+- **Grounded in engineering reality:** Supports mixed endianness, bit fields, BCD, CRC and other traditional protocol features to integrate smoothly with existing systems.
 
 ## *Key Features*
 
@@ -31,7 +37,6 @@ See the [CHANGELOG](CHANGELOG.md) for recent updates.
 
 * Code structure & performance optimization
 * Richer documentation (expanded core feature guides)
-* Support for Kaitai structure export and integration
 
 
 ### *Documentation*
@@ -46,14 +51,14 @@ See the [CHANGELOG](CHANGELOG.md) for recent updates.
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.12.2</version>
+    <version>3.12.3</version>
 </dependency>
 ```
 
 * Gradle
 
 ```gradle
-implementation "org.indunet:fastproto:3.12.2"
+implementation "org.indunet:fastproto:3.12.3"
 ```
 
 
@@ -76,6 +81,38 @@ It contains eight signals as described below:
 | 18          | 0          |       bool        | device valid |      |           |
 | 18          | 3-7        |                   |   reserved   |      |           |
 | 19          |            |                   |   reserved   |      |           |
+
+Before using FastProto, a typical implementation would manually manage offsets and bit operations, for example:
+
+```java
+byte[] datagram = ...;
+
+int id = datagram[0] & 0xFF;
+
+long timeMillis =
+        ((long) datagram[2] & 0xFF) |
+        (((long) datagram[3] & 0xFF) << 8) |
+        (((long) datagram[4] & 0xFF) << 16) |
+        (((long) datagram[5] & 0xFF) << 24) |
+        (((long) datagram[6] & 0xFF) << 32) |
+        (((long) datagram[7] & 0xFF) << 40) |
+        (((long) datagram[8] & 0xFF) << 48) |
+        (((long) datagram[9] & 0xFF) << 56);
+Timestamp time = new Timestamp(timeMillis);
+
+int humidity = (datagram[10] & 0xFF) | ((datagram[11] & 0xFF) << 8);
+int temperature = (short) ((datagram[12] & 0xFF) | ((datagram[13] & 0xFF) << 8));
+long rawPressure =
+        ((long) datagram[14] & 0xFF) |
+        (((long) datagram[15] & 0xFF) << 8) |
+        (((long) datagram[16] & 0xFF) << 16) |
+        (((long) datagram[17] & 0xFF) << 24);
+double pressure = rawPressure * 0.1;
+
+boolean deviceValid = (datagram[18] & 0x01) != 0;
+```
+
+As the number of fields grows and protocols evolve, this kind of bit‑twiddling code becomes verbose and fragile—offsets, endianness and signedness are easy to get wrong. With FastProto, we can instead express the same protocol declaratively on the `Weather` class using annotations:
 
 ### *1.1 Decode and encode Binary Data*
 

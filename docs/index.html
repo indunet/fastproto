@@ -170,14 +170,22 @@
           <a href="https://app.travis-ci.com/indunet/fastproto"><img alt="Build" src="https://app.travis-ci.com/indunet/fastproto.svg?branch=master"></a>
           <a href="https://codecov.io/gh/indunet/fastproto"><img alt="codecov" src="https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU"></a>
           <a href="https://www.codacy.com/gh/indunet/fastproto/dashboard"><img alt="Codacy" src="https://img.shields.io/badge/Codacy-A.svg"></a>
-          <a href="https://www.jetbrains.com/community/opensource"><img alt="JetBrains" src="https://img.shields.io/badge/JetBrains-support-blue"></a>
+          <a href="https://www.jetbrains.com/community/opensource"><img alt="JetBrains" src="https://img.shields.io/badge/JetBrains-support-blue"></img></a>
           <a href="https://www.apache.org/licenses/LICENSE-2.0.html"><img alt="License" src="https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg"></a>
         </div>
-        <p>FastProto is a lightweight Java library that makes binary protocols effortless. Simply annotate your data structure and let FastProto deal with the byte‑level work.</p>
+        <p>FastProto is a high-performance serialization/deserialization library designed for binary communication protocols. By defining complex byte stream structures with simple annotations, it enables Java developers to read and write custom binary packets in the most natural way for scenarios such as IoT, automotive systems, industrial control and energy metering.</p>
       </div>
     </section>
 
     <section id="features" class="grid">
+      <div class="card span-12">
+        <h3>Design Philosophy</h3>
+        <ul class="list">
+          <li><strong>Declarative over imperative:</strong> Protocol fields are defined via annotations, making the structure self‑evident so that code doubles as documentation.</li>
+          <li><strong>Performance with maintainability:</strong> Architectural optimizations such as reflection caching and zero‑copy are built in to keep high throughput without sacrificing readability and maintainability.</li>
+          <li><strong>Grounded in engineering reality:</strong> Supports mixed endianness, bit fields, BCD, CRC and other traditional protocol features to integrate smoothly with existing systems.</li>
+        </ul>
+      </div>
       <div class="card span-12">
         <h3>Key Features</h3>
         <div class="features">

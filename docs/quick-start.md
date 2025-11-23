@@ -20,10 +20,45 @@ implementation "org.indunet:fastproto:3.12.2"
 
 ## Define Your Protocol Model
 
-Suppose you receive a 20-byte packet from a weather device. Annotate a Java class with offsets to map fields to bytes/bits.
+Suppose you receive a 20-byte packet from a weather device.
+
+Without FastProto you typically hand‑code byte offsets and bit operations:
+
+```java
+byte[] datagram = ...;
+
+int id = datagram[0] & 0xFF;
+
+long timeMillis =
+        ((long) datagram[2] & 0xFF) |
+        (((long) datagram[3] & 0xFF) << 8) |
+        (((long) datagram[4] & 0xFF) << 16) |
+        (((long) datagram[5] & 0xFF) << 24) |
+        (((long) datagram[6] & 0xFF) << 32) |
+        (((long) datagram[7] & 0xFF) << 40) |
+        (((long) datagram[8] & 0xFF) << 48) |
+        (((long) datagram[9] & 0xFF) << 56);
+Timestamp time = new Timestamp(timeMillis);
+
+int humidity = (datagram[10] & 0xFF) | ((datagram[11] & 0xFF) << 8);
+int temperature = (short) ((datagram[12] & 0xFF) | ((datagram[13] & 0xFF) << 8));
+long rawPressure =
+        ((long) datagram[14] & 0xFF) |
+        (((long) datagram[15] & 0xFF) << 8) |
+        (((long) datagram[16] & 0xFF) << 16) |
+        (((long) datagram[17] & 0xFF) << 24);
+double pressure = rawPressure * 0.1;
+
+boolean deviceValid = (datagram[18] & 0x01) != 0;
+```
+
+As protocols evolve and fields increase, this style of manual bit‑twiddling becomes verbose and fragile—offsets, endianness and signedness are easy to get wrong.
+
+With FastProto you instead annotate a Java class with offsets to map fields to bytes/bits:
 
 ```java
 import java.sql.Timestamp;
+import org.indunet.fastproto.annotation.UInt8Type;
 import org.indunet.fastproto.annotation.BoolType;
 import org.indunet.fastproto.annotation.TimeType;
 import org.indunet.fastproto.annotation.UInt16Type;
@@ -31,7 +66,7 @@ import org.indunet.fastproto.annotation.Int16Type;
 import org.indunet.fastproto.annotation.UInt32Type;
 
 public class Weather {
-    @org.indunet.fastproto.annotation.UInt8Type(offset = 0)
+    @UInt8Type(offset = 0)
     int id;
 
     @TimeType(offset = 2)
@@ -72,9 +107,10 @@ Use formulas to transform values on the fly (e.g., convert raw pressure to engin
 ```java
 import org.indunet.fastproto.annotation.DecodingFormula;
 import org.indunet.fastproto.annotation.EncodingFormula;
+import org.indunet.fastproto.annotation.UInt32Type;
 
 public class WeatherWithPressure {
-    @org.indunet.fastproto.annotation.UInt32Type(offset = 14)
+    @UInt32Type(offset = 14)
     @DecodingFormula(lambda = "x -> x * 0.1")          // raw -> Pa*0.1
     @EncodingFormula(lambda = "x -> (long) (x * 10)")  // Pa -> raw
     double pressure;                                    // Pa
@@ -137,11 +173,13 @@ Utilities are also available: `docs/checksum.md`.
 Decode directly into a POJO by field names:
 
 ```java
+import org.indunet.fastproto.FastProto;
+
 class DataObject { Boolean f1; Integer f2; Integer f3; }
 
 byte[] bytes = /* incoming data */ new byte[16];
 
-DataObject obj = org.indunet.fastproto.FastProto.decode(bytes)
+DataObject obj = FastProto.decode(bytes)
     .readBool("f1", 0, 0)
     .readInt8("f2", 1)
     .readInt16("f3", 2)
@@ -152,8 +190,9 @@ Create binary blocks imperatively:
 
 ```java
 import org.indunet.fastproto.ByteOrder;
+import org.indunet.fastproto.FastProto;
 
-byte[] out = org.indunet.fastproto.FastProto.create(16)
+byte[] out = FastProto.create(16)
     .writeInt8(0, 1)
     .writeUInt16(2, 3, 4)
     .writeUInt32(6, ByteOrder.BIG, 256)

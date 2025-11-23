@@ -2,7 +2,7 @@
 
 [English](README.md) | 中文
 
-# FastProto
+# Fast Protocol
 
 [![Build Status](https://app.travis-ci.com/indunet/fastproto.svg?branch=master)](https://app.travis-ci.com/indunet/fastproto)
 [![codecov](https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU)](https://codecov.io/gh/indunet/fastproto)
@@ -10,7 +10,13 @@
 [![Maven Central](https://img.shields.io/maven-central/v/org.indunet/fastproto.svg?label=Maven%20Central)](https://search.maven.org/artifact/org.indunet/fastproto)
 [![License](https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-FastProto 是一款轻量级的 Java 二进制协议库。开发者只需通过注解描述数据结构，底层的字节操作将由 FastProto 自动完成。
+FastProto 是一个面向 **二进制通信协议** 的高性能序列化 / 反序列化 **工具库（Library）**，通过注解即可定义复杂的字节流结构，使 Java 开发者能够以最自然的方式读写 IoT、车载系统、工控设备、能源计量等场景中的自定义二进制报文。
+
+## *设计理念*
+
+* **声明式优于命令式：** 协议字段用注解定义，结构一目了然，代码即文档。
+* **性能与可维护并重：** 在架构层做反射缓存与零拷贝等优化，在保持高吞吐的同时兼顾可维护性。
+* **兼容工程现实：** 支持大小端混排、位域、BCD、CRC 等传统协议特征，方便对接存量系统。
 
 ## *核心功能*
 
@@ -31,7 +37,6 @@ FastProto 是一款轻量级的 Java 二进制协议库。开发者只需通过�
 
 * 代码结构 & 性能优化
 * 丰富文档（新增核心功能使用指南）
-* 支持Kaitai结构导出与集成
 
 ### *文档*
 
@@ -45,19 +50,19 @@ FastProto 是一款轻量级的 Java 二进制协议库。开发者只需通过�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.12.2</version>
+    <version>3.12.3</version>
 </dependency>
 ```
 
 * Gradle
 
 ```gradle
-implementation "org.indunet:fastproto:3.12.2"
+implementation "org.indunet:fastproto:3.12.3"
 ```
 
 ## *1. 快速入门*
 
-下面展示如何解析一条 20 字节的气象报文：
+在Java环境下高效、安全地处理各种传统二进制协议，是工业界一个常见但长期被忽视的痛点，下面将以解析一条 20 字节的气象报文为例进行说明：
 
 >   65 00 7F 69 3D 84 7A 01 00 00 55 00 F1 FF 0D 00 00 00 07 00
 
@@ -74,6 +79,38 @@ implementation "org.indunet:fastproto:3.12.2"
 | 18          | 0          |      bool      | 设备有效标识 |      |           |
 | 18          | 3-7        |                |   预留   |      |           |
 | 19          |            |                |   预留   |      |           |
+
+在没有使用 FastProto 之前，传统做法通常是手写各种偏移和位运算，大致如下所示：
+
+```java
+byte[] datagram = ...;
+
+int id = datagram[0] & 0xFF;
+
+long timeMillis =
+        ((long) datagram[2] & 0xFF) |
+        (((long) datagram[3] & 0xFF) << 8) |
+        (((long) datagram[4] & 0xFF) << 16) |
+        (((long) datagram[5] & 0xFF) << 24) |
+        (((long) datagram[6] & 0xFF) << 32) |
+        (((long) datagram[7] & 0xFF) << 40) |
+        (((long) datagram[8] & 0xFF) << 48) |
+        (((long) datagram[9] & 0xFF) << 56);
+Timestamp time = new Timestamp(timeMillis);
+
+int humidity = (datagram[10] & 0xFF) | ((datagram[11] & 0xFF) << 8);
+int temperature = (short) ((datagram[12] & 0xFF) | ((datagram[13] & 0xFF) << 8));
+long rawPressure =
+        ((long) datagram[14] & 0xFF) |
+        (((long) datagram[15] & 0xFF) << 8) |
+        (((long) datagram[16] & 0xFF) << 16) |
+        (((long) datagram[17] & 0xFF) << 24);
+double pressure = rawPressure * 0.1;
+
+boolean deviceValid = (datagram[18] & 0x01) != 0;
+```
+
+随着字段增多、协议版本演进，这类位运算代码既冗长又难维护，稍不注意就会在偏移、大小端或符号位上出错。下面用 FastProto 重新表述同一份协议，只需要在 `Weather` 类字段上写注解即可：
 
 ### *1.1 解码和编码二进制数据*
 

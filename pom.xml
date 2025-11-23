@@ -6,10 +6,10 @@
 
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.12.2</version>
+    <version>3.12.3</version>
     <packaging>jar</packaging>
     <name>FastProto</name>
-    <description>FastProto is a lightweight Java library that makes binary protocols effortless, with annotation-driven mapping and built-in checksum/CRC.</description>
+    <description>FastProto is a high-performance serialization/deserialization library designed for binary communication protocols. By defining complex byte stream structures with simple annotations, it enables Java developers to read and write custom binary packets in the most natural way for scenarios such as IoT, automotive systems, industrial control and energy metering.</description>
 
     <url>https://indunet.github.io/fastproto</url>
     <inceptionYear>2019</inceptionYear>
