@@ -196,6 +196,7 @@ FastProto支持Java基础数据类型，考虑到跨语言跨平台的数据交�
 | @UInt64Type |             BigInteger             | unsigned long  | 8 字节 |
 | @FloatType  |            Float/float             |     float      | 4 字节 |  
 | @DoubleType |           Double/double            |     double     | 8 字节 |
+|  @BcdType   |            Integer/int             |      BCD       | N 字节 |
 
 
 ### *2.2 复合数据类型注解*

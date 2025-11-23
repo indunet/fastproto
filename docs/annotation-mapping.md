@@ -39,6 +39,7 @@ FastProto uses annotations placed on fields to describe how bytes map to values.
 | @UInt64Type |            BigInteger             | unsigned long  | 8 bytes |
 | @FloatType  |            Float/float            |     float      | 4 bytes |
 | @DoubleType |           Double/double           |     double     | 8 bytes |
+|  @BcdType   |            Integer/int            |      BCD       | N bytes |
 
 ### Composite Types
 

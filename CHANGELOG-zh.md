@@ -1,5 +1,17 @@
 # 更新日志
 
+## [3.12.3] - 2025-11-23
+### 新增
+- 新增 `@BcdType` 注解与 `BcdCodec`，支持定长 packed BCD 整数（支持大小端），映射到 `int` / `Integer` 类型。
+- 为 BCD 类型补充编解码单元测试与 FastProto 集成测试，覆盖大端/小端及异常场景。
+- 新增 `@Expect` / `@Expects` 固定断言注解，可在指定偏移校验/写入常量值，支持在解码阶段自动校验，在编码阶段自动填充固定字节。
+
+### 变更
+- README 与 Quick Start：增加“传统位运算解析 vs FastProto 注解”的对比示例，并补充设计理念说明。
+- 文档站点（`docs/index.html`、`docs/annotation-mapping.md` 等）：补充 BCD 类型的映射与特性描述，完善核心功能文档。
+- 核心解析流程：扩展 `lengthRef` / 动态长度支持，将长度绑定到上文字段，并在 `Resolver`/`CodecFlow` 中统一透传到字符串、数组与结构体数组的编码解码流程中。
+- 核心解析流程：扩展 `offsetRef` / 动态偏移支持，可引用前置字段的数值作为偏移，在 `Resolver` 中绑定偏移供应器，并通过 `CodecFlow` 包装注解，使 offset 在编解码阶段按运行时值生效。
+
 ## [3.12.2] - 2025-08-26
 ### 新增
 - `@AutoType` 新增 `lengthRef`，支持变长字符串/数组/集合的自动类型推断。

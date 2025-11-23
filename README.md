@@ -196,6 +196,7 @@ FastProto supports Java primitive data types, taking into account cross-language
 | @UInt64Type |            BigInteger             | unsigned long  | 8 bytes |
 | @FloatType  |            Float/float            |     float      | 4 bytes |  
 | @DoubleType |           Double/double           |     double     | 8 bytes |
+|  @BcdType   |            Integer/int            |     BCD        | N bytes |
 
 
 ### *2.2 Compound Data Type Annotations*

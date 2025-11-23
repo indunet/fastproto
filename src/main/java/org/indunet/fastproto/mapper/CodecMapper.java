@@ -80,6 +80,7 @@ public class CodecMapper {
         codecMap.put(EnumType.class, new HashMap<>());
         codecMap.put(StringType.class, new HashMap<>());
         codecMap.put(StructArrayType.class, new HashMap<>());
+        codecMap.put(BcdType.class, new HashMap<>());
 
         BiFunction<Type, Class, Boolean> collectionType = (t, c) -> t instanceof ParameterizedType
                 && Collection.class.isAssignableFrom((Class) ((ParameterizedType) t).getRawType())
@@ -209,6 +210,9 @@ public class CodecMapper {
         
         val enumCodec = new EnumCodec<>();
         codecMap.get(EnumType.class).put(t -> Enum.class.isAssignableFrom((Class) t), enumCodec);
+
+        val bcdCodec = new BcdCodec();
+        codecMap.get(BcdType.class).put(c -> c.equals(int.class) || c.equals(Integer.class), bcdCodec);
     }
 
     public static boolean isSupported(Type type) {
