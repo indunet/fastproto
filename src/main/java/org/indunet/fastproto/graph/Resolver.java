@@ -23,6 +23,7 @@ import org.indunet.fastproto.exception.ResolvingException;
 import org.indunet.fastproto.graph.Reference.ReferenceType;
 import org.indunet.fastproto.graph.resolve.ResolvePipeline;
 import org.indunet.fastproto.mapper.CodecMapper;
+import org.indunet.fastproto.graph.resolve.CodecFlow;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
@@ -196,6 +197,85 @@ public class Resolver {
                             throw new ResolvingException("Failed resolving @AutoType length", e);
                         }
                     }
+                }
+            }
+
+            // Bind dynamic offset supplier via offsetRef (for annotations exposing offset())
+            for (val r : refs) {
+                boolean hasOffset = Arrays.stream(r.getDataTypeAnnotation().annotationType().getMethods())
+                        .anyMatch(m -> m.getName().equals("offset") && m.getParameterCount() == 0);
+                if (!hasOffset) {
+                    continue;
+                }
+
+                String refNameLocal = null;
+                try {
+                    java.lang.reflect.Method mRef = r.getDataTypeAnnotation().annotationType().getMethod("offsetRef");
+                    String value = (String) mRef.invoke(r.getDataTypeAnnotation());
+                    if (value != null && !value.isEmpty()) {
+                        refNameLocal = value.startsWith("$") ? value.substring(1) : value;
+                    }
+                } catch (NoSuchMethodException ignore) {
+                } catch (IllegalAccessException | java.lang.reflect.InvocationTargetException e) {
+                    throw new ResolvingException("Failed reading offsetRef attribute", e);
+                }
+
+                if (refNameLocal == null) {
+                    continue;
+                }
+                final String refName = refNameLocal;
+
+                val src = refs.stream()
+                        .filter(x -> x.getField() != null)
+                        .filter(x -> x.getField().getDeclaringClass() == r.getField().getDeclaringClass())
+                        .filter(x -> x.getField().getName().equals(refName))
+                        .findFirst()
+                        .orElseThrow(() -> new ResolvingException(String.format("offsetRef source '%s' not found for %s", refName, r.getField())));
+
+                if (refs.indexOf(src) >= refs.indexOf(r)) {
+                    throw new ResolvingException(String.format("offsetRef source '%s' must be declared before %s", refName, r.getField()));
+                }
+
+                r.setOffsetSupplier(() -> {
+                    Object v = src.getValue().get();
+                    if (v == null) {
+                        return 0;
+                    } else if (v instanceof Number) {
+                        return ((Number) v).intValue();
+                    } else {
+                        throw new IllegalArgumentException("offsetRef source is not a Number");
+                    }
+                });
+            }
+
+            // Rebuild codec handlers after dynamic suppliers (length/offset) are bound,
+            // so that wrappers take effect in encoder/decoder contexts.
+            for (val r : refs) {
+                new CodecFlow().process(r);
+            }
+
+            // Validate presence: for annotations that expose offset(), require either offset or offsetRef
+            for (val r : refs) {
+                boolean hasOffset = Arrays.stream(r.getDataTypeAnnotation().annotationType().getMethods())
+                        .anyMatch(m -> m.getName().equals("offset") && m.getParameterCount() == 0);
+                if (!hasOffset) {
+                    continue;
+                }
+                int declaredOffset = Integer.MIN_VALUE;
+                String declaredOffsetRef = "";
+                try {
+                    declaredOffset = (Integer) r.getDataTypeAnnotation().annotationType().getMethod("offset").invoke(r.getDataTypeAnnotation());
+                } catch (Exception ignore) {}
+                try {
+                    declaredOffsetRef = (String) r.getDataTypeAnnotation().annotationType().getMethod("offsetRef").invoke(r.getDataTypeAnnotation());
+                } catch (Exception ignore) {}
+
+                boolean hasSupplier = r.getOffsetSupplier() != null;
+                boolean hasDeclaredOffset = declaredOffset != Integer.MIN_VALUE;
+                boolean hasDeclaredRef = declaredOffsetRef != null && !declaredOffsetRef.isEmpty();
+
+                if (!hasSupplier && !hasDeclaredOffset && !hasDeclaredRef) {
+                    throw new ResolvingException(String.format("Either offset or offsetRef must be specified for %s", r.getField()));
                 }
             }
 

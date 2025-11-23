@@ -52,6 +52,14 @@ public class CodecFlow extends ResolvePipeline {
         Annotation decodeAnno = original;
         Annotation encodeAnno = original;
 
+        // Wrap with dynamic offset if available
+        boolean hasOffset = original != null &&
+                java.util.Arrays.stream(original.annotationType().getMethods()).anyMatch(m -> m.getName().equals("offset") && m.getParameterCount() == 0);
+        if (hasOffset && reference.getOffsetSupplier() != null) {
+            decodeAnno = wrapAnnotationWithDynamicOffset(decodeAnno, reference.getOffsetSupplier());
+            encodeAnno = wrapAnnotationWithDynamicOffset(encodeAnno, reference.getOffsetSupplier());
+        }
+
         // Only wrap if the annotation provides length()
         boolean hasLength = original != null &&
                 java.util.Arrays.stream(original.annotationType().getMethods()).anyMatch(m -> m.getName().equals("length") && m.getParameterCount() == 0);
@@ -97,8 +105,9 @@ public class CodecFlow extends ResolvePipeline {
                 }
             };
 
-            decodeAnno = wrapAnnotationWithDynamicLength(original, decodeLenSupplier);
-            encodeAnno = wrapAnnotationWithDynamicLength(original, encodeLenSupplier);
+            // Wrap length on top of any existing offset wrapper to preserve both behaviors
+            decodeAnno = wrapAnnotationWithDynamicLength(decodeAnno, decodeLenSupplier);
+            encodeAnno = wrapAnnotationWithDynamicLength(encodeAnno, encodeLenSupplier);
         }
 
         CodecContext decodeCtx = CodecContext.builder()
@@ -181,6 +190,16 @@ public class CodecFlow extends ResolvePipeline {
         return (Annotation) Proxy.newProxyInstance(CodecFlow.class.getClassLoader(), new Class<?>[]{at}, (proxy, method, args) -> {
             if (method.getName().equals("length") && method.getParameterCount() == 0) {
                 return lengthSupplier.get();
+            }
+            return at.getMethod(method.getName(), method.getParameterTypes()).invoke(original, args);
+        });
+    }
+
+    private static Annotation wrapAnnotationWithDynamicOffset(Annotation original, Supplier<Integer> offsetSupplier) {
+        Class<?> at = original.annotationType();
+        return (Annotation) Proxy.newProxyInstance(CodecFlow.class.getClassLoader(), new Class<?>[]{at}, (proxy, method, args) -> {
+            if (method.getName().equals("offset") && method.getParameterCount() == 0) {
+                return offsetSupplier.get();
             }
             return at.getMethod(method.getName(), method.getParameterTypes()).invoke(original, args);
         });

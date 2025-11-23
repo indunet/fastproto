@@ -43,7 +43,12 @@ public @interface EnumType {
     /*
      * The byte offset of the field in the binary data.
      */
-    int offset();
+    int offset() default Integer.MIN_VALUE;
+
+    /*
+     * Reference to an offset field name in the same class. Accepts optional leading '$'.
+     */
+    String offsetRef() default "";
 
     /*
      * The field name of enum type.

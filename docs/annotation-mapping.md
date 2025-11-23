@@ -39,6 +39,7 @@ FastProto uses annotations placed on fields to describe how bytes map to values.
 | @UInt64Type |            BigInteger             | unsigned long  | 8 bytes |
 | @FloatType  |            Float/float            |     float      | 4 bytes |
 | @DoubleType |           Double/double           |     double     | 8 bytes |
+|  @BcdType   |            Integer/int            |      BCD       | N bytes |
 
 ### Composite Types
 
@@ -78,6 +79,8 @@ FastProto uses annotations placed on fields to describe how bytes map to values.
 |  @DecodingFormula | Field | Decoding formula (lambda or Function class)           |
 |  @EncodingFormula | Field | Encoding formula (lambda or Function class)           |
 |      @AutoType    | Field | Infer type automatically (see defaults per Java type) |
+|      @Expect      | Field | Constant assertion at fixed offset; verify/write      |
+|      @Expects     | Field | Container for multiple @Expect entries                |
 
 ## Examples
 
@@ -116,3 +119,4 @@ public class Frame {
 - Keep offsets aligned and avoid overlaps; leave explicit gaps with comments when reserving bytes.
 - Prefer class-level defaults for byte/bit order, override only when needed. See [Byte & Bit Order](byte-and-bit-order.md).
 - For checksums, use a single `@Checksum` (start/length/offset). See [Checksum/CRC](checksum.md).
+- For magic bytes and fixed version fields, prefer `@Expect`. See [Expect Assertions](expect.md).

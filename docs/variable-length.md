@@ -96,3 +96,4 @@ public class PacketVar {
 - Arrays & Strings: `docs/arrays-and-strings.md`
 - Annotation Mapping: `docs/annotation-mapping.md`
 - Byte and Bit Order: `docs/byte-and-bit-order.md` 
+- Dynamic Offset with offsetRef: `docs/dynamic-offset.md`

@@ -5,7 +5,6 @@ import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.BinaryType;
 import org.indunet.fastproto.annotation.StringType;
 import org.indunet.fastproto.annotation.UInt16Type;
-import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.ResolvingException;
 import org.junit.jupiter.api.Test;
 

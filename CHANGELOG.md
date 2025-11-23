@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file.
 
+## [3.12.3] - 2025-11-23
+### Added
+- New `@BcdType` annotation and `BcdCodec` for fixed-length packed BCD integers (with byte order support), mapped to `int` / `Integer`.
+- Unit tests and FastProto integration tests for BCD, covering big-endian / little-endian and error conditions.
+- New `@Expect` / `@Expects` annotations for constant assertions at fixed offsets; verify on decode and auto-fill constants on encode.
+
+### Changed
+- README and Quick Start: added side-by-side examples comparing manual bit/offset parsing to FastProto’s annotation-based approach, plus an explicit “Design Philosophy” section.
+- Docs site (`docs/index.html`, `docs/annotation-mapping.md`, etc.): documented BCD type mapping and behavior, and refreshed core feature descriptions.
+- Core resolving pipeline: extended dynamic `lengthRef` support so computed lengths are bound to preceding fields and propagated through `Resolver` / `CodecFlow` into string/array/struct-array codecs.
+- Core resolving pipeline: extended dynamic `offsetRef` support so offsets can reference numeric fields; `Resolver` binds offset suppliers and `CodecFlow` wraps annotations, making `offset` honor runtime values during encode/decode.
+
 ## [3.12.2] - 2025-08-26
 ### Added
 - `@AutoType` now supports `lengthRef` for variable-length strings/arrays/collections with auto type inference.

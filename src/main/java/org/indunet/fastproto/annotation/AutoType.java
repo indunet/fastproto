@@ -45,6 +45,11 @@ public @interface AutoType {
     int[] offset() default {};
 
     /*
+     * Reference to an offset field name in the same class. Accepts optional leading '$'.
+     */
+    String offsetRef() default "";
+
+    /*
      * The byte offset of the field in the binary data, only valid on boolean type.
      */
     int[] byteOffset() default {};

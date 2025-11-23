@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet
+ * Copyright 2019-2025 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,36 +16,21 @@
 
 package org.indunet.fastproto.annotation;
 
-import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
-import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Annotation for UInt8 type. This type occupies 1 byte and can be used to annotate fields of type Integer or int.
+ * Container annotation for repeatable {@link Expect}.
  *
  * @author Deng Ran
- * @since 1.2.0
+ * @since 3.12.0
  */
-@DataType
-@Validator({DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface UInt8Type {
-    int SIZE = Byte.SIZE >> 3;
-    int MAX_VALUE = Byte.MAX_VALUE - Byte.MIN_VALUE;
-    int MIN_VALUE = 0;
-
-    /*
-     * The byte offset of the field in the binary data.
-     */
-    int offset() default Integer.MIN_VALUE;
-
-    /*
-     * Reference to an offset field name in the same class. Accepts optional leading '$'.
-     */
-    String offsetRef() default "";
+public @interface Expects {
+    Expect[] value();
 }
+
+

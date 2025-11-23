@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 indunet.org
+ * Copyright 2019-2025 indunet.org
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 
 package org.indunet.fastproto.annotation;
 
+import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.graph.resolve.validate.DecodingFormulaValidator;
 import org.indunet.fastproto.graph.resolve.validate.EncodingFormulaValidator;
 
@@ -25,45 +26,39 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * Defines a Binary type annotation. This annotation is used to mark fields of type Byte[] or byte[].
- * It represents binary data where each byte is considered as a separate entity.
+ * Annotation for packed BCD integer type.
+ * <p>
+ * Each byte encodes two decimal digits using high and low nibbles.
+ * The field is interpreted as a non-negative integer mapped to {@code int}/{@link java.lang.Integer}.
  *
  * @author Deng Ran
- * @since 1.0.0
+ * @since 3.13.0
  */
 @DataType
 @Validator({DecodingFormulaValidator.class, EncodingFormulaValidator.class})
 @Target(ElementType.FIELD)
 @Retention(RetentionPolicy.RUNTIME)
-public @interface BinaryType {
-    /*
+public @interface BcdType {
+    /**
      * The byte offset of the field in the binary data.
      */
     int offset() default Integer.MIN_VALUE;
 
-    /*
+    /**
      * Reference to an offset field name in the same class. Accepts optional leading '$'.
      */
     String offsetRef() default "";
 
-    /*
-     * The length of the binary.
+    /**
+     * Number of bytes occupied by the BCD value.
+     * Each byte contributes two decimal digits.
      */
-    int length() default 0;
+    int length();
 
-    /*
-     * Reference to a length field name in the same class. Accepts optional leading '$'.
+    /**
+     * The byte order of the field in the binary data, its priority is higher than @DefaultByteOrder.
      */
-    String lengthRef() default "";
-
-    /*
-     * When true, encoder uses actual runtime length of the value instead of referenced length.
-     */
-    boolean useSelfOnEncode() default false;
-
-    /*
-     * Optional min/max constraints applied to the effective length.
-     */
-    int min() default Integer.MIN_VALUE;
-    int max() default Integer.MAX_VALUE;
+    ByteOrder[] byteOrder() default {};
 }
+
+

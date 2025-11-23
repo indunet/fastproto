@@ -43,7 +43,12 @@ public @interface DoubleArrayType {
      *
      * @return the offset in bytes.
      */
-    int offset();
+    int offset() default Integer.MIN_VALUE;
+
+    /*
+     * Reference to an offset field name in the same class. Accepts optional leading '$'.
+     */
+    String offsetRef() default "";
 
     /**
      * Specifies the length of the Double array.
