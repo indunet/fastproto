@@ -85,6 +85,55 @@ public final class ByteBufferOutputStream extends ByteBufferIOStream {
         }
     }
 
+    /**
+     * Write an unsigned bit-field with length 1..31 bits.
+     *
+     * @param byteOffset starting byte offset.
+     * @param bitOffset  logical bit offset inside the starting byte (0..7).
+     * @param length     bit width (1..31).
+     * @param bitOrder   bit numbering inside each byte.
+     * @param byteOrder  byte significance across bytes.
+     * @param value      unsigned value to write.
+     */
+    public void writeBits(int byteOffset, int bitOffset, int length, BitOrder bitOrder, ByteOrder byteOrder, int value) {
+        if (bitOffset < BoolType.BIT_0 || bitOffset > BoolType.BIT_7) {
+            throw new IllegalArgumentException("Out of byte range.");
+        }
+        if (length <= 0 || length >= 32) {
+            throw new IllegalArgumentException("Bit length must be in range 1..31.");
+        }
+
+        long mask = (1L << length) - 1;
+        long unsigned = Integer.toUnsignedLong(value);
+        if ((unsigned & ~mask) != 0) {
+            throw new IllegalArgumentException("Value is out of range for bit length " + length + ".");
+        }
+
+        for (int k = 0; k < length; k++) {
+            int logical = bitOffset + k;
+            int targetByte = byteOffset + logical / 8;
+            int logicalBit = logical % 8;
+            int physicalBit = bitOrder == BitOrder.MSB_0 ? 7 - logicalBit : logicalBit;
+            int bit = byteOrder == ByteOrder.BIG
+                    ? (int) ((unsigned >> (length - 1 - k)) & 0x01)
+                    : (int) ((unsigned >> k) & 0x01);
+
+            if (bit == 1) {
+                byteBuffer.orEq(targetByte, (byte) (0x01 << physicalBit));
+            } else {
+                byteBuffer.andEq(targetByte, (byte) ~(0x01 << physicalBit));
+            }
+        }
+
+        int nextLogical = bitOffset + length;
+        this.byteIndex = byteOffset + nextLogical / 8;
+        this.bitIndex = nextLogical % 8;
+    }
+
+    public void writeBits(int length, BitOrder bitOrder, ByteOrder byteOrder, int value) {
+        this.writeBits(byteIndex, bitIndex, length, bitOrder, byteOrder, value);
+    }
+
     public void writeByte(byte value) {
         byteBuffer.set(byteIndex ++, value);
     }

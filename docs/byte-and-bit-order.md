@@ -61,6 +61,23 @@ public class Flags {
 }
 ```
 
+### Bit field (1..31 bits, supports bitOrder + byteOrder)
+```java
+import org.indunet.fastproto.*;
+import org.indunet.fastproto.annotation.*;
+
+@DefaultByteOrder(ByteOrder.LITTLE)
+@DefaultBitOrder(BitOrder.LSB_0)
+public class BitFields {
+  // Use lengthRef to determine bit width dynamically; logical start bitOffset=6, spans bytes
+  @BitFieldType(offset = 0, bitOffset = 6, lengthRef = "$width", byteOrder = ByteOrder.LITTLE, bitOrder = BitOrder.LSB_0)
+  int value;
+
+  @UInt8Type(offset = 2)
+  int width; // Provides the length; must be declared before use
+}
+```
+
 ### Array with per‑element endianness
 ```java
 import org.indunet.fastproto.*;

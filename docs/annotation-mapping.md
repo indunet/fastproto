@@ -33,6 +33,7 @@ FastProto uses annotations placed on fields to describe how bytes map to values.
 | @Int16Type  |     Short/short / Integer/int     |     short      | 2 bytes |
 | @Int32Type  |            Integer/int            |      int       | 4 bytes |
 | @Int64Type  |             Long/long             |      long      | 8 bytes |
+| @BitFieldType |         Integer/int             |      --        | 1..31 bits |
 | @UInt8Type  |            Integer/int            | unsigned char  | 1 byte  |
 | @UInt16Type |            Integer/int            | unsigned short | 2 bytes |
 | @UInt32Type |             Long/long             |  unsigned int  | 4 bytes |

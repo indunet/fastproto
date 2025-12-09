@@ -66,6 +66,7 @@ public class JavaTypeMapper {
         map.put(StringType.class, String.class);
         map.put(EnumType.class, Enum.class);
         map.put(BcdType.class, Integer.class);
+        map.put(BitFieldType.class, Integer.class);
     }
 
     public static Class get(Class<? extends Annotation> dataTypeAnnotationClass) {

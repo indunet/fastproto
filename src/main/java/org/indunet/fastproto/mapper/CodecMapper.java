@@ -72,6 +72,7 @@ public class CodecMapper {
         codecMap.put(DoubleArrayType.class, new HashMap<>());
         codecMap.put(BoolType.class, new HashMap<>());
         codecMap.put(BoolArrayType.class, new HashMap<>());
+        codecMap.put(BitFieldType.class, new HashMap<>());
         codecMap.put(AsciiType.class, new HashMap<>());
         codecMap.put(AsciiArrayType.class, new HashMap<>());
         codecMap.put(CharType.class, new HashMap<>());
@@ -172,8 +173,10 @@ public class CodecMapper {
         codecMap.get(DoubleArrayType.class).put(t -> collectionType.apply(t, Double.class), doubleArrayCodec.new CollectionCodec());
 
         val boolCodec = new BoolCodec();
+        val bitFieldCodec = new BitFieldCodec();
         val boolArrayCodec = new BoolArrayCodec();
         codecMap.get(BoolType.class).put(c -> c.equals(boolean.class) || c.equals(Boolean.class), boolCodec);
+        codecMap.get(BitFieldType.class).put(c -> c.equals(int.class) || c.equals(Integer.class), bitFieldCodec);
         codecMap.get(BoolArrayType.class).put(c -> c.equals(boolean[].class), boolArrayCodec);
         codecMap.get(BoolArrayType.class).put(c -> c.equals(Boolean[].class), boolArrayCodec.new WrapperCodec());
         codecMap.get(BoolArrayType.class).put(t -> collectionType.apply(t, Boolean.class), boolArrayCodec.new CollectionCodec());

@@ -8,7 +8,7 @@ Variable-length fields are common in binary protocols. FastProto supports them v
 
 ### Basics: length vs lengthRef
 - `length`: a fixed number of elements/bytes.
-- `lengthRef`: the name of a field in the same class that holds the length/count; you may optionally prefix it with `$` (e.g. `$count`).
+- `lengthRef`: the name of a field in the same class that holds the length/count; it **must** be prefixed with `$` (e.g. `$count`).
 - If both are set, `lengthRef` takes precedence for the effective length.
 
 ### Strings with lengthRef
@@ -87,7 +87,7 @@ public class PacketVar {
 
 ### Tips and caveats
 - Ensure the referenced length field is decoded before the variable-length field (i.e., it appears earlier in the class with a lower offset).
-- `lengthRef` accepts optional leading `$` and is case-sensitive with respect to the Java field name.
+- `lengthRef` is case-sensitive and must start with `$` followed by the field name.
 - For strings, you can also set `charset`.
 - For boolean bit arrays, use `BoolArrayType` (byte-aligned). Per-bit packed variable-length booleans are not supported.
 - With `@AutoType`, you must still supply `offset` and `lengthRef` for arrays/strings; FastProto infers only the data type, not the layout.

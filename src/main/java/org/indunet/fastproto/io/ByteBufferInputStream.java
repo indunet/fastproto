@@ -87,6 +87,51 @@ public final class ByteBufferInputStream extends ByteBufferIOStream {
         return value;
     }
 
+    /**
+     * Read an unsigned bit-field with length 1..31 bits.
+     *
+     * @param byteOffset starting byte offset.
+     * @param bitOffset logical bit offset inside the starting byte (0..7).
+     * @param length    bit width (1..31).
+     * @param bitOrder  bit numbering inside each byte.
+     * @param byteOrder byte significance across bytes.
+     * @return unsigned int value.
+     */
+    public int readBits(int byteOffset, int bitOffset, int length, BitOrder bitOrder, ByteOrder byteOrder) {
+        if (bitOffset < BoolType.BIT_0 || bitOffset > BoolType.BIT_7) {
+            throw new IllegalArgumentException("Out of byte range.");
+        }
+        if (length <= 0 || length >= 32) {
+            throw new IllegalArgumentException("Bit length must be in range 1..31.");
+        }
+
+        int value = 0;
+
+        for (int k = 0; k < length; k++) {
+            int logical = bitOffset + k;
+            int targetByte = byteOffset + logical / 8;
+            int logicalBit = logical % 8;
+            int physicalBit = bitOrder == BitOrder.MSB_0 ? 7 - logicalBit : logicalBit;
+            int bit = (this.byteBuffer.get(targetByte) >> physicalBit) & 0x01;
+
+            if (byteOrder == ByteOrder.BIG) {
+                value |= (bit << (length - 1 - k));
+            } else {
+                value |= (bit << k);
+            }
+        }
+
+        int nextLogical = bitOffset + length;
+        this.byteIndex = byteOffset + nextLogical / 8;
+        this.bitIndex = nextLogical % 8;
+
+        return value;
+    }
+
+    public int readBits(int length, BitOrder bitOrder, ByteOrder byteOrder) {
+        return this.readBits(byteIndex, bitIndex, length, bitOrder, byteOrder);
+    }
+
     public byte readByte() {
         return this.readByte(byteIndex);
     }
