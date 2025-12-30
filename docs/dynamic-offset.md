@@ -1,7 +1,7 @@
 ## Dynamic Offset with offsetRef
 
 ### Overview
-Some formats store an absolute position in a header and place the actual data later in the file. Use `offsetRef` to point a field’s `offset()` to a previously decoded numeric field in the same class. The source field name can be prefixed with `$`.
+Some formats store an absolute position in a header and place the actual data later in the file. Use `offsetRef` to point a field’s `offset()` to a previously decoded numeric field in the same class. The source field name must be prefixed with `$`.
 
 ### Rules
 - The referenced field must appear earlier in the class and be decoded before the target.

@@ -2,7 +2,7 @@
 
 English | [中文](README-zh.md)
 
-# Fast Protocol
+# *Fast Protocol*
 
 [![Build Status](https://app.travis-ci.com/indunet/fastproto.svg?branch=master)](https://app.travis-ci.com/indunet/fastproto)
 [![codecov](https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU)](https://codecov.io/gh/indunet/fastproto)
@@ -15,21 +15,16 @@ FastProto is a high-performance serialization/deserialization **library** design
 ## *Design Philosophy*
 
 - **Declarative over imperative:** Protocol fields are defined via annotations, making the structure self‑evident so that code doubles as documentation.
-- **Performance with maintainability:** Architectural optimizations such as reflection caching and zero‑copy are built in to keep high throughput without sacrificing readability and maintainability.
+- **Performance with maintainability:** Architectural optimizations such as reflection caching are built in to keep high throughput without sacrificing readability and maintainability.
 - **Grounded in engineering reality:** Supports mixed endianness, bit fields, BCD, CRC and other traditional protocol features to integrate smoothly with existing systems.
 
 ## *Key Features*
 
-- **Annotation-Driven:** Quickly map binary data to Java fields.
-- **Broad Type Support:** Works with primitives, unsigned numbers, strings, time types, arrays and collections.
-- **Flexible Addressing:** Reverse addressing for variable-length packets.
-- **Variable-Length Fields:** Use `lengthRef` to reference a count field; supports variable-length strings/arrays and struct arrays. See [Variable Length and Struct Arrays](docs/variable-length.md).
-- **Dynamic Offset:** Use `offsetRef` to bind a field's offset to a previously decoded numeric field (useful for header-with-pointer formats). See [Dynamic Offset](docs/dynamic-offset.md).
-- **Configurable Byte Order:** Choose big-endian or little-endian to match your protocol.
-- **Custom Formulas:** Use lambdas or classes to transform values during encode/decode.
-- **Checksum/CRC:** Single-annotation `@Checksum` to define start, length and storage offset; built-ins include CRC8 (SMBus, MAXIM), CRC16 (MODBUS, CCITT), CRC32/CRC32C, CRC64 (ECMA/ISO), plus LRC and XOR.
-- **Integrations:** Netty codecs and Kafka Serializer/Deserializer/Serde for drop‑in use. See [Netty Integration](docs/help.html#netty-integration) and [Kafka Integration](docs/help.html#kafka-integration).
-- **Easy APIs:** Multiple APIs tuned for efficiency and reliability.
+- **Annotation‑driven protocol mapping:** Describe binary layouts with simple field annotations instead of manual offset and bit operations.
+- **Rich type & layout support:** Primitives (including unsigned), strings, time types, arrays/collections, variable‑length fields, dynamic offsets and reverse addressing.
+- **Precise control of representation:** Configurable byte/bit order, BCD, bit fields and custom encode/decode formulas.
+- **Built‑in checksum/CRC:** Single `@Checksum` annotation or utility methods covering common CRC and checksum algorithms.
+- **Ecosystem integrations:** Ready‑to‑use Netty codecs and Kafka Serializer/Deserializer/Serde, plus fluent APIs for use without annotations.
 
 See the [CHANGELOG](CHANGELOG.md) for recent updates.
 
@@ -187,9 +182,10 @@ FastProto supports Java primitive data types, taking into account cross-language
 | @AsciiType  |          Character/char           |      char      | 1 bytes |   
 |  @CharType  |          Character/char           |       --       | 2 bytes |
 |  @Int8Type  |       Byte/byte/Integer/int       |      char      | 1 byte  |  
-| @Int16Type  |     Short/short/Integer/int     |     short      | 2 bytes |  
+| @Int16Type  |     Short/short/Integer/int       |     short      | 2 bytes |  
 | @Int32Type  |            Integer/int            |      int       | 4 bytes | 
 | @Int64Type  |             Long/long             |      long      | 8 bytes |
+| @BitFieldType |         Integer/int             |      --        | 1..31 bits |
 | @UInt8Type  |            Integer/int            | unsigned char  | 1 byte  |   
 | @UInt16Type |            Integer/int            | unsigned short | 2 bytes |   
 | @UInt32Type |             Long/long             |  unsigned int  | 4 bytes |   

@@ -144,7 +144,10 @@ public class Resolver {
                     java.lang.reflect.Method mRef = r.getDataTypeAnnotation().annotationType().getMethod("lengthRef");
                     String value = (String) mRef.invoke(r.getDataTypeAnnotation());
                     if (value != null && !value.isEmpty()) {
-                        refNameLocal = value.startsWith("$") ? value.substring(1) : value;
+                        if (!value.startsWith("$")) {
+                            throw new ResolvingException("lengthRef must start with '$'");
+                        }
+                        refNameLocal = value.substring(1);
                     }
                 } catch (NoSuchMethodException ignore) {
                 } catch (IllegalAccessException | java.lang.reflect.InvocationTargetException e) {
@@ -213,7 +216,10 @@ public class Resolver {
                     java.lang.reflect.Method mRef = r.getDataTypeAnnotation().annotationType().getMethod("offsetRef");
                     String value = (String) mRef.invoke(r.getDataTypeAnnotation());
                     if (value != null && !value.isEmpty()) {
-                        refNameLocal = value.startsWith("$") ? value.substring(1) : value;
+                        if (!value.startsWith("$")) {
+                            throw new ResolvingException("offsetRef must start with '$'");
+                        }
+                        refNameLocal = value.substring(1);
                     }
                 } catch (NoSuchMethodException ignore) {
                 } catch (IllegalAccessException | java.lang.reflect.InvocationTargetException e) {

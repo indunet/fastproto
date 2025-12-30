@@ -2,7 +2,7 @@
 
 [English](README.md) | 中文
 
-# Fast Protocol
+# *Fast Protocol*
 
 [![Build Status](https://app.travis-ci.com/indunet/fastproto.svg?branch=master)](https://app.travis-ci.com/indunet/fastproto)
 [![codecov](https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU)](https://codecov.io/gh/indunet/fastproto)
@@ -15,21 +15,16 @@ FastProto 是一个面向 **二进制通信协议** 的高性能序列化 / 反�
 ## *设计理念*
 
 * **声明式优于命令式：** 协议字段用注解定义，结构一目了然，代码即文档。
-* **性能与可维护并重：** 在架构层做反射缓存与零拷贝等优化，在保持高吞吐的同时兼顾可维护性。
+* **性能与可维护并重：** 在架构层做反射缓存等优化，在保持高吞吐的同时兼顾可维护性。
 * **兼容工程现实：** 支持大小端混排、位域、BCD、CRC 等传统协议特征，方便对接存量系统。
 
 ## *核心功能*
 
-* **注解驱动：** 字段用注解标记，解析和封装一目了然。
-* **类型丰富：** 支持 Java 原始类型、无符号类型、字符串、时间以及集合。
-* **灵活地址：** 提供反向地址，适配变长协议。
-* **可变长度：** 通过 `lengthRef` 引用计数字段，支持变长字符串/数组与结构体数组。详见[可变长度与结构体数组](docs/variable-length.md)。
-* **动态偏移：** 使用 `offsetRef` 引用偏移字段，简化“头部存绝对位置、正文在后”的格式。详见[动态偏移](docs/dynamic-offset.md)。
-* **字节顺序可选：** 大端或小端随心切换。
-* **公式支持：** Lambda 或自定义类均可实现编解码公式。
-* **校验和/CRC：** 使用 `@Checksum` 注解一次性定义起始地址、长度与存放地址，内置 CRC8（SMBus、MAXIM）、CRC16（MODBUS、CCITT）、CRC32/CRC32C、CRC64（ECMA/ISO）、LRC、XOR 等。
-* **生态集成：** 提供 Netty 编/解码器与 Kafka Serializer/Deserializer/Serde，可即插即用。详见[Netty 集成](docs/help.html#netty-integration)与[Kafka 集成](docs/help.html#kafka-integration)。
-* **多种API：** 兼顾效率与易用性。
+* **注解驱动协议映射：** 用少量注解描述二进制布局，替代手写偏移和位运算。
+* **类型与布局支持丰富：** 覆盖基础类型（含无符号）、字符串、时间、数组/集合，并支持可变长度、动态偏移和反向地址。
+* **表示精确可控：** 可配置字节序/位序，支持 BCD、位域以及自定义编解码公式。
+* **内置校验和/CRC：** 通过 `@Checksum` 或工具方法直接使用常见 CRC / 校验和算法。
+* **生态与 API 友好：** 提供 Netty 编解码器、Kafka 序列化组件，以及无需注解的链式 API。
 
 查看[更新日志](CHANGELOG-zh.md)获取版本历史，英文版请查阅[CHANGELOG](CHANGELOG.md)。
 
@@ -190,6 +185,7 @@ FastProto支持Java基础数据类型，考虑到跨语言跨平台的数据交�
 | @Int16Type  |      Short/short/Integer/int       |     short      | 2 字节 |  
 | @Int32Type  |            Integer/int             |      int       | 4 字节 | 
 | @Int64Type  |             Long/long              |      long      | 8 字节 |
+| @BitFieldType |         Integer/int             |      --        | 1..31 位 |
 | @UInt8Type  |            Integer/int             | unsigned char  | 1 字节 |   
 | @UInt16Type |            Integer/int             | unsigned short | 2 字节 |   
 | @UInt32Type |             Long/long              |  unsigned int  | 4 字节 |   

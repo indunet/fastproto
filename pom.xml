@@ -223,8 +223,15 @@
         <dependency>
             <groupId>org.apache.kafka</groupId>
             <artifactId>kafka-clients</artifactId>
-            <version>3.8.0</version>
+            <version>3.9.1</version>
             <scope>provided</scope>
+        </dependency>
+        <!-- SLF4J binding for tests to avoid NOP logger warning -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.36</version>
+            <scope>test</scope>
         </dependency>
     </dependencies>
 
