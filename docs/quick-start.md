@@ -4,18 +4,22 @@ FastProto lets you map binary protocols to plain Java classes using annotations,
 
 ## Installation
 
-Add the dependency via Maven or Gradle.
+Add the dependency via Maven:
 
 ```xml
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.12.2</version>
+    <version>4.0.0</version>
 </dependency>
-```
 
-```gradle
-implementation "org.indunet:fastproto:3.12.2"
+<!-- Optional: For lambda formula support (@DecodingFormula(lambda="...")) -->
+<dependency>
+    <groupId>org.indunet</groupId>
+    <artifactId>fastproto-processor</artifactId>
+    <version>4.0.0</version>
+    <scope>provided</scope>
+</dependency>
 ```
 
 ## Define Your Protocol Model

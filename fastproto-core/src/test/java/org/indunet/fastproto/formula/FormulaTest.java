@@ -24,6 +24,8 @@ import org.indunet.fastproto.annotation.EncodingFormula;
 import org.indunet.fastproto.annotation.Int8Type;
 import org.indunet.fastproto.exception.DecodingException;
 import org.indunet.fastproto.exception.EncodingException;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -36,6 +38,24 @@ import static org.junit.jupiter.api.Assertions.*;
  * @since 2.0.0
  */
 public class FormulaTest {
+    private static String originalLambdaEnabled;
+
+    @BeforeAll
+    public static void setUp() {
+        // Save original value and enable dynamic lambda compilation for tests
+        originalLambdaEnabled = System.getProperty(FormulaBuilder.LAMBDA_ENABLED_PROPERTY);
+        System.setProperty(FormulaBuilder.LAMBDA_ENABLED_PROPERTY, "true");
+    }
+
+    @AfterAll
+    public static void tearDown() {
+        // Restore original value
+        if (originalLambdaEnabled == null) {
+            System.clearProperty(FormulaBuilder.LAMBDA_ENABLED_PROPERTY);
+        } else {
+            System.setProperty(FormulaBuilder.LAMBDA_ENABLED_PROPERTY, originalLambdaEnabled);
+        }
+    }
     @AllArgsConstructor
     public static class TestObject1 {
         @Int8Type(offset = 0)

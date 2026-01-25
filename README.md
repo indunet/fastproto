@@ -46,14 +46,16 @@ See the [CHANGELOG](CHANGELOG.md) for recent updates.
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.12.3</version>
+    <version>4.0.0</version>
 </dependency>
-```
 
-* Gradle
-
-```gradle
-implementation "org.indunet:fastproto:3.12.3"
+<!-- Optional: For lambda formula support (@DecodingFormula(lambda="...")) -->
+<dependency>
+    <groupId>org.indunet</groupId>
+    <artifactId>fastproto-processor</artifactId>
+    <version>4.0.0</version>
+    <scope>provided</scope>
+</dependency>
 ```
 
 
@@ -169,6 +171,8 @@ public class Weather {
 }
 ```
 
+> **Note:** Lambda formulas require the `fastproto-processor` module. Add it as a `provided` scope dependency. See [Android guide](docs/android.md) for details.
+
 
 ## *2. Annotations*
 
@@ -271,6 +275,17 @@ Users can customize formula in two ways. For simple formulas, it is recommended 
 complex formula, it is recommended to customize formula classes by implementing the `java.lang.function.Function` interface.
 
 * *Lambda Expression*
+
+Lambda formulas are processed at compile time by the FastProto annotation processor (`fastproto-processor`). This ensures compatibility with Android and Java 11+ JRE environments. Simply add the processor dependency:
+
+```xml
+<dependency>
+    <groupId>org.indunet</groupId>
+    <artifactId>fastproto-processor</artifactId>
+    <version>4.0.0</version>
+    <scope>provided</scope>
+</dependency>
+```
 
 ```java
 import org.indunet.fastproto.annotation.DecodingFormula;

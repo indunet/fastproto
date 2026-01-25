@@ -2,6 +2,51 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.0.0] - 2026-01-26
+### Breaking Changes
+- **Multi-module restructure**: Project split into two modules:
+  - `fastproto` - Core library with all runtime functionality (backwards compatible artifactId)
+  - `fastproto-processor` - Annotation processor for compile-time formula generation
+- Dynamic lambda compilation is now disabled by default for better Android/JRE compatibility
+
+### Added
+- `fastproto-processor` module with SPI auto-discovery for annotation processors
+- `FormulaProcessor` - Generates `Function` classes at compile time for `@DecodingFormula(lambda="...")` and `@EncodingFormula(lambda="...")`
+- `CodecProcessor` - Generates codec wrapper classes for `@GenerateCodec` annotated classes
+- `FormulaRegistry` - Runtime lookup for compile-time generated formula classes
+- Full Android and Java 11+ JRE compatibility for lambda formulas via annotation processor
+
+### Changed
+- Lambda formulas now use compile-time code generation instead of runtime dynamic compilation
+- Users need to add `fastproto-processor` as a dependency to use lambda formula features
+- Updated documentation for new multi-module structure
+
+### Migration Guide
+For users upgrading from 3.x:
+
+**Maven:**
+```xml
+<dependency>
+    <groupId>org.indunet</groupId>
+    <artifactId>fastproto</artifactId>
+    <version>4.0.0</version>
+</dependency>
+<!-- Add if using lambda formulas -->
+<dependency>
+    <groupId>org.indunet</groupId>
+    <artifactId>fastproto-processor</artifactId>
+    <version>4.0.0</version>
+    <scope>provided</scope>
+</dependency>
+```
+
+**Gradle:**
+```groovy
+implementation 'org.indunet:fastproto:4.0.0'
+// Add if using lambda formulas
+annotationProcessor 'org.indunet:fastproto-processor:4.0.0'
+```
+
 ## [3.12.3] - 2025-11-23
 ### Added
 - New `@BcdType` annotation and `BcdCodec` for fixed-length packed BCD integers (with byte order support), mapped to `int` / `Integer`.

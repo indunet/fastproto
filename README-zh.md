@@ -45,14 +45,16 @@ FastProto 是一个面向 **二进制通信协议** 的高性能序列化 / 反�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>3.12.3</version>
+    <version>4.0.0</version>
 </dependency>
-```
 
-* Gradle
-
-```gradle
-implementation "org.indunet:fastproto:3.12.3"
+<!-- 可选：使用 lambda 公式时需要 (@DecodingFormula(lambda="...")) -->
+<dependency>
+    <groupId>org.indunet</groupId>
+    <artifactId>fastproto-processor</artifactId>
+    <version>4.0.0</version>
+    <scope>provided</scope>
+</dependency>
 ```
 
 ## *1. 快速入门*
@@ -168,6 +170,8 @@ public class Weather {
 }
 ```
 
+> **注意:** Lambda 公式需要 `fastproto-processor` 模块，请将其添加为 `provided` 作用域的依赖。详见 [Android 指南](docs/android.md)。
+
 
 ## *2. 注解*
 
@@ -266,6 +270,17 @@ public class Weather {
 用户可以通过两种方式自定义公式，形式较为简单的公式建议使用Lambda表达式，形式较为复杂的公式建议自定义公式类并实现`java.lang.function.Function`接口。
 
 * *Lambda表达式*
+
+Lambda 公式由 FastProto 注解处理器（`fastproto-processor`）在编译时处理，这确保了与 Android 和 Java 11+ JRE 环境的兼容性。只需添加处理器依赖：
+
+```xml
+<dependency>
+    <groupId>org.indunet</groupId>
+    <artifactId>fastproto-processor</artifactId>
+    <version>4.0.0</version>
+    <scope>provided</scope>
+</dependency>
+```
 
 ```java
 import org.indunet.fastproto.annotation.DecodingFormula;
