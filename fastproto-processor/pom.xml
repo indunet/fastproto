@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>org.indunet</groupId>
+        <artifactId>fastproto-parent</artifactId>
+        <version>4.0.0</version>
+    </parent>
+
+    <artifactId>fastproto-processor</artifactId>
+    <packaging>jar</packaging>
+    <name>FastProto Annotation Processor</name>
+    <description>FastProto annotation processor for compile-time formula class generation</description>
+
+    <dependencies>
+        <!-- Core module -->
+        <dependency>
+            <groupId>org.indunet</groupId>
+            <artifactId>fastproto</artifactId>
+        </dependency>
+
+        <!-- Testing -->
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <!-- Disable annotation processing when compiling the processor itself
+                         to avoid chicken-and-egg problem with SPI service loading -->
+                    <proc>none</proc>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

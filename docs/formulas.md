@@ -9,7 +9,7 @@ Formulas let you convert between raw on‑wire values and engineering values. Yo
 - Decode formula: raw -> target field type
 - Encode formula: target field type -> raw
 
-> Android note: avoid string-based lambdas in annotations; use class-based `Function` implementations instead. See `docs/android.md`.
+> **Note:** Lambda formulas require the `fastproto-processor` module for compile-time code generation. This ensures compatibility with Android and Java 11+ JRE environments. See [Android guide](android.md) for setup details.
 
 ## Quick Steps
 
@@ -28,9 +28,20 @@ Formulas let you convert between raw on‑wire values and engineering values. Yo
   - Example: reverse the above conversion.
 
 ### Lambda vs Class
-- Lambda: `@DecodingFormula(lambda = "...")` / `@EncodingFormula(lambda = "...")`
+- Lambda: `@DecodingFormula(lambda = "...")` / `@EncodingFormula(lambda = "...")` — requires `fastproto-processor` dependency
 - Class: `@DecodingFormula(MyFunc.class)` / `@EncodingFormula(MyFunc.class)` where class implements `Function<In, Out>`
 - Precedence: Class‑based formulas win if both lambda and class are present.
+
+### Lambda Processor Setup
+To use lambda expressions, add the annotation processor:
+```xml
+<dependency>
+    <groupId>org.indunet</groupId>
+    <artifactId>fastproto-processor</artifactId>
+    <version>4.0.0</version>
+    <scope>provided</scope>
+</dependency>
+```
 
 ### Lifecycle & Errors
 - Formulas are compiled/bound during graph resolve and invoked per field during decode/encode.

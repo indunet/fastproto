@@ -2,6 +2,51 @@
 
 本文件用于记录本项目的所有重要变更。
 
+## [4.0.0] - 2026-01-26
+### 重大变更
+- **多模块重构**：项目拆分为两个模块：
+  - `fastproto` - 核心库，包含所有运行时功能（artifactId 保持向后兼容）
+  - `fastproto-processor` - 注解处理器，用于编译时公式类生成
+- 动态 lambda 编译默认禁用，以提升 Android/JRE 兼容性
+
+### 新增
+- `fastproto-processor` 模块，支持 SPI 自动发现注解处理器
+- `FormulaProcessor` - 在编译时为 `@DecodingFormula(lambda="...")` 和 `@EncodingFormula(lambda="...")` 生成 `Function` 实现类
+- `CodecProcessor` - 为 `@GenerateCodec` 注解的类生成编解码包装器
+- `FormulaRegistry` - 运行时查找编译时生成的公式类
+- 通过注解处理器实现完整的 Android 和 Java 11+ JRE 兼容性
+
+### 变更
+- Lambda 公式现在使用编译时代码生成，而非运行时动态编译
+- 使用 lambda 公式功能需要添加 `fastproto-processor` 依赖
+- 更新文档以反映新的多模块结构
+
+### 升级指南
+从 3.x 升级的用户：
+
+**Maven:**
+```xml
+<dependency>
+    <groupId>org.indunet</groupId>
+    <artifactId>fastproto</artifactId>
+    <version>4.0.0</version>
+</dependency>
+<!-- 使用 lambda 公式时添加 -->
+<dependency>
+    <groupId>org.indunet</groupId>
+    <artifactId>fastproto-processor</artifactId>
+    <version>4.0.0</version>
+    <scope>provided</scope>
+</dependency>
+```
+
+**Gradle:**
+```groovy
+implementation 'org.indunet:fastproto:4.0.0'
+// 使用 lambda 公式时添加
+annotationProcessor 'org.indunet:fastproto-processor:4.0.0'
+```
+
 ## [3.12.3] - 2025-11-23
 ### 新增
 - 新增 `@BcdType` 注解与 `BcdCodec`，支持定长 packed BCD 整数（支持大小端），映射到 `int` / `Integer` 类型。

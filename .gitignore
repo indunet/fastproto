@@ -24,8 +24,10 @@ hs_err_pid*
 
 # IDE Files
 .idea/
-/target
-fastproto.iml
+*.iml
+
+# Maven build output
+target/
 
 # Development notes
 dev_note.md
