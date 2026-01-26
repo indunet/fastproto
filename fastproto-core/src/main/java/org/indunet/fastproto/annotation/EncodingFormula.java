@@ -38,7 +38,8 @@ public @interface EncodingFormula {
     Class<? extends Function<?, ?>>[] value() default {};
 
     /**
-     * Java lambda expression in the form of string, FastProto can automatically compile it into class.
+     * Java lambda expression in the form of string.
+     * Requires fastproto-processor dependency to generate formula classes at compile time.
      */
     String lambda() default "";
 }

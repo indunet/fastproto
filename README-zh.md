@@ -45,15 +45,7 @@ FastProto 是一个面向 **二进制通信协议** 的高性能序列化 / 反�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>4.0.0</version>
-</dependency>
-
-<!-- 可选：使用 lambda 公式时需要 (@DecodingFormula(lambda="...")) -->
-<dependency>
-    <groupId>org.indunet</groupId>
-    <artifactId>fastproto-processor</artifactId>
-    <version>4.0.0</version>
-    <scope>provided</scope>
+    <version>4.1.0</version>
 </dependency>
 ```
 

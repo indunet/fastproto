@@ -2,6 +2,34 @@
 
 本文件用于记录本项目的所有重要变更。
 
+## [4.1.0] - 2026-01-27
+### 新增
+- **fastproto 聚合模块**：新增 `fastproto-bundle` 模块（artifactId 为 `fastproto`），聚合 core 和 processor，用户只需引用一个依赖即可获得完整功能
+- Bundle 模块集成测试，验证聚合后功能正常
+
+### 移除
+- 移除 `CodecProcessor` 和 `@GenerateCodec` 注解（功能价值有限）
+- 移除运行时动态编译功能（`FormulaBuilder` 及相关类），lambda 公式现在完全依赖编译时代码生成
+
+### 变更
+- 项目结构调整为三模块：
+  - `fastproto-core` - 核心库
+  - `fastproto-processor` - 注解处理器
+  - `fastproto` (bundle) - 聚合模块，推荐用户使用
+- 更新文档，简化依赖引用说明
+
+### 升级指南
+从 4.0.0 升级的用户，现在只需引用一个依赖：
+
+**Maven:**
+```xml
+<dependency>
+    <groupId>org.indunet</groupId>
+    <artifactId>fastproto</artifactId>
+    <version>4.1.0</version>
+</dependency>
+```
+
 ## [4.0.0] - 2026-01-26
 ### 重大变更
 - **多模块重构**：项目拆分为两个模块：

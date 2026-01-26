@@ -46,15 +46,7 @@ See the [CHANGELOG](CHANGELOG.md) for recent updates.
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>4.0.0</version>
-</dependency>
-
-<!-- Optional: For lambda formula support (@DecodingFormula(lambda="...")) -->
-<dependency>
-    <groupId>org.indunet</groupId>
-    <artifactId>fastproto-processor</artifactId>
-    <version>4.0.0</version>
-    <scope>provided</scope>
+    <version>4.1.0</version>
 </dependency>
 ```
 

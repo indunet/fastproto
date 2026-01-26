@@ -10,16 +10,19 @@
         <version>4.1.0</version>
     </parent>
 
-    <artifactId>fastproto-processor</artifactId>
+    <artifactId>fastproto</artifactId>
     <packaging>jar</packaging>
-    <name>FastProto Annotation Processor</name>
-    <description>FastProto annotation processor for compile-time formula class generation</description>
+    <name>FastProto</name>
+    <description>FastProto all-in-one bundle including core and annotation processor</description>
 
     <dependencies>
-        <!-- Core module -->
         <dependency>
             <groupId>org.indunet</groupId>
             <artifactId>fastproto-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.indunet</groupId>
+            <artifactId>fastproto-processor</artifactId>
         </dependency>
 
         <!-- Testing -->
@@ -27,19 +30,9 @@
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
         </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
     </dependencies>
-
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <!-- Disable annotation processing when compiling the processor itself
-                         to avoid chicken-and-egg problem with SPI service loading -->
-                    <proc>none</proc>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
 </project>
