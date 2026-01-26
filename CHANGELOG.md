@@ -2,6 +2,34 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.1.0] - 2026-01-27
+### Added
+- **fastproto bundle module**: New `fastproto-bundle` module (artifactId: `fastproto`) that aggregates core and processor, allowing users to include just one dependency for full functionality
+- Integration tests for the bundle module to verify aggregated functionality
+
+### Removed
+- Removed `CodecProcessor` and `@GenerateCodec` annotation (limited practical value)
+- Removed runtime dynamic compilation (`FormulaBuilder` and related classes); lambda formulas now rely entirely on compile-time code generation
+
+### Changed
+- Project restructured into three modules:
+  - `fastproto-core` - Core library
+  - `fastproto-processor` - Annotation processor
+  - `fastproto` (bundle) - Aggregator module, recommended for users
+- Updated documentation to simplify dependency references
+
+### Migration Guide
+Users upgrading from 4.0.0 now only need one dependency:
+
+**Maven:**
+```xml
+<dependency>
+    <groupId>org.indunet</groupId>
+    <artifactId>fastproto</artifactId>
+    <version>4.1.0</version>
+</dependency>
+```
+
 ## [4.0.0] - 2026-01-26
 ### Breaking Changes
 - **Multi-module restructure**: Project split into two modules:

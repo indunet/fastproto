@@ -10,15 +10,20 @@ Add the dependency via Maven:
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>4.0.0</version>
+    <version>4.1.0</version>
 </dependency>
+```
 
-<!-- Optional: For lambda formula support (@DecodingFormula(lambda="...")) -->
+This bundle includes both core library and annotation processor for lambda formula support.
+
+For Android projects or if you only need core functionality:
+
+```xml
+<!-- Core only (no lambda formula support) -->
 <dependency>
     <groupId>org.indunet</groupId>
-    <artifactId>fastproto-processor</artifactId>
-    <version>4.0.0</version>
-    <scope>provided</scope>
+    <artifactId>fastproto-core</artifactId>
+    <version>4.1.0</version>
 </dependency>
 ```
 

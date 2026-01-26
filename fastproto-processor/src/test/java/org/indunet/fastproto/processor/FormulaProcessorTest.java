@@ -18,7 +18,6 @@ package org.indunet.fastproto.processor;
 
 import org.junit.jupiter.api.Test;
 
-import javax.annotation.processing.Processor;
 import javax.tools.*;
 import java.io.File;
 import java.io.IOException;

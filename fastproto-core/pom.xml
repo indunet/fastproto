@@ -7,10 +7,10 @@
     <parent>
         <groupId>org.indunet</groupId>
         <artifactId>fastproto-parent</artifactId>
-        <version>4.0.0</version>
+        <version>4.1.0</version>
     </parent>
 
-    <artifactId>fastproto</artifactId>
+    <artifactId>fastproto-core</artifactId>
     <packaging>jar</packaging>
     <name>FastProto Core</name>
     <description>FastProto core library for binary protocol serialization/deserialization</description>
