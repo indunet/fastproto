@@ -14,19 +14,6 @@ Add the dependency via Maven:
 </dependency>
 ```
 
-This bundle includes both core library and annotation processor for lambda formula support.
-
-For Android projects or if you only need core functionality:
-
-```xml
-<!-- Core only (no lambda formula support) -->
-<dependency>
-    <groupId>org.indunet</groupId>
-    <artifactId>fastproto-core</artifactId>
-    <version>4.1.0</version>
-</dependency>
-```
-
 ## Define Your Protocol Model
 
 Suppose you receive a 20-byte packet from a weather device.

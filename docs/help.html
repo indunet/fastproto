@@ -6,6 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="description" content="FastProto documentation: annotation mapping, byte/bit order, checksum/CRC, formulas, arrays & strings, APIs without annotations, FAQ.">
   <link rel="icon" href="../logo.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css" data-hljs-theme>
   <style>
     :root{
       --bg:#f7f9fc; --card:#ffffff; --text:#111; --muted:#4a5568; --brand:#2563eb; --accent:#059669;
@@ -60,6 +61,7 @@
     body{margin:0}
   </style>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/lib/highlight.min.js"></script>
   <script>
     // Fallback loader for marked.js if primary CDN blocked
     (function(){
@@ -69,11 +71,44 @@
           s.src=src; s.onload=resolve; s.onerror=reject; document.head.appendChild(s);
         });
       }
+      function loadCss(href){
+        return new Promise(function(resolve,reject){
+          var l=document.createElement('link');
+          l.rel='stylesheet'; l.href=href; l.onload=resolve; l.onerror=reject;
+          document.head.appendChild(l);
+        });
+      }
+      function ensureHljsTheme(){
+        if(document.querySelector('link[data-hljs-theme]')) return;
+        var themeLink=document.createElement('link');
+        themeLink.rel='stylesheet';
+        themeLink.href='https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github.min.css';
+        themeLink.setAttribute('data-hljs-theme','');
+        document.head.appendChild(themeLink);
+      }
       window.ensureMarked = async function(){
         if(window.marked) return;
         try{ await loadScript('https://unpkg.com/marked/marked.min.js'); }catch(e){}
         if(window.marked) return;
         try{ await loadScript('https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js'); }catch(e){}
+      };
+      window.ensureHljs = async function(){
+        if(window.hljs) return;
+        ensureHljsTheme();
+        try{
+          await loadScript('https://unpkg.com/highlight.js@11.9.0/lib/highlight.min.js');
+          return;
+        }catch(e){}
+        try{
+          await loadScript('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js');
+          return;
+        }catch(e){}
+        try{
+          await loadCss('https://unpkg.com/highlight.js@11.9.0/styles/github.min.css');
+        }catch(e){}
+        try{
+          await loadCss('https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github.min.css');
+        }catch(e){}
       };
     })();
   </script>
@@ -174,6 +209,10 @@
       if(!window.marked){ await window.ensureMarked(); }
       if(window.marked){
         docEl.innerHTML = marked.parse(md, { breaks: true });
+        if(!window.hljs){ await window.ensureHljs(); }
+        if(window.hljs){
+          docEl.querySelectorAll('pre code').forEach(block => window.hljs.highlightElement(block));
+        }
       }else{
         docEl.innerHTML = '<pre>'+ escapeHtml(md) +'</pre>';
       }
