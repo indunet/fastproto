@@ -1,0 +1,88 @@
+1:"$Sreact.fragment"
+4:I[484,[],"OutletBoundary"]
+5:"$Sreact.suspense"
+2:T31b9,<h1>Using APIs without Annotations</h1>
+<p>Operate on byte buffers directly when you cannot or do not want to decorate classes with annotations.</p>
+<h2>Overview</h2>
+<p>FastProto offers two complementary ways to work without annotations:</p>
+<ul>
+<li>Chain APIs: fluent builders for decode/encode with field names for later mapping</li>
+<li>Utility methods: static helpers to read/write primitive values</li>
+</ul>
+<h2>When to Use</h2>
+<ul>
+<li>Data objects come from third‑party libraries and cannot be modified</li>
+<li>You need a quick script/tool to inspect or craft binary frames</li>
+<li>Prototyping before locking a schema</li>
+</ul>
+<h2>Quick Steps</h2>
+<ol>
+<li>Decide buffer length and create/obtain the <code>byte[]</code></li>
+<li>Use chain API or utilities to read/write values at specific offsets</li>
+<li>If needed, map decoded values to a POJO by matching field names</li>
+</ol>
+<h2>Core Concepts</h2>
+<ul>
+<li>Addressing is 0‑based byte offsets; bit fields specify <code>byteOffset</code> + <code>bitOffset</code></li>
+<li>Endianness: utilities accept <code>ByteOrder</code>; chain API variants have overloads too</li>
+<li>Reverse addressing: use a fixed total length when writing near the tail</li>
+</ul>
+<h2>Decode Examples</h2>
+<h3>Chain API: decode then map to a class</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">byte</span><span style="color:#24292E">[] bytes </span><span style="color:#D73A49">=</span><span style="color:#24292E"> ...; </span><span style="color:#6A737D">// input buffer</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#D73A49">class</span><span style="color:#6F42C1"> Obj</span><span style="color:#24292E"> { Boolean f1; Integer f2; Integer f3; }</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#24292E">Obj obj </span><span style="color:#D73A49">=</span><span style="color:#24292E"> FastProto.</span><span style="color:#6F42C1">decode</span><span style="color:#24292E">(bytes)</span></span>
+<span data-line=""><span style="color:#24292E">  .</span><span style="color:#6F42C1">readBool</span><span style="color:#24292E">(</span><span style="color:#032F62">"f1"</span><span style="color:#24292E">, </span><span style="color:#005CC5">0</span><span style="color:#24292E">, </span><span style="color:#005CC5">0</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#24292E">  .</span><span style="color:#6F42C1">readInt8</span><span style="color:#24292E">(</span><span style="color:#032F62">"f2"</span><span style="color:#24292E">, </span><span style="color:#005CC5">1</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#24292E">  .</span><span style="color:#6F42C1">readInt16</span><span style="color:#24292E">(</span><span style="color:#032F62">"f3"</span><span style="color:#24292E">, </span><span style="color:#005CC5">2</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#24292E">  .</span><span style="color:#6F42C1">mapTo</span><span style="color:#24292E">(Obj.class);</span></span></code></pre></figure>
+<h3>Utilities: read directly</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> org.indunet.fastproto.util.DecodeUtils;</span></span>
+<span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> org.indunet.fastproto.ByteOrder;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#D73A49">byte</span><span style="color:#24292E">[] bytes </span><span style="color:#D73A49">=</span><span style="color:#24292E"> ...;</span></span>
+<span data-line=""><span style="color:#D73A49">boolean</span><span style="color:#24292E"> f1 </span><span style="color:#D73A49">=</span><span style="color:#24292E"> DecodeUtils.</span><span style="color:#6F42C1">readBool</span><span style="color:#24292E">(bytes, </span><span style="color:#005CC5">0</span><span style="color:#24292E">, </span><span style="color:#005CC5">0</span><span style="color:#24292E">);     </span><span style="color:#6A737D">// bit 0 in byte 0</span></span>
+<span data-line=""><span style="color:#D73A49">int</span><span style="color:#24292E">     f2 </span><span style="color:#D73A49">=</span><span style="color:#24292E"> DecodeUtils.</span><span style="color:#6F42C1">readInt8</span><span style="color:#24292E">(bytes, </span><span style="color:#005CC5">1</span><span style="color:#24292E">);</span></span>
+<span data-line=""><span style="color:#D73A49">int</span><span style="color:#24292E">     f3 </span><span style="color:#D73A49">=</span><span style="color:#24292E"> DecodeUtils.</span><span style="color:#6F42C1">readInt16</span><span style="color:#24292E">(bytes, </span><span style="color:#005CC5">2</span><span style="color:#24292E">, ByteOrder.LITTLE);</span></span>
+<span data-line=""><span style="color:#D73A49">long</span><span style="color:#24292E">    u32 </span><span style="color:#D73A49">=</span><span style="color:#24292E"> DecodeUtils.</span><span style="color:#6F42C1">readUInt32</span><span style="color:#24292E">(bytes, </span><span style="color:#005CC5">4</span><span style="color:#24292E">, ByteOrder.BIG);</span></span></code></pre></figure>
+<h2>Encode Examples</h2>
+<h3>Chain API: create and write</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> org.indunet.fastproto.ByteOrder;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#D73A49">byte</span><span style="color:#24292E">[] out </span><span style="color:#D73A49">=</span><span style="color:#24292E"> FastProto.</span><span style="color:#6F42C1">create</span><span style="color:#24292E">(</span><span style="color:#005CC5">12</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#24292E">  .</span><span style="color:#6F42C1">writeInt8</span><span style="color:#24292E">(</span><span style="color:#005CC5">0</span><span style="color:#24292E">, </span><span style="color:#005CC5">1</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#24292E">  .</span><span style="color:#6F42C1">writeUInt16</span><span style="color:#24292E">(</span><span style="color:#005CC5">2</span><span style="color:#24292E">, </span><span style="color:#005CC5">3</span><span style="color:#24292E">, </span><span style="color:#005CC5">4</span><span style="color:#24292E">)                  </span><span style="color:#6A737D">// two u16 values at 2..5</span></span>
+<span data-line=""><span style="color:#24292E">  .</span><span style="color:#6F42C1">writeUInt32</span><span style="color:#24292E">(</span><span style="color:#005CC5">6</span><span style="color:#24292E">, ByteOrder.BIG, </span><span style="color:#005CC5">256</span><span style="color:#24292E">)    </span><span style="color:#6A737D">// u32 at 6..9 (big‑endian)</span></span>
+<span data-line=""><span style="color:#24292E">  .</span><span style="color:#6F42C1">get</span><span style="color:#24292E">();</span></span></code></pre></figure>
+<h3>Utilities: write directly</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> org.indunet.fastproto.util.EncodeUtils;</span></span>
+<span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> org.indunet.fastproto.ByteOrder;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#D73A49">byte</span><span style="color:#24292E">[] out </span><span style="color:#D73A49">=</span><span style="color:#D73A49"> new</span><span style="color:#D73A49"> byte</span><span style="color:#24292E">[</span><span style="color:#005CC5">12</span><span style="color:#24292E">];</span></span>
+<span data-line=""><span style="color:#24292E">EncodeUtils.</span><span style="color:#6F42C1">writeInt8</span><span style="color:#24292E">(out, </span><span style="color:#005CC5">0</span><span style="color:#24292E">, </span><span style="color:#005CC5">1</span><span style="color:#24292E">);</span></span>
+<span data-line=""><span style="color:#24292E">EncodeUtils.</span><span style="color:#6F42C1">writeUInt16</span><span style="color:#24292E">(out, </span><span style="color:#005CC5">2</span><span style="color:#24292E">, </span><span style="color:#005CC5">3</span><span style="color:#24292E">);                       </span><span style="color:#6A737D">// little‑endian default</span></span>
+<span data-line=""><span style="color:#24292E">EncodeUtils.</span><span style="color:#6F42C1">writeUInt32</span><span style="color:#24292E">(out, </span><span style="color:#005CC5">6</span><span style="color:#24292E">, ByteOrder.BIG, </span><span style="color:#005CC5">256</span><span style="color:#24292E">);</span></span></code></pre></figure>
+<h2>Checksums (optional without annotations)</h2>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> org.indunet.fastproto.annotation.Checksum;</span></span>
+<span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> org.indunet.fastproto.checksum.ChecksumUtils;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#6A737D">// Compute CRC16 over bytes[0..4] and place it at offset 5..6 (little‑endian) manually</span></span>
+<span data-line=""><span style="color:#D73A49">byte</span><span style="color:#24292E">[] buf </span><span style="color:#D73A49">=</span><span style="color:#D73A49"> new</span><span style="color:#D73A49"> byte</span><span style="color:#24292E">[]{</span><span style="color:#005CC5">0x31</span><span style="color:#24292E">,</span><span style="color:#005CC5">0x32</span><span style="color:#24292E">,</span><span style="color:#005CC5">0x33</span><span style="color:#24292E">,</span><span style="color:#005CC5">0x34</span><span style="color:#24292E">,</span><span style="color:#005CC5">0x35</span><span style="color:#24292E">,</span><span style="color:#005CC5">0</span><span style="color:#24292E">,</span><span style="color:#005CC5">0</span><span style="color:#24292E">};</span></span>
+<span data-line=""><span style="color:#D73A49">long</span><span style="color:#24292E"> crc </span><span style="color:#D73A49">=</span><span style="color:#24292E"> ChecksumUtils.</span><span style="color:#6F42C1">calculate</span><span style="color:#24292E">(buf, </span><span style="color:#005CC5">0</span><span style="color:#24292E">, </span><span style="color:#005CC5">5</span><span style="color:#24292E">, Checksum.Type.CRC16);</span></span>
+<span data-line=""><span style="color:#24292E">EncodeUtils.</span><span style="color:#6F42C1">writeUInt16</span><span style="color:#24292E">(buf, </span><span style="color:#005CC5">5</span><span style="color:#24292E">, ByteOrder.LITTLE, (</span><span style="color:#D73A49">int</span><span style="color:#24292E">) crc);</span></span></code></pre></figure>
+<h2>Reverse Addressing</h2>
+<ul>
+<li>Use <code>FastProto.encode(object, totalLength)</code> or <code>FastProto.create(totalLength)</code> to safely reference trailing regions by absolute offsets</li>
+</ul>
+<h2>Best Practices &#x26; Troubleshooting</h2>
+<ul>
+<li>Be explicit about <code>ByteOrder</code> for multi‑byte values to match your spec</li>
+<li>Validate offsets and lengths; add assertions in tests</li>
+<li>Keep a single source of truth for constant offsets (centralize in one class)</li>
+<li>If decoded values look byte‑swapped, check endianness settings first</li>
+<li>For bit flags, confirm the bit numbering (LSB_0 vs MSB_0) used by the producing system</li>
+</ul>0:{"rsc":["$","$1","c",{"children":[["$","div",null,{"className":"relative rounded-xl bg-white border border-gray-200 shadow-sm transition-shadow duration-200 min-h-[60vh] p-6 md:p-8","children":["$","div",null,{"className":"doc-html max-w-none","dangerouslySetInnerHTML":{"__html":"$2"}}]}],null,"$L3"]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"14vgaofgu69yYIknMk5Nf"}
+3:["$","$L4",null,{"children":["$","$5",null,{"name":"Next.MetadataOutlet","children":"$@6"}]}]
+6:null

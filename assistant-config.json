@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "generatedAt": "2026-04-05T14:33:17.983Z",
+  "basePath": "/fastproto",
+  "guides": [
+    {
+      "id": "quick-start",
+      "title": "Quick Start",
+      "href": "/fastproto/help/quick-start"
+    },
+    {
+      "id": "annotation-mapping",
+      "title": "Annotation Mapping",
+      "href": "/fastproto/help/annotation-mapping"
+    },
+    {
+      "id": "byte-and-bit-order",
+      "title": "Byte & Bit Order",
+      "href": "/fastproto/help/byte-and-bit-order"
+    },
+    {
+      "id": "checksum",
+      "title": "Checksum / CRC",
+      "href": "/fastproto/help/checksum"
+    },
+    {
+      "id": "expect",
+      "title": "Expect Assertions",
+      "href": "/fastproto/help/expect"
+    },
+    {
+      "id": "formulas",
+      "title": "Transformation Formulas",
+      "href": "/fastproto/help/formulas"
+    },
+    {
+      "id": "arrays-and-strings",
+      "title": "Arrays & Strings",
+      "href": "/fastproto/help/arrays-and-strings"
+    },
+    {
+      "id": "variable-length",
+      "title": "Variable Length & Struct Arrays",
+      "href": "/fastproto/help/variable-length"
+    },
+    {
+      "id": "dynamic-offset",
+      "title": "Dynamic Offset (offsetRef)",
+      "href": "/fastproto/help/dynamic-offset"
+    },
+    {
+      "id": "without-annotations",
+      "title": "APIs without Annotations",
+      "href": "/fastproto/help/without-annotations"
+    },
+    {
+      "id": "android",
+      "title": "Android",
+      "href": "/fastproto/help/android"
+    },
+    {
+      "id": "netty-integration",
+      "title": "Netty Integration",
+      "href": "/fastproto/help/netty-integration"
+    },
+    {
+      "id": "kafka-integration",
+      "title": "Kafka Integration",
+      "href": "/fastproto/help/kafka-integration"
+    },
+    {
+      "id": "faq",
+      "title": "FAQ",
+      "href": "/fastproto/help/faq"
+    }
+  ]
+}

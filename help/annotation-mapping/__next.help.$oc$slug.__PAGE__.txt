@@ -1,0 +1,329 @@
+1:"$Sreact.fragment"
+4:I[484,[],"OutletBoundary"]
+5:"$Sreact.suspense"
+2:T348e,<h1>Annotation Mapping</h1>
+<p>A practical guide to map binary data to Java fields using FastProto annotations.</p>
+<h2>Overview</h2>
+<p>FastProto uses annotations placed on fields to describe how bytes map to values. During decode/encode, these annotations drive the binary-to-object conversion.</p>
+<h2>Quick Mapping Steps</h2>
+<ol>
+<li>Identify each field’s byte offset (and bit offset if needed).</li>
+<li>Pick the proper data type annotation (e.g., <code>@UInt16Type</code>).</li>
+<li>Specify endianness only when it deviates from your class/global default.</li>
+<li>For strings/arrays, specify <code>length</code>.</li>
+<li>Validate no overlaps and that total length matches the buffer size.</li>
+</ol>
+<h2>Core Concepts</h2>
+<ul>
+<li><strong>Offsets</strong>: <code>offset</code> is the start byte index (0‑based). Bit fields use <code>byteOffset</code> + <code>bitOffset</code>.</li>
+<li><strong>Byte/Bit Order</strong>: Use <code>@DefaultByteOrder</code> / <code>@DefaultBitOrder</code> at class level; override per field only when necessary. See <a href="/help/byte-and-bit-order">Byte &#x26; Bit Order</a>.</li>
+<li><strong>Lengths</strong>: Strings and arrays require an explicit <code>length</code> (fixed-length mapping).</li>
+</ul>
+<h2>Reference Tables</h2>
+<h3>Primitive &#x26; Unsigned Types</h3>
+<table>
+<thead>
+<tr>
+<th align="center">Annotation</th>
+<th align="center">Java</th>
+<th align="center">C/C++</th>
+<th align="center">Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">@BoolType</td>
+<td align="center">Boolean/boolean</td>
+<td align="center">bool</td>
+<td align="center">1 bit</td>
+</tr>
+<tr>
+<td align="center">@AsciiType</td>
+<td align="center">Character/char</td>
+<td align="center">char</td>
+<td align="center">1 byte</td>
+</tr>
+<tr>
+<td align="center">@CharType</td>
+<td align="center">Character/char</td>
+<td align="center">--</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">@Int8Type</td>
+<td align="center">Byte/byte/Integer/int</td>
+<td align="center">char</td>
+<td align="center">1 byte</td>
+</tr>
+<tr>
+<td align="center">@Int16Type</td>
+<td align="center">Short/short / Integer/int</td>
+<td align="center">short</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">@Int32Type</td>
+<td align="center">Integer/int</td>
+<td align="center">int</td>
+<td align="center">4 bytes</td>
+</tr>
+<tr>
+<td align="center">@Int64Type</td>
+<td align="center">Long/long</td>
+<td align="center">long</td>
+<td align="center">8 bytes</td>
+</tr>
+<tr>
+<td align="center">@BitFieldType</td>
+<td align="center">Integer/int</td>
+<td align="center">--</td>
+<td align="center">1..31 bits</td>
+</tr>
+<tr>
+<td align="center">@UInt8Type</td>
+<td align="center">Integer/int</td>
+<td align="center">unsigned char</td>
+<td align="center">1 byte</td>
+</tr>
+<tr>
+<td align="center">@UInt16Type</td>
+<td align="center">Integer/int</td>
+<td align="center">unsigned short</td>
+<td align="center">2 bytes</td>
+</tr>
+<tr>
+<td align="center">@UInt32Type</td>
+<td align="center">Long/long</td>
+<td align="center">unsigned int</td>
+<td align="center">4 bytes</td>
+</tr>
+<tr>
+<td align="center">@UInt64Type</td>
+<td align="center">BigInteger</td>
+<td align="center">unsigned long</td>
+<td align="center">8 bytes</td>
+</tr>
+<tr>
+<td align="center">@FloatType</td>
+<td align="center">Float/float</td>
+<td align="center">float</td>
+<td align="center">4 bytes</td>
+</tr>
+<tr>
+<td align="center">@DoubleType</td>
+<td align="center">Double/double</td>
+<td align="center">double</td>
+<td align="center">8 bytes</td>
+</tr>
+<tr>
+<td align="center">@BcdType</td>
+<td align="center">Integer/int</td>
+<td align="center">BCD</td>
+<td align="center">N bytes</td>
+</tr>
+</tbody>
+</table>
+<h3>Composite Types</h3>
+<table>
+<thead>
+<tr>
+<th align="center">Annotation</th>
+<th align="center">Java</th>
+<th align="center">C/C++</th>
+<th align="center">Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">@StringType</td>
+<td align="center">String/StringBuilder/StringBuffer</td>
+<td align="center">--</td>
+<td align="center">N bytes</td>
+</tr>
+<tr>
+<td align="center">@TimeType</td>
+<td align="center">Timestamp/Date/Calendar/Instant</td>
+<td align="center">long</td>
+<td align="center">8 bytes</td>
+</tr>
+<tr>
+<td align="center">@EnumType</td>
+<td align="center">enum</td>
+<td align="center">enum</td>
+<td align="center">1 byte</td>
+</tr>
+</tbody>
+</table>
+<h3>Array Types</h3>
+<table>
+<thead>
+<tr>
+<th align="center">Annotation</th>
+<th align="center">Java</th>
+<th align="center">C/C++</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">@BinaryType</td>
+<td align="center">Byte[]/byte[]/Collection</td>
+<td align="center">char[]</td>
+</tr>
+<tr>
+<td align="center">@BoolArrayType</td>
+<td align="center">Boolean[]/boolean[]/Collection</td>
+<td align="center">bool[]</td>
+</tr>
+<tr>
+<td align="center">@AsciiArrayType</td>
+<td align="center">Character[]/char[]/Collection</td>
+<td align="center">char[]</td>
+</tr>
+<tr>
+<td align="center">@CharArrayType</td>
+<td align="center">Character[]/char[]/Collection</td>
+<td align="center">--</td>
+</tr>
+<tr>
+<td align="center">@Int8ArrayType</td>
+<td align="center">Byte[]/byte[]/Integer[]/int[]/Collection/Collection</td>
+<td align="center">char[]</td>
+</tr>
+<tr>
+<td align="center">@Int16ArrayType</td>
+<td align="center">Short[]/short[]/Integer[]/int[]/Collection/Collection</td>
+<td align="center">short[]</td>
+</tr>
+<tr>
+<td align="center">@Int32ArrayType</td>
+<td align="center">Integer[]/int[]/Collection</td>
+<td align="center">int[]</td>
+</tr>
+<tr>
+<td align="center">@Int64ArrayType</td>
+<td align="center">Long[]/long[]/Collection</td>
+<td align="center">long[]</td>
+</tr>
+<tr>
+<td align="center">@UInt8ArrayType</td>
+<td align="center">Integer[]/int[]/Collection</td>
+<td align="center">unsigned char[]</td>
+</tr>
+<tr>
+<td align="center">@UInt16ArrayType</td>
+<td align="center">Integer[]/int[]/Collection</td>
+<td align="center">unsigned short[]</td>
+</tr>
+<tr>
+<td align="center">@UInt32ArrayType</td>
+<td align="center">Long[]/long[]/Collection</td>
+<td align="center">unsigned int[]</td>
+</tr>
+<tr>
+<td align="center">@UInt64ArrayType</td>
+<td align="center">BigInteger[]/Collection</td>
+<td align="center">unsigned long[]</td>
+</tr>
+<tr>
+<td align="center">@FloatArrayType</td>
+<td align="center">Float[]/float[]/Collection</td>
+<td align="center">float[]</td>
+</tr>
+<tr>
+<td align="center">@DoubleArrayType</td>
+<td align="center">Double[]/double[]/Collection</td>
+<td align="center">double[]</td>
+</tr>
+</tbody>
+</table>
+<h3>Supplementary Annotations</h3>
+<table>
+<thead>
+<tr>
+<th align="center">Annotation</th>
+<th align="center">Scope</th>
+<th align="center">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="center">@DefaultByteOrder</td>
+<td align="center">Class</td>
+<td align="center">Default byte order (fallback to little-endian)</td>
+</tr>
+<tr>
+<td align="center">@DefaultBitOrder</td>
+<td align="center">Class</td>
+<td align="center">Default bit order (fallback to LSB_0)</td>
+</tr>
+<tr>
+<td align="center">@DecodingIgnore</td>
+<td align="center">Field</td>
+<td align="center">Ignore the field when decoding</td>
+</tr>
+<tr>
+<td align="center">@EncodingIgnore</td>
+<td align="center">Field</td>
+<td align="center">Ignore the field when encoding</td>
+</tr>
+<tr>
+<td align="center">@DecodingFormula</td>
+<td align="center">Field</td>
+<td align="center">Decoding formula (lambda or Function class)</td>
+</tr>
+<tr>
+<td align="center">@EncodingFormula</td>
+<td align="center">Field</td>
+<td align="center">Encoding formula (lambda or Function class)</td>
+</tr>
+<tr>
+<td align="center">@AutoType</td>
+<td align="center">Field</td>
+<td align="center">Infer type automatically (see defaults per Java type)</td>
+</tr>
+<tr>
+<td align="center">@Expect</td>
+<td align="center">Field</td>
+<td align="center">Constant assertion at fixed offset; verify/write</td>
+</tr>
+<tr>
+<td align="center">@Expects</td>
+<td align="center">Field</td>
+<td align="center">Container for multiple @Expect entries</td>
+</tr>
+</tbody>
+</table>
+<h2>Examples</h2>
+<h3>Basic object</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> org.indunet.fastproto.annotation.</span><span style="color:#005CC5">*</span><span style="color:#24292E">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> Weather</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">UInt8Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0</span><span style="color:#24292E">) </span><span style="color:#D73A49">int</span><span style="color:#24292E"> id;</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">TimeType</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 2</span><span style="color:#24292E">) java.sql.Timestamp time;</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">UInt16Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 10</span><span style="color:#24292E">) </span><span style="color:#D73A49">int</span><span style="color:#24292E"> humidity;</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">Int16Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 12</span><span style="color:#24292E">) </span><span style="color:#D73A49">int</span><span style="color:#24292E"> temperature;</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">UInt32Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 14</span><span style="color:#24292E">) </span><span style="color:#D73A49">long</span><span style="color:#24292E"> pressure;</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<h3>Nested object</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> Header</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">UInt8Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0</span><span style="color:#24292E">) </span><span style="color:#D73A49">int</span><span style="color:#24292E"> version;</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">UInt8Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 1</span><span style="color:#24292E">) </span><span style="color:#D73A49">int</span><span style="color:#24292E"> flags;</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> Frame</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#24292E">  Header header;               </span><span style="color:#6A737D">// map a nested class</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">UInt16Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 2</span><span style="color:#24292E">) </span><span style="color:#D73A49">int</span><span style="color:#24292E"> length;</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<h2>Advanced: Reverse Addressing</h2>
+<ul>
+<li>Encode to a fixed-length buffer via <code>FastProto.encode(obj, length)</code> so fields near the end can be addressed safely.</li>
+</ul>
+<h2>Best Practices</h2>
+<ul>
+<li>Keep offsets aligned and avoid overlaps; leave explicit gaps with comments when reserving bytes.</li>
+<li>Prefer class-level defaults for byte/bit order, override only when needed. See <a href="/help/byte-and-bit-order">Byte &#x26; Bit Order</a>.</li>
+<li>For checksums, use a single <code>@Checksum</code> (start/length/offset). See <a href="/help/checksum">Checksum/CRC</a>.</li>
+<li>For magic bytes and fixed version fields, prefer <code>@Expect</code>. See <a href="/help/expect">Expect Assertions</a>.</li>
+</ul>0:{"rsc":["$","$1","c",{"children":[["$","div",null,{"className":"relative rounded-xl bg-white border border-gray-200 shadow-sm transition-shadow duration-200 min-h-[60vh] p-6 md:p-8","children":["$","div",null,{"className":"doc-html max-w-none","dangerouslySetInnerHTML":{"__html":"$2"}}]}],null,"$L3"]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"14vgaofgu69yYIknMk5Nf"}
+3:["$","$L4",null,{"children":["$","$5",null,{"name":"Next.MetadataOutlet","children":"$@6"}]}]
+6:null

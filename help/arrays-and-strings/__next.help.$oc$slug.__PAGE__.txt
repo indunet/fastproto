@@ -1,0 +1,84 @@
+1:"$Sreact.fragment"
+4:I[484,[],"OutletBoundary"]
+5:"$Sreact.suspense"
+2:T33fa,<h1>Arrays &#x26; Strings</h1>
+<p>A focused guide on mapping strings and arrays: how <code>offset</code> and <code>length</code> work, element endianness, and common pitfalls.</p>
+<h2>Overview</h2>
+<p>Strings and arrays are fixed-length in FastProto. You declare the starting byte offset and an explicit length (in bytes for strings, in elements for arrays). During encode/decode, FastProto reads/writes exactly that span.</p>
+<h2>Quick Steps</h2>
+<ol>
+<li>Decide the start byte <code>offset</code> for the field.</li>
+<li>For strings, specify <code>length</code> (bytes). For arrays, specify <code>length</code> (elements).</li>
+<li>If numeric array elements need a specific endianness, set <code>byteOrder</code> on the array annotation.</li>
+<li>Verify the declared region fits entirely in your buffer.</li>
+</ol>
+<h2>Core Concepts</h2>
+<ul>
+<li><strong>Fixed length</strong>: Strings/arrays are not auto‑sized; the declared <code>length</code> is authoritative.</li>
+<li><strong>Padding/Truncation</strong>: Producers should zero‑pad unused bytes in strings. On encode, longer content than <code>length</code> will be truncated to fit.</li>
+<li><strong>Encoding</strong>: Choose a consistent character encoding at the system boundary (e.g., ASCII/UTF‑8) and ensure both sides agree.</li>
+<li><strong>Element endianness</strong>: For numeric arrays, <code>byteOrder</code> applies per element.</li>
+</ul>
+<h2>Reference</h2>
+<h3>String</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#24292E">@</span><span style="color:#D73A49">StringType</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#D73A49"> &#x3C;</span><span style="color:#24292E">byteOffset</span><span style="color:#D73A49">></span><span style="color:#24292E">, </span><span style="color:#005CC5">length</span><span style="color:#D73A49"> =</span><span style="color:#D73A49"> &#x3C;</span><span style="color:#24292E">byteLength</span><span style="color:#D73A49">></span><span style="color:#24292E">)</span></span></code></pre></figure>
+<ul>
+<li><code>offset</code>: first byte index</li>
+<li><code>length</code>: number of bytes to read/write for the string</li>
+</ul>
+<h3>Byte/Binary array</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#24292E">@</span><span style="color:#D73A49">BinaryType</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#D73A49"> &#x3C;</span><span style="color:#24292E">byteOffset</span><span style="color:#D73A49">></span><span style="color:#24292E">, </span><span style="color:#005CC5">length</span><span style="color:#D73A49"> =</span><span style="color:#D73A49"> &#x3C;</span><span style="color:#24292E">byteLength</span><span style="color:#D73A49">></span><span style="color:#24292E">)</span></span></code></pre></figure>
+<ul>
+<li>Raw bytes, no element endianness</li>
+</ul>
+<h3>Numeric arrays (examples)</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#24292E">@</span><span style="color:#D73A49">UInt8ArrayType</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#D73A49"> &#x3C;</span><span style="color:#24292E">byteOffset</span><span style="color:#D73A49">></span><span style="color:#24292E">, </span><span style="color:#005CC5">length</span><span style="color:#D73A49"> =</span><span style="color:#D73A49"> &#x3C;</span><span style="color:#24292E">count</span><span style="color:#D73A49">></span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#24292E">@</span><span style="color:#D73A49">UInt16ArrayType</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#D73A49"> &#x3C;</span><span style="color:#24292E">byteOffset</span><span style="color:#D73A49">></span><span style="color:#24292E">, </span><span style="color:#005CC5">length</span><span style="color:#D73A49"> =</span><span style="color:#D73A49"> &#x3C;</span><span style="color:#24292E">count</span><span style="color:#D73A49">></span><span style="color:#24292E">, </span><span style="color:#005CC5">byteOrder</span><span style="color:#D73A49"> =</span><span style="color:#24292E"> {ByteOrder.BIG})</span></span>
+<span data-line=""><span style="color:#24292E">@</span><span style="color:#D73A49">UInt32ArrayType</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#D73A49"> &#x3C;</span><span style="color:#24292E">byteOffset</span><span style="color:#D73A49">></span><span style="color:#24292E">, </span><span style="color:#005CC5">length</span><span style="color:#D73A49"> =</span><span style="color:#D73A49"> &#x3C;</span><span style="color:#24292E">count</span><span style="color:#D73A49">></span><span style="color:#24292E">, </span><span style="color:#005CC5">byteOrder</span><span style="color:#D73A49"> =</span><span style="color:#24292E"> {ByteOrder.LITTLE})</span></span>
+<span data-line=""><span style="color:#24292E">@</span><span style="color:#D73A49">UInt64ArrayType</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#D73A49"> &#x3C;</span><span style="color:#24292E">byteOffset</span><span style="color:#D73A49">></span><span style="color:#24292E">, </span><span style="color:#005CC5">length</span><span style="color:#D73A49"> =</span><span style="color:#D73A49"> &#x3C;</span><span style="color:#24292E">count</span><span style="color:#D73A49">></span><span style="color:#24292E">, </span><span style="color:#005CC5">byteOrder</span><span style="color:#D73A49"> =</span><span style="color:#24292E"> {ByteOrder.BIG})</span></span></code></pre></figure>
+<ul>
+<li><code>length</code>: number of elements</li>
+<li><code>byteOrder</code>: per‑element endianness</li>
+</ul>
+<h2>Examples</h2>
+<h3>Fixed‑length string</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> org.indunet.fastproto.annotation.</span><span style="color:#005CC5">*</span><span style="color:#24292E">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> Msg</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">StringType</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0</span><span style="color:#24292E">, </span><span style="color:#005CC5">length</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 16</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#24292E">  String name; </span><span style="color:#6A737D">// fixed 16 bytes, producer should zero‑pad</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<h3>Raw bytes</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> Payload</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">BinaryType</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 16</span><span style="color:#24292E">, </span><span style="color:#005CC5">length</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 32</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#D73A49">  byte</span><span style="color:#24292E">[] body; </span><span style="color:#6A737D">// 32 bytes of opaque data</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<h3>Unsigned 16‑bit array (big‑endian elements)</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> org.indunet.fastproto.ByteOrder;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> Data</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">UInt16ArrayType</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0</span><span style="color:#24292E">, </span><span style="color:#005CC5">length</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 4</span><span style="color:#24292E">, </span><span style="color:#005CC5">byteOrder</span><span style="color:#D73A49"> =</span><span style="color:#24292E"> {ByteOrder.BIG})</span></span>
+<span data-line=""><span style="color:#D73A49">  int</span><span style="color:#24292E">[] values; </span><span style="color:#6A737D">// 4 elements, each 2 bytes in big‑endian</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<h3>Mixed structure</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> Frame</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">StringType</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0</span><span style="color:#24292E">, </span><span style="color:#005CC5">length</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 8</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#24292E">  String topic;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">UInt8ArrayType</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 8</span><span style="color:#24292E">, </span><span style="color:#005CC5">length</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 12</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#D73A49">  int</span><span style="color:#24292E">[] flags; </span><span style="color:#6A737D">// 12 bytes</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<h2>Advanced</h2>
+<ul>
+<li><strong>Variable‑length data</strong>: If your protocol uses dynamic lengths, carry the size in another field and compute buffer layout in your application before calling <code>encode(object, totalLength)</code>. Arrays/strings still need a concrete <code>length</code> at mapping time.</li>
+<li><strong>Reverse addressing</strong>: For layouts that reference the tail, use fixed total length (<code>FastProto.encode(obj, length)</code>) so trailing regions can be addressed safely.</li>
+</ul>
+<h2>Best Practices &#x26; Pitfalls</h2>
+<ul>
+<li>Ensure declared regions do not overlap and fit within the buffer.</li>
+<li>Align offsets deliberately; leave commented gaps for reserved bytes.</li>
+<li>Keep encoding consistent across systems; avoid mixing encodings.</li>
+<li>For numeric arrays, always specify <code>byteOrder</code> explicitly if your spec requires it.</li>
+</ul>0:{"rsc":["$","$1","c",{"children":[["$","div",null,{"className":"relative rounded-xl bg-white border border-gray-200 shadow-sm transition-shadow duration-200 min-h-[60vh] p-6 md:p-8","children":["$","div",null,{"className":"doc-html max-w-none","dangerouslySetInnerHTML":{"__html":"$2"}}]}],null,"$L3"]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"14vgaofgu69yYIknMk5Nf"}
+3:["$","$L4",null,{"children":["$","$5",null,{"name":"Next.MetadataOutlet","children":"$@6"}]}]
+6:null

@@ -1,0 +1,95 @@
+1:"$Sreact.fragment"
+4:I[484,[],"OutletBoundary"]
+5:"$Sreact.suspense"
+2:T35f8,<h2>Variable Length and Struct Arrays</h2>
+<h3>Overview</h3>
+<p>Variable-length fields are common in binary protocols. FastProto supports them via the <code>lengthRef</code> attribute on many annotations, allowing a field to reference a length/count defined elsewhere in the same class. This works for strings, byte arrays, numeric arrays, boolean arrays, and struct arrays.</p>
+<ul>
+<li>Supported annotations (selected): <code>StringType</code>, <code>BinaryType</code>, <code>AsciiArrayType</code>, <code>CharArrayType</code>, <code>BoolArrayType</code>, <code>Int8ArrayType</code>, <code>Int16ArrayType</code>, <code>Int32ArrayType</code>, <code>Int64ArrayType</code>, <code>UInt8ArrayType</code>, <code>UInt16ArrayType</code>, <code>UInt32ArrayType</code>, <code>UInt64ArrayType</code>, <code>FloatArrayType</code>, <code>DoubleArrayType</code>, <code>StructArrayType</code>.</li>
+<li><code>@AutoType</code> also supports <code>lengthRef</code> so you can write <code>@AutoType(offset=..., lengthRef="$count")</code> for arrays/strings/collections.</li>
+</ul>
+<h3>Basics: length vs lengthRef</h3>
+<ul>
+<li><code>length</code>: a fixed number of elements/bytes.</li>
+<li><code>lengthRef</code>: the name of a field in the same class that holds the length/count; it <strong>must</strong> be prefixed with <code>$</code> (e.g. <code>$count</code>).</li>
+<li>If both are set, <code>lengthRef</code> takes precedence for the effective length.</li>
+</ul>
+<h3>Strings with lengthRef</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> org.indunet.fastproto.annotation.StringType;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> Packet</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#24292E">    @</span><span style="color:#D73A49">UInt16Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#D73A49">    int</span><span style="color:#24292E"> nameLen;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#6A737D">    // Read nameLen bytes at offset 2 as UTF-8 string</span></span>
+<span data-line=""><span style="color:#24292E">    @</span><span style="color:#D73A49">StringType</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 2</span><span style="color:#24292E">, </span><span style="color:#005CC5">lengthRef</span><span style="color:#D73A49"> =</span><span style="color:#032F62"> "$nameLen"</span><span style="color:#24292E">, </span><span style="color:#005CC5">charset</span><span style="color:#D73A49"> =</span><span style="color:#032F62"> "UTF-8"</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#24292E">    String name;</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<h3>Arrays with lengthRef</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> org.indunet.fastproto.annotation.Int32ArrayType;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> Packet</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#24292E">    @</span><span style="color:#D73A49">UInt16Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#D73A49">    int</span><span style="color:#24292E"> count;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#6A737D">    // Read count int32 elements starting at offset 2 (little endian by default unless overridden)</span></span>
+<span data-line=""><span style="color:#24292E">    @</span><span style="color:#D73A49">Int32ArrayType</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 2</span><span style="color:#24292E">, </span><span style="color:#005CC5">lengthRef</span><span style="color:#D73A49"> =</span><span style="color:#032F62"> "$count"</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#D73A49">    int</span><span style="color:#24292E">[] values;</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<p>You can also use wrapper arrays, collections (e.g. <code>List&#x3C;Integer></code>) or <code>@AutoType</code>:</p>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> Packet</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#24292E">    @</span><span style="color:#D73A49">UInt16Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#D73A49">    int</span><span style="color:#24292E"> count;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#24292E">    @</span><span style="color:#D73A49">AutoType</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 2</span><span style="color:#24292E">, </span><span style="color:#005CC5">lengthRef</span><span style="color:#D73A49"> =</span><span style="color:#032F62"> "$count"</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#24292E">    List&#x3C;</span><span style="color:#D73A49">Integer</span><span style="color:#24292E">> values; </span><span style="color:#6A737D">// inferred as Int32ArrayType</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<h3>Struct arrays (fixed and variable length)</h3>
+<p>For arrays of structured items, use <code>@StructArrayType</code>. Each element is a POJO annotated with FastProto data type annotations.</p>
+<ul>
+<li>Fixed length:</li>
+</ul>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#24292E">@</span><span style="color:#D73A49">DefaultByteOrder</span><span style="color:#24292E">(ByteOrder.LITTLE)</span></span>
+<span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> Item</span><span style="color:#24292E"> {            </span><span style="color:#6A737D">// 6 bytes per item: UInt16 + Int32</span></span>
+<span data-line=""><span style="color:#24292E">    @</span><span style="color:#D73A49">UInt16Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0</span><span style="color:#24292E">) </span><span style="color:#D73A49">int</span><span style="color:#24292E"> id;</span></span>
+<span data-line=""><span style="color:#24292E">    @</span><span style="color:#D73A49">Int32Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 2</span><span style="color:#24292E">) </span><span style="color:#D73A49">int</span><span style="color:#24292E"> value;</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> PacketFixed</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#24292E">    @</span><span style="color:#D73A49">StructArrayType</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0</span><span style="color:#24292E">, </span><span style="color:#005CC5">length</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 2</span><span style="color:#24292E">, </span><span style="color:#005CC5">element</span><span style="color:#D73A49"> =</span><span style="color:#24292E"> Item.class)</span></span>
+<span data-line=""><span style="color:#D73A49">    Item</span><span style="color:#24292E">[] items;</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<ul>
+<li>Variable length controlled by a count field:</li>
+</ul>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#24292E">@</span><span style="color:#D73A49">DefaultByteOrder</span><span style="color:#24292E">(ByteOrder.LITTLE)</span></span>
+<span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> Item</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#24292E">    @</span><span style="color:#D73A49">UInt16Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0</span><span style="color:#24292E">) </span><span style="color:#D73A49">int</span><span style="color:#24292E"> id;</span></span>
+<span data-line=""><span style="color:#24292E">    @</span><span style="color:#D73A49">Int32Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 2</span><span style="color:#24292E">) </span><span style="color:#D73A49">int</span><span style="color:#24292E"> value;</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> PacketVar</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#24292E">    @</span><span style="color:#D73A49">UInt16Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#D73A49">    int</span><span style="color:#24292E"> count;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#6A737D">    // Read count items starting at offset 2</span></span>
+<span data-line=""><span style="color:#24292E">    @</span><span style="color:#D73A49">StructArrayType</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 2</span><span style="color:#24292E">, </span><span style="color:#005CC5">element</span><span style="color:#D73A49"> =</span><span style="color:#24292E"> Item.class, </span><span style="color:#005CC5">lengthRef</span><span style="color:#D73A49"> =</span><span style="color:#032F62"> "$count"</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#24292E">    List&#x3C;</span><span style="color:#D73A49">Item</span><span style="color:#24292E">> items;</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<h3>Tips and caveats</h3>
+<ul>
+<li>Ensure the referenced length field is decoded before the variable-length field (i.e., it appears earlier in the class with a lower offset).</li>
+<li><code>lengthRef</code> is case-sensitive and must start with <code>$</code> followed by the field name.</li>
+<li>For strings, you can also set <code>charset</code>.</li>
+<li>For boolean bit arrays, use <code>BoolArrayType</code> (byte-aligned). Per-bit packed variable-length booleans are not supported.</li>
+<li>With <code>@AutoType</code>, you must still supply <code>offset</code> and <code>lengthRef</code> for arrays/strings; FastProto infers only the data type, not the layout.</li>
+</ul>
+<h3>See also</h3>
+<ul>
+<li>Arrays &#x26; Strings: <code>docs/arrays-and-strings.md</code></li>
+<li>Annotation Mapping: <code>docs/annotation-mapping.md</code></li>
+<li>Byte and Bit Order: <code>docs/byte-and-bit-order.md</code></li>
+<li>Dynamic Offset with offsetRef: <code>docs/dynamic-offset.md</code></li>
+</ul>0:{"rsc":["$","$1","c",{"children":[["$","div",null,{"className":"relative rounded-xl bg-white border border-gray-200 shadow-sm transition-shadow duration-200 min-h-[60vh] p-6 md:p-8","children":["$","div",null,{"className":"doc-html max-w-none","dangerouslySetInnerHTML":{"__html":"$2"}}]}],null,"$L3"]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"14vgaofgu69yYIknMk5Nf"}
+3:["$","$L4",null,{"children":["$","$5",null,{"name":"Next.MetadataOutlet","children":"$@6"}]}]
+6:null

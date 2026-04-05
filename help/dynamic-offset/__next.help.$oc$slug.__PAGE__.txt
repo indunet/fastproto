@@ -1,0 +1,24 @@
+1:"$Sreact.fragment"
+3:I[484,[],"OutletBoundary"]
+4:"$Sreact.suspense"
+2:Ta2c,<h2>Dynamic Offset with offsetRef</h2>
+<h3>Overview</h3>
+<p>Some formats store an absolute position in a header and place the actual data later in the file. Use <code>offsetRef</code> to point a field’s <code>offset()</code> to a previously decoded numeric field in the same class. The source field name must be prefixed with <code>$</code>.</p>
+<h3>Rules</h3>
+<ul>
+<li>The referenced field must appear earlier in the class and be decoded before the target.</li>
+<li>The referenced field must be a numeric type.</li>
+<li>Works for most data type annotations that expose <code>offset()</code> (booleans use <code>byteOffset/bitOffset</code>, not supported).</li>
+<li>If both <code>offset</code> and <code>offsetRef</code> are provided, <code>offsetRef</code> takes precedence (dynamic offset overrides static).</li>
+<li>Validation: At least one of <code>offset</code> or <code>offsetRef</code> must be specified; otherwise resolving fails.</li>
+</ul>
+<h3>Example</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> Packet</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">UInt16Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#D73A49">  int</span><span style="color:#24292E"> payloadPos;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#6A737D">  // Read 3 bytes starting at dynamic offset = payloadPos</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">BinaryType</span><span style="color:#24292E">(</span><span style="color:#005CC5">offsetRef</span><span style="color:#D73A49"> =</span><span style="color:#032F62"> "$payloadPos"</span><span style="color:#24292E">, </span><span style="color:#005CC5">length</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 3</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#D73A49">  byte</span><span style="color:#24292E">[] payload;</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>0:{"rsc":["$","$1","c",{"children":[["$","div",null,{"className":"relative rounded-xl bg-white border border-gray-200 shadow-sm transition-shadow duration-200 min-h-[60vh] p-6 md:p-8","children":["$","div",null,{"className":"doc-html max-w-none","dangerouslySetInnerHTML":{"__html":"$2"}}]}],null,["$","$L3",null,{"children":["$","$4",null,{"name":"Next.MetadataOutlet","children":"$@5"}]}]]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"14vgaofgu69yYIknMk5Nf"}
+5:null

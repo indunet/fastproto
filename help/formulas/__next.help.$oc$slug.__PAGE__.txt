@@ -1,0 +1,101 @@
+1:"$Sreact.fragment"
+4:I[484,[],"OutletBoundary"]
+5:"$Sreact.suspense"
+2:T29e0,<h1>Transformation Formulas</h1>
+<p>A practical guide to transforming values during decode/encode.</p>
+<h2>Overview</h2>
+<p>Formulas let you convert between raw on‑wire values and engineering values. You can express them as inline lambdas or as classes implementing <code>java.util.function.Function</code>.</p>
+<ul>
+<li>Decode formula: raw -> target field type</li>
+<li>Encode formula: target field type -> raw</li>
+</ul>
+<blockquote>
+<p><strong>Note:</strong> Lambda formulas require annotation processing for compile-time code generation. The <code>fastproto</code> bundle includes this by default. For Android projects, see <a href="/help/android">Android guide</a> for setup details.</p>
+</blockquote>
+<h2>Quick Steps</h2>
+<ol>
+<li>Pick the field type and its data annotation (e.g., <code>@UInt32Type</code>).</li>
+<li>Decide if a lambda is sufficient, or a reusable class is better.</li>
+<li>Provide the correct input/output types for each direction.</li>
+<li>Test round‑trip: value -> encode -> decode -> value.</li>
+<li>Keep formulas pure (no side effects, deterministic).</li>
+</ol>
+<h2>Core Concepts</h2>
+<h3>Direction &#x26; Types</h3>
+<ul>
+<li>Decode: <code>Function&#x3C;RawType, FieldType></code>
+<ul>
+<li>Example: <code>@UInt32Type</code> raw is <code>Long</code>; field may be <code>Double</code> (engineering).</li>
+</ul>
+</li>
+<li>Encode: <code>Function&#x3C;FieldType, RawType></code>
+<ul>
+<li>Example: reverse the above conversion.</li>
+</ul>
+</li>
+</ul>
+<h3>Lambda vs Class</h3>
+<ul>
+<li>Lambda: <code>@DecodingFormula(lambda = "...")</code> / <code>@EncodingFormula(lambda = "...")</code> — included in <code>fastproto</code> bundle</li>
+<li>Class: <code>@DecodingFormula(MyFunc.class)</code> / <code>@EncodingFormula(MyFunc.class)</code> where class implements <code>Function&#x3C;In, Out></code></li>
+<li>Precedence: Class‑based formulas win if both lambda and class are present.</li>
+</ul>
+<h3>Lambda Support</h3>
+<p>Lambda expressions are supported out of the box when using the <code>fastproto</code> bundle:</p>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="xml" data-theme="github-light"><code data-language="xml" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">dependency</span><span style="color:#24292E">></span></span>
+<span data-line=""><span style="color:#24292E">    &#x3C;</span><span style="color:#22863A">groupId</span><span style="color:#24292E">>org.indunet&#x3C;/</span><span style="color:#22863A">groupId</span><span style="color:#24292E">></span></span>
+<span data-line=""><span style="color:#24292E">    &#x3C;</span><span style="color:#22863A">artifactId</span><span style="color:#24292E">>fastproto&#x3C;/</span><span style="color:#22863A">artifactId</span><span style="color:#24292E">></span></span>
+<span data-line=""><span style="color:#24292E">    &#x3C;</span><span style="color:#22863A">version</span><span style="color:#24292E">>4.1.0&#x3C;/</span><span style="color:#22863A">version</span><span style="color:#24292E">></span></span>
+<span data-line=""><span style="color:#24292E">&#x3C;/</span><span style="color:#22863A">dependency</span><span style="color:#24292E">></span></span></code></pre></figure>
+<p>For Android projects, see <a href="/help/android">android.md</a> for separate configuration.</p>
+<h3>Lifecycle &#x26; Errors</h3>
+<ul>
+<li>Formulas are compiled/bound during graph resolve and invoked per field during decode/encode.</li>
+<li>Throwing exceptions inside formulas will surface as <code>DecodingException</code> / <code>EncodingException</code> at call sites.</li>
+</ul>
+<h2>Examples</h2>
+<h3>Lambda‑based unit conversion</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> org.indunet.fastproto.annotation.</span><span style="color:#005CC5">*</span><span style="color:#24292E">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> Weather</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">UInt32Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 14</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">DecodingFormula</span><span style="color:#24292E">(</span><span style="color:#005CC5">lambda</span><span style="color:#D73A49"> =</span><span style="color:#032F62"> "x -> x * 0.1"</span><span style="color:#24292E">)            </span><span style="color:#6A737D">// raw uint32 -> Pa * 0.1 -> engineering</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">EncodingFormula</span><span style="color:#24292E">(</span><span style="color:#005CC5">lambda</span><span style="color:#D73A49"> =</span><span style="color:#032F62"> "x -> (long) (x * 10)"</span><span style="color:#24292E">)    </span><span style="color:#6A737D">// engineering -> raw</span></span>
+<span data-line=""><span style="color:#D73A49">  double</span><span style="color:#24292E"> pressure;</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<h3>Class‑based (reusable) conversion</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> java.util.function.Function;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> PressureDecode</span><span style="color:#D73A49"> implements</span><span style="color:#6F42C1"> Function</span><span style="color:#24292E">&#x3C;</span><span style="color:#D73A49">Long</span><span style="color:#24292E">, </span><span style="color:#D73A49">Double</span><span style="color:#24292E">> {</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">Override</span><span style="color:#D73A49"> public</span><span style="color:#24292E"> Double </span><span style="color:#6F42C1">apply</span><span style="color:#24292E">(Long </span><span style="color:#E36209">raw</span><span style="color:#24292E">) { </span><span style="color:#D73A49">return</span><span style="color:#24292E"> raw </span><span style="color:#D73A49">*</span><span style="color:#005CC5"> 0.1</span><span style="color:#24292E">; }</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> PressureEncode</span><span style="color:#D73A49"> implements</span><span style="color:#6F42C1"> Function</span><span style="color:#24292E">&#x3C;</span><span style="color:#D73A49">Double</span><span style="color:#24292E">, </span><span style="color:#D73A49">Long</span><span style="color:#24292E">> {</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">Override</span><span style="color:#D73A49"> public</span><span style="color:#24292E"> Long </span><span style="color:#6F42C1">apply</span><span style="color:#24292E">(Double </span><span style="color:#E36209">eng</span><span style="color:#24292E">) { </span><span style="color:#D73A49">return</span><span style="color:#24292E"> (</span><span style="color:#D73A49">long</span><span style="color:#24292E">) (eng </span><span style="color:#D73A49">*</span><span style="color:#005CC5"> 10</span><span style="color:#24292E">); }</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> Weather</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">UInt32Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 14</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">DecodingFormula</span><span style="color:#24292E">(PressureDecode.class)</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">EncodingFormula</span><span style="color:#24292E">(PressureEncode.class)</span></span>
+<span data-line=""><span style="color:#D73A49">  double</span><span style="color:#24292E"> pressure;</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<h3>One‑way formulas</h3>
+<ul>
+<li>You may specify only one side if the other is identity, e.g., only <code>@DecodingFormula</code>.</li>
+</ul>
+<h2>Advanced</h2>
+<ul>
+<li>Constants &#x26; context: Prefer constructor parameters or class constants inside class‑based formulas; avoid hidden globals.</li>
+<li>Composition: Split complex logic into smaller <code>Function</code> classes and delegate.</li>
+<li>Performance: Lambdas are compiled once and reused; keep formulas simple and avoid heavy allocations in hot paths.</li>
+<li>Validation: Add unit tests with known vectors; ensure symmetry if both directions are specified.</li>
+</ul>
+<h2>Best Practices &#x26; Troubleshooting</h2>
+<ul>
+<li>Ensure types match the codec direction (e.g., <code>UInt32</code> raw is <code>Long</code>).</li>
+<li>Document non‑obvious conversions (units, offsets) near the field.</li>
+<li>If results are off by a factor, verify integer vs floating arithmetic and cast points.</li>
+<li>If exceptions bubble up, catch and wrap with clear messages in class‑based formulas to ease debugging.</li>
+</ul>0:{"rsc":["$","$1","c",{"children":[["$","div",null,{"className":"relative rounded-xl bg-white border border-gray-200 shadow-sm transition-shadow duration-200 min-h-[60vh] p-6 md:p-8","children":["$","div",null,{"className":"doc-html max-w-none","dangerouslySetInnerHTML":{"__html":"$2"}}]}],null,"$L3"]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"14vgaofgu69yYIknMk5Nf"}
+3:["$","$L4",null,{"children":["$","$5",null,{"name":"Next.MetadataOutlet","children":"$@6"}]}]
+6:null

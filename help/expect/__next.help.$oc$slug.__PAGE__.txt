@@ -1,0 +1,97 @@
+1:"$Sreact.fragment"
+4:I[484,[],"OutletBoundary"]
+5:"$Sreact.suspense"
+2:T21d9,<h1>Expect Assertions</h1>
+<p>Declare constant values that must appear at fixed offsets in a packet.</p>
+<p>On decode, FastProto verifies these constants; on mismatch it throws a DecodingException. On encode, FastProto writes these constants into the output buffer automatically.</p>
+<h2>When to use</h2>
+<ul>
+<li>Magic byte/header guards (e.g., 0xA5, 0xAA55, 0x55AA7E...)</li>
+<li>Fixed protocol version numbers at known offsets</li>
+<li>Framing flags that must be present before decoding the rest</li>
+</ul>
+<p>Use @Expect for simple fixed-value checks/writes. If you need a computed or context‑dependent rule, keep using @DecodingFormula.</p>
+<h2>Annotations</h2>
+<ul>
+<li>@Expect: declare one assertion</li>
+<li>@Expects: container for multiple @Expect on the same field (repeatable support)</li>
+</ul>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> org.indunet.fastproto.annotation.Expect;</span></span>
+<span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> org.indunet.fastproto.annotation.Expects;</span></span>
+<span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> org.indunet.fastproto.ByteOrder;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> Packet</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#6A737D">  // Single-byte magic 0xA5 at offset 0</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">Expect</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0</span><span style="color:#24292E">, </span><span style="color:#005CC5">value</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0xA5</span><span style="color:#24292E">, </span><span style="color:#005CC5">size</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 1</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#D73A49">  transient</span><span style="color:#D73A49"> int</span><span style="color:#24292E"> _magic;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#6A737D">  // Two-byte header 0xAA 0x55 at offset 1</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">Expect</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 1</span><span style="color:#24292E">, </span><span style="color:#005CC5">bytes</span><span style="color:#D73A49"> =</span><span style="color:#24292E"> {(</span><span style="color:#D73A49">byte</span><span style="color:#24292E">)</span><span style="color:#005CC5">0xAA</span><span style="color:#24292E">, (</span><span style="color:#D73A49">byte</span><span style="color:#24292E">)</span><span style="color:#005CC5">0x55</span><span style="color:#24292E">})</span></span>
+<span data-line=""><span style="color:#D73A49">  transient</span><span style="color:#D73A49"> int</span><span style="color:#24292E"> _header;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#6A737D">  // Four-byte version 0x00010002 at offset 3 (little-endian)</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">Expect</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 3</span><span style="color:#24292E">, </span><span style="color:#005CC5">value</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0x00010002L</span><span style="color:#24292E">, </span><span style="color:#005CC5">size</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 4</span><span style="color:#24292E">, </span><span style="color:#005CC5">byteOrder</span><span style="color:#D73A49"> =</span><span style="color:#24292E"> ByteOrder.LITTLE)</span></span>
+<span data-line=""><span style="color:#D73A49">  transient</span><span style="color:#D73A49"> int</span><span style="color:#24292E"> _version;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#6A737D">  // Multiple assertions in one place</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">Expects</span><span style="color:#24292E">({</span></span>
+<span data-line=""><span style="color:#24292E">    @</span><span style="color:#D73A49">Expect</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 7</span><span style="color:#24292E">, </span><span style="color:#005CC5">value</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0x7E</span><span style="color:#24292E">, </span><span style="color:#005CC5">size</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 1</span><span style="color:#24292E">),</span></span>
+<span data-line=""><span style="color:#24292E">    @</span><span style="color:#D73A49">Expect</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 8</span><span style="color:#24292E">, </span><span style="color:#005CC5">bytes</span><span style="color:#D73A49"> =</span><span style="color:#24292E"> {(</span><span style="color:#D73A49">byte</span><span style="color:#24292E">)</span><span style="color:#005CC5">0xAA</span><span style="color:#24292E">, (</span><span style="color:#D73A49">byte</span><span style="color:#24292E">)</span><span style="color:#005CC5">0xBB</span><span style="color:#24292E">, (</span><span style="color:#D73A49">byte</span><span style="color:#24292E">)</span><span style="color:#005CC5">0xCC</span><span style="color:#24292E">})</span></span>
+<span data-line=""><span style="color:#24292E">  })</span></span>
+<span data-line=""><span style="color:#D73A49">  transient</span><span style="color:#D73A49"> int</span><span style="color:#24292E"> _expects;</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<h2>Parameters</h2>
+<ul>
+<li>offset: byte offset for assertion/read/write</li>
+<li>bytes: exact bytes to assert/write (takes precedence when non-empty)</li>
+<li>value: unsigned integer to assert/write when bytes is empty</li>
+<li>size: size (bytes) of value when using value; valid: 1, 2, 4, 8</li>
+<li>byteOrder: byte order for multi-byte values (default LITTLE)</li>
+</ul>
+<p>Either bytes or (value + size) must be provided.</p>
+<h2>Behavior</h2>
+<ul>
+<li>Decode:
+<ul>
+<li>All @Expect attached to the class (via its fields) are verified.</li>
+<li>Any mismatch throws DecodingException; decoding stops.</li>
+</ul>
+</li>
+<li>Encode:
+<ul>
+<li>All @Expect are written into the output buffer at their specified offsets.</li>
+</ul>
+</li>
+</ul>
+<h3>Multiple @Expect on the same field</h3>
+<ul>
+<li>Semantics: AND. All assertions must be satisfied on decode.</li>
+<li>Overlap: if write ranges overlap during encode, later declarations override earlier ones (by source order).
+<ul>
+<li>Recommendation: avoid conflicting ranges or declare identical values when overlapping.</li>
+</ul>
+</li>
+</ul>
+<h2>Flow order &#x26; interaction</h2>
+<ul>
+<li>ExpectFlow runs both in encode and decode pipelines before ChecksumFlow.
+<ul>
+<li>Encode: constants are written first, then checksums are calculated and written.</li>
+<li>Decode: constants are verified first, then checksums are verified.</li>
+</ul>
+</li>
+</ul>
+<p>This ensures magic/version bytes participate in checksum as they should.</p>
+<h2>Comparison with DecodingFormula</h2>
+<ul>
+<li>@Expect: fixed constants at fixed offsets, no dependency on the decoded field value.</li>
+<li>@DecodingFormula: general transform/validation after a field is decoded (can throw DecodingException).</li>
+</ul>
+<p>Pick @Expect for static guards; pick @DecodingFormula for computed or context-based rules.</p>
+<h2>Tips</h2>
+<ul>
+<li>Keep guard bytes near offset 0 for faster fail-fast checks.</li>
+<li>Prefer bytes for multi-byte signatures; prefer value+size for integer constants (with explicit byteOrder).</li>
+</ul>0:{"rsc":["$","$1","c",{"children":[["$","div",null,{"className":"relative rounded-xl bg-white border border-gray-200 shadow-sm transition-shadow duration-200 min-h-[60vh] p-6 md:p-8","children":["$","div",null,{"className":"doc-html max-w-none","dangerouslySetInnerHTML":{"__html":"$2"}}]}],null,"$L3"]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"14vgaofgu69yYIknMk5Nf"}
+3:["$","$L4",null,{"children":["$","$5",null,{"name":"Next.MetadataOutlet","children":"$@6"}]}]
+6:null

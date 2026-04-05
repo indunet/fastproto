@@ -1,0 +1,98 @@
+1:"$Sreact.fragment"
+4:I[484,[],"OutletBoundary"]
+5:"$Sreact.suspense"
+2:T2b3f,<h2>Android Compatibility Guide</h2>
+<p>This page summarizes how to use FastProto on Android.</p>
+<h2>What Works</h2>
+<ul>
+<li>Annotation-based mapping for primitive types, arrays, strings, enums, bit/byte order, and checksum/CRC</li>
+<li>Decode/encode via <code>FastProto.decode(...)</code> and <code>FastProto.encode(...)</code></li>
+<li>Builder/Utils APIs (no annotations)</li>
+<li><strong>Lambda formulas with annotation processor</strong> (since 4.0.0)</li>
+</ul>
+<h2>Lambda Formulas on Android</h2>
+<p>FastProto provides compile-time support for lambda formulas so <code>@DecodingFormula(lambda = "...")</code> and <code>@EncodingFormula(lambda = "...")</code> remain Android-friendly.</p>
+<h3>Setup</h3>
+<p>Android projects can use the <code>fastproto</code> dependency directly. If you use lambda formulas, make sure annotation processing is enabled in your build.</p>
+<p><strong>Gradle (Kotlin DSL)</strong>:</p>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="kotlin" data-theme="github-light"><code data-language="kotlin" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#6F42C1">dependencies</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#6F42C1">    implementation</span><span style="color:#24292E">(</span><span style="color:#032F62">"org.indunet:fastproto:4.1.0"</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<p><strong>Gradle (Groovy DSL)</strong>:</p>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="groovy" data-theme="github-light"><code data-language="groovy" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#24292E">dependencies {</span></span>
+<span data-line=""><span style="color:#24292E">    implementation </span><span style="color:#032F62">'org.indunet:fastproto:4.1.0'</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<p><strong>Maven (Android)</strong>:</p>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="xml" data-theme="github-light"><code data-language="xml" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">dependency</span><span style="color:#24292E">></span></span>
+<span data-line=""><span style="color:#24292E">    &#x3C;</span><span style="color:#22863A">groupId</span><span style="color:#24292E">>org.indunet&#x3C;/</span><span style="color:#22863A">groupId</span><span style="color:#24292E">></span></span>
+<span data-line=""><span style="color:#24292E">    &#x3C;</span><span style="color:#22863A">artifactId</span><span style="color:#24292E">>fastproto&#x3C;/</span><span style="color:#22863A">artifactId</span><span style="color:#24292E">></span></span>
+<span data-line=""><span style="color:#24292E">    &#x3C;</span><span style="color:#22863A">version</span><span style="color:#24292E">>4.1.0&#x3C;/</span><span style="color:#22863A">version</span><span style="color:#24292E">></span></span>
+<span data-line=""><span style="color:#24292E">&#x3C;/</span><span style="color:#22863A">dependency</span><span style="color:#24292E">></span></span></code></pre></figure>
+<h3>How It Works</h3>
+<p>The annotation processor scans your code at compile time and generates <code>Function</code> implementation classes for each lambda expression. These generated classes are included in your APK and used at runtime instead of dynamic compilation.</p>
+<p>For example, this annotation:</p>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#24292E">@</span><span style="color:#D73A49">Int16Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#24292E">@</span><span style="color:#D73A49">DecodingFormula</span><span style="color:#24292E">(</span><span style="color:#005CC5">lambda</span><span style="color:#D73A49"> =</span><span style="color:#032F62"> "x -> x * 0.1"</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#D73A49">private</span><span style="color:#D73A49"> double</span><span style="color:#24292E"> temperature;</span></span></code></pre></figure>
+<p>Generates a class like:</p>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> YourClass_temperature_DecodingFormula</span><span style="color:#D73A49"> implements</span><span style="color:#6F42C1"> Function</span><span style="color:#24292E">&#x3C;</span><span style="color:#D73A49">Integer</span><span style="color:#24292E">, </span><span style="color:#D73A49">Object</span><span style="color:#24292E">> {</span></span>
+<span data-line=""><span style="color:#24292E">    @</span><span style="color:#D73A49">Override</span></span>
+<span data-line=""><span style="color:#D73A49">    public</span><span style="color:#24292E"> Object </span><span style="color:#6F42C1">apply</span><span style="color:#24292E">(Integer </span><span style="color:#E36209">x</span><span style="color:#24292E">) {</span></span>
+<span data-line=""><span style="color:#D73A49">        return</span><span style="color:#24292E"> x </span><span style="color:#D73A49">*</span><span style="color:#005CC5"> 0.1</span><span style="color:#24292E">;</span></span>
+<span data-line=""><span style="color:#24292E">    }</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<h3>Alternative: Custom Function Classes</h3>
+<p>You can also use custom function classes directly without relying on the annotation processor:</p>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> TemperatureFormula</span><span style="color:#D73A49"> implements</span><span style="color:#6F42C1"> Function</span><span style="color:#24292E">&#x3C;</span><span style="color:#D73A49">Integer</span><span style="color:#24292E">, </span><span style="color:#D73A49">Double</span><span style="color:#24292E">> {</span></span>
+<span data-line=""><span style="color:#24292E">    @</span><span style="color:#D73A49">Override</span></span>
+<span data-line=""><span style="color:#D73A49">    public</span><span style="color:#24292E"> Double </span><span style="color:#6F42C1">apply</span><span style="color:#24292E">(Integer </span><span style="color:#E36209">value</span><span style="color:#24292E">) {</span></span>
+<span data-line=""><span style="color:#D73A49">        return</span><span style="color:#24292E"> value </span><span style="color:#D73A49">*</span><span style="color:#005CC5"> 0.1</span><span style="color:#24292E">;</span></span>
+<span data-line=""><span style="color:#24292E">    }</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> SensorData</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#24292E">    @</span><span style="color:#D73A49">Int16Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0</span><span style="color:#24292E">)</span></span>
+<span data-line=""><span style="color:#24292E">    @</span><span style="color:#D73A49">DecodingFormula</span><span style="color:#24292E">(TemperatureFormula.class)</span></span>
+<span data-line=""><span style="color:#D73A49">    private</span><span style="color:#D73A49"> double</span><span style="color:#24292E"> temperature;</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<h2>Current Limitations</h2>
+<ul>
+<li><code>java.sql.Timestamp</code> is not part of Android standard APIs
+<ul>
+<li>Impact: Types/codec relying on <code>java.sql.*</code> will not work. Prefer <code>long</code> epoch millis or <code>java.time.*</code> (with desugaring) instead.</li>
+</ul>
+</li>
+</ul>
+<h2>Other Android Setup</h2>
+<ul>
+<li><strong>Time Types</strong>
+<ul>
+<li>Prefer <code>long</code> (epoch millis) or <code>java.time.Instant/LocalDateTime</code>.</li>
+<li>Enable core library desugaring to use <code>java.time.*</code> on older Android.</li>
+</ul>
+</li>
+<li><strong>Gradle Setup (library/app module)</strong>
+<ul>
+<li>compileOptions.sourceCompatibility/targetCompatibility = 1.8</li>
+<li>coreLibraryDesugaringEnabled = true</li>
+<li>Add dependency: <code>com.android.tools:desugar_jdk_libs</code></li>
+</ul>
+</li>
+<li><strong>R8/ProGuard</strong>
+<ul>
+<li>Keep runtime annotations and members used by reflection</li>
+<li>Example rules:</li>
+</ul>
+</li>
+</ul>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="pro" data-theme="github-light"><code data-language="pro" data-theme="github-light" style="display: grid;"><span data-line=""><span>-keepattributes RuntimeVisibleAnnotations, RuntimeVisibleParameterAnnotations, Signature, InnerClasses, EnclosingMethod</span></span>
+<span data-line=""><span>-keep class org.indunet.fastproto.annotation.** { *; }</span></span>
+<span data-line=""><span>-keep class org.indunet.fastproto.formula.generated.** { *; }</span></span></code></pre></figure>
+<h2>FAQ</h2>
+<ul>
+<li><strong>Can I use lambda formulas on Android?</strong> Yes. Lambda formulas are generated at compile time, so they are compatible with Android as long as annotation processing is enabled.</li>
+<li><strong>Do I need the annotation processor?</strong> If you use <code>@DecodingFormula(lambda = "...")</code> or <code>@EncodingFormula(lambda = "...")</code>, yes. If you only use class-based formulas like <code>@DecodingFormula(MyFormula.class)</code>, the annotation processor is optional.</li>
+<li><strong>Do I need ProGuard rules?</strong> If you rely on reflection/annotations, keep them as shown above. The generated formula classes should also be kept.</li>
+</ul>0:{"rsc":["$","$1","c",{"children":[["$","div",null,{"className":"relative rounded-xl bg-white border border-gray-200 shadow-sm transition-shadow duration-200 min-h-[60vh] p-6 md:p-8","children":["$","div",null,{"className":"doc-html max-w-none","dangerouslySetInnerHTML":{"__html":"$2"}}]}],null,"$L3"]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"14vgaofgu69yYIknMk5Nf"}
+3:["$","$L4",null,{"children":["$","$5",null,{"name":"Next.MetadataOutlet","children":"$@6"}]}]
+6:null

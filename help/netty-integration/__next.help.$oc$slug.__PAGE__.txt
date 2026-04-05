@@ -1,0 +1,47 @@
+1:"$Sreact.fragment"
+4:I[484,[],"OutletBoundary"]
+5:"$Sreact.suspense"
+2:T1c05,<h2>Netty Integration</h2>
+<p>This guide shows how to integrate FastProto with Netty to encode/decode objects from/to ByteBuf.</p>
+<h3>Dependency</h3>
+<p>Add the Netty dependency in your application (FastProto itself declares it as provided):</p>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="xml" data-theme="github-light"><code data-language="xml" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">dependency</span><span style="color:#24292E">></span></span>
+<span data-line=""><span style="color:#24292E">  &#x3C;</span><span style="color:#22863A">groupId</span><span style="color:#24292E">>io.netty&#x3C;/</span><span style="color:#22863A">groupId</span><span style="color:#24292E">></span></span>
+<span data-line=""><span style="color:#24292E">  &#x3C;</span><span style="color:#22863A">artifactId</span><span style="color:#24292E">>netty-all&#x3C;/</span><span style="color:#22863A">artifactId</span><span style="color:#24292E">></span></span>
+<span data-line=""><span style="color:#24292E">  &#x3C;</span><span style="color:#22863A">version</span><span style="color:#24292E">>4.1.x&#x3C;/</span><span style="color:#22863A">version</span><span style="color:#24292E">></span></span>
+<span data-line=""><span style="color:#24292E">&#x3C;/</span><span style="color:#22863A">dependency</span><span style="color:#24292E">></span></span></code></pre></figure>
+<h3>Codecs</h3>
+<ul>
+<li>Inbound: <code>FastProtoDecoder&#x3C;T></code> converts <code>ByteBuf</code> to a target object.</li>
+<li>Outbound: <code>FastProtoEncoder</code> converts an object to <code>ByteBuf</code>.</li>
+<li>Both can be annotated with <code>@Sharable</code> and reused across channels.</li>
+</ul>
+<p>Framing (fixed length, length-field, delimiter-based, etc.) should be handled by Netty.</p>
+<h3>Example: Fixed 60-Byte Frame</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#24292E">ch.</span><span style="color:#6F42C1">pipeline</span><span style="color:#24292E">()</span></span>
+<span data-line=""><span style="color:#24292E">  .</span><span style="color:#6F42C1">addLast</span><span style="color:#24292E">(</span><span style="color:#D73A49">new</span><span style="color:#6F42C1"> FixedLengthFrameDecoder</span><span style="color:#24292E">(</span><span style="color:#005CC5">60</span><span style="color:#24292E">))</span></span>
+<span data-line=""><span style="color:#24292E">  .</span><span style="color:#6F42C1">addLast</span><span style="color:#24292E">(</span><span style="color:#D73A49">new</span><span style="color:#24292E"> FastProtoDecoder&#x3C;>(MyPojo.class))</span></span>
+<span data-line=""><span style="color:#24292E">  .</span><span style="color:#6F42C1">addLast</span><span style="color:#24292E">(</span><span style="color:#D73A49">new</span><span style="color:#6F42C1"> FastProtoEncoder</span><span style="color:#24292E">());</span></span></code></pre></figure>
+<p><code>MyPojo</code> is a FastProto-annotated class. Example 60-byte layout:</p>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> MyPojo</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">Int32Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0</span><span style="color:#24292E">) </span><span style="color:#D73A49">int</span><span style="color:#24292E"> id;</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">Int64Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 4</span><span style="color:#24292E">) </span><span style="color:#D73A49">long</span><span style="color:#24292E"> timestamp;</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">StringType</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 12</span><span style="color:#24292E">, </span><span style="color:#005CC5">length</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 16</span><span style="color:#24292E">) String name;</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">BinaryType</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 28</span><span style="color:#24292E">, </span><span style="color:#005CC5">length</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 32</span><span style="color:#24292E">) </span><span style="color:#D73A49">byte</span><span style="color:#24292E">[] payload;</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<h3>Multiple Types</h3>
+<ul>
+<li>Use a dedicated "type field" in the frame and route in an inbound handler.</li>
+<li>Alternatively, bind a type per-channel and construct <code>FastProtoDecoder&#x3C;>(Type.class)</code> accordingly.</li>
+</ul>
+<h3>Zero-Copy (Optional)</h3>
+<p>Current implementation copies <code>ByteBuf</code> to <code>byte[]</code>. A zero-copy path can be added later to read directly from <code>ByteBuf</code>.</p>
+<h3>Testing</h3>
+<p>Use <code>EmbeddedChannel</code> for unit tests:</p>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#24292E">EmbeddedChannel ch </span><span style="color:#D73A49">=</span><span style="color:#D73A49"> new</span><span style="color:#6F42C1"> EmbeddedChannel</span><span style="color:#24292E">(</span></span>
+<span data-line=""><span style="color:#D73A49">  new</span><span style="color:#6F42C1"> FixedLengthFrameDecoder</span><span style="color:#24292E">(</span><span style="color:#005CC5">60</span><span style="color:#24292E">),</span></span>
+<span data-line=""><span style="color:#D73A49">  new</span><span style="color:#24292E"> FastProtoDecoder&#x3C;>(MyPojo.class),</span></span>
+<span data-line=""><span style="color:#D73A49">  new</span><span style="color:#6F42C1"> FastProtoEncoder</span><span style="color:#24292E">()</span></span>
+<span data-line=""><span style="color:#24292E">);</span></span></code></pre></figure>0:{"rsc":["$","$1","c",{"children":[["$","div",null,{"className":"relative rounded-xl bg-white border border-gray-200 shadow-sm transition-shadow duration-200 min-h-[60vh] p-6 md:p-8","children":["$","div",null,{"className":"doc-html max-w-none","dangerouslySetInnerHTML":{"__html":"$2"}}]}],null,"$L3"]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"14vgaofgu69yYIknMk5Nf"}
+3:["$","$L4",null,{"children":["$","$5",null,{"name":"Next.MetadataOutlet","children":"$@6"}]}]
+6:null

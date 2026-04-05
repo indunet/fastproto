@@ -1,0 +1,196 @@
+1:"$Sreact.fragment"
+4:I[484,[],"OutletBoundary"]
+5:"$Sreact.suspense"
+2:T33e9,<h1>Checksum / CRC</h1>
+<p>A practical guide to defining and validating checksums in FastProto.</p>
+<h2>Overview</h2>
+<p>FastProto provides a single annotation <code>@Checksum</code> to describe:</p>
+<ul>
+<li>The data range to compute over</li>
+<li>Where to store/read the checksum</li>
+<li>Which algorithm and byte order to use for the stored value</li>
+</ul>
+<p>During encode, FastProto computes and writes the checksum automatically. During decode, it recomputes and validates.</p>
+<h2>Quick Steps</h2>
+<ol>
+<li>Identify the data span: <code>start</code> (inclusive) and <code>length</code> (bytes).</li>
+<li>Decide the storage location: <code>offset</code> where the checksum value resides.</li>
+<li>Choose an algorithm <code>type</code> and value <code>byteOrder</code>.</li>
+<li>Ensure the data span does not overlap the checksum storage bytes.</li>
+</ol>
+<h2>Core Concepts</h2>
+<ul>
+<li>Data range: <code>[start, start + length)</code> (checksum value itself is excluded).</li>
+<li>Storage: <code>offset</code> points to the first byte of the checksum field.</li>
+<li>Byte order: affects how the checksum value is written/read for multi‑byte types; it does not change the computation over the data bytes.</li>
+<li>Width: implied by <code>type</code> (CRC8=1B, CRC16=2B, CRC32=4B, CRC64=8B).</li>
+</ul>
+<h2>Annotation</h2>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#24292E">@</span><span style="color:#D73A49">Checksum</span><span style="color:#24292E">(</span><span style="color:#005CC5">start</span><span style="color:#D73A49"> =</span><span style="color:#D73A49"> &#x3C;</span><span style="color:#24292E">start</span><span style="color:#D73A49">></span><span style="color:#24292E">, </span><span style="color:#005CC5">length</span><span style="color:#D73A49"> =</span><span style="color:#D73A49"> &#x3C;</span><span style="color:#24292E">length</span><span style="color:#D73A49">></span><span style="color:#24292E">, </span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#D73A49"> &#x3C;</span><span style="color:#24292E">storeOffset</span><span style="color:#D73A49">></span><span style="color:#24292E">, </span><span style="color:#005CC5">type</span><span style="color:#D73A49"> =</span><span style="color:#D73A49"> &#x3C;</span><span style="color:#24292E">Type</span><span style="color:#D73A49">></span><span style="color:#24292E">, </span><span style="color:#005CC5">byteOrder</span><span style="color:#D73A49"> =</span><span style="color:#D73A49"> &#x3C;</span><span style="color:#24292E">ByteOrder</span><span style="color:#D73A49">></span><span style="color:#24292E">)</span></span></code></pre></figure>
+<ul>
+<li><code>start</code>: start byte index (inclusive)</li>
+<li><code>length</code>: number of bytes to include</li>
+<li><code>offset</code>: where to write/read the checksum value</li>
+<li><code>type</code>: algorithm, e.g. <code>CRC8</code>, <code>CRC8_SMBUS</code>, <code>CRC8_MAXIM</code>, <code>CRC16</code>, <code>CRC16_MODBUS</code>, <code>CRC16_CCITT</code>, <code>CRC32</code>, <code>CRC32C</code>, <code>CRC64_ECMA182</code>, <code>CRC64_ISO</code>, <code>XOR8</code>, <code>LRC8</code></li>
+<li><code>byteOrder</code>: affects only how the checksum value is written/read (multi-byte), not the calculation</li>
+</ul>
+<h2>Supported Algorithms</h2>
+<table>
+<thead>
+<tr>
+<th align="left">Type</th>
+<th align="center">Width</th>
+<th align="left">Polynomial</th>
+<th align="left">Init</th>
+<th align="center">Refin/Refout</th>
+<th align="left">XorOut</th>
+<th align="left">Notes</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">CRC8</td>
+<td align="center">8</td>
+<td align="left">0x07</td>
+<td align="left">0x00</td>
+<td align="center">false/false</td>
+<td align="left">0x00</td>
+<td align="left">SMBus-PEC base</td>
+</tr>
+<tr>
+<td align="left">CRC8_SMBUS</td>
+<td align="center">8</td>
+<td align="left">0x07</td>
+<td align="left">0x00</td>
+<td align="center">false/false</td>
+<td align="left">0x00</td>
+<td align="left">Alias of CRC8(0x07,0x00)</td>
+</tr>
+<tr>
+<td align="left">CRC8_MAXIM</td>
+<td align="center">8</td>
+<td align="left">0x31 (reflected 0x8C)</td>
+<td align="left">0x00</td>
+<td align="center">true/true</td>
+<td align="left">0x00</td>
+<td align="left">Dallas/Maxim</td>
+</tr>
+<tr>
+<td align="left">XOR8</td>
+<td align="center">8</td>
+<td align="left">—</td>
+<td align="left">—</td>
+<td align="center">—</td>
+<td align="left">—</td>
+<td align="left">Byte-wise XOR (BCC)</td>
+</tr>
+<tr>
+<td align="left">LRC8</td>
+<td align="center">8</td>
+<td align="left">—</td>
+<td align="left">—</td>
+<td align="center">—</td>
+<td align="left">—</td>
+<td align="left">Two's complement of sum</td>
+</tr>
+<tr>
+<td align="left">CRC16 (IBM)</td>
+<td align="center">16</td>
+<td align="left">0x8005</td>
+<td align="left">0x0000</td>
+<td align="center">true/true</td>
+<td align="left">0x0000</td>
+<td align="left">Also known as CRC-16/IBM</td>
+</tr>
+<tr>
+<td align="left">CRC16_MODBUS</td>
+<td align="center">16</td>
+<td align="left">0x8005</td>
+<td align="left">0xFFFF</td>
+<td align="center">true/true</td>
+<td align="left">0x0000</td>
+<td align="left">MODBUS RTU</td>
+</tr>
+<tr>
+<td align="left">CRC16_CCITT</td>
+<td align="center">16</td>
+<td align="left">0x1021</td>
+<td align="left">0xFFFF</td>
+<td align="center">false/false</td>
+<td align="left">0x0000</td>
+<td align="left">CCITT-FALSE</td>
+</tr>
+<tr>
+<td align="left">CRC32 (IEEE)</td>
+<td align="center">32</td>
+<td align="left">0x04C11DB7</td>
+<td align="left">0xFFFFFFFF</td>
+<td align="center">true/true</td>
+<td align="left">0xFFFFFFFF</td>
+<td align="left">Ethernet/ZIP</td>
+</tr>
+<tr>
+<td align="left">CRC32C</td>
+<td align="center">32</td>
+<td align="left">0x1EDC6F41</td>
+<td align="left">0xFFFFFFFF</td>
+<td align="center">true/true</td>
+<td align="left">0xFFFFFFFF</td>
+<td align="left">Castagnoli</td>
+</tr>
+<tr>
+<td align="left">CRC64_ECMA182</td>
+<td align="center">64</td>
+<td align="left">0x42F0E1EBA9EA3693</td>
+<td align="left">0x0000000000000000</td>
+<td align="center">false/false</td>
+<td align="left">0x0000000000000000</td>
+<td align="left">ECMA-182</td>
+</tr>
+<tr>
+<td align="left">CRC64_ISO</td>
+<td align="center">64</td>
+<td align="left">0x000000000000001B</td>
+<td align="left">0xFFFFFFFFFFFFFFFF</td>
+<td align="center">true/true</td>
+<td align="left">0xFFFFFFFFFFFFFFFF</td>
+<td align="left">ISO</td>
+</tr>
+</tbody>
+</table>
+<h2>Example (CRC16 Little-Endian)</h2>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> org.indunet.fastproto.ByteOrder;</span></span>
+<span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> org.indunet.fastproto.annotation.</span><span style="color:#005CC5">*</span><span style="color:#24292E">;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#D73A49">public</span><span style="color:#D73A49"> class</span><span style="color:#6F42C1"> Packet</span><span style="color:#24292E"> {</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">UInt8Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0</span><span style="color:#24292E">) </span><span style="color:#D73A49">int</span><span style="color:#24292E"> b1;</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">UInt8Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 1</span><span style="color:#24292E">) </span><span style="color:#D73A49">int</span><span style="color:#24292E"> b2;</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">UInt8Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 2</span><span style="color:#24292E">) </span><span style="color:#D73A49">int</span><span style="color:#24292E"> b3;</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">UInt8Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 3</span><span style="color:#24292E">) </span><span style="color:#D73A49">int</span><span style="color:#24292E"> b4;</span></span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">UInt8Type</span><span style="color:#24292E">(</span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 4</span><span style="color:#24292E">) </span><span style="color:#D73A49">int</span><span style="color:#24292E"> b5;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#24292E">  @</span><span style="color:#D73A49">Checksum</span><span style="color:#24292E">(</span><span style="color:#005CC5">start</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 0</span><span style="color:#24292E">, </span><span style="color:#005CC5">length</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 5</span><span style="color:#24292E">, </span><span style="color:#005CC5">offset</span><span style="color:#D73A49"> =</span><span style="color:#005CC5"> 5</span><span style="color:#24292E">, </span><span style="color:#005CC5">type</span><span style="color:#D73A49"> =</span><span style="color:#24292E"> Checksum.Type.CRC16, </span><span style="color:#005CC5">byteOrder</span><span style="color:#D73A49"> =</span><span style="color:#24292E"> ByteOrder.LITTLE)</span></span>
+<span data-line=""><span style="color:#D73A49">  int</span><span style="color:#24292E"> crc16;</span></span>
+<span data-line=""><span style="color:#24292E">}</span></span></code></pre></figure>
+<h2>Utilities</h2>
+<p>You can also compute checksums without annotations:</p>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> org.indunet.fastproto.annotation.Checksum;</span></span>
+<span data-line=""><span style="color:#D73A49">import</span><span style="color:#24292E"> org.indunet.fastproto.checksum.ChecksumUtils;</span></span>
+<span data-line=""> </span>
+<span data-line=""><span style="color:#D73A49">byte</span><span style="color:#24292E">[] bytes </span><span style="color:#D73A49">=</span><span style="color:#D73A49"> new</span><span style="color:#D73A49"> byte</span><span style="color:#24292E">[]{</span><span style="color:#005CC5">0x31</span><span style="color:#24292E">,</span><span style="color:#005CC5">0x32</span><span style="color:#24292E">,</span><span style="color:#005CC5">0x33</span><span style="color:#24292E">,</span><span style="color:#005CC5">0x34</span><span style="color:#24292E">,</span><span style="color:#005CC5">0x35</span><span style="color:#24292E">};</span></span>
+<span data-line=""><span style="color:#D73A49">long</span><span style="color:#24292E"> v1 </span><span style="color:#D73A49">=</span><span style="color:#24292E"> ChecksumUtils.</span><span style="color:#6F42C1">calculate</span><span style="color:#24292E">(bytes, </span><span style="color:#005CC5">0</span><span style="color:#24292E">, </span><span style="color:#005CC5">5</span><span style="color:#24292E">, Checksum.Type.CRC16);</span></span>
+<span data-line=""><span style="color:#D73A49">int</span><span style="color:#24292E">  v2 </span><span style="color:#D73A49">=</span><span style="color:#24292E"> ChecksumUtils.</span><span style="color:#6F42C1">crc16</span><span style="color:#24292E">(bytes) </span><span style="color:#D73A49">&#x26;</span><span style="color:#005CC5"> 0xFFFF</span><span style="color:#24292E">;</span></span></code></pre></figure>
+<h2>Best Practices</h2>
+<ul>
+<li>Keep <code>[start, start+length)</code> disjoint from the checksum storage bytes <code>[offset, offset+width)</code>.</li>
+<li>Choose <code>byteOrder</code> to match the on‑wire representation of the checksum value.</li>
+<li>Prefer a single <code>@Checksum</code> per checksum field; avoid overlapping ranges.</li>
+<li>Add tests with known vectors to ensure both encode and decode paths are validated.</li>
+</ul>
+<h2>Troubleshooting</h2>
+<ul>
+<li>If decode throws <code>DecodingException</code>, recompute the expected checksum and compare against the stored bytes with the specified <code>byteOrder</code>.</li>
+<li>Confirm the buffer is long enough to include the entire range and checksum field.</li>
+</ul>0:{"rsc":["$","$1","c",{"children":[["$","div",null,{"className":"relative rounded-xl bg-white border border-gray-200 shadow-sm transition-shadow duration-200 min-h-[60vh] p-6 md:p-8","children":["$","div",null,{"className":"doc-html max-w-none","dangerouslySetInnerHTML":{"__html":"$2"}}]}],null,"$L3"]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"14vgaofgu69yYIknMk5Nf"}
+3:["$","$L4",null,{"children":["$","$5",null,{"name":"Next.MetadataOutlet","children":"$@6"}]}]
+6:null

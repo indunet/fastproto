@@ -1,0 +1,49 @@
+1:"$Sreact.fragment"
+4:I[484,[],"OutletBoundary"]
+5:"$Sreact.suspense"
+2:T1eb0,<h2>Kafka Integration</h2>
+<p>This guide shows how to integrate FastProto with Apache Kafka to encode/decode message values.</p>
+<h3>Dependency</h3>
+<p>Add the Kafka clients dependency in your application (FastProto itself declares it as provided):</p>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="xml" data-theme="github-light"><code data-language="xml" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#24292E">&#x3C;</span><span style="color:#22863A">dependency</span><span style="color:#24292E">></span></span>
+<span data-line=""><span style="color:#24292E">  &#x3C;</span><span style="color:#22863A">groupId</span><span style="color:#24292E">>org.apache.kafka&#x3C;/</span><span style="color:#22863A">groupId</span><span style="color:#24292E">></span></span>
+<span data-line=""><span style="color:#24292E">  &#x3C;</span><span style="color:#22863A">artifactId</span><span style="color:#24292E">>kafka-clients&#x3C;/</span><span style="color:#22863A">artifactId</span><span style="color:#24292E">></span></span>
+<span data-line=""><span style="color:#24292E">  &#x3C;</span><span style="color:#22863A">version</span><span style="color:#24292E">>3.8.x&#x3C;/</span><span style="color:#22863A">version</span><span style="color:#24292E">></span></span>
+<span data-line=""><span style="color:#24292E">&#x3C;/</span><span style="color:#22863A">dependency</span><span style="color:#24292E">></span></span></code></pre></figure>
+<h3>Codecs</h3>
+<ul>
+<li>Serializer: <code>FastProtoSerializer</code> encodes objects to <code>byte[]</code>.</li>
+<li>Deserializer: <code>FastProtoDeserializer</code> decodes <code>byte[]</code> to objects.</li>
+<li>Serde: <code>FastProtoSerde</code> for Kafka Streams or unified configs.</li>
+</ul>
+<p>FastProto only handles the in-frame schema. Kafka provides message framing per record.</p>
+<h3>Producer/Consumer Configuration</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#24292E">Properties props </span><span style="color:#D73A49">=</span><span style="color:#D73A49"> new</span><span style="color:#6F42C1"> Properties</span><span style="color:#24292E">();</span></span>
+<span data-line=""><span style="color:#24292E">props.</span><span style="color:#6F42C1">put</span><span style="color:#24292E">(</span><span style="color:#032F62">"value.serializer"</span><span style="color:#24292E">, FastProtoSerializer.class.</span><span style="color:#6F42C1">getName</span><span style="color:#24292E">());</span></span>
+<span data-line=""><span style="color:#24292E">props.</span><span style="color:#6F42C1">put</span><span style="color:#24292E">(</span><span style="color:#032F62">"value.deserializer"</span><span style="color:#24292E">, FastProtoDeserializer.class.</span><span style="color:#6F42C1">getName</span><span style="color:#24292E">());</span></span>
+<span data-line=""><span style="color:#24292E">props.</span><span style="color:#6F42C1">put</span><span style="color:#24292E">(</span><span style="color:#032F62">"fastproto.value.type"</span><span style="color:#24292E">, </span><span style="color:#032F62">"com.example.MyPojo"</span><span style="color:#24292E">);</span></span></code></pre></figure>
+<ul>
+<li><code>fastproto.value.type</code>: target class for deserialization (FQCN or <code>Class</code>).</li>
+</ul>
+<h3>Serde Usage (Kafka Streams)</h3>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#24292E">Map&#x3C;</span><span style="color:#D73A49">String</span><span style="color:#24292E">, </span><span style="color:#D73A49">Object</span><span style="color:#24292E">> cfg </span><span style="color:#D73A49">=</span><span style="color:#D73A49"> new</span><span style="color:#24292E"> HashMap&#x3C;>();</span></span>
+<span data-line=""><span style="color:#24292E">cfg.</span><span style="color:#6F42C1">put</span><span style="color:#24292E">(</span><span style="color:#032F62">"fastproto.value.type"</span><span style="color:#24292E">, MyPojo.class.</span><span style="color:#6F42C1">getName</span><span style="color:#24292E">());</span></span>
+<span data-line=""><span style="color:#24292E">Serde&#x3C;</span><span style="color:#D73A49">MyPojo</span><span style="color:#24292E">> serde </span><span style="color:#D73A49">=</span><span style="color:#D73A49"> new</span><span style="color:#24292E"> FastProtoSerde&#x3C;>();</span></span>
+<span data-line=""><span style="color:#24292E">serde.</span><span style="color:#6F42C1">configure</span><span style="color:#24292E">(cfg, </span><span style="color:#005CC5">false</span><span style="color:#24292E">);</span></span></code></pre></figure>
+<h3>Notes</h3>
+<ul>
+<li>Deserialization requires <code>fastproto.value.type</code>; otherwise, an exception is thrown.</li>
+<li>Your POJO must be annotated with FastProto mapping annotations.</li>
+<li>Coordinate schema layout between producers and consumers when evolving messages.</li>
+</ul>
+<h3>Testing</h3>
+<p>Round-trip serialization test:</p>
+<figure data-rehype-pretty-code-figure=""><pre style="background-color:#fff;color:#24292e" tabindex="0" data-language="java" data-theme="github-light"><code data-language="java" data-theme="github-light" style="display: grid;"><span data-line=""><span style="color:#24292E">MyPojo pojo </span><span style="color:#D73A49">=</span><span style="color:#24292E"> ...;</span></span>
+<span data-line=""><span style="color:#D73A49">byte</span><span style="color:#24292E">[] bytes </span><span style="color:#D73A49">=</span><span style="color:#D73A49"> new</span><span style="color:#24292E"> FastProtoSerializer&#x3C;</span><span style="color:#D73A49">MyPojo</span><span style="color:#24292E">>().</span><span style="color:#6F42C1">serialize</span><span style="color:#24292E">(</span><span style="color:#032F62">"t"</span><span style="color:#24292E">, pojo);</span></span>
+<span data-line=""><span style="color:#24292E">FastProtoDeserializer&#x3C;</span><span style="color:#D73A49">MyPojo</span><span style="color:#24292E">> d </span><span style="color:#D73A49">=</span><span style="color:#D73A49"> new</span><span style="color:#24292E"> FastProtoDeserializer&#x3C;>();</span></span>
+<span data-line=""><span style="color:#24292E">Map&#x3C;</span><span style="color:#D73A49">String</span><span style="color:#24292E">, </span><span style="color:#D73A49">Object</span><span style="color:#24292E">> cfg </span><span style="color:#D73A49">=</span><span style="color:#D73A49"> new</span><span style="color:#24292E"> HashMap&#x3C;>();</span></span>
+<span data-line=""><span style="color:#24292E">cfg.</span><span style="color:#6F42C1">put</span><span style="color:#24292E">(</span><span style="color:#032F62">"fastproto.value.type"</span><span style="color:#24292E">, MyPojo.class.</span><span style="color:#6F42C1">getName</span><span style="color:#24292E">());</span></span>
+<span data-line=""><span style="color:#24292E">d.</span><span style="color:#6F42C1">configure</span><span style="color:#24292E">(cfg, </span><span style="color:#005CC5">false</span><span style="color:#24292E">);</span></span>
+<span data-line=""><span style="color:#24292E">MyPojo decoded </span><span style="color:#D73A49">=</span><span style="color:#24292E"> d.</span><span style="color:#6F42C1">deserialize</span><span style="color:#24292E">(</span><span style="color:#032F62">"t"</span><span style="color:#24292E">, bytes);</span></span></code></pre></figure>0:{"rsc":["$","$1","c",{"children":[["$","div",null,{"className":"relative rounded-xl bg-white border border-gray-200 shadow-sm transition-shadow duration-200 min-h-[60vh] p-6 md:p-8","children":["$","div",null,{"className":"doc-html max-w-none","dangerouslySetInnerHTML":{"__html":"$2"}}]}],null,"$L3"]}],"isPartial":false,"staleTime":300,"varyParams":null,"buildId":"14vgaofgu69yYIknMk5Nf"}
+3:["$","$L4",null,{"children":["$","$5",null,{"name":"Next.MetadataOutlet","children":"$@6"}]}]
+6:null
