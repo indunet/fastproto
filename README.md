@@ -36,7 +36,8 @@ See the [CHANGELOG](CHANGELOG.md) for recent updates.
 
 ### *Documentation*
 
-- [https://indunet.github.io/fastproto/help.html](https://indunet.github.io/fastproto/help.html)
+- Site: [https://indunet.github.io/fastproto/](https://indunet.github.io/fastproto/) (Next.js app in `docs-site/`; each push to `develop` rebuilds and pushes static `out/` to the `gh-pages` branch)
+- Guides: [https://indunet.github.io/fastproto/help/quick-start](https://indunet.github.io/fastproto/help/quick-start)
 
 ### *Install*
 

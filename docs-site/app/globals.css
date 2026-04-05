@@ -1,0 +1,183 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+
+  /* Business-oriented palette — clean, authoritative, readable */
+  --color-fp-bg:         #ffffff;   /* pure white page background          */
+  --color-fp-surface:    #ffffff;   /* white card surface                   */
+  --color-fp-surface-hi: #f8fafc;   /* slate-50 — hover / subtle elevation  */
+  --color-fp-accent:     #2563eb;   /* blue-600 — professional primary      */
+  --color-fp-accent-hi:  #1d4ed8;   /* blue-700 — hover / deeper            */
+  --color-fp-text:       #374151;   /* gray-700 — body copy                 */
+  --color-fp-muted:      #6b7280;   /* gray-500 — secondary text            */
+  --color-fp-dim:        #9ca3af;   /* gray-400 — placeholder / caption     */
+  --color-fp-head:       #111827;   /* gray-900 — headings                  */
+  --color-fp-border:     #e5e7eb;   /* gray-200 — default border            */
+}
+
+body {
+  background-color: #ffffff;
+  color: var(--color-fp-text);
+  min-height: 100vh;
+}
+
+/* ─── Hero gradient text ──────────────────────────────────── */
+/* Restrained: dark slate → professional blue, not rainbow */
+.text-gradient {
+  background: linear-gradient(135deg, #111827 0%, #1e40af 55%, #2563eb 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── rehype-pretty-code ───────────────────────────────────── */
+[data-rehype-pretty-code-figure] {
+  margin: 0;
+}
+
+[data-rehype-pretty-code-figure] pre {
+  margin: 0 !important;
+  padding: 1rem 1.1rem !important;
+  background: transparent !important;
+  border: none !important;
+}
+
+[data-rehype-pretty-code-title] {
+  padding: 0.45rem 1rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #93c5fd;
+  border-bottom: 1px solid rgba(147, 197, 253, 0.15);
+  background: #0f172a;
+  border-radius: 8px 8px 0 0;
+}
+
+/* ─── Rendered markdown HTML ───────────────────────────────── */
+.doc-html {
+  color: var(--color-fp-text);
+  line-height: 1.75;
+}
+
+.doc-html h1 {
+  margin-top: 0.25rem;
+  margin-bottom: 1rem;
+  font-size: 1.875rem;
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  color: var(--color-fp-head);
+}
+
+.doc-html h2 {
+  margin-top: 2.5rem;
+  margin-bottom: 0.75rem;
+  scroll-margin-top: 5.5rem;
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.5rem;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: var(--color-fp-head);
+}
+
+.doc-html h3 {
+  margin-top: 1.75rem;
+  margin-bottom: 0.5rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--color-fp-head);
+}
+
+.doc-html p {
+  margin-top: 0.75rem;
+  margin-bottom: 0.75rem;
+}
+
+.doc-html a {
+  font-weight: 500;
+  color: var(--color-fp-accent);
+  text-decoration: underline;
+  text-decoration-color: rgba(37, 99, 235, 0.3);
+  text-underline-offset: 3px;
+}
+
+.doc-html a:hover {
+  color: var(--color-fp-accent-hi);
+  text-decoration-color: rgba(37, 99, 235, 0.6);
+}
+
+.doc-html ul,
+.doc-html ol {
+  margin: 0.75rem 0;
+  padding-left: 1.5rem;
+}
+
+.doc-html li {
+  margin: 0.25rem 0;
+}
+
+.doc-html blockquote {
+  margin: 1.25rem 0;
+  border-left: 3px solid #bfdbfe;
+  background: #eff6ff;
+  padding: 0.75rem 1rem;
+  border-radius: 0 6px 6px 0;
+  color: #374151;
+}
+
+.doc-html :not(pre) > code {
+  border-radius: 4px;
+  background: #f1f5f9;
+  border: 1px solid #e2e8f0;
+  padding: 0.12rem 0.4rem;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.85em;
+  color: #1e40af;
+}
+
+.doc-html pre {
+  margin: 1.25rem 0;
+  overflow-x: auto;
+  border-radius: 8px;
+  border: 1px solid #1e293b;
+  font-family: var(--font-geist-mono), ui-monospace, monospace;
+  font-size: 0.8125rem;
+  line-height: 1.65;
+  background: #0f172a;
+}
+
+.doc-html table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.875rem;
+  margin: 1rem 0;
+}
+
+.doc-html th,
+.doc-html td {
+  border: 1px solid #e5e7eb;
+  padding: 0.6rem 0.875rem;
+  text-align: left;
+  vertical-align: top;
+}
+
+.doc-html th {
+  background: #f9fafb;
+  font-weight: 600;
+  color: var(--color-fp-head);
+  font-size: 0.8rem;
+  letter-spacing: 0.03em;
+}
+
+.doc-html hr {
+  margin: 2rem 0;
+  border: 0;
+  border-top: 1px solid #e5e7eb;
+}
+
+.doc-html img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 6px;
+  border: 1px solid #e5e7eb;
+}

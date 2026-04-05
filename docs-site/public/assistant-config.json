@@ -1,0 +1,77 @@
+{
+  "version": 1,
+  "generatedAt": "2026-04-05T14:30:00.860Z",
+  "basePath": "/",
+  "guides": [
+    {
+      "id": "quick-start",
+      "title": "Quick Start",
+      "href": "/help/quick-start"
+    },
+    {
+      "id": "annotation-mapping",
+      "title": "Annotation Mapping",
+      "href": "/help/annotation-mapping"
+    },
+    {
+      "id": "byte-and-bit-order",
+      "title": "Byte & Bit Order",
+      "href": "/help/byte-and-bit-order"
+    },
+    {
+      "id": "checksum",
+      "title": "Checksum / CRC",
+      "href": "/help/checksum"
+    },
+    {
+      "id": "expect",
+      "title": "Expect Assertions",
+      "href": "/help/expect"
+    },
+    {
+      "id": "formulas",
+      "title": "Transformation Formulas",
+      "href": "/help/formulas"
+    },
+    {
+      "id": "arrays-and-strings",
+      "title": "Arrays & Strings",
+      "href": "/help/arrays-and-strings"
+    },
+    {
+      "id": "variable-length",
+      "title": "Variable Length & Struct Arrays",
+      "href": "/help/variable-length"
+    },
+    {
+      "id": "dynamic-offset",
+      "title": "Dynamic Offset (offsetRef)",
+      "href": "/help/dynamic-offset"
+    },
+    {
+      "id": "without-annotations",
+      "title": "APIs without Annotations",
+      "href": "/help/without-annotations"
+    },
+    {
+      "id": "android",
+      "title": "Android",
+      "href": "/help/android"
+    },
+    {
+      "id": "netty-integration",
+      "title": "Netty Integration",
+      "href": "/help/netty-integration"
+    },
+    {
+      "id": "kafka-integration",
+      "title": "Kafka Integration",
+      "href": "/help/kafka-integration"
+    },
+    {
+      "id": "faq",
+      "title": "FAQ",
+      "href": "/help/faq"
+    }
+  ]
+}

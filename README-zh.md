@@ -35,7 +35,8 @@ FastProto 是一个面向 **二进制通信协议** 的高性能序列化 / 反�
 
 ### *文档*
 
-- [https://indunet.github.io/fastproto/help.html](https://indunet.github.io/fastproto/help.html)
+- 文档站点：[https://indunet.github.io/fastproto/](https://indunet.github.io/fastproto/)（源码在 `docs-site/`；每次推送到 `develop` 会重新构建并把静态 `out/` 推到 `gh-pages` 发布）
+- 指南入口：[https://indunet.github.io/fastproto/help/quick-start](https://indunet.github.io/fastproto/help/quick-start)
 
 ### *安装*
 
