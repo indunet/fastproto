@@ -7,17 +7,22 @@ import org.indunet.fastproto.ros2.geometry_msgs.msg.AccelStamped;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.Inertia;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.InertiaStamped;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.Point;
+import org.indunet.fastproto.ros2.geometry_msgs.msg.Point32;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.PointStamped;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.Pose;
+import org.indunet.fastproto.ros2.geometry_msgs.msg.Pose2D;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.PoseArray;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.PoseStamped;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.PoseWithCovariance;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.PoseWithCovarianceStamped;
+import org.indunet.fastproto.ros2.geometry_msgs.msg.Polygon;
+import org.indunet.fastproto.ros2.geometry_msgs.msg.PolygonStamped;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.Quaternion;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.QuaternionStamped;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.Transform;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.TransformStamped;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.Twist;
+import org.indunet.fastproto.ros2.geometry_msgs.msg.TwistStamped;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.TwistWithCovariance;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.Vector3;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.Vector3Stamped;
@@ -27,10 +32,13 @@ import org.indunet.fastproto.ros2.nav_msgs.msg.MapMetaData;
 import org.indunet.fastproto.ros2.nav_msgs.msg.Odometry;
 import org.indunet.fastproto.ros2.nav_msgs.msg.OccupancyGrid;
 import org.indunet.fastproto.ros2.nav_msgs.msg.Path;
+import org.indunet.fastproto.ros2.sensor_msgs.msg.BatteryState;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.CameraInfo;
+import org.indunet.fastproto.ros2.sensor_msgs.msg.ChannelFloat32;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.CompressedImage;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.FluidPressure;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.Image;
+import org.indunet.fastproto.ros2.sensor_msgs.msg.Illuminance;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.Imu;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.JointState;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.Joy;
@@ -38,11 +46,21 @@ import org.indunet.fastproto.ros2.sensor_msgs.msg.LaserScan;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.MagneticField;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.NavSatFix;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.NavSatStatus;
+import org.indunet.fastproto.ros2.sensor_msgs.msg.PointCloud;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.PointCloud2;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.PointField;
+import org.indunet.fastproto.ros2.sensor_msgs.msg.Range;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.RegionOfInterest;
+import org.indunet.fastproto.ros2.sensor_msgs.msg.RelativeHumidity;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.Temperature;
+import org.indunet.fastproto.ros2.std_msgs.msg.ColorRGBA;
+import org.indunet.fastproto.ros2.std_msgs.msg.Float32MultiArray;
+import org.indunet.fastproto.ros2.std_msgs.msg.Float64MultiArray;
 import org.indunet.fastproto.ros2.std_msgs.msg.Header;
+import org.indunet.fastproto.ros2.std_msgs.msg.Int32MultiArray;
+import org.indunet.fastproto.ros2.std_msgs.msg.MultiArrayDimension;
+import org.indunet.fastproto.ros2.std_msgs.msg.MultiArrayLayout;
+import org.indunet.fastproto.ros2.std_msgs.msg.UInt8MultiArray;
 import org.indunet.fastproto.ros2.tf2_msgs.msg.TFMessage;
 import org.junit.jupiter.api.Test;
 
@@ -126,6 +144,67 @@ public class Ros2FastProtoTest {
 
         assertEquals(64, bytes.length);
         assertEquals(pose, Ros2FastProto.decode(bytes, Ros2Codecs.POSE));
+    }
+
+    @Test
+    public void testPose2DRoundTrip() {
+        Pose2D pose2D = Pose2D.builder()
+                .x(2.5)
+                .y(-1.25)
+                .theta(0.78539816339)
+                .build();
+
+        byte[] bytes = Ros2FastProto.encode(pose2D, Ros2Codecs.POSE2D);
+
+        assertEquals(32, bytes.length);
+        assertEquals(pose2D, Ros2FastProto.decode(bytes, Ros2Codecs.POSE2D));
+    }
+
+    @Test
+    public void testColorRgbARoundTrip() {
+        ColorRGBA color = ColorRGBA.builder()
+                .r(0.2f)
+                .g(0.4f)
+                .b(0.6f)
+                .a(0.8f)
+                .build();
+
+        byte[] bytes = Ros2FastProto.encode(color, Ros2Codecs.COLOR_RGBA);
+
+        assertEquals(20, bytes.length);
+        assertEquals(color, Ros2FastProto.decode(bytes, Ros2Codecs.COLOR_RGBA));
+    }
+
+    @Test
+    public void testMultiArrayRoundTrip() {
+        MultiArrayLayout layout = MultiArrayLayout.builder()
+                .dim(new MultiArrayDimension[]{
+                        MultiArrayDimension.builder().label("rows").size(2).stride(6).build(),
+                        MultiArrayDimension.builder().label("cols").size(3).stride(3).build()
+                })
+                .dataOffset(0)
+                .build();
+        Float32MultiArray float32MultiArray = Float32MultiArray.builder()
+                .layout(layout)
+                .data(new float[]{1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f})
+                .build();
+        Float64MultiArray float64MultiArray = Float64MultiArray.builder()
+                .layout(layout)
+                .data(new double[]{0.1, 0.2, 0.3, 0.4})
+                .build();
+        Int32MultiArray int32MultiArray = Int32MultiArray.builder()
+                .layout(layout)
+                .data(new int[]{10, 20, 30, 40, 50, 60})
+                .build();
+        UInt8MultiArray uint8MultiArray = UInt8MultiArray.builder()
+                .layout(layout)
+                .data(new byte[]{1, 2, 3, 4, 5, 6})
+                .build();
+
+        assertEquals(float32MultiArray, Ros2FastProto.decode(Ros2FastProto.encode(float32MultiArray, Ros2Codecs.FLOAT32_MULTI_ARRAY), Ros2Codecs.FLOAT32_MULTI_ARRAY));
+        assertEquals(float64MultiArray, Ros2FastProto.decode(Ros2FastProto.encode(float64MultiArray, Ros2Codecs.FLOAT64_MULTI_ARRAY), Ros2Codecs.FLOAT64_MULTI_ARRAY));
+        assertEquals(int32MultiArray, Ros2FastProto.decode(Ros2FastProto.encode(int32MultiArray, Ros2Codecs.INT32_MULTI_ARRAY), Ros2Codecs.INT32_MULTI_ARRAY));
+        assertEquals(uint8MultiArray, Ros2FastProto.decode(Ros2FastProto.encode(uint8MultiArray, Ros2Codecs.UINT8_MULTI_ARRAY), Ros2Codecs.UINT8_MULTI_ARRAY));
     }
 
     @Test
@@ -312,6 +391,28 @@ public class Ros2FastProtoTest {
     }
 
     @Test
+    public void testPolygonStampedRoundTrip() {
+        PolygonStamped polygonStamped = PolygonStamped.builder()
+                .header(Header.builder()
+                        .stamp(Time.builder().sec(15).nanosec(16).build())
+                        .frameId("base_link")
+                        .build())
+                .polygon(Polygon.builder()
+                        .points(new Point32[]{
+                                Point32.builder().x(0.0f).y(0.0f).z(0.0f).build(),
+                                Point32.builder().x(1.0f).y(0.0f).z(0.0f).build(),
+                                Point32.builder().x(1.0f).y(1.0f).z(0.0f).build(),
+                                Point32.builder().x(0.0f).y(1.0f).z(0.0f).build()
+                        })
+                        .build())
+                .build();
+
+        byte[] bytes = Ros2FastProto.encode(polygonStamped, Ros2Codecs.POLYGON_STAMPED);
+
+        assertEquals(polygonStamped, Ros2FastProto.decode(bytes, Ros2Codecs.POLYGON_STAMPED));
+    }
+
+    @Test
     public void testTransformStampedRoundTrip() {
         TransformStamped transformStamped = TransformStamped.builder()
                 .header(Header.builder()
@@ -361,6 +462,28 @@ public class Ros2FastProtoTest {
     }
 
     @Test
+    public void testPointCloudRoundTrip() {
+        PointCloud pointCloud = PointCloud.builder()
+                .header(Header.builder()
+                        .stamp(Time.builder().sec(23).nanosec(24).build())
+                        .frameId("laser_frame")
+                        .build())
+                .points(new Point32[]{
+                        Point32.builder().x(1.0f).y(2.0f).z(0.0f).build(),
+                        Point32.builder().x(3.0f).y(4.0f).z(0.5f).build()
+                })
+                .channels(new ChannelFloat32[]{
+                        ChannelFloat32.builder().name("intensity").values(new float[]{10.0f, 20.0f}).build(),
+                        ChannelFloat32.builder().name("distance").values(new float[]{2.2f, 5.1f}).build()
+                })
+                .build();
+
+        byte[] bytes = Ros2FastProto.encode(pointCloud, Ros2Codecs.POINT_CLOUD);
+
+        assertEquals(pointCloud, Ros2FastProto.decode(bytes, Ros2Codecs.POINT_CLOUD));
+    }
+
+    @Test
     public void testStampedMessagesRoundTrip() {
         PointStamped pointStamped = PointStamped.builder()
                 .header(Header.builder().stamp(Time.builder().sec(31).nanosec(32).build()).frameId("map").build())
@@ -392,6 +515,20 @@ public class Ros2FastProtoTest {
 
         byte[] bytes = Ros2FastProto.encode(accelStamped, Ros2Codecs.ACCEL_STAMPED);
         assertEquals(accelStamped, Ros2FastProto.decode(bytes, Ros2Codecs.ACCEL_STAMPED));
+    }
+
+    @Test
+    public void testTwistStampedRoundTrip() {
+        TwistStamped twistStamped = TwistStamped.builder()
+                .header(Header.builder().stamp(Time.builder().sec(45).nanosec(46).build()).frameId("base_link").build())
+                .twist(Twist.builder()
+                        .linear(Vector3.builder().x(1.2).y(0.0).z(0.0).build())
+                        .angular(Vector3.builder().x(0.0).y(0.0).z(0.35).build())
+                        .build())
+                .build();
+
+        byte[] bytes = Ros2FastProto.encode(twistStamped, Ros2Codecs.TWIST_STAMPED);
+        assertEquals(twistStamped, Ros2FastProto.decode(bytes, Ros2Codecs.TWIST_STAMPED));
     }
 
     @Test
@@ -476,6 +613,21 @@ public class Ros2FastProtoTest {
     }
 
     @Test
+    public void testRangeRoundTrip() {
+        Range range = Range.builder()
+                .header(Header.builder().stamp(Time.builder().sec(73).nanosec(74).build()).frameId("ultrasonic").build())
+                .radiationType(Range.ULTRASOUND)
+                .fieldOfView(0.52f)
+                .minRange(0.02f)
+                .maxRange(4.0f)
+                .range(1.35f)
+                .build();
+
+        byte[] bytes = Ros2FastProto.encode(range, Ros2Codecs.RANGE);
+        assertEquals(range, Ros2FastProto.decode(bytes, Ros2Codecs.RANGE));
+    }
+
+    @Test
     public void testWrenchStampedRoundTrip() {
         WrenchStamped wrenchStamped = WrenchStamped.builder()
                 .header(Header.builder().stamp(Time.builder().sec(81).nanosec(82).build()).frameId("tool0").build())
@@ -553,6 +705,23 @@ public class Ros2FastProtoTest {
     }
 
     @Test
+    public void testEnvironmentalSensorRoundTrip() {
+        Illuminance illuminance = Illuminance.builder()
+                .header(Header.builder().stamp(Time.builder().sec(103).nanosec(104).build()).frameId("lux_sensor").build())
+                .illuminance(523.8)
+                .variance(1.2)
+                .build();
+        RelativeHumidity relativeHumidity = RelativeHumidity.builder()
+                .header(Header.builder().stamp(Time.builder().sec(105).nanosec(106).build()).frameId("humidity_sensor").build())
+                .relativeHumidity(0.48)
+                .variance(0.01)
+                .build();
+
+        assertEquals(illuminance, Ros2FastProto.decode(Ros2FastProto.encode(illuminance, Ros2Codecs.ILLUMINANCE), Ros2Codecs.ILLUMINANCE));
+        assertEquals(relativeHumidity, Ros2FastProto.decode(Ros2FastProto.encode(relativeHumidity, Ros2Codecs.RELATIVE_HUMIDITY), Ros2Codecs.RELATIVE_HUMIDITY));
+    }
+
+    @Test
     public void testJoyAndJointStateRoundTrip() {
         Joy joy = Joy.builder()
                 .header(Header.builder().stamp(Time.builder().sec(111).nanosec(112).build()).frameId("joystick").build())
@@ -569,6 +738,31 @@ public class Ros2FastProtoTest {
 
         assertEquals(joy, Ros2FastProto.decode(Ros2FastProto.encode(joy, Ros2Codecs.JOY), Ros2Codecs.JOY));
         assertEquals(jointState, Ros2FastProto.decode(Ros2FastProto.encode(jointState, Ros2Codecs.JOINT_STATE), Ros2Codecs.JOINT_STATE));
+    }
+
+    @Test
+    public void testBatteryStateRoundTrip() {
+        BatteryState batteryState = BatteryState.builder()
+                .header(Header.builder().stamp(Time.builder().sec(115).nanosec(116).build()).frameId("battery").build())
+                .voltage(24.6f)
+                .temperature(31.5f)
+                .current(-3.2f)
+                .charge(4.8f)
+                .capacity(6.0f)
+                .designCapacity(6.4f)
+                .percentage(0.75f)
+                .powerSupplyStatus(BatteryState.POWER_SUPPLY_STATUS_DISCHARGING)
+                .powerSupplyHealth(BatteryState.POWER_SUPPLY_HEALTH_GOOD)
+                .powerSupplyTechnology(BatteryState.POWER_SUPPLY_TECHNOLOGY_LION)
+                .present(true)
+                .cellVoltage(new float[]{4.1f, 4.1f, 4.09f, 4.08f, 4.12f, 4.11f})
+                .cellTemperature(new float[]{31.0f, 31.2f, 31.4f})
+                .location("rear_compartment")
+                .serialNumber("BAT-0001")
+                .build();
+
+        byte[] bytes = Ros2FastProto.encode(batteryState, Ros2Codecs.BATTERY_STATE);
+        assertEquals(batteryState, Ros2FastProto.decode(bytes, Ros2Codecs.BATTERY_STATE));
     }
 
     @Test

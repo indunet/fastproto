@@ -8,17 +8,22 @@ import org.indunet.fastproto.ros2.geometry_msgs.msg.AccelStamped;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.Inertia;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.InertiaStamped;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.Point;
+import org.indunet.fastproto.ros2.geometry_msgs.msg.Point32;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.PointStamped;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.Pose;
+import org.indunet.fastproto.ros2.geometry_msgs.msg.Pose2D;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.PoseArray;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.PoseStamped;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.PoseWithCovariance;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.PoseWithCovarianceStamped;
+import org.indunet.fastproto.ros2.geometry_msgs.msg.Polygon;
+import org.indunet.fastproto.ros2.geometry_msgs.msg.PolygonStamped;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.Quaternion;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.QuaternionStamped;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.Transform;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.TransformStamped;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.Twist;
+import org.indunet.fastproto.ros2.geometry_msgs.msg.TwistStamped;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.TwistWithCovariance;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.Vector3;
 import org.indunet.fastproto.ros2.geometry_msgs.msg.Vector3Stamped;
@@ -28,10 +33,13 @@ import org.indunet.fastproto.ros2.nav_msgs.msg.MapMetaData;
 import org.indunet.fastproto.ros2.nav_msgs.msg.Odometry;
 import org.indunet.fastproto.ros2.nav_msgs.msg.OccupancyGrid;
 import org.indunet.fastproto.ros2.nav_msgs.msg.Path;
+import org.indunet.fastproto.ros2.sensor_msgs.msg.BatteryState;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.CameraInfo;
+import org.indunet.fastproto.ros2.sensor_msgs.msg.ChannelFloat32;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.CompressedImage;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.FluidPressure;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.Image;
+import org.indunet.fastproto.ros2.sensor_msgs.msg.Illuminance;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.Imu;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.JointState;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.Joy;
@@ -39,11 +47,21 @@ import org.indunet.fastproto.ros2.sensor_msgs.msg.LaserScan;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.MagneticField;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.NavSatFix;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.NavSatStatus;
+import org.indunet.fastproto.ros2.sensor_msgs.msg.PointCloud;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.PointCloud2;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.PointField;
+import org.indunet.fastproto.ros2.sensor_msgs.msg.Range;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.RegionOfInterest;
+import org.indunet.fastproto.ros2.sensor_msgs.msg.RelativeHumidity;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.Temperature;
+import org.indunet.fastproto.ros2.std_msgs.msg.ColorRGBA;
+import org.indunet.fastproto.ros2.std_msgs.msg.Float32MultiArray;
+import org.indunet.fastproto.ros2.std_msgs.msg.Float64MultiArray;
 import org.indunet.fastproto.ros2.std_msgs.msg.Header;
+import org.indunet.fastproto.ros2.std_msgs.msg.Int32MultiArray;
+import org.indunet.fastproto.ros2.std_msgs.msg.MultiArrayDimension;
+import org.indunet.fastproto.ros2.std_msgs.msg.MultiArrayLayout;
+import org.indunet.fastproto.ros2.std_msgs.msg.UInt8MultiArray;
 import org.indunet.fastproto.ros2.tf2_msgs.msg.TFMessage;
 
 /**
@@ -59,11 +77,20 @@ public final class Ros2Codecs {
     public static final Ros2Codec<Point> POINT =
             new FixedSizeRos2Codec<>(Point.class, 8, Point.SIZE);
 
+    public static final Ros2Codec<Point32> POINT32 =
+            new FixedSizeRos2Codec<>(Point32.class, 4, Point32.SIZE);
+
+    public static final Ros2Codec<Pose2D> POSE2D =
+            new FixedSizeRos2Codec<>(Pose2D.class, 8, Pose2D.SIZE);
+
     public static final Ros2Codec<Quaternion> QUATERNION =
             new FixedSizeRos2Codec<>(Quaternion.class, 8, Quaternion.SIZE);
 
     public static final Ros2Codec<Vector3> VECTOR3 =
             new FixedSizeRos2Codec<>(Vector3.class, 8, Vector3.SIZE);
+
+    public static final Ros2Codec<ColorRGBA> COLOR_RGBA =
+            new FixedSizeRos2Codec<>(ColorRGBA.class, 4, ColorRGBA.SIZE);
 
     public static final Ros2Codec<Header> HEADER = new Ros2Codec<Header>() {
         @Override
@@ -81,6 +108,104 @@ public final class Ros2Codecs {
         }
     };
 
+    public static final Ros2Codec<MultiArrayDimension> MULTI_ARRAY_DIMENSION = new Ros2Codec<MultiArrayDimension>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, MultiArrayDimension value) {
+            writer.writeString(value.getLabel());
+            writer.writeUInt32(value.getSize());
+            writer.writeUInt32(value.getStride());
+        }
+
+        @Override
+        public MultiArrayDimension deserialize(Ros2CdrReader reader) {
+            return MultiArrayDimension.builder()
+                    .label(reader.readString())
+                    .size(reader.readUInt32())
+                    .stride(reader.readUInt32())
+                    .build();
+        }
+    };
+
+    public static final Ros2Codec<MultiArrayLayout> MULTI_ARRAY_LAYOUT = new Ros2Codec<MultiArrayLayout>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, MultiArrayLayout value) {
+            writeMultiArrayDimensionArray(writer, value.getDim());
+            writer.writeUInt32(value.getDataOffset());
+        }
+
+        @Override
+        public MultiArrayLayout deserialize(Ros2CdrReader reader) {
+            return MultiArrayLayout.builder()
+                    .dim(readMultiArrayDimensionArray(reader))
+                    .dataOffset(reader.readUInt32())
+                    .build();
+        }
+    };
+
+    public static final Ros2Codec<Float32MultiArray> FLOAT32_MULTI_ARRAY = new Ros2Codec<Float32MultiArray>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, Float32MultiArray value) {
+            MULTI_ARRAY_LAYOUT.serialize(writer, value.getLayout());
+            writer.writeFloatSequence(safeFloatArray(value.getData()));
+        }
+
+        @Override
+        public Float32MultiArray deserialize(Ros2CdrReader reader) {
+            return Float32MultiArray.builder()
+                    .layout(MULTI_ARRAY_LAYOUT.deserialize(reader))
+                    .data(reader.readFloatSequence())
+                    .build();
+        }
+    };
+
+    public static final Ros2Codec<Float64MultiArray> FLOAT64_MULTI_ARRAY = new Ros2Codec<Float64MultiArray>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, Float64MultiArray value) {
+            MULTI_ARRAY_LAYOUT.serialize(writer, value.getLayout());
+            writer.writeDoubleSequence(safeDoubleArray(value.getData()));
+        }
+
+        @Override
+        public Float64MultiArray deserialize(Ros2CdrReader reader) {
+            return Float64MultiArray.builder()
+                    .layout(MULTI_ARRAY_LAYOUT.deserialize(reader))
+                    .data(reader.readDoubleSequence())
+                    .build();
+        }
+    };
+
+    public static final Ros2Codec<Int32MultiArray> INT32_MULTI_ARRAY = new Ros2Codec<Int32MultiArray>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, Int32MultiArray value) {
+            MULTI_ARRAY_LAYOUT.serialize(writer, value.getLayout());
+            writer.writeInt32Sequence(safeIntArray(value.getData()));
+        }
+
+        @Override
+        public Int32MultiArray deserialize(Ros2CdrReader reader) {
+            return Int32MultiArray.builder()
+                    .layout(MULTI_ARRAY_LAYOUT.deserialize(reader))
+                    .data(reader.readInt32Sequence())
+                    .build();
+        }
+    };
+
+    public static final Ros2Codec<UInt8MultiArray> UINT8_MULTI_ARRAY = new Ros2Codec<UInt8MultiArray>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, UInt8MultiArray value) {
+            MULTI_ARRAY_LAYOUT.serialize(writer, value.getLayout());
+            writer.writeByteSequence(value.getData() == null ? new byte[0] : value.getData());
+        }
+
+        @Override
+        public UInt8MultiArray deserialize(Ros2CdrReader reader) {
+            return UInt8MultiArray.builder()
+                    .layout(MULTI_ARRAY_LAYOUT.deserialize(reader))
+                    .data(reader.readByteSequence())
+                    .build();
+        }
+    };
+
     public static final Ros2Codec<Pose> POSE = new Ros2Codec<Pose>() {
         @Override
         public void serialize(Ros2CdrWriter writer, Pose value) {
@@ -93,6 +218,20 @@ public final class Ros2Codecs {
             return Pose.builder()
                     .position(POINT.deserialize(reader))
                     .orientation(QUATERNION.deserialize(reader))
+                    .build();
+        }
+    };
+
+    public static final Ros2Codec<Polygon> POLYGON = new Ros2Codec<Polygon>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, Polygon value) {
+            writePoint32Array(writer, value.getPoints());
+        }
+
+        @Override
+        public Polygon deserialize(Ros2CdrReader reader) {
+            return Polygon.builder()
+                    .points(readPoint32Array(reader))
                     .build();
         }
     };
@@ -253,6 +392,22 @@ public final class Ros2Codecs {
         }
     };
 
+    public static final Ros2Codec<PolygonStamped> POLYGON_STAMPED = new Ros2Codec<PolygonStamped>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, PolygonStamped value) {
+            HEADER.serialize(writer, value.getHeader());
+            POLYGON.serialize(writer, value.getPolygon());
+        }
+
+        @Override
+        public PolygonStamped deserialize(Ros2CdrReader reader) {
+            return PolygonStamped.builder()
+                    .header(HEADER.deserialize(reader))
+                    .polygon(POLYGON.deserialize(reader))
+                    .build();
+        }
+    };
+
     public static final Ros2Codec<AccelStamped> ACCEL_STAMPED = new Ros2Codec<AccelStamped>() {
         @Override
         public void serialize(Ros2CdrWriter writer, AccelStamped value) {
@@ -265,6 +420,22 @@ public final class Ros2Codecs {
             return AccelStamped.builder()
                     .header(HEADER.deserialize(reader))
                     .accel(ACCEL.deserialize(reader))
+                    .build();
+        }
+    };
+
+    public static final Ros2Codec<TwistStamped> TWIST_STAMPED = new Ros2Codec<TwistStamped>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, TwistStamped value) {
+            HEADER.serialize(writer, value.getHeader());
+            TWIST.serialize(writer, value.getTwist());
+        }
+
+        @Override
+        public TwistStamped deserialize(Ros2CdrReader reader) {
+            return TwistStamped.builder()
+                    .header(HEADER.deserialize(reader))
+                    .twist(TWIST.deserialize(reader))
                     .build();
         }
     };
@@ -453,6 +624,22 @@ public final class Ros2Codecs {
         }
     };
 
+    public static final Ros2Codec<ChannelFloat32> CHANNEL_FLOAT32 = new Ros2Codec<ChannelFloat32>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, ChannelFloat32 value) {
+            writer.writeString(value.getName());
+            writer.writeFloatSequence(safeFloatArray(value.getValues()));
+        }
+
+        @Override
+        public ChannelFloat32 deserialize(Ros2CdrReader reader) {
+            return ChannelFloat32.builder()
+                    .name(reader.readString())
+                    .values(reader.readFloatSequence())
+                    .build();
+        }
+    };
+
     public static final Ros2Codec<RegionOfInterest> REGION_OF_INTEREST = new Ros2Codec<RegionOfInterest>() {
         @Override
         public void serialize(Ros2CdrWriter writer, RegionOfInterest value) {
@@ -599,6 +786,42 @@ public final class Ros2Codecs {
         }
     };
 
+    public static final Ros2Codec<Illuminance> ILLUMINANCE = new Ros2Codec<Illuminance>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, Illuminance value) {
+            HEADER.serialize(writer, value.getHeader());
+            writer.writeDouble(value.getIlluminance());
+            writer.writeDouble(value.getVariance());
+        }
+
+        @Override
+        public Illuminance deserialize(Ros2CdrReader reader) {
+            return Illuminance.builder()
+                    .header(HEADER.deserialize(reader))
+                    .illuminance(reader.readDouble())
+                    .variance(reader.readDouble())
+                    .build();
+        }
+    };
+
+    public static final Ros2Codec<RelativeHumidity> RELATIVE_HUMIDITY = new Ros2Codec<RelativeHumidity>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, RelativeHumidity value) {
+            HEADER.serialize(writer, value.getHeader());
+            writer.writeDouble(value.getRelativeHumidity());
+            writer.writeDouble(value.getVariance());
+        }
+
+        @Override
+        public RelativeHumidity deserialize(Ros2CdrReader reader) {
+            return RelativeHumidity.builder()
+                    .header(HEADER.deserialize(reader))
+                    .relativeHumidity(reader.readDouble())
+                    .variance(reader.readDouble())
+                    .build();
+        }
+    };
+
     public static final Ros2Codec<PointCloud2> POINT_CLOUD2 = new Ros2Codec<PointCloud2>() {
         @Override
         public void serialize(Ros2CdrWriter writer, PointCloud2 value) {
@@ -625,6 +848,24 @@ public final class Ros2Codecs {
                     .rowStep(reader.readUInt32())
                     .data(reader.readByteSequence())
                     .isDense(reader.readBool())
+                    .build();
+        }
+    };
+
+    public static final Ros2Codec<PointCloud> POINT_CLOUD = new Ros2Codec<PointCloud>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, PointCloud value) {
+            HEADER.serialize(writer, value.getHeader());
+            writePoint32Array(writer, value.getPoints());
+            writeChannelFloat32Array(writer, value.getChannels());
+        }
+
+        @Override
+        public PointCloud deserialize(Ros2CdrReader reader) {
+            return PointCloud.builder()
+                    .header(HEADER.deserialize(reader))
+                    .points(readPoint32Array(reader))
+                    .channels(readChannelFloat32Array(reader))
                     .build();
         }
     };
@@ -763,6 +1004,30 @@ public final class Ros2Codecs {
         }
     };
 
+    public static final Ros2Codec<Range> RANGE = new Ros2Codec<Range>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, Range value) {
+            HEADER.serialize(writer, value.getHeader());
+            writer.writeUInt8(value.getRadiationType());
+            writer.writeFloat(value.getFieldOfView());
+            writer.writeFloat(value.getMinRange());
+            writer.writeFloat(value.getMaxRange());
+            writer.writeFloat(value.getRange());
+        }
+
+        @Override
+        public Range deserialize(Ros2CdrReader reader) {
+            return Range.builder()
+                    .header(HEADER.deserialize(reader))
+                    .radiationType(reader.readUInt8())
+                    .fieldOfView(reader.readFloat())
+                    .minRange(reader.readFloat())
+                    .maxRange(reader.readFloat())
+                    .range(reader.readFloat())
+                    .build();
+        }
+    };
+
     public static final Ros2Codec<Joy> JOY = new Ros2Codec<Joy>() {
         @Override
         public void serialize(Ros2CdrWriter writer, Joy value) {
@@ -799,6 +1064,50 @@ public final class Ros2Codecs {
                     .position(reader.readDoubleSequence())
                     .velocity(reader.readDoubleSequence())
                     .effort(reader.readDoubleSequence())
+                    .build();
+        }
+    };
+
+    public static final Ros2Codec<BatteryState> BATTERY_STATE = new Ros2Codec<BatteryState>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, BatteryState value) {
+            HEADER.serialize(writer, value.getHeader());
+            writer.writeFloat(value.getVoltage());
+            writer.writeFloat(value.getTemperature());
+            writer.writeFloat(value.getCurrent());
+            writer.writeFloat(value.getCharge());
+            writer.writeFloat(value.getCapacity());
+            writer.writeFloat(value.getDesignCapacity());
+            writer.writeFloat(value.getPercentage());
+            writer.writeUInt8(value.getPowerSupplyStatus());
+            writer.writeUInt8(value.getPowerSupplyHealth());
+            writer.writeUInt8(value.getPowerSupplyTechnology());
+            writer.writeBool(value.isPresent());
+            writer.writeFloatSequence(safeFloatArray(value.getCellVoltage()));
+            writer.writeFloatSequence(safeFloatArray(value.getCellTemperature()));
+            writer.writeString(value.getLocation() == null ? "" : value.getLocation());
+            writer.writeString(value.getSerialNumber() == null ? "" : value.getSerialNumber());
+        }
+
+        @Override
+        public BatteryState deserialize(Ros2CdrReader reader) {
+            return BatteryState.builder()
+                    .header(HEADER.deserialize(reader))
+                    .voltage(reader.readFloat())
+                    .temperature(reader.readFloat())
+                    .current(reader.readFloat())
+                    .charge(reader.readFloat())
+                    .capacity(reader.readFloat())
+                    .designCapacity(reader.readFloat())
+                    .percentage(reader.readFloat())
+                    .powerSupplyStatus(reader.readUInt8())
+                    .powerSupplyHealth(reader.readUInt8())
+                    .powerSupplyTechnology(reader.readUInt8())
+                    .present(reader.readBool())
+                    .cellVoltage(reader.readFloatSequence())
+                    .cellTemperature(reader.readFloatSequence())
+                    .location(reader.readString())
+                    .serialNumber(reader.readString())
                     .build();
         }
     };
@@ -855,6 +1164,60 @@ public final class Ros2Codecs {
         }
 
         return fields;
+    }
+
+    private static void writeMultiArrayDimensionArray(Ros2CdrWriter writer, MultiArrayDimension[] values) {
+        MultiArrayDimension[] safeValues = values == null ? new MultiArrayDimension[0] : values;
+        writer.writeUInt32(safeValues.length);
+        for (MultiArrayDimension value : safeValues) {
+            MULTI_ARRAY_DIMENSION.serialize(writer, value);
+        }
+    }
+
+    private static MultiArrayDimension[] readMultiArrayDimensionArray(Ros2CdrReader reader) {
+        long length = reader.readUInt32();
+        MultiArrayDimension[] values = new MultiArrayDimension[(int) length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = MULTI_ARRAY_DIMENSION.deserialize(reader);
+        }
+
+        return values;
+    }
+
+    private static void writePoint32Array(Ros2CdrWriter writer, Point32[] values) {
+        Point32[] safeValues = values == null ? new Point32[0] : values;
+        writer.writeUInt32(safeValues.length);
+        for (Point32 value : safeValues) {
+            POINT32.serialize(writer, value);
+        }
+    }
+
+    private static Point32[] readPoint32Array(Ros2CdrReader reader) {
+        long length = reader.readUInt32();
+        Point32[] values = new Point32[(int) length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = POINT32.deserialize(reader);
+        }
+
+        return values;
+    }
+
+    private static void writeChannelFloat32Array(Ros2CdrWriter writer, ChannelFloat32[] values) {
+        ChannelFloat32[] safeValues = values == null ? new ChannelFloat32[0] : values;
+        writer.writeUInt32(safeValues.length);
+        for (ChannelFloat32 value : safeValues) {
+            CHANNEL_FLOAT32.serialize(writer, value);
+        }
+    }
+
+    private static ChannelFloat32[] readChannelFloat32Array(Ros2CdrReader reader) {
+        long length = reader.readUInt32();
+        ChannelFloat32[] values = new ChannelFloat32[(int) length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = CHANNEL_FLOAT32.deserialize(reader);
+        }
+
+        return values;
     }
 
     private static float[] safeFloatArray(float[] values) {
