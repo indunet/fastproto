@@ -53,13 +53,20 @@ import org.indunet.fastproto.ros2.sensor_msgs.msg.Range;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.RegionOfInterest;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.RelativeHumidity;
 import org.indunet.fastproto.ros2.sensor_msgs.msg.Temperature;
+import org.indunet.fastproto.ros2.std_msgs.msg.Bool;
+import org.indunet.fastproto.ros2.std_msgs.msg.Byte;
 import org.indunet.fastproto.ros2.std_msgs.msg.ColorRGBA;
+import org.indunet.fastproto.ros2.std_msgs.msg.Float32;
 import org.indunet.fastproto.ros2.std_msgs.msg.Float32MultiArray;
+import org.indunet.fastproto.ros2.std_msgs.msg.Float64;
 import org.indunet.fastproto.ros2.std_msgs.msg.Float64MultiArray;
 import org.indunet.fastproto.ros2.std_msgs.msg.Header;
+import org.indunet.fastproto.ros2.std_msgs.msg.Int32;
 import org.indunet.fastproto.ros2.std_msgs.msg.Int32MultiArray;
 import org.indunet.fastproto.ros2.std_msgs.msg.MultiArrayDimension;
 import org.indunet.fastproto.ros2.std_msgs.msg.MultiArrayLayout;
+import org.indunet.fastproto.ros2.std_msgs.msg.UInt32;
+import org.indunet.fastproto.ros2.std_msgs.msg.UInt8;
 import org.indunet.fastproto.ros2.std_msgs.msg.UInt8MultiArray;
 import org.indunet.fastproto.ros2.tf2_msgs.msg.TFMessage;
 import org.junit.jupiter.api.Test;
@@ -122,6 +129,28 @@ public class Ros2FastProtoTest {
                 0x6d, 0x61, 0x70, 0x00
         }, bytes);
         assertEquals(header, Ros2FastProto.decode(bytes, Ros2Codecs.HEADER));
+    }
+
+    @Test
+    public void testStdScalarMessagesRoundTrip() {
+        Bool boolValue = Bool.builder().data(true).build();
+        Byte byteValue = Byte.builder().data(-12).build();
+        Int32 int32Value = Int32.builder().data(-123456).build();
+        UInt8 uint8Value = UInt8.builder().data(250).build();
+        UInt32 uint32Value = UInt32.builder().data(4_000_000_000L).build();
+        Float32 float32Value = Float32.builder().data(12.5f).build();
+        Float64 float64Value = Float64.builder().data(-98.7654321).build();
+        org.indunet.fastproto.ros2.std_msgs.msg.String stringValue =
+                org.indunet.fastproto.ros2.std_msgs.msg.String.builder().data("hello ros2").build();
+
+        assertEquals(boolValue, Ros2FastProto.decode(Ros2FastProto.encode(boolValue, Ros2Codecs.BOOL), Ros2Codecs.BOOL));
+        assertEquals(byteValue, Ros2FastProto.decode(Ros2FastProto.encode(byteValue, Ros2Codecs.BYTE), Ros2Codecs.BYTE));
+        assertEquals(int32Value, Ros2FastProto.decode(Ros2FastProto.encode(int32Value, Ros2Codecs.INT32), Ros2Codecs.INT32));
+        assertEquals(uint8Value, Ros2FastProto.decode(Ros2FastProto.encode(uint8Value, Ros2Codecs.UINT8), Ros2Codecs.UINT8));
+        assertEquals(uint32Value, Ros2FastProto.decode(Ros2FastProto.encode(uint32Value, Ros2Codecs.UINT32), Ros2Codecs.UINT32));
+        assertEquals(float32Value, Ros2FastProto.decode(Ros2FastProto.encode(float32Value, Ros2Codecs.FLOAT32), Ros2Codecs.FLOAT32));
+        assertEquals(float64Value, Ros2FastProto.decode(Ros2FastProto.encode(float64Value, Ros2Codecs.FLOAT64), Ros2Codecs.FLOAT64));
+        assertEquals(stringValue, Ros2FastProto.decode(Ros2FastProto.encode(stringValue, Ros2Codecs.STD_STRING), Ros2Codecs.STD_STRING));
     }
 
     @Test

@@ -57,10 +57,17 @@ import org.indunet.fastproto.ros2.sensor_msgs.msg.Temperature;
 import org.indunet.fastproto.ros2.std_msgs.msg.ColorRGBA;
 import org.indunet.fastproto.ros2.std_msgs.msg.Float32MultiArray;
 import org.indunet.fastproto.ros2.std_msgs.msg.Float64MultiArray;
+import org.indunet.fastproto.ros2.std_msgs.msg.Bool;
+import org.indunet.fastproto.ros2.std_msgs.msg.Byte;
+import org.indunet.fastproto.ros2.std_msgs.msg.Float32;
+import org.indunet.fastproto.ros2.std_msgs.msg.Float64;
 import org.indunet.fastproto.ros2.std_msgs.msg.Header;
+import org.indunet.fastproto.ros2.std_msgs.msg.Int32;
 import org.indunet.fastproto.ros2.std_msgs.msg.Int32MultiArray;
 import org.indunet.fastproto.ros2.std_msgs.msg.MultiArrayDimension;
 import org.indunet.fastproto.ros2.std_msgs.msg.MultiArrayLayout;
+import org.indunet.fastproto.ros2.std_msgs.msg.UInt32;
+import org.indunet.fastproto.ros2.std_msgs.msg.UInt8;
 import org.indunet.fastproto.ros2.std_msgs.msg.UInt8MultiArray;
 import org.indunet.fastproto.ros2.tf2_msgs.msg.TFMessage;
 
@@ -104,6 +111,119 @@ public final class Ros2Codecs {
             return Header.builder()
                     .stamp(TIME.deserialize(reader))
                     .frameId(reader.readString())
+                    .build();
+        }
+    };
+
+    public static final Ros2Codec<Bool> BOOL = new Ros2Codec<Bool>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, Bool value) {
+            writer.writeBool(value.isData());
+        }
+
+        @Override
+        public Bool deserialize(Ros2CdrReader reader) {
+            return Bool.builder()
+                    .data(reader.readBool())
+                    .build();
+        }
+    };
+
+    public static final Ros2Codec<Byte> BYTE = new Ros2Codec<Byte>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, Byte value) {
+            writer.writeInt8(value.getData());
+        }
+
+        @Override
+        public Byte deserialize(Ros2CdrReader reader) {
+            return Byte.builder()
+                    .data(reader.readInt8())
+                    .build();
+        }
+    };
+
+    public static final Ros2Codec<Int32> INT32 = new Ros2Codec<Int32>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, Int32 value) {
+            writer.writeInt32(value.getData());
+        }
+
+        @Override
+        public Int32 deserialize(Ros2CdrReader reader) {
+            return Int32.builder()
+                    .data(reader.readInt32())
+                    .build();
+        }
+    };
+
+    public static final Ros2Codec<UInt32> UINT32 = new Ros2Codec<UInt32>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, UInt32 value) {
+            writer.writeUInt32(value.getData());
+        }
+
+        @Override
+        public UInt32 deserialize(Ros2CdrReader reader) {
+            return UInt32.builder()
+                    .data(reader.readUInt32())
+                    .build();
+        }
+    };
+
+    public static final Ros2Codec<UInt8> UINT8 = new Ros2Codec<UInt8>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, UInt8 value) {
+            writer.writeUInt8(value.getData());
+        }
+
+        @Override
+        public UInt8 deserialize(Ros2CdrReader reader) {
+            return UInt8.builder()
+                    .data(reader.readUInt8())
+                    .build();
+        }
+    };
+
+    public static final Ros2Codec<Float32> FLOAT32 = new Ros2Codec<Float32>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, Float32 value) {
+            writer.writeFloat(value.getData());
+        }
+
+        @Override
+        public Float32 deserialize(Ros2CdrReader reader) {
+            return Float32.builder()
+                    .data(reader.readFloat())
+                    .build();
+        }
+    };
+
+    public static final Ros2Codec<Float64> FLOAT64 = new Ros2Codec<Float64>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, Float64 value) {
+            writer.writeDouble(value.getData());
+        }
+
+        @Override
+        public Float64 deserialize(Ros2CdrReader reader) {
+            return Float64.builder()
+                    .data(reader.readDouble())
+                    .build();
+        }
+    };
+
+    public static final Ros2Codec<org.indunet.fastproto.ros2.std_msgs.msg.String> STD_STRING =
+            new Ros2Codec<org.indunet.fastproto.ros2.std_msgs.msg.String>() {
+        @Override
+        public void serialize(Ros2CdrWriter writer, org.indunet.fastproto.ros2.std_msgs.msg.String value) {
+            writer.writeString(value.getData() == null ? "" : value.getData());
+        }
+
+        @Override
+        public org.indunet.fastproto.ros2.std_msgs.msg.String deserialize(Ros2CdrReader reader) {
+            return org.indunet.fastproto.ros2.std_msgs.msg.String.builder()
+                    .data(reader.readString())
                     .build();
         }
     };

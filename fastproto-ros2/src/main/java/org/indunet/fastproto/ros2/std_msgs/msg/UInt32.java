@@ -6,14 +6,12 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 /**
- * std_msgs/msg/MultiArrayDimension
+ * std_msgs/msg/UInt32
  */
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class MultiArrayDimension {
-    private java.lang.String label;
-    private long size;
-    private long stride;
+public class UInt32 {
+    private long data;
 }

@@ -16,5 +16,5 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class Header {
     private Time stamp;
-    private String frameId;
+    private java.lang.String frameId;
 }
