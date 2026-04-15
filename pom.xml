@@ -18,6 +18,7 @@
         <module>fastproto-core</module>
         <module>fastproto-processor</module>
         <module>fastproto-bundle</module>
+        <module>fastproto-ros2</module>
     </modules>
 
     <scm>
@@ -74,6 +75,11 @@
             <dependency>
                 <groupId>org.indunet</groupId>
                 <artifactId>fastproto-processor</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.indunet</groupId>
+                <artifactId>fastproto-ros2</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
