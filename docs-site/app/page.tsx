@@ -1,37 +1,65 @@
 import Link from "next/link";
+import {
+  ArrowRight,
+  Binary,
+  BookOpen,
+  Boxes,
+  Cable,
+  CheckCheck,
+  ChevronRight,
+  Cpu,
+  FileCode2,
+  ShieldCheck,
+  Sparkles,
+} from "lucide-react";
 import { SiteFooter } from "@/components/site-footer";
 import { SiteHeader } from "@/components/site-header";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import {
-  BadgeCheck,
-  Binary,
-  BookOpen,
-  CheckCircle2,
-  Layers,
-  ListOrdered,
-  ShieldCheck,
-  Sparkles,
-  ArrowRight,
-} from "lucide-react";
+import { DOC_NAV } from "@/lib/nav";
 
 const BADGES = [
-  ["Build",     "https://app.travis-ci.com/indunet/fastproto.svg?branch=master",                                  "https://app.travis-ci.com/indunet/fastproto"],
-  ["codecov",   "https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU",        "https://codecov.io/gh/indunet/fastproto"],
-  ["Codacy",    "https://img.shields.io/badge/Codacy-A.svg",                                                     "https://www.codacy.com/gh/indunet/fastproto/dashboard"],
-  ["JetBrains", "https://img.shields.io/badge/JetBrains-support-blue",                                           "https://www.jetbrains.com/community/opensource"],
-  ["License",   "https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg",                                  "https://www.apache.org/licenses/LICENSE-2.0.html"],
+  ["Build", "https://app.travis-ci.com/indunet/fastproto.svg?branch=master", "https://app.travis-ci.com/indunet/fastproto"],
+  ["codecov", "https://codecov.io/gh/indunet/fastproto/branch/master/graph/badge.svg?token=17TEL5B5NU", "https://codecov.io/gh/indunet/fastproto"],
+  ["Codacy", "https://img.shields.io/badge/Codacy-A.svg", "https://www.codacy.com/gh/indunet/fastproto/dashboard"],
+  ["JetBrains", "https://img.shields.io/badge/JetBrains-support-blue", "https://www.jetbrains.com/community/opensource"],
+  ["License", "https://img.shields.io/badge/license-Apache%202.0-4EB1BA.svg", "https://www.apache.org/licenses/LICENSE-2.0.html"],
 ] as const;
 
-const FEATURES = [
-  { title: "Annotation-driven",   body: "Map binary data to Java fields via simple annotations.",                  icon: BookOpen     },
-  { title: "Broad type support",  body: "Primitives, unsigned, strings, time, arrays and collections.",            icon: Layers       },
-  { title: "Flexible addressing", body: "Reverse addressing for variable-length packets.",                          icon: Binary       },
-  { title: "Byte & bit order",    body: "Big-endian or little-endian; MSB/LSB bit ordering.",                      icon: ListOrdered  },
-  { title: "Custom formulas",     body: "Apply lambdas or classes to transform values on encode/decode.",           icon: Sparkles     },
-  { title: "Checksum / CRC",      body: "Single annotation: CRC8/16/32/64, LRC, XOR, sum.",                       icon: ShieldCheck  },
-  { title: "Multiple APIs",       body: "Fluent builder and static helpers for all use cases.",                     icon: CheckCircle2 },
-];
+const HIGHLIGHTS = [
+  ["Annotation-first", "Model packet fields directly on Java classes without drowning in masks and shifts."],
+  ["Protocol-realistic", "CRC, formulas, mixed order, arrays, offsets, and edge-case packet structure are all first-class."],
+  ["Ready to ship", "Use it in core JVM services, Android clients, Netty pipelines, and Kafka flows with less glue code."],
+] as const;
+
+const CAPABILITIES = [
+  {
+    title: "Readable mapping",
+    body: "Keep the protocol layout and the class model close enough that future changes stay understandable.",
+    icon: FileCode2,
+  },
+  {
+    title: "Integrity built in",
+    body: "Reach for CRC and checksum strategies without building a parallel validation layer.",
+    icon: ShieldCheck,
+  },
+  {
+    title: "Value transforms",
+    body: "Encode and decode with scaling or engineering formulas where the packet format demands it.",
+    icon: Sparkles,
+  },
+  {
+    title: "Hardware detail",
+    body: "Handle endianness, bit order, struct arrays, and variable length payloads without special-case chaos.",
+    icon: Binary,
+  },
+] as const;
+
+const USE_CASES = [
+  { title: "IoT gateways", icon: Cable, body: "Device frames, telemetry payloads, and serial packet work that needs to stay maintainable." },
+  { title: "Automotive & CAN", icon: Cpu, body: "Mixed-order fields and binary payloads where precision matters more than abstraction purity." },
+  { title: "Industrial control", icon: Boxes, body: "Structured binary messaging for PLC, RTU, and register-driven integrations." },
+] as const;
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -49,233 +77,244 @@ const jsonLd = {
 
 export default function HomePage() {
   return (
-    <div className="flex min-h-screen flex-col bg-white">
+    <div className="site-shell flex min-h-screen flex-col">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <SiteHeader />
 
-      {/* ═══ Hero ══════════════════════════════════════════════ */}
-      <section className="border-b border-gray-100 bg-gradient-to-b from-blue-50/60 to-white px-5 py-16 text-center">
-        {/* Version chip — no glow, clean and readable */}
-        <div className="mx-auto mb-6 inline-flex items-center gap-1.5 rounded-full border border-blue-200 bg-white px-3 py-1 text-xs font-semibold text-blue-700 shadow-sm">
-          <span className="text-blue-400">v</span>4.1.0
-          <span className="mx-1 h-3 w-px bg-blue-200" />
-          Apache 2.0
-        </div>
+      <main className="mx-auto flex w-full max-w-7xl flex-1 flex-col gap-8 px-5 pb-6 pt-8">
+        <section className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)]">
+          <Card variant="elevated" className="paper-grid overflow-hidden px-6 py-8 md:px-8 md:py-10">
+            <div className="relative z-[1] max-w-4xl">
+              <span className="eyebrow">Binary Protocol Toolkit</span>
+              <h1 className="font-display mt-6 max-w-3xl text-5xl leading-[0.92] tracking-[-0.06em] text-[var(--headline)] md:text-7xl">
+                Java protocol mapping,
+                <span className="text-gradient"> stripped of the brittle parts.</span>
+              </h1>
+              <p className="mt-6 max-w-2xl text-[16px] leading-8 text-[var(--text-soft)] md:text-lg">
+                FastProto turns binary serialization and deserialization into a clearer modeling task. You define the
+                structure once, keep the packet intent visible, and stop repeating low-level parsing code across the codebase.
+              </p>
 
-        <h1 className="text-gradient mx-auto max-w-2xl text-4xl font-extrabold tracking-tight sm:text-5xl">
-          FastProto
-        </h1>
-        <p className="mx-auto mt-4 max-w-xl text-lg text-gray-500">
-          Annotation-driven binary protocol serialization for Java.
-        </p>
-        <p className="mx-auto mt-1 max-w-xl text-sm text-gray-400">
-          Designed for IoT, automotive, industrial control &amp; energy metering.
-        </p>
+              <div className="mt-8 flex flex-wrap items-center gap-3">
+                <Button variant="primary" size="lg" asChild>
+                  <Link href="/help/quick-start">
+                    <BookOpen />
+                    Read the quick start
+                  </Link>
+                </Button>
+                <Button variant="default" size="lg" asChild>
+                  <a href="https://github.com/indunet/fastproto" target="_blank" rel="noreferrer">
+                    View source on GitHub
+                    <ArrowRight className="size-4" />
+                  </a>
+                </Button>
+              </div>
 
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <Button variant="primary" size="lg" asChild>
-            <Link href="/help/quick-start">
-              <BookOpen />
-              Get Started
-            </Link>
-          </Button>
-          <Button variant="default" size="lg" asChild>
-            <a href="https://github.com/indunet/fastproto" target="_blank" rel="noreferrer">
-              View on GitHub
-              <ArrowRight className="size-4 opacity-60" />
-            </a>
-          </Button>
-        </div>
-
-        {/* CI/CD badges */}
-        <div className="mt-8 flex flex-wrap items-center justify-center gap-2">
-          {BADGES.map(([alt, src, href]) => (
-            <a key={alt} href={href} target="_blank" rel="noreferrer"
-               className="opacity-75 transition-opacity hover:opacity-100">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <img src={src} alt={alt} className="h-5" />
-            </a>
-          ))}
-        </div>
-      </section>
-
-      <div className="mx-auto w-full max-w-5xl flex-1 space-y-8 px-5 py-10">
-
-        {/* ═══ What is FastProto ══════════════════════════════ */}
-        <section>
-          <h2 className="mb-1 text-xs font-semibold uppercase tracking-widest text-blue-600">
-            Overview
-          </h2>
-          <p className="mt-2 text-2xl font-bold text-gray-900">What is FastProto?</p>
-          <p className="mt-3 max-w-3xl leading-relaxed text-gray-600">
-            FastProto is a high-performance Java library for binary protocol serialization and deserialization.
-            Define complex byte-stream structures with annotations — no manual bit-shifting, no boilerplate.
-            Built for production use cases including IoT gateways, CAN bus parsers, UART framing and
-            Modbus register mapping.
-          </p>
-        </section>
-
-        {/* ═══ Philosophy + Features ══════════════════════════ */}
-        <div className="grid gap-6 lg:grid-cols-2">
-
-          {/* Design philosophy */}
-          <Card className="p-6">
-            <div className="mb-4 flex items-center gap-2">
-              <BadgeCheck className="size-4 shrink-0 text-blue-600" />
-              <span className="text-sm font-semibold text-gray-900">Design philosophy</span>
+              <div className="mt-8 grid gap-3 sm:grid-cols-3">
+                {HIGHLIGHTS.map(([title, body]) => (
+                  <div key={title} className="rounded-[22px] border border-[var(--line-soft)] bg-[rgba(255,255,255,0.5)] p-4">
+                    <p className="text-sm font-semibold tracking-[-0.02em] text-[var(--headline)]">{title}</p>
+                    <p className="mt-2 text-sm leading-6 text-[var(--text-soft)]">{body}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-            <ul className="space-y-4 text-sm">
-              {[
-                ["Declarative over imperative",     "Protocol structure expressed through annotations — the code reads like the protocol spec."],
-                ["Performance with maintainability", "Reflection metadata cached at startup; encode/decode paths are allocation-light."],
-                ["Grounded in engineering reality",  "Mixed endianness, sub-byte fields, BCD encoding, CRC variants — all handled natively."],
-              ].map(([title, desc]) => (
-                <li key={title} className="flex gap-2">
-                  <span className="mt-0.5 size-1.5 shrink-0 translate-y-[5px] rounded-full bg-blue-500" />
-                  <span>
-                    <span className="font-semibold text-gray-800">{title}: </span>
-                    <span className="text-gray-500">{desc}</span>
-                  </span>
-                </li>
-              ))}
-            </ul>
           </Card>
 
-          {/* Key features */}
-          <Card className="p-6">
-            <p className="mb-4 text-sm font-semibold text-gray-900">Key features</p>
-            <div className="grid grid-cols-2 gap-2">
-              {FEATURES.map(({ title, body, icon: Icon }, i) => (
-                <div
-                  key={title}
-                  className={[
-                    "rounded-lg border border-gray-100 bg-gray-50/70 p-3",
-                    "transition-colors hover:border-blue-200 hover:bg-blue-50/50",
-                    /* Alternating diagonal corner radii */
-                    i % 2 === 0
-                      ? "rounded-tl-xl rounded-br-xl rounded-tr-md rounded-bl-md"
-                      : "rounded-tr-xl rounded-bl-xl rounded-tl-md rounded-br-md",
-                  ].join(" ")}
-                >
-                  <div className="flex items-center gap-1.5 text-xs font-semibold text-gray-700">
-                    <Icon className="size-3.5 shrink-0 text-blue-500" />
-                    {title}
+          <div className="grid gap-6">
+            <Card className="px-6 py-6">
+              <p className="text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-[var(--text-dim)]">
+                At a glance
+              </p>
+              <div className="mt-5 space-y-3">
+                {[
+                  ["v4.1.0", "Current documented release"],
+                  ["Java 8+", "Stable baseline for adoption"],
+                  ["Checksums, formulas, offsets", "Built into the same model layer"],
+                ].map(([value, label]) => (
+                  <div key={value} className="rounded-[20px] border border-[var(--line-soft)] bg-[rgba(255,255,255,0.48)] px-4 py-3">
+                    <p className="font-display text-2xl tracking-[-0.04em] text-[var(--headline)]">{value}</p>
+                    <p className="mt-1 text-sm leading-6 text-[var(--text-soft)]">{label}</p>
                   </div>
-                  <p className="mt-1 text-xs leading-relaxed text-gray-500">{body}</p>
+                ))}
+              </div>
+            </Card>
+
+            <Card variant="accent" className="px-6 py-6">
+              <div className="flex items-start gap-4">
+                <div className="flex size-11 shrink-0 items-center justify-center rounded-[18px] bg-[rgba(255,255,255,0.58)] text-[var(--brand-strong)]">
+                  <CheckCheck className="size-5" />
+                </div>
+                <div>
+                  <p className="font-display text-3xl tracking-[-0.04em] text-[var(--headline)]">
+                    Built for the awkward 10% most libraries ignore.
+                  </p>
+                  <p className="mt-3 text-sm leading-7 text-[var(--text-soft)]">
+                    The last mile of binary work is usually where maintainability drops off. FastProto is strongest
+                    exactly where packet definitions stop being clean and start being real.
+                  </p>
+                </div>
+              </div>
+            </Card>
+
+            <div className="flex flex-wrap gap-2">
+              {BADGES.map(([alt, src, href]) => (
+                <a
+                  key={alt}
+                  href={href}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="rounded-full border border-[var(--line-soft)] bg-[rgba(255,255,255,0.62)] px-2.5 py-1.5 shadow-[0_10px_20px_rgba(58,41,23,0.05)]"
+                >
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={src} alt={alt} className="h-5" />
+                </a>
+              ))}
+            </div>
+          </div>
+        </section>
+
+        <section className="grid gap-6 lg:grid-cols-[minmax(0,1fr)_minmax(0,0.95fr)]">
+          <Card className="px-6 py-7 md:px-7">
+            <span className="eyebrow">Why FastProto</span>
+            <div className="mt-6 grid gap-3 sm:grid-cols-2">
+              {CAPABILITIES.map(({ title, body, icon: Icon }) => (
+                <div key={title} className="rounded-[24px] border border-[var(--line-soft)] bg-[rgba(255,255,255,0.48)] p-5">
+                  <div className="flex size-10 items-center justify-center rounded-2xl bg-[rgba(219,232,229,0.74)] text-[var(--brand-strong)]">
+                    <Icon className="size-4" />
+                  </div>
+                  <p className="mt-4 text-lg font-semibold tracking-[-0.02em] text-[var(--headline)]">{title}</p>
+                  <p className="mt-2 text-sm leading-7 text-[var(--text-soft)]">{body}</p>
                 </div>
               ))}
             </div>
           </Card>
-        </div>
 
-        {/* ═══ Basic usage ════════════════════════════════════ */}
-        <Card className="p-6">
-          <h2 className="mb-1 text-xs font-semibold uppercase tracking-widest text-blue-600">
-            Basic usage
-          </h2>
-          <p className="mb-4 mt-1 text-sm text-gray-500">
-            Annotate fields, call <code className="rounded bg-gray-100 px-1 py-0.5 text-xs font-mono text-blue-700">FastProto.decode</code> — done.
-          </p>
-          <pre className="overflow-x-auto rounded-lg border border-slate-700/40 bg-slate-900 p-5 font-mono text-sm leading-relaxed text-sky-300">
-            <code>{`import org.indunet.fastproto.FastProto;
+          <Card variant="accent" className="px-6 py-7 md:px-7">
+            <span className="eyebrow">Minimal Usage</span>
+            <p className="font-display mt-5 max-w-xl text-4xl tracking-[-0.04em] text-[var(--headline)]">
+              Small enough for the first packet, strong enough for the messy ones after it.
+            </p>
+            <p className="mt-4 max-w-xl text-sm leading-7 text-[var(--text-soft)]">
+              You can start from a tiny model class and keep growing into checksums, transforms, and dynamic layouts
+              without switching paradigms halfway through the project.
+            </p>
+
+            <div className="mt-6 overflow-hidden rounded-[26px] border border-[rgba(33,29,24,0.08)] bg-[linear-gradient(180deg,#221d18,#181512)] shadow-[0_24px_60px_rgba(21,18,15,0.22)]">
+              <div className="flex items-center gap-2 border-b border-white/8 px-4 py-3">
+                <span className="size-2.5 rounded-full bg-[#f39a82]" />
+                <span className="size-2.5 rounded-full bg-[#f2c36f]" />
+                <span className="size-2.5 rounded-full bg-[#82c69b]" />
+                <span className="ml-3 text-[11px] font-semibold uppercase tracking-[0.18em] text-white/45">
+                  Packet.java
+                </span>
+              </div>
+              <pre className="overflow-x-auto px-5 py-5 font-mono text-sm leading-7 text-[#d8eadf]">
+                <code>{`import org.indunet.fastproto.FastProto;
 import org.indunet.fastproto.annotation.UInt8Type;
 
 public class Packet {
-  @UInt8Type(offset = 0) int id;
+  @UInt8Type(offset = 0)
+  int id;
 }
 
-byte[] bytes = new byte[]{1};
-Packet p = FastProto.decode(bytes, Packet.class);
-byte[] out = FastProto.encode(p, 1);`}</code>
-          </pre>
-        </Card>
+byte[] raw = new byte[] { 1 };
+Packet packet = FastProto.decode(raw, Packet.class);
+byte[] out = FastProto.encode(packet, 1);`}</code>
+              </pre>
+            </div>
+          </Card>
+        </section>
 
-        {/* ═══ Get started + Install ══════════════════════════ */}
-        <div className="grid gap-6 lg:grid-cols-2">
+        <section className="grid gap-6 lg:grid-cols-[minmax(0,0.95fr)_minmax(0,1.05fr)]">
+          <Card className="px-6 py-7 md:px-7">
+            <div className="flex items-end justify-between gap-4">
+              <div>
+                <span className="eyebrow">Documentation</span>
+                <p className="font-display mt-5 text-4xl tracking-[-0.04em] text-[var(--headline)]">
+                  Start from the path that matches your problem.
+                </p>
+              </div>
+              <Button variant="outline" size="sm" asChild>
+                <Link href="/help/quick-start">
+                  Browse docs
+                  <ChevronRight className="size-4" />
+                </Link>
+              </Button>
+            </div>
 
-          <Card className="p-6">
-            <h2 className="mb-1 text-xs font-semibold uppercase tracking-widest text-blue-600">
-              Documentation
-            </h2>
-            <p className="mt-2 mb-4 text-sm text-gray-500">Guides to get you up and running:</p>
-            <ul className="space-y-2 text-sm">
-              {[
-                ["quick-start",         "Quick Start"],
-                ["annotation-mapping",  "Annotation Mapping"],
-                ["variable-length",     "Variable Length"],
-                ["dynamic-offset",      "Dynamic Offset (offsetRef)"],
-                ["checksum",            "Checksum / CRC"],
-                ["formulas",            "Transformation Formulas"],
-                ["without-annotations", "APIs without Annotations"],
-                ["android",             "Android"],
-              ].map(([slug, label]) => (
-                <li key={slug}>
-                  <Link
-                    href={`/help/${slug}`}
-                    className="flex items-center gap-1.5 text-blue-600 hover:text-blue-800 hover:underline"
-                  >
-                    <ArrowRight className="size-3 shrink-0 opacity-50" />
-                    {label}
-                  </Link>
-                </li>
+            <div className="mt-7 grid gap-3">
+              {DOC_NAV.slice(0, 5).map((item) => (
+                <Link
+                  key={item.slug}
+                  href={`/help/${item.slug}`}
+                  className="group rounded-[22px] border border-[var(--line-soft)] bg-[rgba(255,255,255,0.46)] px-4 py-4"
+                >
+                  <div className="flex items-start justify-between gap-4">
+                    <div>
+                      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-dim)]">
+                        {item.kicker}
+                      </p>
+                      <p className="mt-1 text-base font-semibold tracking-[-0.02em] text-[var(--headline)]">{item.title}</p>
+                      <p className="mt-1.5 text-sm leading-6 text-[var(--text-soft)]">{item.summary}</p>
+                    </div>
+                    <ArrowRight className="mt-1 size-4 shrink-0 text-[var(--text-dim)] transition-transform group-hover:translate-x-1" />
+                  </div>
+                </Link>
               ))}
-            </ul>
+            </div>
           </Card>
 
-          <Card className="p-6">
-            <h2 className="mb-1 text-xs font-semibold uppercase tracking-widest text-blue-600">
-              Installation
-            </h2>
-            <p className="mt-2 mb-3 text-sm text-gray-500">
-              Available on Maven Central. Requires Java 8+.
-            </p>
-            <p className="text-xs font-semibold text-gray-500">Maven</p>
-            <pre className="mt-1.5 overflow-x-auto rounded-lg border border-slate-700/40 bg-slate-900 p-4 font-mono text-xs leading-relaxed text-sky-300">
-              <code>{`<dependency>
+          <div className="grid gap-6">
+            <Card className="px-6 py-7 md:px-7">
+              <span className="eyebrow">Use Cases</span>
+              <div className="mt-6 grid gap-3">
+                {USE_CASES.map(({ title, icon: Icon, body }) => (
+                  <div key={title} className="rounded-[22px] border border-[var(--line-soft)] bg-[rgba(255,255,255,0.46)] p-4">
+                    <div className="flex items-start gap-3">
+                      <div className="mt-0.5 flex size-10 shrink-0 items-center justify-center rounded-2xl bg-[rgba(240,224,206,0.68)] text-[var(--accent)]">
+                        <Icon className="size-4" />
+                      </div>
+                      <div>
+                        <p className="text-base font-semibold tracking-[-0.02em] text-[var(--headline)]">{title}</p>
+                        <p className="mt-1.5 text-sm leading-6 text-[var(--text-soft)]">{body}</p>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </Card>
+
+            <Card className="px-6 py-7 md:px-7">
+              <span className="eyebrow">Install</span>
+              <p className="font-display mt-5 text-4xl tracking-[-0.04em] text-[var(--headline)]">
+                Add the dependency and move straight into the mapping layer.
+              </p>
+
+              <div className="mt-6 space-y-4">
+                <div className="rounded-[22px] border border-[var(--line-soft)] bg-[rgba(255,255,255,0.5)] p-4">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-dim)]">Maven</p>
+                  <pre className="mt-3 overflow-x-auto rounded-[18px] bg-[rgba(34,29,24,0.96)] px-4 py-4 font-mono text-xs leading-7 text-[#d7ebdf]">
+                    <code>{`<dependency>
   <groupId>org.indunet</groupId>
   <artifactId>fastproto</artifactId>
   <version>4.1.0</version>
 </dependency>`}</code>
-            </pre>
-            <p className="mt-3 text-xs font-semibold text-gray-500">Gradle</p>
-            <pre className="mt-1.5 overflow-x-auto rounded-lg border border-slate-700/40 bg-slate-900 p-4 font-mono text-xs text-sky-300">
-              <code>{`implementation "org.indunet:fastproto:4.1.0"`}</code>
-            </pre>
-            <div className="mt-5 flex gap-2">
-              <Button variant="primary" asChild>
-                <Link href="/help/quick-start"><BookOpen />Read the docs</Link>
-              </Button>
-            </div>
-          </Card>
-        </div>
+                  </pre>
+                </div>
 
-        {/* ═══ License ════════════════════════════════════════ */}
-        <div className="rounded-xl border border-gray-100 bg-gray-50 px-6 py-5">
-          <p className="text-sm text-gray-500">
-            <span className="font-semibold text-gray-700">Open source.</span>{" "}
-            Released under the{" "}
-            <a className="font-medium text-blue-600 hover:underline"
-               href="https://www.apache.org/licenses/LICENSE-2.0.html"
-               target="_blank" rel="noreferrer">
-              Apache License 2.0
-            </a>
-            . Source on{" "}
-            <a className="font-medium text-blue-600 hover:underline"
-               href="https://github.com/indunet/fastproto"
-               target="_blank" rel="noreferrer">
-              GitHub
-            </a>
-            . Artifacts on{" "}
-            <a className="font-medium text-blue-600 hover:underline"
-               href="https://search.maven.org/artifact/org.indunet/fastproto/4.1.0/jar"
-               target="_blank" rel="noreferrer">
-              Maven Central
-            </a>
-            .
-          </p>
-        </div>
+                <div className="rounded-[22px] border border-[var(--line-soft)] bg-[rgba(255,255,255,0.5)] p-4">
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-dim)]">Gradle</p>
+                  <pre className="mt-3 overflow-x-auto rounded-[18px] bg-[rgba(34,29,24,0.96)] px-4 py-4 font-mono text-xs leading-7 text-[#d7ebdf]">
+                    <code>{`implementation("org.indunet:fastproto:4.1.0")`}</code>
+                  </pre>
+                </div>
+              </div>
+            </Card>
+          </div>
+        </section>
+      </main>
 
-      </div>
       <SiteFooter />
     </div>
   );

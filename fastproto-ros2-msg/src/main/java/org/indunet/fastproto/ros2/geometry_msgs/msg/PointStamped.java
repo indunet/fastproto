@@ -1,0 +1,42 @@
+package org.indunet.fastproto.ros2.geometry_msgs.msg;
+
+import org.indunet.fastproto.ros2.internal.Ros2MessageSupport;
+import org.indunet.fastproto.ros2.Ros2CdrReader;
+import org.indunet.fastproto.ros2.Ros2CdrWriter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import org.indunet.fastproto.ros2.std_msgs.msg.Header;
+
+/**
+ * geometry_msgs/msg/PointStamped
+ */
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class PointStamped {
+    private Header header;
+    private Point point;
+
+    public void writeTo(Ros2CdrWriter writer) {
+                    this.getHeader().writeTo(writer);
+                    this.getPoint().writeTo(writer);
+    }
+
+    public static PointStamped readFrom(Ros2CdrReader reader) {
+                    return PointStamped.builder()
+                            .header(Header.readFrom(reader))
+                            .point(Point.readFrom(reader))
+                            .build();
+    }
+
+    public byte[] encode() {
+        return Ros2MessageSupport.encode(this, PointStamped::writeTo);
+    }
+
+    public static PointStamped decode(byte[] bytes) {
+        return Ros2MessageSupport.decode(bytes, PointStamped::readFrom);
+    }
+}
