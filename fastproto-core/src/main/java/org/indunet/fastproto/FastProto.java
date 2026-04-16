@@ -31,7 +31,10 @@ import org.indunet.fastproto.pipeline.PipelineContext;
  * @author Deng Ran
  * @since 1.0.0
  */
-public class FastProto {
+public final class FastProto {
+    private FastProto() {
+    }
+
     /**
      * Converts binary data into a Java object with FastProto annotations.
      *

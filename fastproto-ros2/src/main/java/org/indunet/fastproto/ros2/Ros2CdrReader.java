@@ -3,6 +3,7 @@ package org.indunet.fastproto.ros2;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.io.ByteBufferInputStream;
 
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
@@ -32,9 +33,24 @@ public final class Ros2CdrReader {
         return inputStream.readInt32(ByteOrder.LITTLE);
     }
 
+    public int readInt16() {
+        inputStream.align(2);
+        return inputStream.readInt16(ByteOrder.LITTLE);
+    }
+
+    public long readInt64() {
+        inputStream.align(8);
+        return inputStream.readInt64(ByteOrder.LITTLE);
+    }
+
     public long readUInt32() {
         inputStream.align(4);
         return inputStream.readUInt32(ByteOrder.LITTLE);
+    }
+
+    public BigInteger readUInt64() {
+        inputStream.align(8);
+        return inputStream.readUInt64(ByteOrder.LITTLE);
     }
 
     public int readUInt16() {
@@ -128,6 +144,76 @@ public final class Ros2CdrReader {
         int[] values = new int[(int) length];
         for (int i = 0; i < values.length; i++) {
             values[i] = readInt32();
+        }
+
+        return values;
+    }
+
+    public int[] readInt16Sequence() {
+        long length = readUInt32();
+        if (length < 0 || length > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("Invalid ROS2 int16 sequence length: " + length);
+        }
+
+        int[] values = new int[(int) length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = readInt16();
+        }
+
+        return values;
+    }
+
+    public long[] readInt64Sequence() {
+        long length = readUInt32();
+        if (length < 0 || length > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("Invalid ROS2 int64 sequence length: " + length);
+        }
+
+        long[] values = new long[(int) length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = readInt64();
+        }
+
+        return values;
+    }
+
+    public int[] readUInt16Sequence() {
+        long length = readUInt32();
+        if (length < 0 || length > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("Invalid ROS2 uint16 sequence length: " + length);
+        }
+
+        int[] values = new int[(int) length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = readUInt16();
+        }
+
+        return values;
+    }
+
+    public long[] readUInt32Sequence() {
+        long length = readUInt32();
+        if (length < 0 || length > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("Invalid ROS2 uint32 sequence length: " + length);
+        }
+
+        long[] values = new long[(int) length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = readUInt32();
+        }
+
+        return values;
+    }
+
+    public BigInteger[] readUInt64Sequence() {
+        long length = readUInt32();
+        if (length < 0 || length > Integer.MAX_VALUE) {
+            throw new IllegalArgumentException("Invalid ROS2 uint64 sequence length: " + length);
+        }
+
+        BigInteger[] values = new BigInteger[(int) length];
+        for (int i = 0; i < values.length; i++) {
+            values[i] = readUInt64();
         }
 
         return values;

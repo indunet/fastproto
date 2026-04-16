@@ -3,6 +3,7 @@ package org.indunet.fastproto.ros2;
 import org.indunet.fastproto.ByteOrder;
 import org.indunet.fastproto.io.ByteBufferOutputStream;
 
+import java.math.BigInteger;
 import java.nio.charset.StandardCharsets;
 
 /**
@@ -26,9 +27,24 @@ public final class Ros2CdrWriter {
         outputStream.writeInt32(ByteOrder.LITTLE, value);
     }
 
+    public void writeInt16(int value) {
+        outputStream.align(2);
+        outputStream.writeInt16(ByteOrder.LITTLE, value);
+    }
+
+    public void writeInt64(long value) {
+        outputStream.align(8);
+        outputStream.writeInt64(ByteOrder.LITTLE, value);
+    }
+
     public void writeUInt32(long value) {
         outputStream.align(4);
         outputStream.writeUInt32(ByteOrder.LITTLE, value);
+    }
+
+    public void writeUInt64(BigInteger value) {
+        outputStream.align(8);
+        outputStream.writeUInt64(ByteOrder.LITTLE, value);
     }
 
     public void writeUInt16(int value) {
@@ -92,6 +108,41 @@ public final class Ros2CdrWriter {
         writeUInt32(values.length);
         for (int value : values) {
             writeInt32(value);
+        }
+    }
+
+    public void writeInt16Sequence(int[] values) {
+        writeUInt32(values.length);
+        for (int value : values) {
+            writeInt16(value);
+        }
+    }
+
+    public void writeInt64Sequence(long[] values) {
+        writeUInt32(values.length);
+        for (long value : values) {
+            writeInt64(value);
+        }
+    }
+
+    public void writeUInt16Sequence(int[] values) {
+        writeUInt32(values.length);
+        for (int value : values) {
+            writeUInt16(value);
+        }
+    }
+
+    public void writeUInt32Sequence(long[] values) {
+        writeUInt32(values.length);
+        for (long value : values) {
+            writeUInt32(value);
+        }
+    }
+
+    public void writeUInt64Sequence(BigInteger[] values) {
+        writeUInt32(values.length);
+        for (BigInteger value : values) {
+            writeUInt64(value);
         }
     }
 
