@@ -19,6 +19,7 @@
         <module>fastproto-processor</module>
         <module>fastproto-bundle</module>
         <module>fastproto-ros2-msg</module>
+        <module>fastproto-ros2-bag</module>
     </modules>
 
     <scm>
@@ -62,6 +63,8 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <netty.version>4.2.4.Final</netty.version>
         <kafka.version>3.9.1</kafka.version>
+        <sqlite-jdbc.version>3.46.1.0</sqlite-jdbc.version>
+        <snakeyaml.version>2.2</snakeyaml.version>
     </properties>
 
     <dependencyManagement>
@@ -80,6 +83,11 @@
             <dependency>
                 <groupId>org.indunet</groupId>
                 <artifactId>fastproto-ros2-msg</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.indunet</groupId>
+                <artifactId>fastproto-ros2-bag</artifactId>
                 <version>${project.version}</version>
             </dependency>
 
@@ -140,6 +148,18 @@
                 <artifactId>kafka-clients</artifactId>
                 <version>${kafka.version}</version>
                 <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.xerial</groupId>
+                <artifactId>sqlite-jdbc</artifactId>
+                <version>${sqlite-jdbc.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>org.yaml</groupId>
+                <artifactId>snakeyaml</artifactId>
+                <version>${snakeyaml.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
