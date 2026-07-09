@@ -1,7 +1,7 @@
 package org.indunet.fastproto.ros2.bag;
 
 /**
- * Topic metadata from a rosbag2 SQLite storage file.
+ * Topic metadata from a rosbag2 storage file.
  */
 public final class Ros2BagTopic {
     private final int id;

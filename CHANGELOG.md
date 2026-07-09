@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file.
 
+## [4.2.0] - 2026-07-09
+### Added
+- **ROS2 MCAP bag reading**: `fastproto-ros2-bag` now reads rosbag2 MCAP storage (in addition to sqlite3)
+- **ROS2 documentation**: New guides for ROS2 message codecs and bag reading
+- **Integration tests**: Official `ros2/rosbag2` `cdr_test` fixtures for sqlite3 and MCAP
+
+### Changed
+- `Ros2BagReader` refactored with pluggable sqlite3 / MCAP storage backends
+
 ## [4.1.0] - 2026-01-27
 ### Added
 - **fastproto bundle module**: New `fastproto-bundle` module (artifactId: `fastproto`) that aggregates core and processor, allowing users to include just one dependency for full functionality

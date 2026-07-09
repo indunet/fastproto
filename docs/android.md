@@ -20,14 +20,14 @@ Android projects can use the `fastproto` dependency directly. If you use lambda 
 **Gradle (Kotlin DSL)**:
 ```kotlin
 dependencies {
-    implementation("org.indunet:fastproto:4.1.0")
+    implementation("org.indunet:fastproto:4.2.0")
 }
 ```
 
 **Gradle (Groovy DSL)**:
 ```groovy
 dependencies {
-    implementation 'org.indunet:fastproto:4.1.0'
+    implementation 'org.indunet:fastproto:4.2.0'
 }
 ```
 
@@ -36,7 +36,7 @@ dependencies {
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>4.1.0</version>
+    <version>4.2.0</version>
 </dependency>
 ```
 

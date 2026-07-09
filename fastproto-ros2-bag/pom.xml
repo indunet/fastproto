@@ -7,13 +7,13 @@
     <parent>
         <groupId>org.indunet</groupId>
         <artifactId>fastproto-parent</artifactId>
-        <version>4.1.0</version>
+        <version>4.2.0</version>
     </parent>
 
     <artifactId>fastproto-ros2-bag</artifactId>
     <packaging>jar</packaging>
     <name>FastProto ROS2 Bag</name>
-    <description>ROS2 rosbag2 readers powered by FastProto ROS2 CDR codecs</description>
+    <description>ROS2 rosbag2 sqlite3 and MCAP readers powered by FastProto ROS2 CDR codecs</description>
 
     <dependencies>
         <dependency>

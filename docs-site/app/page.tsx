@@ -68,7 +68,7 @@ const jsonLd = {
   applicationCategory: "DeveloperApplication",
   operatingSystem: "Cross-platform",
   description: "Annotation-driven binary protocol toolkit for Java. Built-in checksum/CRC support.",
-  softwareVersion: "4.1.0",
+  softwareVersion: "4.2.0",
   license: "https://www.apache.org/licenses/LICENSE-2.0",
   url: "https://indunet.github.io/fastproto/",
   downloadUrl: "https://repo1.maven.org/maven2/org/indunet/fastproto/",
@@ -128,7 +128,7 @@ export default function HomePage() {
               </p>
               <div className="mt-5 space-y-3">
                 {[
-                  ["v4.1.0", "Current documented release"],
+                  ["v4.2.0", "Current documented release"],
                   ["Java 8+", "Stable baseline for adoption"],
                   ["Checksums, formulas, offsets", "Built into the same model layer"],
                 ].map(([value, label]) => (
@@ -298,7 +298,7 @@ byte[] out = FastProto.encode(packet, 1);`}</code>
                     <code>{`<dependency>
   <groupId>org.indunet</groupId>
   <artifactId>fastproto</artifactId>
-  <version>4.1.0</version>
+  <version>4.2.0</version>
 </dependency>`}</code>
                   </pre>
                 </div>
@@ -306,7 +306,7 @@ byte[] out = FastProto.encode(packet, 1);`}</code>
                 <div className="rounded-[22px] border border-[var(--line-soft)] bg-[rgba(255,255,255,0.5)] p-4">
                   <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--text-dim)]">Gradle</p>
                   <pre className="mt-3 overflow-x-auto rounded-[18px] bg-[rgba(34,29,24,0.96)] px-4 py-4 font-mono text-xs leading-7 text-[#d7ebdf]">
-                    <code>{`implementation("org.indunet:fastproto:4.1.0")`}</code>
+                    <code>{`implementation("org.indunet:fastproto:4.2.0")`}</code>
                   </pre>
                 </div>
               </div>

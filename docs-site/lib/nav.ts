@@ -86,6 +86,18 @@ export const DOC_NAV: DocNavItem[] = [
     summary: "Serialize binary payloads into Kafka producers and consumers without glue-heavy adapters.",
   },
   {
+    slug: "ros2-messages",
+    title: "ROS2 Messages",
+    kicker: "Robotics Data",
+    summary: "Decode and encode standard ROS 2 CDR messages in Java without a ROS 2 runtime.",
+  },
+  {
+    slug: "ros2-bag",
+    title: "ROS2 Bag Reading",
+    kicker: "Robotics Data",
+    summary: "Open sqlite3 or MCAP rosbag2 recordings and iterate messages with optional CDR decoding.",
+  },
+  {
     slug: "faq",
     title: "FAQ",
     kicker: "Reference",

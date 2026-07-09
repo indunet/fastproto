@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { BookOpen, Github, Home, Package, Sparkles } from "lucide-react";
 
 const REPO = "https://github.com/indunet/fastproto";
-const MAVEN = "https://search.maven.org/artifact/org.indunet/fastproto/4.1.0/jar";
+const MAVEN = "https://search.maven.org/artifact/org.indunet/fastproto/4.2.0/jar";
 
 type SiteHeaderProps = {
   variant?: "marketing" | "docs";

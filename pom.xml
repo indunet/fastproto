@@ -6,7 +6,7 @@
 
     <groupId>org.indunet</groupId>
     <artifactId>fastproto-parent</artifactId>
-    <version>4.1.0</version>
+    <version>4.2.0</version>
     <packaging>pom</packaging>
     <name>FastProto Parent</name>
     <description>FastProto is a high-performance serialization/deserialization library designed for binary communication protocols. By defining complex byte stream structures with simple annotations, it enables Java developers to read and write custom binary packets in the most natural way for scenarios such as IoT, automotive systems, industrial control and energy metering.</description>

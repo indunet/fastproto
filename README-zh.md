@@ -25,6 +25,7 @@ FastProto 是一个面向 **二进制通信协议** 的高性能序列化 / 反�
 * **表示精确可控：** 可配置字节序/位序，支持 BCD、位域以及自定义编解码公式。
 * **内置校验和/CRC：** 通过 `@Checksum` 或工具方法直接使用常见 CRC / 校验和算法。
 * **生态与 API 友好：** 提供 Netty 编解码器、Kafka 序列化组件，以及无需注解的链式 API。
+* **ROS 2 离线支持（可选模块）：** 常见 `*_msgs` 的 CDR 编解码，以及只读 rosbag2 sqlite3 / MCAP 读取——不接 DDS，不参与实时通信。
 
 查看[更新日志](CHANGELOG-zh.md)获取版本历史，英文版请查阅[CHANGELOG](CHANGELOG.md)。
 
@@ -37,6 +38,26 @@ FastProto 是一个面向 **二进制通信协议** 的高性能序列化 / 反�
 
 - 文档站点：[https://indunet.github.io/fastproto/](https://indunet.github.io/fastproto/)（源码在 `docs-site/`；每次推送到 `develop` 会重新构建并把静态 `out/` 推到 `gh-pages` 发布）
 - 指南入口：[https://indunet.github.io/fastproto/help/quick-start](https://indunet.github.io/fastproto/help/quick-start)
+- ROS 2：[消息](https://indunet.github.io/fastproto/help/ros2-messages) · [Bag 读取](https://indunet.github.io/fastproto/help/ros2-bag)
+
+### *ROS 2（可选）*
+
+FastProto 还提供 **只读、离线** 的 ROS 2 模块（不包含在默认 `fastproto` 制品中）：
+
+| 制品 | 用途 |
+|------|------|
+| `fastproto-ros2-msg` | 常见标准 ROS 2 消息的 CDR 编解码 |
+| `fastproto-ros2-bag` | 读取 sqlite3 或 MCAP 格式的 `rosbag2` 录制文件 |
+
+这些模块 **不会** 连接 DDS，也不能作为 ROS 2 节点运行，适用于在 Java 中处理别人录好的机器人数据。
+
+```xml
+<dependency>
+    <groupId>org.indunet</groupId>
+    <artifactId>fastproto-ros2-bag</artifactId>
+    <version>4.2.0</version>
+</dependency>
+```
 
 ### *安装*
 
@@ -46,7 +67,7 @@ FastProto 是一个面向 **二进制通信协议** 的高性能序列化 / 反�
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>4.1.0</version>
+    <version>4.2.0</version>
 </dependency>
 ```
 
