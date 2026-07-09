@@ -1,0 +1,47 @@
+name: Docs site
+
+# 构建静态站点并推送到 gh-pages 分支。
+# 触发：仅 develop 分支任意 push（无路径过滤）；也可 Actions 里手动运行。
+# 仓库 Settings → Pages：Source 选 “Deploy from a branch”，Branch 选 gh-pages，文件夹选 / (root)。
+
+on:
+  push:
+    branches: [develop]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gh-pages
+  cancel-in-progress: true
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: docs-site/package-lock.json
+
+      - name: Install
+        working-directory: docs-site
+        run: npm ci
+
+      - name: Build static export
+        working-directory: docs-site
+        env:
+          BASE_PATH: /fastproto
+        run: npm run build
+
+      - name: Push to gh-pages branch
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./docs-site/out
+          publish_branch: gh-pages
+          force_orphan: true

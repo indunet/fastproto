@@ -25,6 +25,7 @@ FastProto is a high-performance serialization/deserialization **library** design
 - **Precise control of representation:** Configurable byte/bit order, BCD, bit fields and custom encode/decode formulas.
 - **Built‑in checksum/CRC:** Single `@Checksum` annotation or utility methods covering common CRC and checksum algorithms.
 - **Ecosystem integrations:** Ready‑to‑use Netty codecs and Kafka Serializer/Deserializer/Serde, plus fluent APIs for use without annotations.
+- **ROS 2 offline support (optional modules):** CDR codecs for common `*_msgs` types and read-only rosbag2 sqlite3 / MCAP bag access — no DDS or live pub/sub.
 
 See the [CHANGELOG](CHANGELOG.md) for recent updates.
 
@@ -36,7 +37,28 @@ See the [CHANGELOG](CHANGELOG.md) for recent updates.
 
 ### *Documentation*
 
-- [https://indunet.github.io/fastproto/help.html](https://indunet.github.io/fastproto/help.html)
+- Site: [https://indunet.github.io/fastproto/](https://indunet.github.io/fastproto/) (Next.js app in `docs-site/`; each push to `develop` rebuilds and pushes static `out/` to the `gh-pages` branch)
+- Guides: [https://indunet.github.io/fastproto/help/quick-start](https://indunet.github.io/fastproto/help/quick-start)
+- ROS 2: [messages](https://indunet.github.io/fastproto/help/ros2-messages) · [bag reading](https://indunet.github.io/fastproto/help/ros2-bag)
+
+### *ROS 2 (optional)*
+
+FastProto also provides **read-only, offline** ROS 2 modules (not included in the default `fastproto` artifact):
+
+| Artifact | Purpose |
+|----------|---------|
+| `fastproto-ros2-msg` | CDR encode/decode for common standard ROS 2 messages |
+| `fastproto-ros2-bag` | Read sqlite3 or MCAP `rosbag2` recordings |
+
+These modules do **not** connect to DDS or run as ROS 2 nodes. They are for Java pipelines that consume recorded robot data.
+
+```xml
+<dependency>
+    <groupId>org.indunet</groupId>
+    <artifactId>fastproto-ros2-bag</artifactId>
+    <version>4.2.0</version>
+</dependency>
+```
 
 ### *Install*
 
@@ -46,7 +68,7 @@ See the [CHANGELOG](CHANGELOG.md) for recent updates.
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>4.1.0</version>
+    <version>4.2.0</version>
 </dependency>
 ```
 
@@ -163,8 +185,6 @@ public class Weather {
 }
 ```
 
-> **Note:** Lambda formulas require the `fastproto-processor` module. Add it as a `provided` scope dependency. See [Android guide](docs/android.md) for details.
-
 
 ## *2. Annotations*
 
@@ -267,17 +287,6 @@ Users can customize formula in two ways. For simple formulas, it is recommended 
 complex formula, it is recommended to customize formula classes by implementing the `java.lang.function.Function` interface.
 
 * *Lambda Expression*
-
-Lambda formulas are processed at compile time by the FastProto annotation processor (`fastproto-processor`). This ensures compatibility with Android and Java 11+ JRE environments. Simply add the processor dependency:
-
-```xml
-<dependency>
-    <groupId>org.indunet</groupId>
-    <artifactId>fastproto-processor</artifactId>
-    <version>4.0.0</version>
-    <scope>provided</scope>
-</dependency>
-```
 
 ```java
 import org.indunet.fastproto.annotation.DecodingFormula;

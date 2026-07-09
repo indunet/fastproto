@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <title>Redirecting…</title>
+    <meta http-equiv="refresh" content="0;url=help/quick-start" />
+    <script>
+      (function () {
+        var h = (location.hash || "#quick-start").replace(/^#/, "");
+        if (!h) h = "quick-start";
+        var p = location.pathname.replace(/\/help\.html$/i, "");
+        location.replace(p + "/help/" + h);
+      })();
+    </script>
+  </head>
+  <body>
+    <p><a href="help/quick-start">Continue to documentation</a></p>
+  </body>
+</html>

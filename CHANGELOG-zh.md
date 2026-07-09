@@ -2,6 +2,15 @@
 
 本文件用于记录本项目的所有重要变更。
 
+## [4.2.0] - 2026-07-09
+### 新增
+- **ROS2 MCAP bag 读取**：`fastproto-ros2-bag` 支持 rosbag2 MCAP 存储（在 sqlite3 之外）
+- **ROS2 文档**：新增 ROS2 消息编解码与 bag 读取指南
+- **集成测试**：引入官方 `ros2/rosbag2` `cdr_test` sqlite3 / MCAP 测试样本
+
+### 变更
+- `Ros2BagReader` 重构为可插拔的 sqlite3 / MCAP 存储后端
+
 ## [4.1.0] - 2026-01-27
 ### 新增
 - **fastproto 聚合模块**：新增 `fastproto-bundle` 模块（artifactId 为 `fastproto`），聚合 core 和 processor，用户只需引用一个依赖即可获得完整功能

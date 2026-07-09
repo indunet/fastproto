@@ -11,54 +11,32 @@ This page summarizes how to use FastProto on Android.
 
 ## Lambda Formulas on Android
 
-FastProto provides a separate annotation processor module (`fastproto-processor`) that generates formula classes at compile time. This makes `@DecodingFormula(lambda = "...")` and `@EncodingFormula(lambda = "...")` fully compatible with Android.
+FastProto provides compile-time support for lambda formulas so `@DecodingFormula(lambda = "...")` and `@EncodingFormula(lambda = "...")` remain Android-friendly.
 
 ### Setup
 
-Android projects need to configure the annotation processor separately (cannot use the `fastproto` bundle directly).
+Android projects can use the `fastproto` dependency directly. If you use lambda formulas, make sure annotation processing is enabled in your build.
 
 **Gradle (Kotlin DSL)**:
 ```kotlin
 dependencies {
-    implementation("org.indunet:fastproto-core:4.1.0")
-    annotationProcessor("org.indunet:fastproto-processor:4.1.0")
+    implementation("org.indunet:fastproto:4.2.0")
 }
-
-// For Kotlin projects, use kapt instead:
-// kapt("org.indunet:fastproto-processor:4.1.0")
 ```
 
 **Gradle (Groovy DSL)**:
 ```groovy
 dependencies {
-    implementation 'org.indunet:fastproto-core:4.1.0'
-    annotationProcessor 'org.indunet:fastproto-processor:4.1.0'
+    implementation 'org.indunet:fastproto:4.2.0'
 }
 ```
 
 **Maven (Android)**:
 ```xml
-<dependencies>
-    <dependency>
-        <groupId>org.indunet</groupId>
-        <artifactId>fastproto-core</artifactId>
-        <version>4.1.0</version>
-    </dependency>
-    <dependency>
-        <groupId>org.indunet</groupId>
-        <artifactId>fastproto-processor</artifactId>
-        <version>4.1.0</version>
-        <scope>provided</scope>
-    </dependency>
-</dependencies>
-```
-
-**Note:** For standard Maven/Gradle projects (non-Android), simply use the `fastproto` bundle which includes everything:
-```xml
 <dependency>
     <groupId>org.indunet</groupId>
     <artifactId>fastproto</artifactId>
-    <version>4.1.0</version>
+    <version>4.2.0</version>
 </dependency>
 ```
 
@@ -128,7 +106,6 @@ public class SensorData {
 
 ## FAQ
 
-- **Can I use lambda formulas on Android?** Yes! The `fastproto-processor` module generates formula classes at compile time, making lambda formulas fully compatible with Android.
-- **Why can't I use the `fastproto` bundle on Android?** Android's build system requires explicit annotation processor configuration. The bundle works for standard Maven/Gradle projects but Android needs separate `fastproto-core` + `fastproto-processor` dependencies.
+- **Can I use lambda formulas on Android?** Yes. Lambda formulas are generated at compile time, so they are compatible with Android as long as annotation processing is enabled.
 - **Do I need the annotation processor?** If you use `@DecodingFormula(lambda = "...")` or `@EncodingFormula(lambda = "...")`, yes. If you only use class-based formulas like `@DecodingFormula(MyFormula.class)`, the annotation processor is optional.
 - **Do I need ProGuard rules?** If you rely on reflection/annotations, keep them as shown above. The generated formula classes should also be kept.
