@@ -25,7 +25,7 @@ FastProto is a high-performance serialization/deserialization **library** design
 - **Precise control of representation:** Configurable byte/bit order, BCD, bit fields and custom encode/decode formulas.
 - **Built‑in checksum/CRC:** Single `@Checksum` annotation or utility methods covering common CRC and checksum algorithms.
 - **Ecosystem integrations:** Ready‑to‑use Netty codecs and Kafka Serializer/Deserializer/Serde, plus fluent APIs for use without annotations.
-- **ROS 2 offline support (optional modules):** CDR codecs for common `*_msgs` types and read-only rosbag2 sqlite3 / MCAP bag access — no DDS or live pub/sub.
+- **ROS 2 (optional):** Offline CDR codecs and rosbag2 reading for recorded robot data.
 
 See the [CHANGELOG](CHANGELOG.md) for recent updates.
 
@@ -39,26 +39,6 @@ See the [CHANGELOG](CHANGELOG.md) for recent updates.
 
 - Site: [https://indunet.github.io/fastproto/](https://indunet.github.io/fastproto/) (Next.js app in `docs-site/`; each push to `develop` rebuilds and pushes static `out/` to the `gh-pages` branch)
 - Guides: [https://indunet.github.io/fastproto/help/quick-start](https://indunet.github.io/fastproto/help/quick-start)
-- ROS 2: [messages](https://indunet.github.io/fastproto/help/ros2-messages) · [bag reading](https://indunet.github.io/fastproto/help/ros2-bag)
-
-### *ROS 2 (optional)*
-
-FastProto also provides **read-only, offline** ROS 2 modules (not included in the default `fastproto` artifact):
-
-| Artifact | Purpose |
-|----------|---------|
-| `fastproto-ros2-msg` | CDR encode/decode for common standard ROS 2 messages |
-| `fastproto-ros2-bag` | Read sqlite3 or MCAP `rosbag2` recordings |
-
-These modules do **not** connect to DDS or run as ROS 2 nodes. They are for Java pipelines that consume recorded robot data.
-
-```xml
-<dependency>
-    <groupId>org.indunet</groupId>
-    <artifactId>fastproto-ros2-bag</artifactId>
-    <version>4.2.0</version>
-</dependency>
-```
 
 ### *Install*
 
@@ -501,6 +481,26 @@ EncodeUtils.writeUInt32(bytes, 6, ByteOrder.BIG, 256);  // Write unsigned 32-bit
 |:-------------:|:---------:|:-------:|:-----:|:-----:|:-------:|
 | `decode`      | throughput |   10    | 1699  |  ± 17 | ops/ms  |
 | `create`      | throughput |   10    | 10882 | ± 162 | ops/ms  |
+
+
+## *5. ROS 2 (optional)*
+
+FastProto also ships **optional, read-only** ROS 2 modules for offline Java workflows. They are **not** included in the default `fastproto` artifact and do **not** connect to DDS or run as ROS 2 nodes.
+
+| Artifact | Purpose |
+|----------|---------|
+| `fastproto-ros2-msg` | CDR encode/decode for common standard ROS 2 messages |
+| `fastproto-ros2-bag` | Read sqlite3 or MCAP `rosbag2` recordings |
+
+Guides: [ROS 2 messages](https://indunet.github.io/fastproto/help/ros2-messages) · [bag reading](https://indunet.github.io/fastproto/help/ros2-bag)
+
+```xml
+<dependency>
+    <groupId>org.indunet</groupId>
+    <artifactId>fastproto-ros2-bag</artifactId>
+    <version>4.2.0</version>
+</dependency>
+```
 
 
 ## *6. Build Requirements*
