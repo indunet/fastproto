@@ -1,0 +1,52 @@
+# Publish FastProto modules to Maven Central via Maven.
+# Triggered when you Publish a GitHub Release (same pattern as robot-bus).
+#
+# Repo secrets (same names as robot-bus):
+#   MAVEN_CENTRAL_USERNAME / MAVEN_CENTRAL_PASSWORD → ~/.m2 server id `central`
+#   GPG_PRIVATE_KEY / GPG_PASSPHRASE → gpg signing in -Prelease
+
+name: Publish to Maven Central
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check release tag matches version
+        if: github.event_name == 'release'
+        run: |
+          TAG="${{ github.event.release.tag_name }}"
+          TAG="${TAG#v}"
+          POM_VERSION="$(sed -n 's|^[[:space:]]*<version>\(.*\)</version>|\1|p' pom.xml | head -n1)"
+          if [ "$TAG" != "$POM_VERSION" ]; then
+            echo "Release tag ($TAG) must match parent pom version ($POM_VERSION)"
+            exit 1
+          fi
+
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+          cache: maven
+          server-id: central
+          server-username: MAVEN_CENTRAL_USERNAME
+          server-password: MAVEN_CENTRAL_PASSWORD
+
+      - name: Import GPG key
+        run: |
+          echo "${{ secrets.GPG_PRIVATE_KEY }}" | gpg --batch --import
+          gpg --list-secret-keys --keyid-format LONG
+
+      - name: Deploy to Maven Central
+        env:
+          MAVEN_CENTRAL_USERNAME: ${{ secrets.MAVEN_CENTRAL_USERNAME }}
+          MAVEN_CENTRAL_PASSWORD: ${{ secrets.MAVEN_CENTRAL_PASSWORD }}
+        run: |
+          mvn -B -Prelease clean deploy \
+            -Dgpg.passphrase="${{ secrets.GPG_PASSPHRASE }}"

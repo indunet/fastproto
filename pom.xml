@@ -223,15 +223,22 @@
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-gpg-plugin</artifactId>
-                    <version>1.6</version>
+                    <version>3.2.7</version>
                     <executions>
                         <execution>
+                            <id>sign-artifacts</id>
                             <phase>verify</phase>
                             <goals>
                                 <goal>sign</goal>
                             </goals>
                         </execution>
                     </executions>
+                    <configuration>
+                        <gpgArguments>
+                            <arg>--pinentry-mode</arg>
+                            <arg>loopback</arg>
+                        </gpgArguments>
+                    </configuration>
                 </plugin>
 
                 <plugin>
@@ -247,6 +254,9 @@
                     <extensions>true</extensions>
                     <configuration>
                         <publishingServerId>central</publishingServerId>
+                        <autoPublish>true</autoPublish>
+                        <!-- validated = Sonatype 校验通过即可；published 要等 Central CDN 同步 -->
+                        <waitUntil>validated</waitUntil>
                     </configuration>
                 </plugin>
             </plugins>
@@ -287,17 +297,6 @@
                     </plugin>
                 </plugins>
             </build>
-
-            <distributionManagement>
-                <snapshotRepository>
-                    <id>oss</id>
-                    <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-                </snapshotRepository>
-                <repository>
-                    <id>oss</id>
-                    <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
-                </repository>
-            </distributionManagement>
         </profile>
 
         <profile>
